@@ -1,0 +1,86 @@
+@import url(http://fonts.googleapis.com/css?family=Averia+Sans+Libre);
+@import url(http://fonts.googleapis.com/css?family=Luckiest+Guy);
+@import url(http://fonts.googleapis.com/css?family=Special+Elite);
+
+html, body {
+  user-select: none;
+}
+
+body {
+  background-image: url("img/dark-green.jpg");
+  background-size: cover;
+  background-position: 50% 50%;
+}
+
+.card {
+  cursor: pointer;
+  float: left;
+  transform: scale(0.9);
+  transition: all 0.5s;
+  margin: 5px;
+  padding: 5px;
+  width: 200px; height: 300px;
+  border: 1px solid #533;
+  border-radius: 6px;
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+.card:hover {
+  transform: scale(1);
+}
+.card fieldset {
+  border: 1px solid #fff;
+  padding: 5px;
+  margin: 0;
+  height: 285px;
+  background: #edb;
+}
+.card legend {
+  font-family: 'Luckiest Guy', cursive;
+  font-size: 16px;
+  color: #533; 
+  text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -2px 0 white;
+}
+.card .portrait {
+  position: relative;
+}
+.card img {
+  display: block;
+  width: 185px; height: 104px;
+  border-radius: 5px;
+}
+.card .overlay {
+  box-shadow: 0 0 20px #000 inset;
+  border-radius: 5px;
+  width: 185px; height: 104px;
+  position: absolute;
+  top: 0;
+}
+.card h1 {
+  font-family: 'Special Elite', cursive;
+  font-size: 14px;
+  color: #533;
+  text-shadow: 0 1px 0 #fff;
+}
+.card p { 
+  font-family: 'Special Elite', cursive;
+  font-size: 12px;
+  color: #533;
+  text-shadow: 0 1px 0 #fff;
+  text-align: justify;
+}
+
+#keeper {
+  background: #fd8;
+}
+#pudge {
+  background: #b43;
+}
+#crystal {
+  background: #78c;
+}
+#antimage {
+  background: #674f80;
+}
+#lone {
+  background: #62a64e;
+}

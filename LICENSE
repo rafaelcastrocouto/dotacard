@@ -1,0 +1,66 @@
+ThreeNodes.js is released under the MIT License.
+
+----------------------------------------------------------
+
+The MIT License
+
+Copyright 2011, David Mignot (the "Author")
+All rights reserved.
+
+MIT +no-false-attribs License
+
+Permission is hereby granted, free of charge, to any person
+obtaining a copy of this software and associated documentation
+files (the "Software"), to deal in the Software without
+restriction, including without limitation the rights to use,
+copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the
+Software is furnished to do so, subject to the following
+conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
+OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+OTHER DEALINGS IN THE SOFTWARE.
+
+Contributors to this project agree to grant all rights to the 
+copyright holder of the primary product. 
+Attribution is maintained in the source control history of the product.
+
+----------------------------------------------------------
+
+"Node.js" and "node" trademark Joyent, Inc. npm is not officially
+part of the Node.js project, and is neither owned by nor
+officially affiliated with Joyent, Inc.
+
+Packages published in the npm registry are not part of npm
+itself, are the sole property of their respective maintainers,
+and are not covered by this license.
+
+----------------------------------------------------------
+
+ThreeNodes.js includes the following libraries which may have different licenses.
+
+"Three.js", Copyright (c) 2010-2011 three.js Authors
+"ThreeCSG.js", Copyright (c) Chandler Prall (http://chandler.prallfamily.com)
+"csg.js", Copyright (c) 2011 Evan Wallace (http://madebyevan.com)
+"coffee-script", Copyright (c) 2011 Jeremy Ashkenas.
+"backbone.js", Copyright (c) 2010 Jeremy Ashkenas, DocumentCloud Inc.
+"Raphaël", Copyright (c) 2008-2011 Dmitry Baranovskiy and Sencha Labs.
+"RequireJS", Copyright (c) 2010-2011, The Dojo Foundation All Rights Reserved.
+"jQuery", Copyright (c) 2011 John Resig, http://jquery.com/
+"jQuery Context Menu Plugin", Copyright (c) Cory S.N. LaViska.
+"Color picker", Copyright (c) Stefan Petre www.eyecon.ro
+"QUnit", Copyright (c) 2011 John Resig, Jörn Zaefferer
+"ScrollView", Copyright (c) 2009 Toshimitsu Takahashi
+"Tween.js", Copyright (c) 2010 sole http://soledadpenades.com
+"jQuery UI Layout Plug-in", Copyright (c) 2012 Fabrizio Balliano (http://www.fabrizioballiano.net) and Kevin Dalman (http://allpro.net)
+"Sparks.js", Copyright (c) zz85 (http://github.com/zz85 http://www.lab4games.net/zz85/blog)
+Easing equations Copyright (c) 2001 Robert Penner http://robertpenner.com/easing/

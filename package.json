@@ -1,0 +1,11 @@
+{
+  "name": "basic",
+  "version": "0.2.0",
+  "author": "rafaelcastrocouto",
+  "repository": "git://github.com/rafaelcastrocouto",
+  "dependencies": {
+    "connect": ">= 2.14.x",
+    "redis": ">= 0.10.x"
+  },
+  "engine": "node >= 0.10.x"
+}
