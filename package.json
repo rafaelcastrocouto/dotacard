@@ -2,7 +2,7 @@
   "name": "dotacard",
   "version": "0.2.0",
   "author": "rafaelcastrocouto",
-  "repository": "git://github.com/rafaelcastrocouto",
+  "repository": "git://github.com/rafaelcastrocouto/dotacard",
   "dependencies": {
     "connect": ">= 2.14.x",
     "redis": ">= 0.10.x"
