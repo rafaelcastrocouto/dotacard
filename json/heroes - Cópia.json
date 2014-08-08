@@ -1,0 +1,160 @@
+{
+  "ktol":{
+    "name": "Keeper of the Light",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/keeper_of_the_light_full.png",
+    "hp": 45,
+    "regen": 1,
+    "mana": 1,
+    "skills": {
+      "illuminate": {
+        "name": "Illuminate",
+        "cards": 10    
+      },
+      "drain": {
+        "name": "Mana Leak",
+        "cards": 6    
+      },
+      "mana": {
+        "name": "Chakra Magic",
+        "cards": 5    
+      },
+      "ult": {
+        "name": "Spirit Form",
+        "cards": 1 
+      }      
+    },
+    "temporary": {
+      "blind": {
+        "name": "Blinding Light",
+        "cards": 1   
+      },
+      "tele": {
+        "name": "Recall",
+        "cards": 1
+      }
+    },
+    "buff": {
+      "drain": {
+        "name": "Mana Leaking",
+        "cards": 3
+      },
+      "ult": {
+        "name": "Spirit Form",
+        "cards": 1
+      },
+      "blind": {
+        "name": "Blinded",
+        "cards": 9
+      }
+    }
+  },
+  "wk":{
+    "name": "Wraith King",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/skeleton_king_full.png",
+    "hp": 66,
+    "regen": 2,
+    "mana": 1,
+    "skills": {
+      "stun": {
+        "name": "Wraithfire Blast",
+        "cards": 12,
+        "type": 
+      },
+      "ult": {
+        "name": "Reincarnation",
+        "cards": 1 
+      }      
+    },
+    "buff": {
+      "stun": {
+        "name": "Wraithfire Blast Stun",
+        "cards": 1,
+        "type": 
+      },
+      "burn": {
+        "name": "Wraithfire Blast Burn",
+        "cards": 1,
+        "type": 
+      },
+      "lifesteal": {
+        "name": "Vampiric Aura",
+        "cards": 12
+      },
+      "critical": {
+        "name": "Mortal Strike",
+        "cards": 1 
+      },
+      "slow": {
+        "name": "Reincarnation",
+        "cards": 8 
+      }      
+    }
+  },
+  "pudge":{
+    "name": "Pudge, the Butcher",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png",
+    "hp": 74,
+    "regen": 2,
+    "skills": {
+      "hook": {
+        "name": "Meat Hook",
+        "cards": 8   
+      },
+      "ult": {
+        "name": "Dismember",
+        "cards": 3 
+      }      
+    },
+    "permanent": {
+      "rot": {
+        "name": "Rot",
+        "cards": 1
+      }
+    },
+    "buff": {
+      "flesh": {
+        "name": "Flesh Heap",
+        "cards": 1
+      }
+    }
+  },
+  "crystal":{
+    "name": "Crystal Maiden",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png",
+    "hp": 45,
+    "regen": 1,
+    "skills": {
+      "aoe": {
+        "name": "Crystal Nova",
+        "cards": 6   
+      },
+      "freeze": {
+        "name": "Frostbite",
+        "cards": 3 
+      },
+      "ult": {
+        "name": "Freezing Field",
+        "cards": 3
+      }         
+    },
+    "buff": {
+      "slow": {
+        "name": "Crystal Nova",
+        "cards": 1
+      },
+      "freeze": {
+        "name": "Frostbitten",
+        "cards": 1
+      },      
+      "aura": {
+        "name": "Arcane Aura Self",
+        "cards": 1
+      },
+      "aura": {
+        "name": "Arcane Aura",
+        "cards": 4
+      }
+      
+    }
+  }   
+}

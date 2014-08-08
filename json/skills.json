@@ -1,0 +1,20 @@
+{
+  "ktol":{
+    "illuminate": {
+      "name": "Illuminate",
+      "cards": 10    
+    },
+    "drain": {
+      "name": "Mana Leak",
+      "cards": 6    
+    },
+    "mana": {
+      "name": "Chakra Magic",
+      "cards": 5    
+    },
+    "ult": {
+      "name": "Spirit Form",
+      "cards": 1 
+    }    
+  }
+}

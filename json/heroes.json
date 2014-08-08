@@ -1,0 +1,93 @@
+{
+  "ktol":{
+    "name": "Keeper of the Light",
+    "attribute": "Intelligence",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/keeper_of_the_light_full.png",
+    "hp": 45,
+    "regen": 1,
+    "mana": 8,
+    "skills": "Illuminate | Mana Leak | Chakra Magic | Spirit Form",
+    "passive": "",
+    "permanent": "",
+    "temporary": "Spirit Illuminate | Blinding Light | Recall",
+    "buffs": "Mana Leaking | Blinded"
+  },
+  "wk":{
+    "name": "Wraith King",
+    "attribute": "Strength",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/skeleton_king_full.png",
+    "hp": 66,
+    "regen": 2,
+    "mana": 5,
+    "skills": "Wraithfire Blast | Reincarnation",
+    "passive": "Mortal Strike, Vampiric Aura",
+    "permanent": "",    
+    "temporary": "",    
+    "buffs": "Wraithfire Blast Stun | Wraithfire Blast Burn | Vampiric Aura | Reincarnation Slow"
+  },
+  "pudge":{
+    "name": "Pudge, the Butcher",
+    "attribute": "Strength",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png",
+    "hp": 74,
+    "regen": 2,
+    "mana": 5,
+    "skills": "Meat Hook | Dismember",
+    "passive": "Flesh Heap",
+    "permanent": "Rot",
+    "temporary": "",    
+    "buffs": "Dismember Hold"
+  },
+  "cm":{
+    "name": "Crystal Maiden",
+    "attribute": "Intelligence",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/crystal_maiden_full.png",
+    "hp": 45,
+    "regen": 1,
+    "mana": 7, 
+    "skills": "Crystal Nova | Frostbite | Freezing Field",
+    "passive": "Arcane Aura",
+    "permanent": "",
+    "temporary": "",    
+    "buffs": "Crystal Nova Slow | Frostbitten | Arcane Aura"
+  },
+  "nyx":{
+    "name": "Nyx Assassin",
+    "attribute": "Agility",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/nyx_assassin_full.png",
+    "hp": 51,
+    "regen": 1,
+    "mana": 6,
+    "skills": "Impale | Mana Burn | Spiked Carapace | Vendetta",
+    "passive": "Arcane Aura",
+    "permanent": "",
+    "temporary": "",    
+    "buffs": "Impale Stun | Spiked Stun | Vendetta"    
+  },
+  "am":{
+    "name": "Anti Mage",
+    "attribute": "Agility",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/antimage_full.png",
+    "hp": 42,
+    "regen": 1,
+    "mana": 5,
+    "skills": "Blink | Mana Burn | Mana Void",
+    "passive": "Mana Break | Spell Shield",
+    "permanent": "",
+    "temporary": "",    
+    "buffs": ""
+  },
+  "ld":{
+    "name": "Lone Druid",
+    "attribute": "Agility",
+    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/lone_druid_full.png",
+    "hp": 51,
+    "regen": 1,
+    "mana": 4,
+    "skills": "Summon Spirit Bear | Rabid | True Form",
+    "passive": "Synergy",
+    "permanent": "",
+    "temporary": "Battle Cry",    
+    "buffs": "Rabid | Battle Cry | True Form"
+  }
+}

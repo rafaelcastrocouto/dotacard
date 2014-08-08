@@ -1,87 +1,20 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Website title</title>
-    <meta name="Author" content="rafaelcastrocouto" />
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
-    <meta http-equiv="content-script-type" content="text/javascript" />    
-    <meta http-equiv="content-style-type" content="text/css" />
-    <link href="style.css" rel="stylesheet" type="text/css" /> 
+    <title>DotaCard</title>
+    <meta name="Author" content="rafaelcastrocouto"/>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="content-script-type" content="text/javascript"/>    
+    <meta http-equiv="content-style-type" content="text/css"/>
+    <link href="style.css" rel="stylesheet" type="text/css"/> 
   </head>
-  <body>
-    <p id="target"></p> 
-    <div class="deck" id="heroes"> 
-      <div class="card" id="pudge">
-        <fieldset>
-          <legend>Pudge the Butcher</legend>      
-          <div class="portrait">
-            <img src="http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png"/>
-            <div class="overlay"></div>
-          </div>      
-          <h1>Flesh Heap</h1>  
-          <p>Passive</p>
-          <p>Gives Pudge resistance to magic damage, as well as bonus strength that increases each time Pudge kills an enemy Hero or it dies in his vicinity.</p>
-          <p>Strength Bonus: 0</p>
-        </fieldset>
-      </div>
-
-      <div class="card" id="keeper">
-        <fieldset>
-          <legend>Keeper of the light</legend>      
-          <div class="portrait">
-            <img src="http://cdn.dota2.com/apps/dota2/images/heroes/keeper_of_the_light_full.png"/>
-            <div class="overlay"></div>
-          </div>      
-          <h1>Spirit Form</h1>  
-          <p>Active</p>
-          <p>Ezalor temporarily turns his body luminescent, gaining various abilities. Illuminate is now channeled by a separate spirit, and gains the Blinding Light and Recall abilities.</p>     
-        </fieldset>
-      </div>    
-
-      <div class="card" id="crystal">
-        <fieldset>
-          <legend>Crystal Maiden</legend>      
-          <div class="portrait">
-            <img src="http://cdn.dota2.com/apps/dota2/images/heroes/crystal_maiden_full.png"/>
-            <div class="overlay"></div>
-          </div>      
-          <h1>Arcane Aura</h1>  
-          <p>Passive</p>
-          <p>Gives additional mana regeneration to all friendly units on the map. This bonus is doubled on Crystal Maiden.</p>
-          <p>Mana Bonus: 1</p>      
-        </fieldset>
-      </div>
-
-      <div class="card" id="lone">
-        <fieldset>
-          <legend>Lone Druid</legend>      
-          <div class="portrait">
-            <img src="http://cdn.dota2.com/apps/dota2/images/heroes/lone_druid_full.png"/>
-            <div class="overlay"></div>
-          </div>      
-          <h1>True Form</h1>  
-          <p>Active</p>
-          <p>Lone Druid learns to morph himself into a raging bear, losing his ranged advantage and some base movement speed, but gaining melee power as well as the Battle Cry ability. He can morph freely between druid and bear form.</p> 
-        </fieldset>
-      </div>  
-
-      <div class="card" id="antimage">
-        <fieldset>
-          <legend>Anti Mage</legend>      
-          <div class="portrait">
-            <img src="http://cdn.dota2.com/apps/dota2/images/heroes/antimage_full.png"/>
-            <div class="overlay"></div>
-          </div>      
-          <h1>Mana Break</h1>  
-          <p>Passive</p>
-          <p>Burns an opponent's mana on each attack. Mana Break deals 60% of the mana burned as damage to the target.</p>
-          <p>Mana Burn: 28</p>      
-        </fieldset>
-      </div> 
-
-    </div>
-    <script type="text/javascript" src="js/prefixfree.min.js"> </script>
-    <script type="text/javascript" src="js/jquery.js"> </script>
-    <script type="text/javascript" src="js/client.js"> </script>
+  <body> 
+    <script type="text/javascript" src="lib/prefixfree.min.js"></script>
+    <script type="text/javascript" src="lib/jquery.js"></script>    
+    <script type="text/javascript" src="js/db.js"></script>
+    <script type="text/javascript" src="js/map.js"></script>
+    <script type="text/javascript" src="js/card.js"></script>
+    <script type="text/javascript" src="js/deck.js"></script>
+    <script type="text/javascript" src="client.js"></script>
   </body>
 </html>

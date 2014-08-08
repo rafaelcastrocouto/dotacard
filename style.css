@@ -1,23 +1,192 @@
-@import url(http://fonts.googleapis.com/css?family=Averia+Sans+Libre);
+/*@import url(http://fonts.googleapis.com/css?family=Averia+Sans+Libre);
 @import url(http://fonts.googleapis.com/css?family=Luckiest+Guy);
-@import url(http://fonts.googleapis.com/css?family=Special+Elite);
+@import url(http://fonts.googleapis.com/css?family=Special+Elite);*/
 
 html, body {
   user-select: none;
+  background: #444; color: white;
+  margin: 0;
+  width: 100%; height: 100%;
+  font-family: Calibri, sans-serif;  
 }
 
 body {
-  background-image: url("img/dark-green.jpg");
+  display: table;
+}
+
+button {
+  cursor: pointer;
+  padding: 3px 10px;
+}
+
+p {
+  word-spacing: -1px;
+  font-size: 17px;
+  line-height: 17px;
+  margin: 2px;
+  border: 2px solid transparent;
+  padding: 1px 2px;
+  display: inline-block;
+}
+
+a {
+  text-decoration: underline;
+  color: inherit;
+}
+
+a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+h1 {
+  font-family: Calibri, sans-serif;
+  font-size: 20px;
+  margin: 0;
+}
+input:focus {
+  animation: shade 0.5s;
+}
+@keyframes shade {
+  50% {opacity: 0.5;}
+}
+
+#container {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+#states {
+  margin: 0 auto;
+  width: 970px;
+  height: 600px;  
+  background-image: url("img/Dota6.49.jpg");
   background-size: cover;
-  background-position: 50% 50%;
+  background-position: 50% 100%;
+  position: relative;  
+}
+#states > div {
+  width: 100%; height: 100%;
+  position: relative;
+}
+#states.login {
+  background-image: url("img/Dota6.55.jpg");
+}
+#states.menu {
+  background-image: url("img/Dota6.63.jpg");
+}
+#menu  button {
+  display: block;
+  margin: 5px auto;
+  width: 200px;
+}
+#states.choose {
+  background-image: url("img/Dota6.69.jpg");
+}
+#states.table {
+  background-image: url("img/Dota6.70.jpg");
+}
+
+.hidden {
+  display: none;
+}
+
+.box {
+  width: 570px;  
+  position: absolute;
+  top: 180px;
+  left: 200px;
+  padding: 50px 0;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.85);
+}
+.box div p {
+  display: block;
+}
+.intro {
+  padding: 10px;
+  font-size: 38px;
+}
+.intro a {
+  text-decoration: none;
+  font: monospace;
+  font-size: 33%;
+}
+.battle {
+  display: inline-block;
+}
+.heroesbox {
+  width: 770px;  
+  height: 310px;
+  position: absolute;
+  float: left;
+  margin-bottom: 1em;
+  top: 35px;
+  left: 100px;
+  overflow: hidden;
+  padding: 15px 0;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.85);
+}
+
+.pickbox {
+  width: 540px;  
+  height: 150px;
+  position: absolute;
+  float: left;
+  top: 390px;
+  left: 100px;
+  overflow: hidden;
+  padding: 15px 5px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.85);
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
+}
+
+.slot {
+  border-radius: 4px;
+  float: left;
+  width: 100px;
+  height: 150px;
+  margin: 4px;
+  box-shadow: inset 0 0 30px rgba(255,255,255,0.5);
+}
+
+.slot:hover {
+  animation: innerlight 1s infinite;
+}
+
+/*animation: innerlight 1s infinite;*/
+@keyframes innerlight {
+  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.9);}
+  50% {box-shadow: inset 0 0 10px rgba(255,255,255,0.9);}
+}
+
+.deck {
+  position: relative;
+  margin-left: 35%;
+  transition: all 0.5s;
+}
+
+.heroesbox .card {
+  transform: scale(0.4);  
+}
+
+.slot .card {
+  transform: scale(0.4);
+  margin-top: -80px;
 }
 
 .card {
+  display: inline-block;
+  background: #bbb;
   cursor: pointer;
   float: left;
-  transform: scale(0.9);
+  text-align: left;  
   transition: all 0.5s;
-  margin: 5px;
+  margin: 0 -55px;
   padding: 5px;
   width: 200px; height: 300px;
   border: 1px solid #533;
@@ -25,8 +194,14 @@ body {
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
 }
 .card:hover {
-  transform: scale(1);
+  transform: scale(0.5);
 }
+
+.card.active, .card.active:hover {
+  margin: 0 5px;
+  transform: scale(1);  
+}
+
 .card fieldset {
   border: 1px solid #fff;
   padding: 5px;
@@ -35,7 +210,7 @@ body {
   background: #edb;
 }
 .card legend {
-  font-family: 'Luckiest Guy', cursive;
+  font-family: 'Luckiest Guy';
   font-size: 16px;
   color: #533; 
   text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -2px 0 white;
@@ -56,31 +231,53 @@ body {
   top: 0;
 }
 .card h1 {
-  font-family: 'Special Elite', cursive;
+  font-family: 'Special Elite';
   font-size: 14px;
   color: #533;
   text-shadow: 0 1px 0 #fff;
 }
 .card p { 
-  font-family: 'Special Elite', cursive;
+  font-family: 'Special Elite';
   font-size: 12px;
   color: #533;
   text-shadow: 0 1px 0 #fff;
   text-align: justify;
 }
 
-#keeper {
+.map {
+  position: absolute;
+  top: 10px; left: 10px;  
+  border-collapse: collapse;
+}
+
+.map td {
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.2);
+  border: 1px dashed #ddd;
+  width: 60px; height: 80px;
+}
+.map td:hover {
+  background: rgba(255,255,255,0.4);
+}
+
+#ktol {
   background: #fd8;
 }
 #pudge {
   background: #b43;
 }
-#crystal {
+#cm {
   background: #78c;
 }
-#antimage {
+#nyx {
+  background: #145;
+}
+#wk {
+  background: #483;
+}
+#am {
   background: #674f80;
 }
-#lone {
+#ld {
   background: #62a64e;
 }

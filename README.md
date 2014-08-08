@@ -1,9 +1,8 @@
-#[Basic](http://rafaelcastrocouto.github.com/basic)
+#Dotacard
 
-Basic
+[Play](http://rafaelcastrocouto.github.com/dotacard)
+
 =======
-Description lorem ipsum...
-
-### [Help](basic/wiki)
+Dota dard game.
 
 __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
