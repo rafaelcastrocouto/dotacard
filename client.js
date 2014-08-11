@@ -5,17 +5,16 @@ $(function(){
     container: $('<div>').appendTo('body').attr('id','container')
   };
   //STATES
-  /* 
-  every state:
-   has an element (this.el) 
-   if has build function will run once
-   if has start function will run every time
-   if has end function will run every time
-
-  State
-    .changeTo('state')  -> set current state
-    .currentState -> get current state
-    .el -> states div appended to container
+  /*
+  State.changeTo('state')  -> set current state
+       .currentState -> get current state
+       .el -> states div appended to container
+    
+  Every state:
+       has an element (this.el) appended to State.el
+       if has build function will run once
+       if has start function will run every time
+       if has end function will run every time  
   */
   var states = {
     'load': {
@@ -55,7 +54,12 @@ $(function(){
                                                               'title': 'Choose a name and click to play'          
                                                              }).text('Play').click(function(){
           game.player = {name: states.login.input.val()};
-          if(game.player.name) State.changeTo('menu');
+          if(game.player.name) {
+            db({'get':'status'}, function(status){
+              if(status == 'online') State.changeTo('menu');
+              else alert('Error: No server connection');
+            })            
+          }
           else states.login.input.focus();
         });
 
@@ -83,22 +87,19 @@ $(function(){
 
           //check if there is someone waiting
           db({'get':'waiting'}, function(waiting){
-            if(!waiting) State.changeTo('intro');
             if(waiting == 'none') {
               //go to the waiting line
               db({'set': 'waiting', 'data': game.id }, function(){ 
                 game.status = 'waiting';
                 State.changeTo('choose');
               });
-
-            } else { //found waiting game id
+            } else { //found waiting game id              
               game.id = waiting;              
               //tell enemy to leave the waiting line
               db({'set': 'waiting', 'data': 'none'}, function(){ 
                 game.status = 'found';
                 State.changeTo('choose');
-              });
-
+              });              
             }
           });
 
@@ -246,7 +247,7 @@ $(function(){
     currentState: 'load',
     changeTo: function(s){ 
       if(s == State.currentState) return;
-      $('#states').removeClass(State.currentState).addClass(s);    
+      State.el.removeClass(State.currentState).addClass(s);    
       var oldState = states[State.currentState];
       if(oldState.end) oldState.end()
       if(oldState.el) oldState.el.addClass('hidden'); 
