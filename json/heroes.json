@@ -1,5 +1,5 @@
 {
-  "ktol":{
+  "kotl":{
     "name": "Keeper of the Light",
     "attribute": "Intelligence",
     "img": "http://cdn.dota2.com/apps/dota2/images/heroes/keeper_of_the_light_full.png",
@@ -25,7 +25,7 @@
     "temporary": "",    
     "buffs": "Wraithfire Blast Stun | Wraithfire Blast Burn | Vampiric Aura | Reincarnation Slow"
   },
-  "pudge":{
+  "pud":{
     "name": "Pudge, the Butcher",
     "attribute": "Strength",
     "img": "http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png",

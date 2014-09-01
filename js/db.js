@@ -1,10 +1,10 @@
 var db = function(send, cb){
   $.ajax({
     type: "GET", 
-    url: 'http://ajaxdatabase.jsapp.us/', //http://localhost:8080/
+    url: 'http://localhost:8080/',//'http://ajaxdatabase.jsapp.us/', 
     data: send, 
-    complete: function(receive){    console.log('XHR: "'+ receive.responseJSON + '"');
-      if(cb) cb(receive.responseJSON);
+    complete: function(receive){    console.log('XHR:', receive.responseText);
+      if(cb) cb(JSON.parse(receive.responseText));
     }
   });
 };

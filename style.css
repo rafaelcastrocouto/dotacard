@@ -8,6 +8,7 @@ html, body {
   margin: 0;
   width: 100%; height: 100%;
   font-family: Calibri, sans-serif;  
+  text-shadow: 0 0 10px #000;
 }
 
 body {
@@ -112,8 +113,8 @@ input:focus {
   font: monospace;
   font-size: 33%;
 }
-.battle {
-  display: inline-block;
+.choose .battle {
+  width: 100%;
 }
 .heroesbox {
   width: 770px;  
@@ -124,7 +125,7 @@ input:focus {
   top: 35px;
   left: 100px;
   overflow: hidden;
-  padding: 15px 0;
+  padding: 5px 0;
   text-align: center;
   border-radius: 4px;
   background: rgba(0,0,0,0.85);
@@ -132,19 +133,30 @@ input:focus {
 
 .pickbox {
   width: 540px;  
-  height: 150px;
+  height: 190px;
   position: absolute;
-  float: left;
-  top: 390px;
+  top: 360px;
   left: 100px;
   overflow: hidden;
-  padding: 15px 5px;
+  padding: 0 5px;
   text-align: center;
   border-radius: 4px;
   background: rgba(0,0,0,0.85);
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
 }
-
+.prepickbox {
+  width: 200px;  
+  height: 150px;
+  position: absolute;
+  top: 365px;
+  left: 660px;
+  overflow: hidden;
+  padding: 15px 5px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.85);
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);  
+}
 .slot {
   border-radius: 4px;
   float: left;
@@ -166,16 +178,26 @@ input:focus {
 
 .deck {
   position: relative;
-  margin-left: 35%;
   transition: all 0.5s;
 }
 
-.heroesbox .card {
-  transform: scale(0.4);  
+.heroesbox .deck {
+  margin-left: 35%;
+}
+ 
+.heroesarea {
+  position: absolute;
+  top: 400px;
+  left: 10px;
+  height: 200px;
+  overflow: hidden;
+}
+
+.heroesarea .deck {
+  top: -20px;
 }
 
 .slot .card {
-  transform: scale(0.4);
   margin-top: -80px;
 }
 
@@ -184,22 +206,50 @@ input:focus {
   background: #bbb;
   cursor: pointer;
   float: left;
+  position: relative;
+  top: 0; left: 0;
   text-align: left;  
   transition: all 0.5s;
-  margin: 0 -55px;
+  margin: 0 -56px;
   padding: 5px;
   width: 200px; height: 300px;
   border: 1px solid #533;
   border-radius: 6px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
+  transform: scale(0.4); 
 }
 .card:hover {
   transform: scale(0.5);
 }
-
-.card.active, .card.active:hover {
+.card.active {
   margin: 0 5px;
-  transform: scale(1);  
+  transform: scale(0.9);
+}
+.heroesarea .card.active {
+  margin: 0 -46px;
+  transform: scale(0.55);
+}
+.card.active:hover {
+  margin: 0 5px;
+  transform: scale(1);
+  box-shadow: 0 0 20px 5px rgba(255,255,255,0.5);
+}
+.heroesarea .card.active:hover {
+  margin: 0 -46px;
+  transform: scale(0.6);
+}
+.card.picked {  
+  animation: slidedown 1s;
+  transform: scale(0.4);
+}
+/*animation: innerlight 1s infinite;*/
+@keyframes slidedown {
+  0% {top: -175px;}
+  100% {top: 0;}
+}
+.card.picked:hover { 
+  top: -16px;
+  transform: scale(0.45);
 }
 
 .card fieldset {
@@ -246,8 +296,9 @@ input:focus {
 
 .map {
   position: absolute;
-  top: 10px; left: 10px;  
+  top: 30px; left: 10px;  
   border-collapse: collapse;
+  z-index: 1;
 }
 
 .map td {
@@ -260,10 +311,10 @@ input:focus {
   background: rgba(255,255,255,0.4);
 }
 
-#ktol {
+#kotl {
   background: #fd8;
 }
-#pudge {
+#pud {
   background: #b43;
 }
 #cm {
