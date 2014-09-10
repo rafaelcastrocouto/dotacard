@@ -1,7 +1,7 @@
 var db = function(send, cb){
   $.ajax({
     type: "GET", 
-    url: 'http://localhost/db',//'http://ajaxdatabase.jsapp.us/', 
+    url: 'http://ajaxdatabase.jsapp.us/',//'http://localhost/db', 
     data: send, 
     complete: function(receive){    
       console.log('XHR:', receive.responseText);
