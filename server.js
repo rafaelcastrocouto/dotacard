@@ -1,8 +1,9 @@
 var http = require('http'),
     url = require('url'),
     db = require('db'),
+    static = require('static'),
     host = 'localhost',
-    port = 8080;
+    port = 80;
 
 var send = function(response, data){
   response.writeHead(200, {
@@ -13,16 +14,23 @@ var send = function(response, data){
 };
 
 http.createServer(function(request, response){
-  var query = url.parse(request.url, true).query;
-  if(query.set) {
-    db.set(query.set, query.data || '');
-    send(response, true);
-  } else if (query.get) {
-    db.get(query.get, function(data){    
-      send(response, data);
-    });
-  } else if (query) send(response, query);
-  else send(response, 'It works!');
+  var urlObj = url.parse(request.url, true);
+  
+  var pathname = urlObj.pathname;
+  if(pathname[0] == '/') pathname = pathname.slice(1);
+  
+  console.log(pathname);
+  if(pathname == 'db'){
+    var query = urlObj.query;
+    if(query.set) {
+      db.set(query.set, query.data || '');
+      send(response, true);
+    } else if (query.get) {
+      db.get(query.get, function(data){    
+        send(response, data);
+      });
+    } else send(response, {data: 'It works!'});
+  } else static.read(response, pathname || 'index.html');
 }).listen(port, host);
 
 console.log(new Date() 

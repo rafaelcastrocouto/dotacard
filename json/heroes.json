@@ -2,7 +2,7 @@
   "kotl":{
     "name": "Keeper of the Light",
     "attribute": "Intelligence",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/keeper_of_the_light_full.png",
+    "img": "img/heroes/keeper_of_the_light_full.png",
     "hp": 45,
     "regen": 1,
     "mana": 8,
@@ -15,7 +15,7 @@
   "wk":{
     "name": "Wraith King",
     "attribute": "Strength",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/skeleton_king_full.png",
+    "img": "img/heroes/skeleton_king_full.png",
     "hp": 66,
     "regen": 2,
     "mana": 5,
@@ -28,7 +28,7 @@
   "pud":{
     "name": "Pudge, the Butcher",
     "attribute": "Strength",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/pudge_full.png",
+    "img": "img/heroes/pudge_full.png",
     "hp": 74,
     "regen": 2,
     "mana": 5,
@@ -41,7 +41,7 @@
   "cm":{
     "name": "Crystal Maiden",
     "attribute": "Intelligence",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/crystal_maiden_full.png",
+    "img": "img/heroes/crystal_maiden_full.png",
     "hp": 45,
     "regen": 1,
     "mana": 7, 
@@ -54,7 +54,7 @@
   "nyx":{
     "name": "Nyx Assassin",
     "attribute": "Agility",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/nyx_assassin_full.png",
+    "img": "img/heroes/nyx_assassin_full.png",
     "hp": 51,
     "regen": 1,
     "mana": 6,
@@ -67,7 +67,7 @@
   "am":{
     "name": "Anti Mage",
     "attribute": "Agility",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/antimage_full.png",
+    "img": "img/heroes/antimage_full.png",
     "hp": 42,
     "regen": 1,
     "mana": 5,
@@ -80,7 +80,7 @@
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
-    "img": "http://cdn.dota2.com/apps/dota2/images/heroes/lone_druid_full.png",
+    "img": "img/heroes/lone_druid_full.png",
     "hp": 51,
     "regen": 1,
     "mana": 4,

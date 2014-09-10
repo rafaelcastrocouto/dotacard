@@ -60,7 +60,7 @@ input:focus {
   margin: 0 auto;
   width: 970px;
   height: 600px;  
-  background-image: url("img/Dota6.49.jpg");
+  background-image: url("img/bkg/Dota6.49.jpg");
   background-size: cover;
   background-position: 50% 100%;
   position: relative;  
@@ -70,10 +70,10 @@ input:focus {
   position: relative;
 }
 #states.login {
-  background-image: url("img/Dota6.55.jpg");
+  background-image: url("img/bkg/Dota6.55.jpg");
 }
 #states.menu {
-  background-image: url("img/Dota6.63.jpg");
+  background-image: url("img/bkg/Dota6.63.jpg");
 }
 #menu  button {
   display: block;
@@ -81,10 +81,10 @@ input:focus {
   width: 200px;
 }
 #states.choose {
-  background-image: url("img/Dota6.69.jpg");
+  background-image: url("img/bkg/Dota6.69.jpg");
 }
 #states.table {
-  background-image: url("img/Dota6.70.jpg");
+  background-image: url("img/bkg/Dota6.70.jpg");
 }
 
 .hidden {
@@ -99,7 +99,7 @@ input:focus {
   padding: 50px 0;
   text-align: center;
   border-radius: 4px;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.9);
 }
 .box div p {
   display: block;
@@ -309,6 +309,13 @@ input:focus {
 }
 .map td:hover {
   background: rgba(255,255,255,0.4);
+}
+
+.map .card {
+  top: -116px;
+  left: -20px;
+  position: absolute;
+  transform: scale(0.2); 
 }
 
 #kotl {

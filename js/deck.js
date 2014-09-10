@@ -1,6 +1,6 @@
 var card = function(data){ 
 
-  data.el = $('<div>').addClass('card '+ data.class).attr('id', data.id); 
+  data.el = $('<div>').addClass('card '+ data.className).attr('id', data.id); 
 
   var fieldset = $('<fieldset>').appendTo(data.el); 
   $('<legend>').appendTo(fieldset).text(data.name); 
@@ -48,7 +48,7 @@ var deck = function(/* name, [filter], callback */){
       }
       if(found || !filter){
         type.id = id;
-        type.class = name;
+        type.className = name;
         cards[id] = card(type);
         cards[id].el.appendTo(el);
         count++;
