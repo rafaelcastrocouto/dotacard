@@ -1,7 +1,6 @@
 var game = {
-  states: states,
   connectionLimit: 60,
-  timeToPick: 15,
+  timeToPick: 5,
   container: $('<div>').appendTo('body').attr('id','container')
 };
 
@@ -41,6 +40,7 @@ var states = {
       if(id == 'load' || id == 'el' || id == 'changeTo' || id == 'build' || id == 'currentstates') return;
       states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
     });      
+    game.states = states;
   },   
   currentstates: 'load',
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -145,7 +145,7 @@ var states = {
 
       this.counter = $('<p>').appendTo(this.pickbox).addClass('battle').hide();
 
-      this.heroesDeck = deck('heroes', function(heroesDeck){
+      this.heroesDeck = Deck('heroes', function(heroesDeck){
         heroesDeck.el.appendTo(states.choose.heroesbox);
 
         states.choose.size = 100;
@@ -284,7 +284,7 @@ var states = {
         picks.push(notPicked[r].id);
         $(notPicked[r]).addClass('picked');
       }
-      game.picks = picks;
+      game.player.picks = picks;
 
       if(game.player.type == 'challenged'){
         game.currentData.challengedDeck = picks.join('|');
@@ -296,6 +296,7 @@ var states = {
               var found = JSON.parse(data); 
               if(found.challengerDeck) {
                 game.currentData = found;
+                game.enemy.picks = game.currentData.challengerDeck.split('|');
                 states.changeTo('table');
               } else {
                 states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing. <small>'+(states.choose.tries++)+'</small>');
@@ -318,6 +319,7 @@ var states = {
             if(found.challengedDeck) {
               game.currentData = found;    
               game.currentData.challengerDeck = picks.join('|');
+              game.enemy.picks = game.currentData.challengedDeck.split('|');
               db({'set': game.id, 'data': JSON.stringify(game.currentData)}, function(){
                 states.changeTo('table');
               });    
@@ -344,45 +346,72 @@ var states = {
   'table': {
     build: function(){        
       this.message =  $('<p>').appendTo(this.el).attr({'class': 'message'}).text('Place your heroes');
-      this.map = map.build({
+      
+      this.map = Map.build({
         'width': 12,
         'height': 5,
         'class': 'map'
       }).appendTo(this.el);
-
+      
+      var createTower = function(type, spot){
+        var tower = Card({
+          className: 'tower '+type,
+          id:  type == 'player' ? 'ptw' : 'etw' ,
+          name: 'Tower',
+          img: 'img/towers/tower-'+type+'.png',
+          attribute: 'Building',
+          hp: 100,
+          regen: 0,
+          mana: 0
+        });        
+        tower.el.appendTo($('#'+spot));
+      
+        Map.paint(this.map, spot, 3, type == 'player' ? 'playerArea' : 'enemyArea', true);
+        
+        return tower;
+      };
+      
+      game.player.tower = createTower('player', 'C5');
+      game.enemy.tower = createTower('enemy', 'J1');
+      
       this.heroesArea = $('<div>').appendTo(this.el).attr({'class': 'heroesarea'});
 
-      this.tower = card({
-        className: 'radiant tower',
-        id: 'rt',
-        name: 'Tower',
-        img: 'img/towers/tower-radiant.png',
-        attribute: 'Ancient',
-        hp: 100,
-        regen: 0,
-        mana: 0
-      });
-      
-      this.tower.el.appendTo($('.map #A1'));
-
-      this.heroesDeck = deck('heroes', game.picks, function(heroesDeck){
+      this.heroesDeck = Deck('heroes', game.player.picks, function(heroesDeck){
 
         heroesDeck.el.appendTo(states.table.heroesArea);
-
-        $.each(heroesDeck.cards, function(id, hero){
+        
+        var c = 0;
+        $.each(heroesDeck.cards, function(id, hero){   
+          
           hero.el.click(function(){
-            $('.card').removeClass('active');
-            var c = $(this);
-            c.addClass('active');
+            // todo
           });       
+          
+          hero.el.appendTo($('#'+Map.letters[c]+'4'));
+          c += 1;
         });
       });
-      this.place();
+      
+      this.enemyArea = $('<div>').appendTo(this.el).attr({'class': 'enemyarea'});
 
-    },
-    place: function(){
+      this.enemyDeck = Deck('heroes', game.enemy.picks, function(enemyDeck){
+
+        enemyDeck.el.appendTo(states.table.enemyArea);
+        
+        var c = 7;
+        $.each(enemyDeck.cards, function(id, hero){   
+          
+          hero.el.click(function(){
+            // todo
+          });       
+          
+          hero.el.appendTo($('#'+Map.letters[c]+'2'));
+          c += 1;
+        });
+      });      
+
       this.message.text('I will keep working... Thanks for reading and playing this!');
-      game.status = 'placing';
+      game.status = 'playing';
       console.log(game);
     }
   }

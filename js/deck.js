@@ -1,4 +1,4 @@
-var card = function(data){ 
+var Card = function(data){ 
 
   data.el = $('<div>').addClass('card '+ data.className).attr('id', data.id); 
 
@@ -25,7 +25,7 @@ var card = function(data){
 
 var loadedDecks = {};
 
-var deck = function(/* name, [filter], callback */){  
+var Deck = function(/* name, [filter], callback */){  
   var name = arguments[0];
   var filter, cb;
   if(typeof arguments[1] == 'function') cb = arguments[1];
@@ -49,7 +49,7 @@ var deck = function(/* name, [filter], callback */){
       if(found || !filter){
         type.id = id;
         type.className = name;
-        cards[id] = card(type);
+        cards[id] = Card(type);
         cards[id].el.appendTo(el);
         count++;
       }

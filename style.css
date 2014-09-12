@@ -303,19 +303,39 @@ input:focus {
 
 .map td {
   box-sizing: border-box;
-  background: rgba(255,255,255,0.2);
-  border: 1px dashed #ddd;
-  width: 60px; height: 80px;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid rgba(0,0,0,0);
+  width: 55px; height: 80px;
+  position: relative;
 }
 .map td:hover {
-  background: rgba(255,255,255,0.4);
+  background: rgba(255,255,255,0.6);
+}
+
+.map td.playerArea {
+  background: rgba(0,150,0,0.4);
+}
+.map td.playerArea:hover {
+  background: rgba(0,150,0,0.6);
+}
+
+.map td.enemyArea {
+  background: rgba(150,0,0,0.4);
+}
+.map td.enemyArea:hover {
+  background: rgba(150,0,0,0.6);
 }
 
 .map .card {
+  z-index: 3;
   top: -116px;
-  left: -20px;
+  left: -23px;
   position: absolute;
-  transform: scale(0.2); 
+  transform: scale(0.25); 
+}
+
+.map .card:hover {
+  transform: scale(.3);
 }
 
 #kotl {
