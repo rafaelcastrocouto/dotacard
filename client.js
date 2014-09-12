@@ -1,6 +1,7 @@
 var game = {
   connectionLimit: 60,
   timeToPick: 5,
+  timeToPlay: 5,
   container: $('<div>').appendTo('body').attr('id','container')
 };
 
@@ -26,7 +27,7 @@ var states = {
     if(oldstates.el) oldstates.el.addClass('hidden'); 
     if(oldstates.end) oldstates.end();      
     var newstates = states[s];
-    if(newstates.build && !newstates.builded) {      
+    if(newstates.build && !newstates.builded){      
       newstates.build();
       newstates.builded = true;
     }
@@ -36,6 +37,7 @@ var states = {
     states.currentstates = s;
   },
   build: function(){
+    //todo: preloads
     $.each(states, function(id){
       if(id == 'load' || id == 'el' || id == 'changeTo' || id == 'build' || id == 'currentstates') return;
       states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
@@ -79,7 +81,7 @@ var states = {
       this.button = $('<button>').appendTo(this.menu).attr({ 'placeholder': 'Choose a name and click to play', 'title': 'Choose a name and click to play'}).text('Play')
       .click(function(){
         game.player = {name: states.login.input.val()};
-        if(game.player.name) {
+        if(game.player.name){
           db({'get':'status'}, function(status){
             if(status == 'online') states.changeTo('menu');
             else alert('Error: No server connection, please try again later.');
@@ -110,7 +112,7 @@ var states = {
         game.id = btoa(new Date().valueOf() +''+ parseInt(Math.random()*10E10));
         //check if there is someone waiting
         db({'get':'waiting'}, function(waiting){
-          if(waiting == 'none') {
+          if(waiting == 'none'){
             //go to the waiting line
             db({'set': 'waiting', 'data': game.id }, function(){ 
               game.status = 'waiting';
@@ -143,7 +145,7 @@ var states = {
 
       this.prepickbox = $('<div>').appendTo(this.el).attr({'class': 'prepickbox'}).html('My Decks<br>Comming soon...').hide();
 
-      this.counter = $('<p>').appendTo(this.pickbox).addClass('battle').hide();
+      this.counter = $('<p>').appendTo(this.pickbox).addClass('counter').hide();
 
       this.heroesDeck = Deck('heroes', function(heroesDeck){
         heroesDeck.el.appendTo(states.choose.heroesbox);
@@ -164,8 +166,9 @@ var states = {
       this.findGame();
     },
     findGame: function(){
-      if(game.status == 'found') {
-        this.message.html('We found a game: <b>'+ game.player.name +'</b>, establishing connection.');
+      
+      if(game.status == 'found'){
+        this.message.html('We found a game: <b>'+ game.player.name +'</b>, establishing connection');
         game.player.type = 'challenger';
         //challenge the other player
         game.currentData = {
@@ -178,14 +181,14 @@ var states = {
           states.choose.interval = setInterval(function(){
             db({'get': game.id }, function(data){ 
               var found = JSON.parse(data); 
-              if(found.challenged) {
+              if(found.challenged){
                 game.currentData = {
                   challenger: game.player.name,
                   challenged: found.challenged
                 };                  
                 states.choose.countToBattle(found.challenged, 'challenged');
               } else {
-                states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still trying. <small>'+(states.choose.tries++)+'</small>');  
+                states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still trying - <small>'+(states.choose.tries++)+'</small>');  
                 if(states.choose.tries > game.connectionLimit){
                   alert('Connection error, sorry.')
                   location.reload(true);
@@ -193,10 +196,9 @@ var states = {
               }
             });
           }, 1000);
-
         });
-
       }
+      
       if(game.status == 'waiting'){
         this.message.html('Just wait <b>'+ game.player.name +'</b>, we are searching for an enemy player');
         game.player.type = 'challenged';
@@ -205,7 +207,7 @@ var states = {
         this.interval = setInterval(function(){ 
           //search for a challenger
           db({'get': game.id }, function(data){ 
-            if(data) {                         
+            if(data){                         
               clearInterval(states.choose.interval);
               var found = JSON.parse(data);   
               //accept the challenge
@@ -217,8 +219,8 @@ var states = {
                 states.choose.countToBattle(found.challenger, 'challenger');
               });
             } else {
-              states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still searching. <small>'+(states.choose.tries++)+'</small>');                
-              if(states.choose.tries > game.connectionLimit) {
+              states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still searching - <small>'+(states.choose.tries++)+'</small>');                
+              if(states.choose.tries > game.connectionLimit){
                 alert('Connection error, sorry.');
                 location.reload(true); // sugest bot match 
               }
@@ -235,12 +237,12 @@ var states = {
       this.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name +'</b>');
       this.counter.show();
       //play sound and stuff!   
-      game.status = 'battle';
+      game.status = 'picking';
       this.count = game.timeToPick;
 
       this.interval = setInterval(function(){ 
         states.choose.counter.text('Pick your deck, game starts in: '+(states.choose.count--));
-        if(states.choose.count < 0) {
+        if(states.choose.count < 0){
           clearInterval(states.choose.interval); 
           states.choose.sendDeck();            
         }
@@ -257,7 +259,7 @@ var states = {
           var slot = $(this);
           if(slot.hasClass('available')){
             var pick = $('.heroesbox .card.active');
-            if(pick.length) {
+            if(pick.length){
               slot.removeClass('available');
               pick.addClass('picked').removeClass('active');
               slot.append(pick);
@@ -278,7 +280,7 @@ var states = {
         picks.push(this.id);
       });
       //fill deck with random cards
-      while(picks.length < 5) {
+      while(picks.length < 5){
         var notPicked = $('.card').not('.picked');
         var r = parseInt( Math.random() * notPicked.length );
         picks.push(notPicked[r].id);
@@ -294,13 +296,13 @@ var states = {
           states.choose.interval = setInterval(function(){ 
             db({'get': game.id }, function(data){ 
               var found = JSON.parse(data); 
-              if(found.challengerDeck) {
+              if(found.challengerDeck){
                 game.currentData = found;
                 game.enemy.picks = game.currentData.challengerDeck.split('|');
                 states.changeTo('table');
               } else {
-                states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing. <small>'+(states.choose.tries++)+'</small>');
-                if(states.choose.tries > game.connectionLimit) {
+                states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing - <small>'+(states.choose.tries++)+'</small>');
+                if(states.choose.tries > game.connectionLimit){
                   alert('Connection error, sorry.');
                   location.reload(true);
                 }
@@ -316,7 +318,7 @@ var states = {
         states.choose.interval = setInterval(function(){
           db({'get': game.id }, function(data){ 
             var found = JSON.parse(data); 
-            if(found.challengedDeck) {
+            if(found.challengedDeck){
               game.currentData = found;    
               game.currentData.challengerDeck = picks.join('|');
               game.enemy.picks = game.currentData.challengedDeck.split('|');
@@ -325,7 +327,7 @@ var states = {
               });    
             } else {
               states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing. <small>'+(states.choose.tries++)+'</small>');
-              if(states.choose.tries > game.connectionLimit) {
+              if(states.choose.tries > game.connectionLimit){
                 alert('Connection error, sorry.');
                 location.reload(true);
               }
@@ -345,7 +347,13 @@ var states = {
   },
   'table': {
     build: function(){        
-      this.message =  $('<p>').appendTo(this.el).attr({'class': 'message'}).text('Place your heroes');
+      this.message =  $('<p>').appendTo(this.el).attr({'class': 'message'}).text('Muuuuuuuuuuuuu!');
+
+      this.buildMap();
+      
+      console.log(game);
+    },
+    buildMap: function(){
       
       this.map = Map.build({
         'width': 12,
@@ -374,6 +382,11 @@ var states = {
       game.player.tower = createTower('player', 'C5');
       game.enemy.tower = createTower('enemy', 'J1');
       
+      
+      this.placeHeroes(); 
+    },
+    placeHeroes: function(){
+      
       this.heroesArea = $('<div>').appendTo(this.el).attr({'class': 'heroesarea'});
 
       this.heroesDeck = Deck('heroes', game.player.picks, function(heroesDeck){
@@ -384,7 +397,7 @@ var states = {
         $.each(heroesDeck.cards, function(id, hero){   
           
           hero.el.click(function(){
-            // todo
+            // todo: hero selection + buff view
           });       
           
           hero.el.appendTo($('#'+Map.letters[c]+'4'));
@@ -395,34 +408,92 @@ var states = {
       this.enemyArea = $('<div>').appendTo(this.el).attr({'class': 'enemyarea'});
 
       this.enemyDeck = Deck('heroes', game.enemy.picks, function(enemyDeck){
-
-        enemyDeck.el.appendTo(states.table.enemyArea);
-        
+        enemyDeck.el.appendTo(states.table.enemyArea);        
         var c = 7;
-        $.each(enemyDeck.cards, function(id, hero){   
-          
+        $.each(enemyDeck.cards, function(id, hero){             
           hero.el.click(function(){
-            // todo
-          });       
-          
+            // todo: enemy hero selection + buff view
+          });          
           hero.el.appendTo($('#'+Map.letters[c]+'2'));
           c += 1;
         });
-      });      
+      });   
+      
+      this.buildSkills(); 
+     
+    },
+    buildSkills: function(){
+      
+      this.startTurns(); 
+      
+    },
+    startTurns: function(){
+      
+      game.currentData.moves = [];
+      
+      if(game.player.type == 'challenged') game.status = 'turn';
+      if(game.player.type == 'challenger') game.status = 'unturn';
+      
+      setTimeout(states.table.turn, 1000);
+      
+    },
+    turn: function(){
+      states.table.counter = game.timeToPlay;
+      
+      states.table.interval = setInterval(function(){
+        if(game.status == 'turn')
+          states.table.message.text('Your turn is now, you have '+states.table.counter+' seconds to finish your moves');
 
-      this.message.text('I will keep working... Thanks for reading and playing this!');
-      game.status = 'playing';
-      console.log(game);
+        if(game.status == 'unturn')
+          states.table.message.text('Your enemy is playing, your turn starts in '+states.table.counter+' seconds');
+        
+        states.table.counter--;
+        
+        if(states.table.counter == 0){
+          clearInterval(states.table.interval);
+          
+          if(game.status == 'turn') states.table.sendMoves();
+          if(game.status == 'unturn') states.table.getMoves();
+        }
+        
+      }, 1000);      
+    },
+    sendMoves: function(){
+      
+      //var moves = todo: move system
+      // game.currentData.moves.push(moves);
+      
+      db({'set': game.id, 'data': JSON.stringify(game.currentData)}, function(){
+        game.status = 'unturn';
+        states.table.turn();
+      });      
+    },
+    getMoves: function(){
+      states.table.tries = 0;  
+      states.table.interval = setInterval(function(){   
+        db({'get': game.id }, function(data){ 
+          var found = JSON.parse(data); 
+          if(true /*todo: found last move data*/){
+            clearInterval(states.table.interval);
+            game.status = 'turn';
+            states.table.turn();
+          } else {
+            states.table.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is still playing. <small>'+(states.table.tries++)+'</small>');
+            if(states.table.tries > game.connectionLimit){
+              alert('Connection error, sorry.');
+              location.reload(true);
+            }
+          }
+        });
+      }, 1000);
     }
   }
 };
 
 states.build();  
 
-//TO DO ... PRE LOAD
-
-//LOAD END
-states.changeTo('intro');  
+//start the game
+game.states.changeTo('intro');  
 
 
 

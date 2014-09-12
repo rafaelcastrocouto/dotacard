@@ -1,8 +1,9 @@
-#Dotacard
+#DotaCard
 
-[Play](http://rafaelcastrocouto.github.com/dotacard)
+[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/bkg/Dota6.36.jpg)][1]
 
-=======
-Dota dard game.
+  [1]: http://rafaelcastrocouto.github.com/dotacard
+
+A DOTA card game with the heroes you love and all skills and ultimates.
 
 __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
