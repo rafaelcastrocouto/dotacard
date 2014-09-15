@@ -1,6 +1,6 @@
 #DotaCard
 
-[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/bkg/Dota6.36.jpg)][1]
+[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/banner.jpg =730x)][1]
 
   [1]: http://rafaelcastrocouto.github.com/dotacard
 
