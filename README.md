@@ -1,5 +1,7 @@
 #DotaCard
 
+**[Play Now!][1]**
+
 [![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/banner.jpg)][1]
 
   [1]: http://rafaelcastrocouto.github.com/dotacard

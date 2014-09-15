@@ -96,6 +96,10 @@ input:focus {
   display: none;
 }
 
+.menu small {
+  cursor: pointer;
+}
+
 .box {
   width: 570px;  
   position: absolute;
@@ -251,7 +255,6 @@ input:focus {
   animation: slidedown 1s;
   transform: scale(0.4);
 }
-/*animation: innerlight 1s infinite;*/
 @keyframes slidedown {
   0% {top: -175px;}
   100% {top: 0;}
@@ -267,7 +270,16 @@ input:focus {
 .card.enemy {
   box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
 }
-
+.card.target {
+  box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);
+}
+.card.target:hover {
+  animation: targetlight 1s infinite;
+}
+@keyframes targetlight {
+  0%, 100% {box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+  50% {box-shadow: 0 0 4px 4px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+}
 .card fieldset {
   border: 1px solid #fff;
   padding: 5px;
@@ -328,6 +340,20 @@ input:focus {
   text-shadow: 0 1px 0 #fff;
   text-align: justify;
   margin: 0 1px;
+}
+
+#table .message {
+  border-radius: 5px;
+}
+
+#table.turn .message {
+  background: rgba(0,150,0,0.6);
+}
+#table.load .message {
+  background: rgba(180,180,0,0.6);
+}
+#table.unturn .message {
+  background: rgba(150,0,0,0.6);
 }
 
 .map {

@@ -13,7 +13,29 @@ var Map = {
     
     return table;
   },
-  paint: function(m, spot, radius, c, removeDiag, filter){
+  neightbors: function(spot, radius, cb, removeDiag, filter){
+    var fil = function(td){
+       if(filter) {
+         if(!td.hasClass(filter)) cb(td);
+       }
+       else cb(td);
+    };
+    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
+    $('.map td').each(function(){
+      var td = $(this), id = this.id;
+      var tw = Map.letters.indexOf(id[0]), th = parseInt(id[1]);
+      if(w > tw - radius && w < tw + radius){
+        if(h > th - radius && h < th + radius){
+          if(removeDiag) {
+            if(Math.abs(w - tw) == (radius - 1) && Math.abs(h - th) == (radius - 1)){/*diag*/}
+            else fil(td);     
+          }
+          else fil(td);
+        }
+      }
+    });
+  },
+  paint: function(spot, radius, c, removeDiag, filter){
     var fil = function(td){
        if(filter) {
          if(!td.hasClass(filter)) td.addClass(c);
@@ -55,7 +77,27 @@ var Map = {
     card.closest('td').removeClass('block').addClass('free');
     if(typeof target == 'string') target = $('#'+target);
     card.addClass('moved').appendTo(target.removeClass('free').addClass('block'));
-    states.table.unhighlightMove();
-  }
+    Map.unhighlight();
+  },
+  highlightMove: function(card){
+    if(card.hasClass('player') && !card.hasClass('moved') && !card.hasClass('attacked')  && !card.hasClass('static')){        
+      var spot = Map.getPosition(card);
+      Map.paint(spot, 2, 'moveArea', false, 'block');      
+      $('.moveArea').on('click.move', states.table.moveSelectedCard);
+    }
+  },
+  highlightAttack: function(card){
+    if(card.hasClass('player') && !card.hasClass('moved') && !card.hasClass('attacked') && !card.hasClass('static')){        
+      var spot = Map.getPosition(card);
+      Map.neightbors(spot, 2, function(neighbor){
+        var card = neighbor.children('.card'); console.log('n',neighbor,card.length);
+        if(card.hasClass('enemy')) card.addClass('target');
+      }, false, 'free');
+      $('.moveArea').on('click.move', states.table.moveSelectedCard);
+    }
+  },
+  unhighlight: function(){
+    $('.moveArea').off('click.move').removeClass('moveArea');
+  },
 };
 

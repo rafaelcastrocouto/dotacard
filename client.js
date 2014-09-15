@@ -1,9 +1,9 @@
 var game = {
   width: 12,
   height: 5,
-  connectionLimit: 60,
-  timeToPick: 5,
-  timeToPlay: 5,
+  connectionLimit: 30,
+  timeToPick: 10,
+  timeToPlay: 10,
   container: $('<div>').appendTo('body').attr('id','container')
 };
 
@@ -32,11 +32,11 @@ var states = {
     if(newstates.build && !newstates.builded){      
       newstates.build();
       newstates.builded = true;
-    }
-    if(newstates.start) newstates.start();
+    }    
     states.el.removeClass(states.currentstates).addClass(s);
     if(newstates.el) newstates.el.removeClass('hidden');
     states.currentstates = s;
+    if(newstates.start) newstates.start();
   },
   build: function(){
     //todo: preloads
@@ -51,6 +51,17 @@ var states = {
   'load': {
     end: function(){
       console.log('Welcome to DotaCard!');
+      /*window.onbeforeunload = function(){
+        return 'Sure you wanna leave?';
+      }*/
+    },
+    reset: function(){
+      alert('Connection error, sorry.');
+      location.reload(true);
+    },
+    quit: function(){
+      var sure = confirm('Sure you wanna leave?')
+      if(sure) location.reload(true);
     }
   },
   'intro': {
@@ -94,18 +105,21 @@ var states = {
 
       this.text = $('<div>').appendTo(this.menu);
 
-      this.extlog = $('<p>').appendTo(this.text).html('Login with: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard">Facebook, Google</a>');
+      this.logwith = $('<p>').appendTo(this.text).html('Login with: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Facebook, Google</a>');
 
-      this.lang = $('<p>').appendTo(this.text).html('Language: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard">Translate</a>');
-      
-      states.login.input.focus();
+      this.lang = $('<p>').appendTo(this.text).html('Language: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Translate</a>');
+    },
+    start: function(){
+      this.input.focus();
     }
   },
   'menu': {
     build: function(){
 
-      this.text = $('<p>').appendTo(this.el).html('Welcome <b>'+game.player.name+'</b>! <small>Logout</small>');
+      this.text = $('<p>').appendTo(this.el).html('Welcome <b>'+game.player.name+'</b>! ');
 
+      this.logout = $('<small>').appendTo(this.text).text('Logout').click(states.load.quit);
+      
       this.menu = $('<div>').appendTo(this.el).attr({'class': 'box'}); 
 
       this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
@@ -140,7 +154,6 @@ var states = {
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
       
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
-    
     }
   },
   'choose': {      
@@ -149,11 +162,11 @@ var states = {
 
       this.heroesbox = $('<div>').appendTo(this.el).attr({'class': 'heroesbox'});
 
-      this.pickbox = $('<div>').appendTo(this.el).attr({'class': 'pickbox'}).hide();
+      this.pickbox = $('<div>').appendTo(this.el).attr({'class': 'pickbox'}).addClass('hidden');
 
-      this.prepickbox = $('<div>').appendTo(this.el).attr({'class': 'prepickbox'}).html('My Decks<br>Comming soon...').hide();
+      this.prepickbox = $('<div>').appendTo(this.el).attr({'class': 'prepickbox'}).html('My Decks<br>Comming soon...').addClass('hidden');
 
-      this.counter = $('<p>').appendTo(this.pickbox).addClass('counter').hide();
+      this.counter = $('<p>').appendTo(this.pickbox).addClass('counter').addClass('hidden');
 
       this.heroesDeck = Deck('heroes', function(heroesDeck){
         heroesDeck.el.appendTo(states.choose.heroesbox);
@@ -197,10 +210,7 @@ var states = {
                 states.choose.countToBattle(found.challenged, 'challenged');
               } else {
                 states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still trying - <small>'+(states.choose.tries++)+'</small>');  
-                if(states.choose.tries > game.connectionLimit){
-                  alert('Connection error, sorry.')
-                  location.reload(true);
-                }
+                if(states.choose.tries > game.connectionLimit) states.load.reset();
               }
             });
           }, 1000);
@@ -228,10 +238,7 @@ var states = {
               });
             } else {
               states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still searching - <small>'+(states.choose.tries++)+'</small>');                
-              if(states.choose.tries > game.connectionLimit){
-                alert('Connection error, sorry.');
-                location.reload(true); // sugest bot match 
-              }
+              if(states.choose.tries > game.connectionLimit) states.load.reset(); // sugest bot match               
             }
           });
 
@@ -243,7 +250,7 @@ var states = {
       clearInterval(states.choose.interval);
       game.enemy = {name: enemy, type: ch};  
       this.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name +'</b>');
-      this.counter.show();
+      this.counter.removeClass('hidden');
       //play sound and stuff!   
       game.status = 'picking';
       this.count = game.timeToPick;
@@ -259,8 +266,8 @@ var states = {
       this.enablePick();
     },
     enablePick: function(){
-      this.pickbox.show();
-      this.prepickbox.show();
+      this.pickbox.removeClass('hidden');
+      this.prepickbox.removeClass('hidden');
       for(var s = 0; s < 5; s++){
         $('<div>').appendTo(this.pickbox).attr({title: 'Click here to pick'})
         .addClass('slot available').click(function(){
@@ -310,10 +317,7 @@ var states = {
                 states.changeTo('table');
               } else {
                 states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing - <small>'+(states.choose.tries++)+'</small>');
-                if(states.choose.tries > game.connectionLimit){
-                  alert('Connection error, sorry.');
-                  location.reload(true);
-                }
+                if(states.choose.tries > game.connectionLimit) states.load.reset();
               }
             });
           }, 1000);
@@ -335,22 +339,19 @@ var states = {
               });    
             } else {
               states.choose.message.html('Be patient <b>'+game.player.name+'</b>, your opponent is choosing. <small>'+(states.choose.tries++)+'</small>');
-              if(states.choose.tries > game.connectionLimit){
-                alert('Connection error, sorry.');
-                location.reload(true);
-              }
+              if(states.choose.tries > game.connectionLimit) states.load.reset();
             }      
           });  
         }, 1000);   
       }
     },
     end: function(){
-      $('.card').removeClass('active');
-      $('.pickbox .card').appendTo(this.heroesbox);
-      this.counter.hide();
-      this.pickbox.hide();
-      this.prepickbox.hide();
       clearInterval(states.choose.interval);
+      $('.card').removeClass('active picked');
+      $('.pickbox .card').appendTo(this.heroesDeck.el);
+      this.counter.addClass('hidden');
+      this.pickbox.addClass('hidden');
+      this.prepickbox.addClass('hidden');
     }
   },
   'table': {
@@ -367,7 +368,9 @@ var states = {
       
       this.placeHeroes(); 
       
-      this.buildSkills();           
+      this.buildSkills();    
+      
+      setTimeout(states.table.startTurns, 1000);
       
     },
     buildMap: function(){
@@ -396,7 +399,7 @@ var states = {
       });        
       tower.el.click(states.table.select).appendTo($('#'+spot).removeClass('free').addClass('block'));
 
-      Map.paint(this.map, spot, 3, type == 'player' ? 'playerArea' : 'enemyArea', true);
+      Map.paint(spot, 3, type == 'player' ? 'playerArea' : 'enemyArea', true);
 
       return tower;
     },
@@ -439,7 +442,7 @@ var states = {
     },
     buildSkills: function(){
       
-      this.startTurns(); 
+      //TODO
       
       console.log(game);
       
@@ -453,23 +456,31 @@ var states = {
       game.currentData[game.enemy.type + 'Turn'] = 0;
       
       //storage.state = [];// todo: each hero hp position buffs etc, each player skill hand 
+      
       game.currentData.moves = [];
       
       if(game.player.type == 'challenged') game.status = 'turn';
       if(game.player.type == 'challenger') game.status = 'unturn';
       
-      setTimeout(states.table.countTurn, 1000);
+      states.table.countTurn();
       
     },
     countTurn: function(){
-      states.table.counter = game.timeToPlay;
       clearInterval(states.table.countInterval);
       
-      if(game.status == 'turn') {
-        states.table.el.addClass('turn');
-        $('.moved').removeClass('moved');
+      //game.storage = game.currentData state;
+      
+      states.table.el.removeClass('load').addClass(game.status);  
+      
+      if(game.status == 'turn'){
+        $('.card.moved').removeClass('moved');
+        if(game.selectedCard){
+          Map.highlightMove(game.selectedCard);
+          Map.highlightAttack(game.selectedCard);       
+        }
       }
       
+      states.table.counter = game.timeToPlay;            
       states.table.countInterval = setInterval(function(){
         if(game.status == 'turn')
           states.table.message.text('Your turn is now, you have '+states.table.counter+' seconds to finish your moves');
@@ -481,6 +492,7 @@ var states = {
         
         if(states.table.counter < 0){
           clearInterval(states.table.countInterval);        
+          
           if(game.status == 'turn') states.table.sendMoves();
           if(game.status == 'unturn') states.table.getMoves();
         }
@@ -488,76 +500,68 @@ var states = {
       }, 1000);      
     },
     sendMoves: function(){
+      Map.unhighlight();
       
-      game.currentData.moves = game.currentData.moves.join('|');
+      game.status = 'unturn';
+      states.table.el.removeClass('turn').addClass('load');
       
       game.player.turn++;
       game.currentData[game.player.type + 'Turn']++;
       
-      //var state = todo: current state system
-      //game.storage = state;
-      
-      game.status = 'unturn';
-      states.table.el.removeClass('turn');
+      game.currentData.moves = game.currentData.moves.join('|');
       
       db({'set': game.id, 'data': JSON.stringify(game.currentData)}, function(){
-        states.table.countTurn();
+        states.table.message.text('Uploading your moves...');
+        setTimeout(states.table.countTurn, 1000);
       });      
     },
     getMoves: function(){
       states.table.tries = 0;  
+      states.table.el.removeClass('unturn').addClass('load');
       clearInterval(states.table.getInterval);
       states.table.getInterval = setInterval(function(){   
         db({'get': game.id }, function(data){ 
           game.currentData = JSON.parse(data);           
           if(game.currentData[game.enemy.type + 'Turn'] == (game.enemy.turn + 1) ){
-            states.table.executeMoves(game.currentData.moves.split('|'));            
+            clearInterval(states.table.getInterval);    
+            game.enemy.turn++;
+            states.table.message.html('Your enemy moved. Get ready!');
+            states.table.executeMoves();
             
-            //game.storage = game.currentData state;
-            game.enemy.turn++;            
-            clearInterval(states.table.getInterval);
-            game.status = 'turn';            
-            states.table.countTurn();
           } else {
             states.table.message.html('Be patient <b>'+game.player.name+'</b>, downloading enemy moves. <small>'+(states.table.tries++)+'</small>');
-            if(states.table.tries > game.connectionLimit){
-              alert('Connection error, sorry.');
-              location.reload(true);
-            }
+            if(states.table.tries > game.connectionLimit) states.load.reset();
           }
         });
       }, 1000);
     },
     
     select: function(){      
-      $('.card').removeClass('selected');
-      states.table.selectedArea.html('');
-      states.table.unhighlightMove();
+      $('.card').removeClass('selected');      
+      Map.unhighlight();
       var card = $(this);
-      if(card.hasClass('player') && !card.hasClass('moved') && !card.hasClass('static')) states.table.highlightMove(card);      
-      card.addClass('selected').clone().appendTo(states.table.selectedArea);
+      game.selectedCard = card;
+      if(game.status == 'turn'){
+        Map.highlightMove(card); 
+        Map.highlightAttack(card); 
+      }
+      states.table.selectedArea.html('');      
+      var zoom = card.clone().removeClass('target').appendTo(states.table.selectedArea);
+      card.addClass('selected');
     },
     
     moveSelectedCard: function(){
-      var selectedCard = $('.map .card.selected');      
-      var fromSpot = Map.getPosition(selectedCard);
-      Map.moveCard(selectedCard, $(this));
-      var toSpot = Map.getPosition(selectedCard);
-      game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
-    },
-    
-    highlightMove: function(card){
-      states.table.unhighlightMove();
-      var spot = Map.getPosition(card);
-      Map.paint(this.map, spot, 2, 'moveArea', false, 'block');      
-      $('.moveArea').on('click.move', states.table.moveSelectedCard);
-    },
-    
-    unhighlightMove: function(){
-      $('.moveArea').off('click.move').removeClass('moveArea');
+      if(game.status == 'turn'){
+        var selectedCard = $('.map .card.selected');      
+        var fromSpot = Map.getPosition(game.selectedCard);
+        Map.moveCard(game.selectedCard, $(this));
+        var toSpot = Map.getPosition(game.selectedCard);
+        game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
+      }
     },
     
     executeMoves: function(moves){
+      var moves = game.currentData.moves.split('|');
       for(var m = 0; m < moves.length; m++){
         var move = moves[m].split(':');
         if(move[0] == 'M'){
@@ -568,6 +572,11 @@ var states = {
         }
       }
       game.currentData.moves = [];
+      
+      setTimeout(function(){
+        game.status = 'turn';
+        states.table.countTurn();
+      }, 1000);
     }
   }
 };
