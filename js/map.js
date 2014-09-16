@@ -55,7 +55,7 @@ var Map = {
           else fil(td);
         }
       }
-    });
+    }).on('contextmenu',function(){return false});
   },
   getPosition: function(el){
     var p = el.closest('td').attr('id');
@@ -72,32 +72,50 @@ var Map = {
     if(typeof target == 'string') target = $('#'+target);
     card.appendTo(target.removeClass('free').addClass('block'));
   },
-  moveCard: function(card, target){
+  moveCard: function(card, spot){
     if(typeof card == 'string') card = $('#'+card+' .card');
     card.closest('td').removeClass('block').addClass('free');
-    if(typeof target == 'string') target = $('#'+target);
-    card.addClass('moved').appendTo(target.removeClass('free').addClass('block'));
-    Map.unhighlight();
+    if(typeof spot == 'string') spot = $('#'+spot);
+    spot.removeClass('free').addClass('block');    
+    Map.unhighlight();   
+
+    var data = {
+      target: card,
+      destiny: spot
+    };
+        
+    var target = card.offset();
+    var destiny = spot.offset();
+    
+    card.css({top: destiny.top - target.top - 108, left: destiny.left - target.left - 18});
+    
+    setTimeout(function(){    
+      $(this.target).css({top: '', left: ''}).appendTo(this.destiny);
+    }.bind(data), 1000);  
   },
   highlightMove: function(card){
-    if(card.hasClass('player') && !card.hasClass('moved') && !card.hasClass('attacked')  && !card.hasClass('static')){        
+    if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
       var spot = Map.getPosition(card);
       Map.paint(spot, 2, 'moveArea', false, 'block');      
-      $('.moveArea').on('click.move', states.table.moveSelectedCard);
+      $('.moveArea').on('contextmenu.move', states.table.move);
     }
   },
   highlightAttack: function(card){
-    if(card.hasClass('player') && !card.hasClass('moved') && !card.hasClass('attacked') && !card.hasClass('static')){        
+    if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
       var spot = Map.getPosition(card);
-      Map.neightbors(spot, 2, function(neighbor){
-        var card = neighbor.children('.card'); console.log('n',neighbor,card.length);
-        if(card.hasClass('enemy')) card.addClass('target');
+      var att = card.data('card').attackType;
+      var range;
+      if(att == 'Melee') range = 2;
+      if(att == 'Ranged') range = 3;      
+      Map.neightbors(spot, range, function(neighbor){
+        var card = $('.card', neighbor);
+        if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.attack', states.table.attack);        
       }, false, 'free');
-      $('.moveArea').on('click.move', states.table.moveSelectedCard);
     }
   },
   unhighlight: function(){
-    $('.moveArea').off('click.move').removeClass('moveArea');
+    $('.map .card').removeClass('target');
+    $('.map td').off('contextmenu.move').off('contextmenu.attack').removeClass('moveArea');
   },
 };
 

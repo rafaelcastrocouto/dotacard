@@ -6,16 +6,16 @@
 //cards = 100/cooldown 
 
 var Card = function(data){ 
-  data.el = $('<div>').addClass('card '+ data.className).attr('id', data.id); 
-  data.el.data('card', data);
+  data.el = $('<div>').addClass('card '+ data.className).attr('id', data.id);   
   var fieldset = $('<fieldset>').appendTo(data.el); 
   $('<legend>').appendTo(fieldset).text(data.name); 
-  $('<span>').addClass('hp').appendTo(data.el).text(data.hp); 
+  data.currenthp = data.hp;
+  $('<span>').addClass('hp').appendTo(data.el).text(data.currenthp);   
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
   $('<img>').appendTo(portrait).attr('src', data.img);
   $('<div>').addClass('overlay').appendTo(portrait);
   $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
+  $('<p>').appendTo(fieldset).text('HP: '+ data.hp);  
   if(data.regen) $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
   if(data.damage) $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
   if(data.mana) $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
@@ -23,7 +23,7 @@ var Card = function(data){
   if(data.passive) $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   if(data.permanent) $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   if(data.temporary) $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
-
+  data.el.data('card', data);
   return data;
 };
 

@@ -356,6 +356,11 @@ input:focus {
   background: rgba(150,0,0,0.6);
 }
 
+#table .turnCount {
+  position: absolute;
+  top: 1px; right: 10px;
+}
+
 .map {
   position: absolute;
   top: 30px; left: 10px;  
@@ -367,7 +372,7 @@ input:focus {
   box-sizing: border-box;
   background: rgba(255,255,255,0.4);
   border: 1px solid rgba(0,0,0,0);
-  width: 55px; height: 80px;
+  width: 60px; height: 90px;
   position: relative;
 }
 .map td:hover {
@@ -398,10 +403,10 @@ input:focus {
 
 .map .card {
   z-index: 3;
-  top: -116px;
-  left: -23px;
+  top: -111px;
+  left: -20px;
   position: absolute;
-  transform: scale(0.25); 
+  transform: scale(0.27);
 }
 
 .map .card:hover {
@@ -410,8 +415,8 @@ input:focus {
 
 .selectedarea {
   position: absolute;
-  top: 30px;
-  right: 100px;
+  top: 40px;
+  right: 70px;
 }
 
 .selectedarea .card {
