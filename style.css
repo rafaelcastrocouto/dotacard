@@ -8,7 +8,7 @@ html, body {
   margin: 0;
   width: 100%; height: 100%;
   font-family: Calibri, sans-serif;  
-  text-shadow: 0 0 10px #000;
+  text-shadow: 0 0 3px #000;
 }
 
 body {
@@ -46,9 +46,6 @@ h1 {
 }
 input:focus {
   animation: shade 0.5s;
-}
-@keyframes shade {
-  50% {opacity: 0.5;}
 }
 
 #fork {
@@ -180,12 +177,6 @@ input:focus {
   animation: innerlight 1s infinite;
 }
 
-/*animation: innerlight 1s infinite;*/
-@keyframes innerlight {
-  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.9);}
-  50% {box-shadow: inset 0 0 10px rgba(255,255,255,0.9);}
-}
-
 .deck {
    transition: all 0.5s;
 }
@@ -255,10 +246,7 @@ input:focus {
   animation: slidedown 1s;
   transform: scale(0.4);
 }
-@keyframes slidedown {
-  0% {top: -175px;}
-  100% {top: 0;}
-}
+
 .card.picked:hover { 
   top: -16px;
   transform: scale(0.45);
@@ -275,10 +263,6 @@ input:focus {
 }
 .card.target:hover {
   animation: targetlight 1s infinite;
-}
-@keyframes targetlight {
-  0%, 100% {box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
-  50% {box-shadow: 0 0 4px 4px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
 }
 .card fieldset {
   border: 1px solid #fff;
@@ -342,21 +326,21 @@ input:focus {
   margin: 0 1px;
 }
 
-#table .message {
+.message {
   border-radius: 5px;
 }
 
-#table.turn .message {
+.turn .message {
   background: rgba(0,150,0,0.6);
 }
-#table.load .message {
+.load .message {
   background: rgba(180,180,0,0.6);
 }
-#table.unturn .message {
+.unturn .message {
   background: rgba(150,0,0,0.6);
 }
 
-#table .turnCount {
+.turnCounter {
   position: absolute;
   top: 1px; right: 10px;
 }
@@ -426,6 +410,15 @@ input:focus {
   transform: scale(1.1);
 }
 
+.card .damage {
+  color: yellow;
+  position: absolute;
+  top: -10px;
+  right: -40px;
+  font-size: 85px;
+  animation: slideup 1s;
+}
+
 
 #kotl {
   background: #fd8;
@@ -447,4 +440,25 @@ input:focus {
 }
 #ld {
   background: #62a64e;
+}
+
+/*animation: innerlight 1s infinite;*/
+@keyframes innerlight {
+  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.9);}
+  50% {box-shadow: inset 0 0 10px rgba(255,255,255,0.9);}
+}
+@keyframes targetlight {
+  0%, 100% {box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+  50% {box-shadow: 0 0 4px 4px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+}
+@keyframes shade {
+  50% {opacity: 0.5;}
+}
+@keyframes slidedown {
+  0% {top: -175px;}
+  100% {top: 0;}
+}
+@keyframes slideup {
+  0% {top: -10px;}
+  100% {top: -100px;}
 }

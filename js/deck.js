@@ -6,25 +6,98 @@
 //cards = 100/cooldown 
 
 var Card = function(data){ 
-  data.el = $('<div>').addClass('card '+ data.className).attr('id', data.id);   
-  var fieldset = $('<fieldset>').appendTo(data.el); 
+  var el = $('<div>').addClass('card '+ data.className).attr('id', data.id);   
+  var fieldset = $('<fieldset>').appendTo(el); 
   $('<legend>').appendTo(fieldset).text(data.name); 
   data.currenthp = data.hp;
-  $('<span>').addClass('hp').appendTo(data.el).text(data.currenthp);   
+  $('<span>').addClass('hp').appendTo(el).text(data.currenthp);   
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
   $('<img>').appendTo(portrait).attr('src', data.img);
   $('<div>').addClass('overlay').appendTo(portrait);
   $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  $('<p>').appendTo(fieldset).text('HP: '+ data.hp);  
-  if(data.regen) $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
-  if(data.damage) $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
-  if(data.mana) $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
-  if(data.skills) $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
-  if(data.passive) $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
+  $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
+  if(data.regen)     $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
+  if(data.damage)    $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
+  if(data.mana)      $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
+  if(data.skills)    $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
+  if(data.passive)   $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   if(data.permanent) $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   if(data.temporary) $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
-  data.el.data('card', data);
+  $.each(data, function(item){el.data(item, this);});
+  data.el = el;
   return data;
+};
+
+Card.damage = function(damage, target){
+  if(typeof target == 'string') target = $('#'+target+' .card');
+  var hp = target.data('currenthp') - damage;
+  target.children('span.hp').text(hp);
+  target.data('currenthp', hp);
+  var damageFx = $('<span>').addClass('damage').text(damage);
+  target.append(damageFx);
+  setTimeout(function(){
+    this.remove();
+  }.bind(damageFx), 1000);
+};
+
+Card.attack = function(){
+  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){ 
+    var fromSpot = Map.getPosition(game.selectedCard);
+    var toSpot = Map.getPosition($(this));
+    game.currentData.moves.push('A:'+fromSpot+':'+toSpot);        
+    Card.damage($('#'+fromSpot+' .card').data('damage'), toSpot);
+    game.selectedCard.addClass('done');        
+  }
+  Map.unhighlight();
+  return false;
+};
+
+Card.moveSelected = function(){
+  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){
+    var fromSpot = Map.getPosition(game.selectedCard);
+    var toSpot = Map.getPosition($(this));
+    Card.move(fromSpot, toSpot);        
+    game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
+    game.selectedCard.addClass('done');
+  }
+  Map.unhighlight();
+  return false;
+};
+
+Card.select = function(){
+  var card = $(this);      
+  $('.card.selected').removeClass('selected');      
+  Map.unhighlight();      
+  game.selectedCard = card;
+  if(game.status == 'turn'){
+    Map.highlightMove(card); 
+    Map.highlightAttack(card); 
+  }
+  states.table.selectedArea.empty();      
+  var zoom = card.clone().appendTo(states.table.selectedArea);
+  card.addClass('selected');
+};
+
+Card.move = function(card, spot){
+  if(typeof card == 'string') card = $('#'+card+' .card');
+  card.closest('td').removeClass('block').addClass('free');
+  if(typeof spot == 'string') spot = $('#'+spot);
+  spot.removeClass('free').addClass('block');    
+  Map.unhighlight();   
+
+  var data = {
+    target: card,
+    destiny: spot
+  };
+
+  var target = card.offset();
+  var destiny = spot.offset();
+
+  card.css({top: destiny.top - target.top - 108, left: destiny.left - target.left - 18});
+
+  setTimeout(function(){    
+    $(this.target).css({top: '', left: ''}).appendTo(this.destiny);
+  }.bind(data), 1000);  
 };
 
 var loadedDecks = {};
@@ -37,7 +110,7 @@ var Deck = function(/* name, [filter], callback */){
     filter = arguments[1];
     cb = arguments[2];
   }
-  
+
   var d = {};  
   var createCards = function(data){
     var el = $('<div>').addClass('deck '+name);
@@ -63,8 +136,8 @@ var Deck = function(/* name, [filter], callback */){
     d.length = count;
     if(cb) cb(d);     
   };
-  
-  
+
+
   if(!loadedDecks[name]){
     $.ajax({
       type: "GET", 
@@ -76,7 +149,7 @@ var Deck = function(/* name, [filter], callback */){
       }
     });
   } else createCards(loadedDecks[name]);
-  
+
   return d;
 };
 

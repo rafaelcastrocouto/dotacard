@@ -3,13 +3,13 @@ var db = function(send, cb){
     type: "GET", 
     url: 'http://ajaxdatabase.jsapp.us/',//'http://localhost/db', 
     data: send, 
-    complete: function(receive){    
-      console.log('XHR:', receive.responseText);
-      if(cb) cb(JSON.parse(receive.responseText));
-    },
-    error: function(e){
-      alert('Connection error, sorry.');
-      location.reload(true);
+    complete: function(receive){
+      var data = {};
+      if(receive.responseText) {
+        data = JSON.parse(receive.responseText);
+        console.log('XHR:', data);
+      }
+      if(cb) cb(data);
     }
   });
 };

@@ -10,7 +10,7 @@ var send = function(response, data){
     'Content-Type': 'application/json',
     'Access-Control-Allow-Origin': '*'
   });
-  response.end(JSON.stringify(data));
+  response.end(''+data);
 };
 
 http.createServer(function(request, response){

@@ -68,48 +68,26 @@ var Map = {
     var nw = mw - w, nh = mh - h;
     return Map.letters[nw] + nh;
   },
-  placeCard: function(card, target){
-    if(typeof target == 'string') target = $('#'+target);
-    card.appendTo(target.removeClass('free').addClass('block'));
-  },
-  moveCard: function(card, spot){
-    if(typeof card == 'string') card = $('#'+card+' .card');
-    card.closest('td').removeClass('block').addClass('free');
-    if(typeof spot == 'string') spot = $('#'+spot);
-    spot.removeClass('free').addClass('block');    
-    Map.unhighlight();   
-
-    var data = {
-      target: card,
-      destiny: spot
-    };
-        
-    var target = card.offset();
-    var destiny = spot.offset();
-    
-    card.css({top: destiny.top - target.top - 108, left: destiny.left - target.left - 18});
-    
-    setTimeout(function(){    
-      $(this.target).css({top: '', left: ''}).appendTo(this.destiny);
-    }.bind(data), 1000);  
-  },
   highlightMove: function(card){
     if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
       var spot = Map.getPosition(card);
       Map.paint(spot, 2, 'moveArea', false, 'block');      
-      $('.moveArea').on('contextmenu.move', states.table.move);
+      $('.moveArea').on('contextmenu.move', Card.moveSelected);
     }
+  },
+  place: function(card, target){
+    if(typeof target == 'string') target = $('#'+target);
+    card.appendTo(target.removeClass('free').addClass('block'));
   },
   highlightAttack: function(card){
     if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
       var spot = Map.getPosition(card);
-      var att = card.data('card').attackType;
-      var range;
+      var att = card.data('attackType'), range;
       if(att == 'Melee') range = 2;
       if(att == 'Ranged') range = 3;      
       Map.neightbors(spot, range, function(neighbor){
         var card = $('.card', neighbor);
-        if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.attack', states.table.attack);        
+        if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.attack', Card.attack);        
       }, false, 'free');
     }
   },
