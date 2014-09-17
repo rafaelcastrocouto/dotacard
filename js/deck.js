@@ -28,17 +28,6 @@ var Card = function(data){
   return data;
 };
 
-Card.damage = function(damage, target){
-  if(typeof target == 'string') target = $('#'+target+' .card');
-  var hp = target.data('currenthp') - damage;
-  target.children('span.hp').text(hp);
-  target.data('currenthp', hp);
-  var damageFx = $('<span>').addClass('damage').text(damage);
-  target.append(damageFx);
-  setTimeout(function(){
-    this.remove();
-  }.bind(damageFx), 1000);
-};
 
 Card.attack = function(){
   if(game.status == 'turn' && !game.selectedCard.hasClass('done')){ 
@@ -52,16 +41,38 @@ Card.attack = function(){
   return false;
 };
 
-Card.moveSelected = function(){
-  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){
-    var fromSpot = Map.getPosition(game.selectedCard);
-    var toSpot = Map.getPosition($(this));
-    Card.move(fromSpot, toSpot);        
-    game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
-    game.selectedCard.addClass('done');
+Card.damage = function(damage, target){
+  if(typeof target == 'string') target = $('#'+target+' .card');
+  var hp = target.data('currenthp') - damage;
+  if(hp < 1) {
+    hp = 0;
+    setTimeout(Card.die.bind(target), 1010);
   }
-  Map.unhighlight();
-  return false;
+  target.children('span.hp').text(hp);
+  target.data('currenthp', hp);
+  var damageFx = target.children('span.damage');
+  if(damageFx.length){
+    var currentDamage = parseInt(damageFx.text());
+    damageFx.text(currentDamage + damage);
+  } else {
+    damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);
+    setTimeout(function(){ this.remove(); }.bind(damageFx), 1000);
+  } 
+};
+  
+Card.die = function(){
+  this.addClass('dead');
+  this.children('span.hp').text(0);
+  this.data('currenthp', 0);  
+  if(this.hasClass('heroes')){
+    if(this.hasClass('player')) this.appendTo(states.table.playerDeck.el);
+    else if(this.hasClass('enemy')) this.appendTo(states.table.enemyDeck.el);
+    
+  } else if(this.hasClass('tower')) {
+    if(this.hasClass('player')) states.table.lose();
+    else if(this.hasClass('enemy')) states.table.win();
+  }
+  else this.remove();
 };
 
 Card.select = function(){
@@ -75,7 +86,20 @@ Card.select = function(){
   }
   states.table.selectedArea.empty();      
   var zoom = card.clone().appendTo(states.table.selectedArea);
-  card.addClass('selected');
+  card.addClass('selected').children('span.damage').remove();
+  
+};
+
+Card.moveSelected = function(){
+  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){
+    var fromSpot = Map.getPosition(game.selectedCard);
+    var toSpot = Map.getPosition($(this));
+    Card.move(fromSpot, toSpot);        
+    game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
+    game.selectedCard.addClass('done');
+  }
+  Map.unhighlight();
+  return false;
 };
 
 Card.move = function(card, spot){

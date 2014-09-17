@@ -4,7 +4,7 @@ var game = {
   connectionLimit: 90,
   timeToPick: 1,
   timeToPlay: 5,
-  container: $('<div>').appendTo(document.body).attr('id','container'),
+  container: $('<div>').appendTo(document.body).addClass('container'),
   debug: location.host == "localhost"
 };
 
@@ -22,7 +22,6 @@ var game = {
        todo destroy state
 
 ////////////////////////////////////////////////////////*/
-
 
 var states = {
   el: $('<div>').attr('id','states').appendTo(game.container),    
@@ -50,9 +49,9 @@ var states = {
     game.states = states;
   },   
   currentstates: 'load',
-  
+
   ////////////////////////////////////////////////////////////////////////////////////////
-  
+
   'load': {
     end: function(){
       console.log('Welcome to DotaCard!');
@@ -126,7 +125,7 @@ var states = {
       this.text = $('<p>').appendTo(this.el).html('Welcome <b>'+game.player.name+'</b>! ');
 
       this.logout = $('<small>').appendTo(this.text).text('Logout').click(states.load.quit);
-      
+
       this.menu = $('<div>').appendTo(this.el).attr({'class': 'box'}); 
 
       this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
@@ -157,9 +156,9 @@ var states = {
       this.friend = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Search for a friend to play', 'disabled': true }).text('Play with a friend');        
 
       this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
-     
+
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
-      
+
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
     }
   },
@@ -175,25 +174,25 @@ var states = {
 
       this.counter = $('<p>').appendTo(this.pickbox).addClass('counter').addClass('hidden');
 
-      this.heroesDeck = Deck('heroes', function(heroesDeck){
-        heroesDeck.el.appendTo(states.choose.heroesbox);
+      this.pickDeck = Deck('heroes', function(pickDeck){
+        pickDeck.el.appendTo(states.choose.heroesbox);
 
         states.choose.size = 100;
 
-        $.each(heroesDeck.cards, function(id, hero){
+        $.each(pickDeck.cards, function(id, hero){
           hero.el.click(function(){
             $('.card').removeClass('active');
             var c = $(this);
             c.addClass('active');
-            heroesDeck.el.css('left', c.index() * states.choose.size * -1);
+            pickDeck.el.css('left', c.index() * states.choose.size * -1);
           });
         });
-        heroesDeck.el.width((states.choose.size + 100) * heroesDeck.length);
+        pickDeck.el.width((states.choose.size + 100) * pickDeck.length);
       });
 
       this.findGame();
     },
-    
+
     findGame: function(){   
       this.tries = 1;  
       if(game.status == 'found'){
@@ -226,7 +225,7 @@ var states = {
         }
       });
     },
-    
+
     getChallenger: function(){ 
       db({'get': game.id }, function(found){ 
         if(found.challenger){       
@@ -242,10 +241,11 @@ var states = {
       });
 
     },
-    
+
     battle: function(enemy, ch){     
       game.enemy = {name: enemy, type: ch};  
-      this.message.addClass('turn').html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name +'</b>');
+      this.el.addClass('turn');
+      this.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name +'</b>');
       this.counter.removeClass('hidden');
       //todo: play sound and stuff!   
       game.status = 'picking';
@@ -253,39 +253,40 @@ var states = {
       this.enablePick();
       this.timeout = setTimeout(states.choose.pickCount, 1000);      
     },
-                                
+
     enablePick: function(){
       this.pickbox.removeClass('hidden');
       this.prepickbox.removeClass('hidden');
       for(var s = 0; s < 5; s++){
-        $('<div>').appendTo(this.pickbox).attr({title: 'Click here to pick'})
-        .addClass('slot available').click(function(){
-          var slot = $(this);
-          if(slot.hasClass('available')){
-            var pick = $('.heroesbox .card.active');
-            if(pick.length){
-              slot.removeClass('available');
-              pick.addClass('picked').removeClass('active');
-              slot.append(pick);
-            }
-          } else {
-            var c = slot.children().first();
-            c.appendTo($('.heroesbox .deck'));
-            states.choose.heroesDeck.el.css('left', c.index() * states.choose.size * -1);
-            slot.addClass('available');
-            c.removeClass('picked');
-          } 
-        });
+        $('<div>').appendTo(this.pickbox).attr({title: 'Click here to pick'}).addClass('slot available').click(states.choose.pick);
       }
     },
-                     
+
+    pick: function(){
+      var slot = $(this);
+      if(slot.hasClass('available')){
+        var pick = $('.heroesbox .card.active');
+        if(pick.length){
+          slot.removeClass('available');
+          pick.addClass('picked').removeClass('active');
+          slot.append(pick);
+        }
+      } else {
+        var c = slot.children().first();
+        c.appendTo($('.heroesbox .deck'));
+        states.choose.pickDeck.el.css('left', c.index() * states.choose.size * -1);
+        slot.addClass('available');
+        c.removeClass('picked');
+      } 
+    },
+
     pickCount: function(){ 
       states.choose.counter.text('Pick your deck, game starts in: '+(states.choose.count--));
       if(states.choose.count < 0){
         states.choose.sendDeck();            
       } else setTimeout(states.choose.pickCount, 1000);
     },
-    
+
     sendDeck: function(){
       var picks = [];
       $('.card.picked').each(function(){
@@ -313,7 +314,7 @@ var states = {
         states.choose.timeout = setTimeout(states.choose.getChallengedDeck, 1000);   
       }
     },
-    
+
     getChallengerDeck: function(){ 
       db({'get': game.id }, function(found){ 
         if(found.challengerDeck){
@@ -327,7 +328,7 @@ var states = {
         }
       });
     },
-    
+
     getChallengedDeck: function(){
       db({'get': game.id }, function(found){ 
         if(found.challengedDeck){ 
@@ -344,51 +345,50 @@ var states = {
         }      
       });  
     },
-    
-    end: function(){
-      this.el.addClass('hidden');           
-      this.message.removeClass('turn');
+
+    end: function(){           
+      this.el.removeClass('turn');
       $('.card').removeClass('active picked');
-      $('.pickbox .card').appendTo(this.heroesDeck.el);
+      $('.pickbox .card').appendTo(this.pickDeck.el);
       this.counter.addClass('hidden');
       this.pickbox.addClass('hidden');
       this.prepickbox.addClass('hidden');
     }
   },
-  
+
   'table': {
     build: function(){        
       this.message =  $('<p>').appendTo(this.el.addClass('load')).attr({'class': 'message'}).text('Muuuuuuuuuuuuu!');
-      
+
       this.turnCounter =  $('<p>').appendTo(this.el).attr({'class': 'turnCounter'}).text('Turns: 0 / 0');
-      
+
       this.selectedArea = $('<div>').appendTo(this.el).attr({'class': 'selectedarea'});
-      
+
       this.enemyArea = $('<div>').appendTo(this.el).attr({'class': 'enemyarea'});
 
       this.buildMap();   
-      
+
       this.placeTowers(); 
-      
+
       this.placeHeroes(); 
-      
+
       this.buildSkills();    
-      
+
       this.buildTurns();
-      
+
     },
     buildMap: function(){
-      
+
       this.map = Map.build({
-        
+
         'width': game.width,
         'height': game.height,
         'class': 'map'
-        
+
       }).appendTo(this.el);
-      
+
       game.map = this.map;
-      
+
     },
     createTower: function(type, spot){
       var tower = Card({
@@ -401,7 +401,7 @@ var states = {
         damage: 7,
         hp: 80
       });        
-      tower.el.click(states.table.select).appendTo($('#'+spot).removeClass('free').addClass('block'));
+      tower.el.click(Card.select).appendTo($('#'+spot).removeClass('free').addClass('block'));
 
       Map.paint(spot, 3, type == 'player' ? 'playerArea' : 'enemyArea', true);
 
@@ -412,11 +412,11 @@ var states = {
       game.enemy.tower = states.table.createTower('enemy', 'J1');    
     },
     placeHeroes: function(){      
-      
-      this.heroesDeck = Deck('heroes', game.player.picks, function(heroesDeck){        
-        heroesDeck.el.appendTo(states.table.el);
+
+      this.playerDeck = Deck('heroes', game.player.picks, function(playerDeck){        
+        playerDeck.el.addClass('player').appendTo(states.table.el);
         var c = 0;
-        $.each(heroesDeck.cards, function(id, card){   
+        $.each(playerDeck.cards, function(id, card){   
           card.el.addClass('player').click(Card.select);
           Map.place(card.el, Map.letters[c]+'4');
           c += 1;
@@ -424,7 +424,7 @@ var states = {
       });     
 
       this.enemyDeck = Deck('heroes', game.enemy.picks, function(enemyDeck){
-        enemyDeck.el.appendTo(states.table.enemyArea);        
+        enemyDeck.el.addClass('enemy').appendTo(states.table.el);        
         var c = 11;
         $.each(enemyDeck.cards, function(id, card){       
           card.el.addClass('enemy').click(Card.select);          
@@ -432,39 +432,37 @@ var states = {
           c -= 1;
         });
       });   
-      
+
     },
     buildSkills: function(){
-      
+
       //todo: skills
-      
-      console.log(game);
-      
+
     },
     buildTurns: function(){
       game.player.turn = 0;
       game.enemy.turn = 0;
-            
+
       game.currentData[game.player.type + 'Turn'] = 0;
       game.currentData[game.enemy.type + 'Turn'] = 0;
-      
+
       //todo: storage.state - each hero hp position buffs etc, each player skill hand 
-      
+
       game.currentData.moves = [];
-      
+
       if(game.player.type == 'challenged') game.status = 'turn';
       if(game.player.type == 'challenger') game.status = 'unturn';      
-      
+
       states.table.timeout = setTimeout(states.table.beginTurn, 1000);
-      
+
     },
     beginTurn: function(){
-      
+
       //todo: game.storage = game.state;
-      
+
       states.table.turnCounter.text('Turns: '+game.player.turn+' / '+game.enemy.turn);   
       states.table.el.removeClass('load').addClass(game.status);  
-      
+
       if(game.status == 'turn'){        
         $('.card.done').removeClass('done');
         game.currentData.moves = [];
@@ -473,24 +471,24 @@ var states = {
           Map.highlightAttack(game.selectedCard);       
         }
       }      
-         
+
       states.table.counter = game.timeToPlay;            
       states.table.timeout = setTimeout(states.table.turnCount, 1000);
     },
-                                               
+
     turnCount: function(){
       if(game.status == 'turn') states.table.message.text('Your turn is now, you have '+states.table.counter+' seconds to finish your moves');
       else if(game.status == 'unturn') states.table.message.text('Your enemy is playing, your turn starts in '+states.table.counter+' seconds');
 
       if(states.table.counter-- < 0){
-         
+
         if(game.status == 'turn') states.table.sendMoves();
         else if(game.status == 'unturn') states.table.getMoves();       
-        
+
       } else states.table.timeout = setTimeout(states.table.turnCount, 1000);
 
     },
-    
+
     sendMoves: function(){
       Map.unhighlight();      
       game.status = 'unturn';
@@ -501,19 +499,19 @@ var states = {
       states.table.message.text('Uploading your moves...');
       states.table.sendData();
     },
-    
+
     getMoves: function(){
       states.table.tries = 1;  
       states.table.el.removeClass('unturn').addClass('load');
       states.table.timeout = setTimeout(states.table.getData, 1000);
     },
-    
+
     sendData: function(){
       db({'set': game.id, 'data': JSON.stringify(game.currentData)}, function(){        
         states.table.timeout = setTimeout(states.table.beginTurn, 1000);
       });      
     },
-    
+
     getData: function(){   
       db({'get': game.id }, function(data){ 
         game.currentData = data;           
@@ -527,7 +525,7 @@ var states = {
         }
       });
     },
-    
+
     executeMoves: function(moves){
       states.table.message.html('Your enemy moved. Get ready!');
       var moves = game.currentData.moves.split('|');
@@ -548,7 +546,22 @@ var states = {
         game.status = 'turn';
         states.table.beginTurn();
       }, 1000);
+    },
+
+    lose: function(){
+      alert('Game Over!');
+      states.table.showResults();
+    },
+
+    win: function(){
+      alert('Congratulations, you won!');
+      states.table.showResults();
+    },
+
+    showResults: function(){
+      console.log(game);
     }
+
   }
 };
 

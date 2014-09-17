@@ -16,7 +16,7 @@ var Map = {
   neightbors: function(spot, radius, cb, removeDiag, filter){
     var fil = function(td){
        if(filter) {
-         if(!td.hasClass(filter)) cb(td);
+         if(!td.is(filter)) cb(td);
        }
        else cb(td);
     };
@@ -38,7 +38,7 @@ var Map = {
   paint: function(spot, radius, c, removeDiag, filter){
     var fil = function(td){
        if(filter) {
-         if(!td.hasClass(filter)) td.addClass(c);
+         if(!td.is(filter)) td.addClass(c);
        }
        else td.addClass(c);
     };
@@ -69,7 +69,7 @@ var Map = {
     return Map.letters[nw] + nh;
   },
   highlightMove: function(card){
-    if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
+    if(!card.hasClasses('enemy done static dead')){ 
       var spot = Map.getPosition(card);
       Map.paint(spot, 2, 'moveArea', false, 'block');      
       $('.moveArea').on('contextmenu.move', Card.moveSelected);
@@ -79,15 +79,15 @@ var Map = {
     if(typeof target == 'string') target = $('#'+target);
     card.appendTo(target.removeClass('free').addClass('block'));
   },
-  highlightAttack: function(card){
-    if(card.hasClass('player') && !card.hasClass('done') && !card.hasClass('static')){        
+  highlightAttack: function(card){       
+    if(!card.hasClasses('enemy done dead')){        
       var spot = Map.getPosition(card);
       var att = card.data('attackType'), range;
       if(att == 'Melee') range = 2;
       if(att == 'Ranged') range = 3;      
       Map.neightbors(spot, range, function(neighbor){
         var card = $('.card', neighbor);
-        if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.attack', Card.attack);        
+        if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', Card.attack);        
       }, false, 'free');
     }
   },
@@ -95,5 +95,15 @@ var Map = {
     $('.map .card').removeClass('target');
     $('.map td').off('contextmenu.move').off('contextmenu.attack').removeClass('moveArea');
   },
+};
+
+$.fn.hasClasses = function(list) {
+  var classes = list.split(' ');
+  for (var i = 0; i < classes.length; i++) {
+    if (this.hasClass(classes[i])) {
+      return true;
+    }
+  }
+  return false;
 };
 

@@ -48,49 +48,19 @@ input:focus {
   animation: shade 0.5s;
 }
 
-#fork {
-  position: absolute;
-  top: 0; right: 0;
-}
-
-#container {
+.container {
   display: table-cell;
   vertical-align: middle;
 }
 
-#states {
-  margin: 0 auto;
-  width: 970px;
-  height: 600px;  
-  background-image: url("img/bkg/Dota6.49.jpg");
-  background-size: cover;
-  background-position: 50% 100%;
-  position: relative;  
+.hidden {
+  display: none;
 }
-#states > div {
-  width: 100%; height: 100%;
-  position: relative;
-}
-#states.login {
-  background-image: url("img/bkg/Dota6.55.jpg");
-}
-#states.menu {
-  background-image: url("img/bkg/Dota6.63.jpg");
-}
-#menu  button {
+
+.menu  button {
   display: block;
   margin: 5px auto;
   width: 200px;
-}
-#states.choose {
-  background-image: url("img/bkg/Dota6.69.jpg");
-}
-#states.table {
-  background-image: url("img/bkg/Dota6.70.jpg");
-}
-
-.hidden {
-  display: none;
 }
 
 .menu small {
@@ -224,6 +194,7 @@ input:focus {
 }
 .card:hover {
   transform: scale(0.5);
+  z-index: 3;
 }
 .card.active {
   margin: 0 5px;
@@ -413,12 +384,67 @@ input:focus {
 .card .damage {
   color: yellow;
   position: absolute;
-  top: -10px;
-  right: -40px;
-  font-size: 85px;
+  top: 0;
+  right: 0;
+  font-size: 150px;
   animation: slideup 1s;
 }
 
+.selectedarea .card .damage {
+  display: none;
+}
+
+.card.dead {
+  -webkit-filter: grayscale(0.9);
+}
+
+.table .deck.heroes .card.dead {
+  margin-right: -140px;
+}
+
+.table .deck.player.heroes {
+  position: absolute;
+  top: 410px;
+  left: 10px;
+}
+
+.table .deck.enemy.heroes {
+  position: absolute;
+  top: 410px;
+  left: 200px;
+}
+
+#fork {
+  position: absolute;
+  top: 0; right: 0;
+}
+
+#states {
+  margin: 0 auto;
+  width: 970px;
+  height: 600px;  
+  background-image: url("img/bkg/Dota6.49.jpg");
+  background-size: cover;
+  background-position: 50% 100%;
+  position: relative;  
+  overflow: hidden;
+}
+#states > div {
+  width: 100%; height: 100%;
+  position: relative;
+}
+#states.login {
+  background-image: url("img/bkg/Dota6.55.jpg");
+}
+#states.menu {
+  background-image: url("img/bkg/Dota6.63.jpg");
+}
+#states.choose {
+  background-image: url("img/bkg/Dota6.69.jpg");
+}
+#states.table {
+  background-image: url("img/bkg/Dota6.70.jpg");
+}
 
 #kotl {
   background: #fd8;
@@ -459,6 +485,6 @@ input:focus {
   100% {top: 0;}
 }
 @keyframes slideup {
-  0% {top: -10px;}
-  100% {top: -100px;}
+  0% {top: 0;}
+  100% {top: -175px;}
 }
