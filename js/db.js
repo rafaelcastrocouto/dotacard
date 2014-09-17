@@ -8,8 +8,9 @@ var db = function(send, cb){
       if(receive.responseText) {
         data = JSON.parse(receive.responseText);
         console.log('XHR:', data);
+        console.log('XHR:'+receive.responseText, data);
       }
-      if(cb) cb(data);
+      if(cb) cb(data || {});
     }
   });
 };
