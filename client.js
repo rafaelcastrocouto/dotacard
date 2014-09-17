@@ -4,7 +4,8 @@ var game = {
   connectionLimit: 90,
   timeToPick: 1,
   timeToPlay: 5,
-  container: $('<div>').appendTo(document.body).attr('id','container')
+  container: $('<div>').appendTo(document.body).attr('id','container'),
+  debug: location.host == "localhost"
 };
 
 /***STATES*** ////////////////////////////////////////////
@@ -55,8 +56,10 @@ var states = {
   'load': {
     end: function(){
       console.log('Welcome to DotaCard!');
-      window.onbeforeunload = function(){
-        return 'Sure you wanna leave?';
+      if(!game.debug){
+        window.onbeforeunload = function(){
+          return 'Sure you wanna leave?';
+        }
       }
     },
     reset: function(){
