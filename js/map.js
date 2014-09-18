@@ -6,8 +6,8 @@ var Map = {
     for(var h = 0; h < opt.height; h++){
       var tr = $('<tr>').appendTo(table);
       for(var w = 0; w < opt.width; w++){
-        var A1 = Map.letters[w]+(h+1);
-        $('<td>').attr({'id': A1}).addClass('free').appendTo(tr);
+        var L1 = Map.letters[w]+(h+1);
+        $('<td>').attr({'id': L1}).addClass('free').appendTo(tr);
       }
     }
     
@@ -74,10 +74,6 @@ var Map = {
       Map.paint(spot, 2, 'moveArea', false, 'block');      
       $('.moveArea').on('contextmenu.move', Card.moveSelected);
     }
-  },
-  place: function(card, target){
-    if(typeof target == 'string') target = $('#'+target);
-    card.appendTo(target.removeClass('free').addClass('block'));
   },
   highlightAttack: function(card){       
     if(!card.hasClasses('enemy done dead')){        

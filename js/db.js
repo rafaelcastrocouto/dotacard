@@ -7,8 +7,8 @@ var db = function(send, cb){
       var data = {};
       if(receive.responseText) {
         data = JSON.parse(receive.responseText);
-        console.log('XHR:', data);
-        console.log('XHR:'+receive.responseText, data);
+        //console.log('XHR:', data);
+        //console.log('XHR:'+receive.responseText, data);
       }
       if(cb) cb(data || {});
     }
