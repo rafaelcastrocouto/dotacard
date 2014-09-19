@@ -27,21 +27,95 @@ var Card = function(data){
   return el;
 };
 
-Card.attack = function(){
-  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){ 
-    var fromSpot = Map.getPosition(game.selectedCard);
-    var toSpot = Map.getPosition($(this));
-    game.currentData.moves.push('A:'+fromSpot+':'+toSpot);    
-    var source = $('#'+fromSpot+' .card');
-    source.damage(source.data('damage'), toSpot);
-    game.selectedCard.addClass('done');        
-  }
-  Map.unhighlight();
+Card.place =function(target) {
+  if(typeof target == 'string') target = $('#'+target);
+  this.appendTo(target.removeClass('free').addClass('block'));
+}
+
+$.fn.place = Card.place;
+
+Card.select = function(){
+  var card = $(this);      
+  $('.card.selected').removeClass('selected');      
+  Map.unhighlight();      
+  game.selectedCard = card;
+  Map.highlight();
+  states.table.selectedArea.empty();      
+  var zoom = card.clone().appendTo(states.table.selectedArea);
+  card.addClass('selected').children('span.damage').remove();
   return false;
 };
 
-$.fn.damage = function(damage, target){
-  var source = $(this);
+$.fn.select = Card.select;
+
+Card.highlightMove = function(){
+  var card = this;
+  if(!card.hasClasses('enemy done static dead') && card.hasClass('player')){ 
+    var spot = Map.getPosition(card);
+    Map.paint(spot, 2, 'movearea', false, 'block');      
+    $('.movearea').on('contextmenu.move', states.table.moveSelected);
+  }
+};
+
+$.fn.highlightMove = Card.highlightMove;
+
+Card.highlightAttack = function(){    
+  var card = this;
+  if(!card.hasClasses('enemy done dead') && card.hasClass('player')){        
+    var spot = Map.getPosition(card);
+    var att = card.data('attackType'), range, removeDiag;
+    if(att == 'Melee') {
+      range = 2; removeDiag = false;
+    }
+    if(att == 'Ranged') {
+      range = 3; removeDiag = true;     
+    }
+    Map.stroke(spot, range, 'attackarea', removeDiag, 'block');
+    Map.neightbors(spot, range, function(neighbor){        
+      var card = $('.card', neighbor);        
+      if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', states.table.attackWithSelected);        
+    }, false, 'free');
+  }
+};
+
+$.fn.highlightAttack = Card.highlightAttack;
+
+Card.move = function(destiny){
+  var card = this;
+  if(typeof destiny == 'string') destiny = $('#'+destiny);
+  var fromSpot = Map.getPosition(card);
+  var toSpot = Map.getPosition(destiny);
+  if(destiny.hasClass('free') && (fromSpot != toSpot) && !card.hasClass('done')){
+    card.addClass('done').closest('td').removeClass('block').addClass('free');  
+    destiny.removeClass('free').addClass('block');    
+    Map.unhighlight();   
+
+    var t = card.offset();
+    var d = destiny.offset();
+    card.css({top: d.top - t.top - 108, left: d.left - t.left - 18});
+
+    setTimeout(function(){    
+      $(this.card).css({top: '', left: ''}).appendTo(this.destiny);
+    }.bind({ card: card, destiny: destiny }), 500);  
+  }
+};
+
+$.fn.move = Card.move;
+
+Card.attack = function(target){ 
+  if(typeof target == 'string') target = $('#'+target+' .card');
+  var source = this;
+  var fromSpot = Map.getPosition(source); 
+  var toSpot = Map.getPosition(target);
+  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
+    source.addClass('done').damage(source.data('damage'), target);
+  }
+};
+
+$.fn.attack = Card.attack;
+
+Card.damage = function(damage, target){ 
+  var source = this;
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;
   if(hp < 1) {
@@ -49,9 +123,9 @@ $.fn.damage = function(damage, target){
     setTimeout(target.die.bind(target), 1000);
   }
   target.children('span.hp').text(hp);
-  target.data('currenthp', hp);
+  target.data('currenthp', hp);  
   if(target.hasClass('selected')) target.select();
-  var damageFx = target.children('span.damage'); console.log(damageFx);
+  var damageFx = target.children('span.damage'); 
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
     damageFx.text(currentDamage + damage).appendTo(target);
@@ -60,16 +134,11 @@ $.fn.damage = function(damage, target){
     damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
   } 
   clearTimeout(this.data('timeout'));
-  var remove = setTimeout(this.remove.bind(damageFx), 1000);
+  var remove = setTimeout(damageFx.remove.bind(damageFx), 1000);
   this.data('timeout', remove);
 };
 
-Card.place =function(target) {
-  if(typeof target == 'string') target = $('#'+target);
-  this.appendTo(target.removeClass('free').addClass('block'));
-} 
-
-$.fn.place = Card.place;
+$.fn.damage = Card.damage;
 
 Card.die = function(){
   this.addClass('dead').removeClass('target');
@@ -77,6 +146,8 @@ Card.die = function(){
   this.data('currenthp', 0);
   var spot = Map.getPosition(this);
   $('#'+spot).removeClass('block').addClass('free');
+  if(this.hasClass('selected')) this.select();
+  
   if(this.hasClass('heroes')){
     this.data('reborn', game.time + 4);
     if(this.hasClass('player')) this.appendTo(states.table.playerDeck);
@@ -96,7 +167,9 @@ Card.reborn = function(){
   var hp = this.data('hp');
   this.children('span.hp').text(hp);
   this.data('currenthp', hp);
+  this.data('reborn', undefined);
   var x, y, spot, freeSpot;
+  
   if(this.hasClass('player')){
     x = 0, y = '4';
     spot = Map.letters[x]+y;
@@ -117,58 +190,6 @@ Card.reborn = function(){
 };
 
 $.fn.reborn = Card.reborn;
-
-Card.select = function(){
-  var card = $(this);      
-  $('.card.selected').removeClass('selected');      
-  Map.unhighlight();      
-  game.selectedCard = card;
-  if(game.status == 'turn'){
-    Map.highlightMove(card); 
-    Map.highlightAttack(card); 
-  }
-  states.table.selectedArea.empty();      
-  var zoom = card.clone().appendTo(states.table.selectedArea);
-  card.addClass('selected').children('span.damage').remove();
-};
-
-$.fn.select = Card.select;
-
-Card.moveSelected = function(){
-  if(game.status == 'turn' && !game.selectedCard.hasClass('done')){
-    var fromSpot = Map.getPosition(game.selectedCard);
-    var toSpot = Map.getPosition($(this));
-    if($('#'+toSpot).hasClass('free')){
-      Card.move(fromSpot, toSpot);        
-      game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
-      game.selectedCard.addClass('done');
-    }
-  }
-  Map.unhighlight();
-  return false;
-};
-
-Card.move = function(card, spot){
-  if(typeof card == 'string') card = $('#'+card+' .card');
-  card.closest('td').removeClass('block').addClass('free');
-  if(typeof spot == 'string') spot = $('#'+spot);
-  spot.removeClass('free').addClass('block');    
-  Map.unhighlight();   
-
-  var data = {
-    target: card,
-    destiny: spot
-  };
-
-  var target = card.offset();
-  var destiny = spot.offset();
-
-  card.css({top: destiny.top - target.top - 108, left: destiny.left - target.left - 18});
-
-  setTimeout(function(){    
-    $(this.target).css({top: '', left: ''}).appendTo(this.destiny);
-  }.bind(data), 1000);  
-};
 
 var Deck = function(/* name, [filter], callback */){  
   var name = arguments[0];

@@ -4,7 +4,6 @@ Thumbs.db
 .monitor
 .sass-cache/
 .project
-node_modules/
 public/tmp/
 output_static/
 output_static/*

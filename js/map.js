@@ -2,23 +2,26 @@ var Map = {
   letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
   build: function(opt){
     var table = $('<table>').attr({'class':'map'});
-    
+
     for(var h = 0; h < opt.height; h++){
       var tr = $('<tr>').appendTo(table);
       for(var w = 0; w < opt.width; w++){
         var L1 = Map.letters[w]+(h+1);
-        $('<td>').attr({'id': L1}).addClass('free').appendTo(tr);
+        $('<td>').attr({'id': L1}).addClass('free').appendTo(tr).on('contextmenu',function(){
+          return false
+        });
       }
     }
-    
+
     return table;
   },
   neightbors: function(spot, radius, cb, removeDiag, filter){
-    var fil = function(td){
-       if(filter) {
-         if(!td.is(filter)) cb(td);
-       }
-       else cb(td);
+    if(radius == 0) return;
+    var fil = function(td){      
+      if(filter) {
+        if(!td.hasClasses(filter)) cb(td);
+      }
+      else cb(td);
     };
     var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
     $('.map td').each(function(){
@@ -36,11 +39,12 @@ var Map = {
     });
   },
   paint: function(spot, radius, c, removeDiag, filter){
+    if(radius == 0) return;
     var fil = function(td){
-       if(filter) {
-         if(!td.is(filter)) td.addClass(c);
-       }
-       else td.addClass(c);
+      if(filter) {
+        if(!td.hasClasses(filter)) td.addClass(c);
+      }
+      else td.addClass(c);
     };
     var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
     $('.map td').each(function(){
@@ -55,7 +59,51 @@ var Map = {
           else fil(td);
         }
       }
-    }).on('contextmenu',function(){return false});
+    });
+  },
+  stroke: function(spot, radius, c, removeDiag, filter){ 
+    console.log('stroke: '+spot);
+    if(radius == 0) return;
+    var fil = function(id, b){
+      var td = $('#'+id);   
+      if(filter) {
+        if(!td.hasClasses(filter)) td.addClass(c+' '+b);
+      }
+      else td.addClass(c+' '+b);
+    };
+    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
+
+    var d = (radius - 1);
+    var sideLength = (2 * d) - 1;
+    var diag = removeDiag ? 'out' : 'in';
+    
+    var topLeft = Map.letters[(w - d)] + (h - d);
+    fil(topLeft, 'topLeft'+diag);   
+    var topRight = Map.letters[(w + d)] + (h - d);
+    fil(topRight, 'topRight'+diag);    
+    var bottomLeft = Map.letters[(w - d)] + (h + d);
+    fil(bottomLeft, 'bottomLeft'+diag);   
+    var bottomRight = Map.letters[(w + d)] + (h + d);
+    fil(bottomRight, 'bottomRight'+diag);
+
+    var startHeight = h - d + 1;
+    for(var i=startHeight; i<(startHeight + sideLength); i++){
+      var left = Map.letters[(w - d)] + i;
+      fil(left, 'left');
+      var right = Map.letters[(w + d)] + i;      
+      fil(right, 'right');
+      console.log('left: '+left, 'right: '+right);
+    }
+
+    var startWidth = w - d + 1;
+    for(var i=startWidth; i<(startWidth + sideLength); i++){
+      var top = Map.letters[i] + (h - d);
+      fil(top, 'top');
+      var bottom = Map.letters[i] + (h + d);      
+      fil(bottom, 'bottom');
+      console.log('top: '+top, 'bottom: '+bottom);
+    }        
+
   },
   getPosition: function(el){
     var p = el.closest('td').attr('id');
@@ -68,28 +116,16 @@ var Map = {
     var nw = mw - w, nh = mh - h;
     return Map.letters[nw] + nh;
   },
-  highlightMove: function(card){
-    if(!card.hasClasses('enemy done static dead')){ 
-      var spot = Map.getPosition(card);
-      Map.paint(spot, 2, 'moveArea', false, 'block');      
-      $('.moveArea').on('contextmenu.move', Card.moveSelected);
-    }
-  },
-  highlightAttack: function(card){       
-    if(!card.hasClasses('enemy done dead')){        
-      var spot = Map.getPosition(card);
-      var att = card.data('attackType'), range;
-      if(att == 'Melee') range = 2;
-      if(att == 'Ranged') range = 3;      
-      Map.neightbors(spot, range, function(neighbor){
-        var card = $('.card', neighbor);
-        if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', Card.attack);        
-      }, false, 'free');
+  highlight: function(){
+    if(game.status == 'turn' && game.selectedCard){
+      game.selectedCard.highlightMove();
+      game.selectedCard.highlightAttack();       
     }
   },
   unhighlight: function(){
     $('.map .card').removeClass('target');
-    $('.map td').off('contextmenu.move').off('contextmenu.attack').removeClass('moveArea');
+    $('.map td').off('contextmenu.move contextmenu.attack')
+    .removeClass('movearea attackarea top bottom left right topLeftin topLeftout topRightin topRightout bottomLeftin bottomLeftout bottomRightin bottomRightout');
   },
 };
 

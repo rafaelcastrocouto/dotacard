@@ -48,13 +48,43 @@ input:focus {
   animation: shade 0.5s;
 }
 
+.hidden {
+  display: none; !IMPORTANT
+}
+
+#states {
+  margin: 0 auto;
+  width: 970px;
+  height: 600px;  
+  background-color: #222;
+  background-image: url("img/bkg/Dota6.49.jpg");
+  background-size: cover;
+  background-position: 50% 100%;
+  position: relative;  
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 0 6px black;
+}
+#states > div {
+  width: 100%; height: 100%;
+  position: relative;
+}
+#states.login {
+  background-image: url("img/bkg/Dota6.55.jpg");
+}
+#states.menu {
+  background-image: url("img/bkg/Dota6.63.jpg");
+}
+#states.choose {
+  background-image: url("img/bkg/Dota6.69.jpg");
+}
+#states.table {
+  background-image: url("img/bkg/Dota6.70.jpg");
+}
+
 .container {
   display: table-cell;
   vertical-align: middle;
-}
-
-.hidden {
-  display: none; !IMPORTANT
 }
 
 .menu  button {
@@ -115,18 +145,18 @@ input:focus {
   top: 360px;
   left: 100px;
   overflow: hidden;
-  padding: 0 5px;
+  padding: 5px;
   text-align: center;
   border-radius: 4px;
   background: rgba(0,0,0,0.85);
   box-shadow: 0 0 20px rgba(255,255,255,0.5);
 }
 .prepickbox {
-  width: 200px;  
-  height: 150px;
+  width: 205px;
+  height: 170px;
   position: absolute;
-  top: 365px;
-  left: 660px;
+  top: 360px;
+  left: 655px;
   overflow: hidden;
   padding: 15px 5px;
   text-align: center;
@@ -134,21 +164,26 @@ input:focus {
   background: rgba(0,0,0,0.85);
   box-shadow: 0 0 20px rgba(255,255,255,0.5);  
 }
+
 .slot {
   border-radius: 4px;
   float: left;
   width: 100px;
   height: 150px;
-  margin: 4px;
-  box-shadow: inset 0 0 30px rgba(255,255,255,0.5);
+  margin: 4px;  
+  box-shadow: inset 0 0 10px rgba(255,255,255,0.7);
+}
+
+.slot.available {
+  animation: innerlight 0.5s infinite;
 }
 
 .slot:hover {
-  animation: innerlight 1s infinite;
+  background: rgba(255,255,255,0.2);
 }
 
 .deck {
-   transition: all 0.5s;
+   transition: all 0.4s;
 }
 
 .pickbox .deck {
@@ -180,7 +215,7 @@ input:focus {
   position: relative;
   top: 0; left: 0;
   text-align: left;  
-  transition: all 0.5s;
+  transition: all 0.4s;
   margin: 0 -56px;
   padding: 5px;
   width: 200px; height: 300px;
@@ -214,12 +249,12 @@ input:focus {
   transform: scale(0.6);
 }
 .card.picked {  
-  animation: slidedown 1s;
+  animation: slidedown 0.5s;
   transform: scale(0.4);
 }
 
 .card.picked:hover { 
-  top: -16px;
+  top: -12px;
   transform: scale(0.45);
 }
 
@@ -230,10 +265,7 @@ input:focus {
   box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
 }
 .card.target {
-  box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);
-}
-.card.target:hover {
-  animation: targetlight 1s infinite;
+  animation: targetlight 0.5s infinite;
 }
 .card fieldset {
   border: 1px solid #fff;
@@ -266,7 +298,9 @@ input:focus {
   background: #ed3;
   border: 1px solid #c00;
 }
-
+.choose .card .hp {
+  display: none;
+}
 .card .portrait {
   position: relative;
 }
@@ -298,68 +332,9 @@ input:focus {
   margin: 0 1px;
 }
 
-.message {
-  border-radius: 5px;
-}
-
-.turn .message {
-  background: rgba(0,150,0,0.6);
-}
-.load .message {
-  background: rgba(180,180,0,0.6);
-}
-.unturn .message {
-  background: rgba(150,0,0,0.6);
-}
-
-.turnCounter {
-  position: absolute;
-  top: 1px; right: 10px;
-}
-
-.map {
-  position: absolute;
-  top: 30px; left: 10px;  
-  border-collapse: collapse;
-  z-index: 1;
-}
-
-.map td {
-  box-sizing: border-box;
-  background: rgba(255,255,255,0.4);
-  border: 1px solid rgba(0,0,0,0);
-  width: 60px; height: 90px;
-  position: relative;
-}
-.map td:hover {
-  background: rgba(255,255,255,0.6);
-}
-
-.map td.playerArea {
-  background: rgba(0,150,0,0.4);
-}
-.map td.playerArea:hover {
-  background: rgba(0,150,0,0.6);
-}
-
-.map td.enemyArea {
-  background: rgba(150,0,0,0.4);
-}
-.map td.enemyArea:hover {
-  background: rgba(150,0,0,0.6);
-}
-
-.turn .map td.moveArea {
-  box-shadow: inset 0 0 30px rgba(255,255,255,0.5);
-  cursor: pointer;
-}
-.turn .map td.moveArea:hover {
-  animation: innerlight 1s infinite;
-}
-
 .map .card {
   z-index: 3;
-  top: -111px;
+  top: -112px;
   left: -21px;
   position: absolute;
   transform: scale(0.29);
@@ -372,14 +347,11 @@ input:focus {
 .selectedarea {
   position: absolute;
   top: 40px;
-  right: 70px;
+  right: 65px;
 }
 
 .selectedarea .card {
   transform: scale(1);
-}
-.selectedarea .card:hover {
-  transform: scale(1.1);
 }
 
 .card .damage {
@@ -407,6 +379,94 @@ input:focus {
   margin-right: -140px;
 }
 
+.message {
+  border-radius: 5px;
+}
+
+.turn .message {
+  background: rgba(0,150,0,0.6);
+}
+.load .message {
+  background: rgba(180,180,0,0.6);
+}
+.unturn .message {
+  background: rgba(150,0,0,0.6);
+}
+
+.table .time {
+  position: absolute;
+  top: 1px; right: 10px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 5px;
+}
+
+.map {
+  position: absolute;
+  top: 30px; left: 10px;  
+  border-spacing: 1px;
+  z-index: 1;
+}
+
+.map td {
+  box-sizing: border-box;
+  background: rgba(255,255,255,0.4);
+  border: 1px solid rgba(0,0,0,0);
+  width: 60px; height: 90px;
+  position: relative;
+  border-top: 1px solid transparent;
+}
+.map td:hover {
+  background: rgba(255,255,255,0.6);
+}
+
+.map td.playerarea {
+  background: rgba(0,150,50,0.4);
+}
+.map td.playerarea:hover {
+  background: rgba(0,150,50,0.6);
+}
+
+.map td.enemyarea {
+  background: rgba(150,0,0,0.4);
+}
+.map td.enemyarea:hover {
+  background: rgba(150,0,0,0.6);
+}
+
+.turn .map td.movearea {  
+  cursor: pointer;
+  animation: innerlight 0.5s infinite;
+}
+
+.turn .map td.attackarea.top,
+.turn .map td.attackarea.topLeftin,
+.turn .map td.attackarea.topRightin,
+.turn .map td.attackarea.bottomLeftout,
+.turn .map td.attackarea.bottomRightout { 
+  border-top: 1px solid white;
+}
+.turn .map td.attackarea.bottom,
+.turn .map td.attackarea.topLeftout,
+.turn .map td.attackarea.topRightout,
+.turn .map td.attackarea.bottomLeftin,
+.turn .map td.attackarea.bottomRightin { 
+  border-bottom: 1px solid white;
+}
+.turn .map td.attackarea.left,
+.turn .map td.attackarea.topLeftin,
+.turn .map td.attackarea.topRightout,
+.turn .map td.attackarea.bottomLeftin,
+.turn .map td.attackarea.bottomRightout { 
+  border-left: 1px solid white;
+}
+.turn .map td.attackarea.right,
+.turn .map td.attackarea.topLeftout,
+.turn .map td.attackarea.topRightin,
+.turn .map td.attackarea.bottomLeftout,
+.turn .map td.attackarea.bottomRightin { 
+  border-right: 1px solid white;
+}
+
 .table .deck.player.heroes {
   position: absolute;
   top: 410px;
@@ -423,35 +483,6 @@ input:focus {
   position: absolute;
   top: 0; right: 0;
   opacity: 0.55;
-}
-
-#states {
-  margin: 0 auto;
-  width: 970px;
-  height: 600px;  
-  background-image: url("img/bkg/Dota6.49.jpg");
-  background-size: cover;
-  background-position: 50% 100%;
-  position: relative;  
-  overflow: hidden;
-  border-radius: 4px;
-  box-shadow: 0 0 6px black;
-}
-#states > div {
-  width: 100%; height: 100%;
-  position: relative;
-}
-#states.login {
-  background-image: url("img/bkg/Dota6.55.jpg");
-}
-#states.menu {
-  background-image: url("img/bkg/Dota6.63.jpg");
-}
-#states.choose {
-  background-image: url("img/bkg/Dota6.69.jpg");
-}
-#states.table {
-  background-image: url("img/bkg/Dota6.70.jpg");
 }
 
 #kotl {
@@ -476,10 +507,9 @@ input:focus {
   background: #62a64e;
 }
 
-/*animation: innerlight 1s infinite;*/
 @keyframes innerlight {
-  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.9);}
-  50% {box-shadow: inset 0 0 10px rgba(255,255,255,0.9);}
+  0%, 100% {box-shadow: inset 0 0 40px white;}
+  50% {box-shadow: inset 0 0 20px white;}
 }
 @keyframes targetlight {
   0%, 100% {box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
