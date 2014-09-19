@@ -451,7 +451,12 @@ var states = {
         }
       });  
 
-      if(!lowestHp.notfound) game.player.tower.attack(lowestHp);
+      if(!lowestHp.notfound) {
+        game.player.tower.attack(lowestHp);
+        var fromSpot = Map.getPosition(game.player.tower);
+        var toSpot = Map.getPosition(lowestHp);
+        game.currentData.moves.push('A:'+fromSpot+':'+toSpot); 
+      }
     },
     
     placeHeroes: function(){      
@@ -632,13 +637,13 @@ var states = {
           var fromSpot = Map.mirrorPosition(move[1]),
               toSpot = Map.mirrorPosition(move[2]);    
           var target = $('#'+fromSpot+' .card');
-          if(!target.hasClass('done') && target.move) target.move(toSpot);
+          if(!target.hasClass('done') && source.hasClass('enemy') && target.move) target.move(toSpot);
         }        
         if(move[0] == 'A'){
           var fromSpot = Map.mirrorPosition(move[1]),
               toSpot = Map.mirrorPosition(move[2]);    
           var source = $('#'+fromSpot+' .card');
-          if(source.attack) source.attack(toSpot);
+          if(!source.hasClass('done') && source.hasClass('enemy') && source.attack) source.attack(toSpot);
         }        
       }      
       states.table.timeout = setTimeout(function(){
