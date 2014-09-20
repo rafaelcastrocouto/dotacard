@@ -229,7 +229,7 @@ input:focus {
 }
 .card:hover {
   transform: scale(0.5);
-  z-index: 3;
+  z-index: 4;
 }
 .card.active {
   margin: 0 5px;
@@ -341,7 +341,13 @@ input:focus {
 }
 
 .map .card:hover {
-  transform: scale(.3);
+  transform: scale(.31);
+}
+
+.map .card.selected {
+  outline: 7px solid white;
+  transform: scale(.33);
+  z-index: 5;
 }
 
 .selectedarea {

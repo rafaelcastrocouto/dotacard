@@ -4,7 +4,7 @@ var game = {
   
   width: 12,  height: 5, //slots
   
-  timeToPick: 5, timeToPlay: 5, connectionLimit: 90, //seconds  
+  timeToPick: 5, timeToPlay: 5, waitLimit: 300, connectionLimit: 90, //seconds  
   
   container: $('<div>').appendTo(document.body).addClass('container'),
   
@@ -73,8 +73,12 @@ var states = {
     },
     
     reset: function(){
-      alert('Connection error, sorry.');
-      //location.reload(true);
+      if(game.debug){
+        console.log('Error', game);
+      } else {
+        alert('Connection error, sorry.');
+        location.reload(true);
+      }
     },
     
     quit: function(){
@@ -111,17 +115,15 @@ var states = {
       
       var c = 'Choose a name and click to play';
       this.button = $('<button>').appendTo(this.menu).attr({'placeholder': c, 'title': c}).text('Play')
-      .click(function(){
-        game.player = {name: states.login.input.val()};
-        
+      .click(function(){        
+        game.player = {name: states.login.input.val()};        
         if(game.player.name){
+          states.login.button.prop( "disabled", true );
           db({'get':'server'}, function(server){
             if(server.status == 'online') states.changeTo('menu');
             else states.load.reset();
           })            
-        }
-        
-        else states.login.input.focus();
+        } else states.login.input.focus();
       });
 
       this.text = $('<div>').appendTo(this.menu);
@@ -131,7 +133,11 @@ var states = {
     
     start: function(){
       this.input.focus();
-    }
+    },
+    
+    end: function(){
+      this.button.prop( "disabled", false );
+    },
   },
   'menu': {
     
@@ -144,12 +150,11 @@ var states = {
 
       this.public = $('<button>').appendTo(this.menu).text('Play public match').attr({ 
         'title': 'Find an adversary online'
-      }).click(function(){
-        game.id = btoa(new Date().valueOf() +''+ parseInt(Math.random()*10E10));
-        //check if there is someone waiting
-        db({'get':'waiting'}, function(waiting){
-          
+      }).click(function(){        
+        states.menu.public.prop( "disabled", true );
+        db({'get':'waiting'}, function(waiting){          
           if(waiting.id == 'none'){
+            game.id = btoa(new Date().valueOf() +''+ parseInt(Math.random()*10E10));
             var myGame = {id: game.id};
             db({'set': 'waiting', 'data': myGame}, function(){ 
               game.status = 'waiting';
@@ -171,6 +176,10 @@ var states = {
       this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
+    },
+    
+    end: function(){
+      states.menu.public.prop( "disabled", false );
     }
   },
   'choose': {      
@@ -215,6 +224,7 @@ var states = {
           challenger: game.player.name
         };
         db({'set': game.id, 'data': game.currentData}, function(){
+          clearTimeout(states.choose.timeout);
           states.choose.timeout = setTimeout(states.choose.getChallenged, 1000);
         });        
       } 
@@ -224,6 +234,7 @@ var states = {
         game.currentData = {
           challenged: game.player.name
         }; 
+        clearTimeout(states.choose.timeout);
         states.choose.timeout = setTimeout(states.choose.getChallenger, 1000);
       }  
     },
@@ -252,7 +263,7 @@ var states = {
           
         } else {
           states.choose.message.html('Be patient <b>'+game.player.name+'</b>, we are still searching for an emeny <small>('+(states.choose.tries++)+')</small>');                
-          if(states.choose.tries > game.connectionLimit) states.load.reset(); //todo: sugest bot match         
+          if(states.choose.tries > game.waitLimit) states.load.reset(); //todo: sugest bot match         
           else states.choose.timeout = setTimeout(states.choose.getChallenger, 1000);
         }
       });
@@ -268,6 +279,7 @@ var states = {
       game.status = 'picking';
       this.count = game.timeToPick;
       this.enablePick();
+      clearTimeout(this.timeout);
       this.timeout = setTimeout(states.choose.pickCount, 1000);      
     },
 
@@ -327,6 +339,7 @@ var states = {
     },
 
     sendDeck: function(){
+      clearTimeout(states.choose.timeout);
       states.choose.tries = 1;
       if(game.player.type == 'challenged'){
         game.currentData.challengedDeck = game.player.picks.join('|');
@@ -374,6 +387,7 @@ var states = {
     },
 
     end: function(){           
+      clearTimeout(states.choose.timeout);
       this.el.removeClass('turn');      
       this.pickedbox.addClass('hidden');
       this.prepickbox.addClass('hidden');       
@@ -400,11 +414,9 @@ var states = {
     buildMap: function(){
 
       this.map = Map.build({
-
         'width': game.width,
         'height': game.height,
         'class': 'map'
-
       }).appendTo(this.el);
 
       game.map = this.map;
@@ -500,7 +512,7 @@ var states = {
 
     },
     beginTurn: function(){
-
+      
       //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand 
       
       states.table.el.removeClass('load').addClass(game.status);       
@@ -518,6 +530,7 @@ var states = {
           Map.highlight(); 
         }
         states.table.counter = game.timeToPlay;
+        clearTimeout(states.table.timeout);
         states.table.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
@@ -588,18 +601,20 @@ var states = {
       game.player.turn++;
       game.currentData[game.player.type + 'Turn'] = game.player.turn;      
       game.currentData.moves = game.currentData.moves.join('|');      
-      
+      clearTimeout(states.table.timeout);
       states.table.sendData();
     },
 
     getMoves: function(){
       states.table.tries = 1;  
       states.table.el.removeClass('unturn').addClass('load');
+      clearTimeout(states.table.timeout);
       states.table.timeout = setTimeout(states.table.getData, 1000);
     },
 
     sendData: function(){
       db({'set': game.id, 'data': game.currentData}, function(){
+        clearTimeout(states.table.timeout);
         states.table.timeout = setTimeout(states.table.beginTurn, 1000);
       });      
     },
@@ -637,6 +652,7 @@ var states = {
           if(!source.hasClass('done') && source.hasClass('enemy') && source.attack) source.attack(toSpot);
         }        
       }      
+      clearTimeout(states.table.timeout);
       states.table.timeout = setTimeout(function(){
         game.status = 'turn';
         states.table.beginTurn();
