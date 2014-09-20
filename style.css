@@ -210,7 +210,7 @@ input:focus {
 .card {
   display: inline-block;
   background: #bbb;
-  cursor: pointer;
+  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
   float: left;
   position: relative;
   top: 0; left: 0;
@@ -259,9 +259,11 @@ input:focus {
 }
 
 .card.player {
+  cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
   box-shadow: inset 0 0 0 25px rgba(0,185,0,0.5);
 }
 .card.enemy {
+  cursor: url("img/cursor/cursor-red.png"), url("img/cursor/cursor-red.cur"), pointer;
   box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
 }
 .card.target {
@@ -407,6 +409,7 @@ input:focus {
 }
 
 .map {
+  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
   position: absolute;
   top: 30px; left: 10px;  
   border-spacing: 1px;
@@ -444,7 +447,7 @@ input:focus {
 }
 
 .turn .map td.movearea {  
-  cursor: pointer;
+  cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
   animation: innerlight 0.5s infinite;
 }
 
