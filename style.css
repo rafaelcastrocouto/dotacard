@@ -405,32 +405,36 @@ input:focus {
   top: 30px; left: 10px;  
   border-spacing: 1px;
   z-index: 1;
+  background-position: 0 0;
+  background-size: 107% 107%;
+  background-image: url("img/bkg/map.png");
+  box-shadow: inset 0 0 8px 6px black;
 }
 
 .map td {
   box-sizing: border-box;
-  background: rgba(255,255,255,0.4);
+  background: rgba(150,150,150,0.1);
   border: 1px solid rgba(0,0,0,0);
   width: 60px; height: 90px;
   position: relative;
   border-top: 1px solid transparent;
 }
 .map td:hover {
-  background: rgba(255,255,255,0.6);
+  background: rgba(150,150,150,0.2);
 }
 
 .map td.playerarea {
-  background: rgba(0,150,50,0.4);
+  background: rgba(100,255,100,0.1);
 }
 .map td.playerarea:hover {
-  background: rgba(0,150,50,0.6);
+  background: rgba(100,255,100,0.2);
 }
 
 .map td.enemyarea {
-  background: rgba(150,0,0,0.4);
+  background: rgba(255,100,100,0.1);
 }
 .map td.enemyarea:hover {
-  background: rgba(150,0,0,0.6);
+  background: rgba(255,100,100,0.2);
 }
 
 .turn .map td.movearea {  

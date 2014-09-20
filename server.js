@@ -13,13 +13,16 @@ var send = function(response, data){
   response.end(''+data);
 };
 
+db.set('server', '{"status":"online"}');
+db.set('waiting', '{"id":"none"}');
+
 http.createServer(function(request, response){
   var urlObj = url.parse(request.url, true);
   
-  var pathname = urlObj.pathname;
-  if(pathname[0] == '/') pathname = pathname.slice(1);
+  var pathname = urlObj.pathname;  
+  console.log('Request: ', pathname);
+  if(pathname[0] == '/') pathname = pathname.slice(1); 
   
-  console.log(pathname);
   if(pathname == 'db'){
     var query = urlObj.query;
     if(query.set) {

@@ -62,7 +62,6 @@ var Map = {
     });
   },
   stroke: function(spot, radius, c, removeDiag, filter){ 
-    console.log('stroke: '+spot);
     if(radius == 0) return;
     var fil = function(id, b){
       var td = $('#'+id);   
@@ -92,7 +91,6 @@ var Map = {
       fil(left, 'left');
       var right = Map.letters[(w + d)] + i;      
       fil(right, 'right');
-      console.log('left: '+left, 'right: '+right);
     }
 
     var startWidth = w - d + 1;
@@ -101,7 +99,6 @@ var Map = {
       fil(top, 'top');
       var bottom = Map.letters[i] + (h + d);      
       fil(bottom, 'bottom');
-      console.log('top: '+top, 'bottom: '+bottom);
     }        
 
   },
