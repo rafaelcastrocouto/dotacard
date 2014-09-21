@@ -131,7 +131,7 @@ Card.damage = function(damage, target){
     if(source.hasClass('heroes')){
       var kills = source.data('kills') + 1;
       source.data('kills', kills);
-      source.children('.kills').text(kills);
+      source.find('.kills').text(kills);
     }
   }
   target.children('span.hp').text(hp);
@@ -154,7 +154,7 @@ $.fn.damage = Card.damage;
 
 Card.die = function(){
   this.addClass('dead').removeClass('target');
-  this.children('span.hp').text(0);
+  this.find('.hp').text(0);
   this.data('currenthp', 0);
   var spot = Map.getPosition(this);
   $('#'+spot).removeClass('block').addClass('free');
@@ -163,8 +163,8 @@ Card.die = function(){
   if(this.hasClass('heroes')){
     var deaths = this.data('deaths') + 1;
     this.data('deaths', deaths);
-    this.children('.deaths').text(deaths);
-    this.data('reborn', game.time + 4);
+    this.find('.deaths').text(deaths);
+    this.data('reborn', game.time + game.deadLength);
     if(this.hasClass('player')) this.appendTo(states.table.playerDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemyDeck);
 
@@ -177,10 +177,10 @@ Card.die = function(){
 
 $.fn.die = Card.die;
 
-Card.reborn = function(){
+Card.reborn = function(){console.log(this);
   this.removeClass('dead');
   var hp = this.data('hp');
-  this.children('span.hp').text(hp);
+  this.find('.hp').text(hp);
   this.data('currenthp', hp);
   this.data('reborn', undefined);
   var x, y, spot, freeSpot;

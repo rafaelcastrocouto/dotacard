@@ -1,17 +1,10 @@
-var game = {
-  
-  debug: location.host == "localhost",
-  
-  width: 12,  height: 5, //slots
-  
-  timeToPick: 5, timeToPlay: 5, waitLimit: 300, connectionLimit: 90, //seconds  
-  
-  container: $('<div>').appendTo(document.body).addClass('container'),
-  
+var game = {  
+  debug: location.host == "localhost",  
+  width: 12,  height: 5, //slots   
+  container: $('<div>').appendTo(document.body).addClass('container'), 
   loader: $('<span>').addClass('loader'),
-  
-  dayLength: 6, //turns
-  
+  timeToPick: 5, timeToPlay: 5, waitLimit: 300, connectionLimit: 90, //seconds    
+  dayLength: 6, deadLength: 4 //turns  
 };
 
 /***STATES*** ////////////////////////////////////////////
@@ -525,9 +518,10 @@ var states = {
       if(game.status != 'over') {
         
         states.table.el.addClass(game.status);  
+        
         $('.card.dead').each(function(){
           var dead = $(this);
-          if(dead.data('reborn') == game.time) dead.reborn();
+          if(game.time > dead.data('reborn')) dead.reborn();
         });        
         
         if(game.status == 'turn'){              
