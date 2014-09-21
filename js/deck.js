@@ -6,13 +6,13 @@
 //cards = 100/cooldown 
 
 var Card = function(data){ 
-  var el = $('<div>').addClass('card '+ data.className).attr('id', data.id);   
+  var el = $('<div>').addClass(data.id+' card '+ data.className);   
   var fieldset = $('<fieldset>').appendTo(el); 
   $('<legend>').appendTo(fieldset).text(data.name); 
   data.currenthp = data.hp;
   $('<span>').addClass('hp').appendTo(el).text(data.currenthp);   
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
-  $('<img>').appendTo(portrait).attr('src', data.img);
+  $('<div>').appendTo(portrait).addClass('img');
   $('<div>').addClass('overlay').appendTo(portrait);
   $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
   $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
@@ -23,6 +23,13 @@ var Card = function(data){
   if(data.passive)   $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   if(data.permanent) $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   if(data.temporary) $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
+  
+  if(data.className == 'heroes'){
+    data.kills = 0;
+    data.deaths = 0;
+    $('<p>').addClass('kd').appendTo(fieldset).html('KD: <span class="kills">0</span>/<span class="deaths">0</span>');
+  }
+  
   $.each(data, function(item){el.data(item, this);});
   return el;
 };
@@ -92,7 +99,7 @@ Card.move = function(destiny){
 
     var t = card.offset();
     var d = destiny.offset();
-    card.css({top: d.top - t.top - 108, left: d.left - t.left - 18});
+    card.css({top: d.top - t.top - 110, left: d.left - t.left - 20});
 
     setTimeout(function(){    
       $(this.card).css({top: '', left: ''}).appendTo(this.destiny);
@@ -121,6 +128,11 @@ Card.damage = function(damage, target){
   if(hp < 1) {
     hp = 0;
     setTimeout(target.die.bind(target), 1000);
+    if(source.hasClass('heroes')){
+      var kills = source.data('kills') + 1;
+      source.data('kills', kills);
+      source.children('.kills').text(kills);
+    }
   }
   target.children('span.hp').text(hp);
   target.data('currenthp', hp);  
@@ -149,6 +161,9 @@ Card.die = function(){
   if(this.hasClass('selected')) this.select();
   
   if(this.hasClass('heroes')){
+    var deaths = this.data('deaths') + 1;
+    this.data('deaths', deaths);
+    this.children('.deaths').text(deaths);
     this.data('reborn', game.time + 4);
     if(this.hasClass('player')) this.appendTo(states.table.playerDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemyDeck);

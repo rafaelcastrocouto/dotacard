@@ -13,8 +13,9 @@ var send = function(response, data){
   response.end(''+data);
 };
 
-db.set('server', '{"status":"online"}');
-db.set('waiting', '{"id":"none"}');
+db.set('server', '{"status":"online"}', function(){
+  db.set('waiting', '{"id":"none"}');
+});
 
 http.createServer(function(request, response){
   var urlObj = url.parse(request.url, true);
@@ -26,8 +27,9 @@ http.createServer(function(request, response){
   if(pathname == 'db'){
     var query = urlObj.query;
     if(query.set) {
-      db.set(query.set, query.data || '');
-      send(response, true);
+      db.set(query.set, query.data || '', function(data){
+        send(response, data);
+      });      
     } else if (query.get) {
       db.get(query.get, function(data){    
         send(response, data);

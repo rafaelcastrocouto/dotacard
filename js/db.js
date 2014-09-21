@@ -5,7 +5,7 @@ var db = function(send, cb){
     url: game.debug ? 'http://localhost/db' : 'http://ajaxdatabase.jsapp.us/', 
     data: send, 
     complete: function(receive){
-      var data = {};
+      var data;
       if(receive.responseText) {
         data = JSON.parse(receive.responseText);
         console.log('XHR:', data);
