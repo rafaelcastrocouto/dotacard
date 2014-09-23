@@ -1,6 +1,6 @@
 var game = {  
   player: {}, enemy: {}, currentData: {},
-  debug: location.host == "localhost",  
+  debug: 0,// location.host == "localhost",  
   width: 12,  height: 5, //slots   
   container: $('<div>').appendTo(document.body).addClass('container'), 
   loader: $('<span>').addClass('loader'),
@@ -93,7 +93,7 @@ var states = {
     build: function(){  
       if(!game.debug){        
         this.box = $('<div>').appendTo(this.el).attr({'class': 'box'}).hide();
-        this.text = $('<p>').appendTo(this.box).attr({'class': 'intro'}).html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">æ</a>');
+        this.text = $('<p>').appendTo(this.box).attr({'class': 'intro'}).html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
       }
     },
     
@@ -103,9 +103,10 @@ var states = {
         this.el.tubular({
           videoId: '-cSFPIwMEq4',
           onReady: function(){
+            $('.tubular').show(1000);
             states.intro.timeout = setTimeout(function(){
               states.changeTo('login');
-            }, 103000);
+            }, 102600);
           }
         });        
         this.el.click(function(){
