@@ -3,19 +3,116 @@
 //reg = hp*0.03  (hp/33.333...)
 //mana = lvl15 mana * 0.001
 //skills lvl3 ults lvl2
-//cards = 100/cooldown 
+//skill card count = 100/cooldown 
+
+var Deck = function(/* name, [filter], callback */){  
+  var name = arguments[0];
+  var filter, cb;
+  if(typeof arguments[1] == 'function') cb = arguments[1];
+  else {
+    filter = arguments[1];
+    cb = arguments[2];
+  } 
+  var deck = $('<div>').addClass('deck '+name);
+
+  if(!Deck.loadedDecks[name])
+    Deck.loadDeck(name, function(){
+      Deck.createCards(deck, name, cb, filter);
+    });    
+  else Deck.createCards(deck, name, cb, filter);
+
+  return deck;
+};
+
+Deck.loadedDecks = {};
+
+Deck.loadDeck = function(name, cb){
+  $.ajax({
+    type: "GET", 
+    url: 'json/'+name+'.json',
+    complete: function(response){
+      var data = JSON.parse(response.responseText);
+      Deck.loadedDecks[name] = data;
+      cb();
+    }
+  });
+};
+
+Deck.createCards = function(deck, name, cb, filter){   
+  if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
+  if(name == 'skills') Deck.createSkillsCards(deck, name, cb, filter);
+};
+
+Deck.createHeroesCards = function(deck, name, cb, filter){   
+  var deckData = Deck.loadedDecks[name];
+  var cards = [];
+  $.each(deckData, function(id, heroData){
+    if(filter){
+      var found = false;
+      $.each(filter, function(i, pick){
+        if(pick == id) found = true;
+      });
+    }
+    if(found || !filter){
+      heroData.id = id;
+      heroData.className = name;
+      cards.push(Card(heroData).appendTo(deck));
+    }
+  });
+  deck.data('cards', cards);
+  if(cb) cb(deck);     
+};
+
+Deck.createSkillsCards = function(deck, name, cb, filter){   
+  var deckData = Deck.loadedDecks[name];
+  var cards = [];
+  $.each(deckData, function(heroId, heroSkillsData){ 
+    console.log(heroSkillsData);
+    if(filter){
+      var found = false;
+      $.each(filter, function(i, pick){
+        if(pick == heroId) found = true;
+      });
+    }
+    if(found || !filter){
+      $.each(heroSkillsData, function(id, skillData){ 
+        skillData.id = heroId+'-'+id;
+        skillData.className = name;
+        console.log(skillData);
+        for(var k=0; k < skillData.cards; k++){
+          cards.push(Card(skillData).appendTo(deck));
+        }
+      });
+    }    
+  });
+  deck.data('cards', cards);
+  if(cb) cb(deck);     
+};
 
 var Card = function(data){ 
-  var el = $('<div>').addClass(data.id+' card '+ data.className);   
-  var fieldset = $('<fieldset>').appendTo(el); 
-  $('<legend>').appendTo(fieldset).text(data.name); 
-  data.currenthp = data.hp;
-  $('<span>').addClass('hp').appendTo(el).text(data.currenthp);   
+  var card = $('<div>').addClass(data.id+' card '+ data.className);   
+  var fieldset = $('<fieldset>').appendTo(card); 
+  $('<legend>').appendTo(fieldset).text(data.name);
+  
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
-  $('<div>').appendTo(portrait).addClass('img');
-  $('<div>').addClass('overlay').appendTo(portrait);
-  $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
+    $('<div>').appendTo(portrait).addClass('img');
+    $('<div>').addClass('overlay').appendTo(portrait);
+  
+  if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
+  if(data.cards) $('<h1>').appendTo(fieldset).text('Cards: '+ data.cards.length + ' | ' + data.type );  
+  
+  if(data.hp) {
+    $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
+    data.currenthp = data.hp;
+    $('<span>').addClass('hp').appendTo(card).text(data.currenthp);   
+  }
+  
+  if(data.chance)    $('<p>').appendTo(fieldset).text('Chance: '+data.chance+'%');
+  if(data.percentage)$('<p>').appendTo(fieldset).text('Percentage: '+data.percentage+'%');
+  if(data.delay)     $('<p>').appendTo(fieldset).text('Delay: '+data.delay);
+  if(data.damageType)$('<p>').appendTo(fieldset).text('Damage Type: '+data.damageType);
+  if(data.duration)  $('<p>').appendTo(fieldset).text('Duration: '+data.duration);
+  if(data.dot)       $('<p>').appendTo(fieldset).text('Damage over time: '+data.dot);
   if(data.regen)     $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
   if(data.damage)    $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
   if(data.mana)      $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
@@ -30,8 +127,8 @@ var Card = function(data){
     $('<p>').addClass('kd').appendTo(fieldset).html('KD: <span class="kills">0</span>/<span class="deaths">0</span>');
   }
   
-  $.each(data, function(item){el.data(item, this);});
-  return el;
+  $.each(data, function(item, value){card.data(item, value);});
+  return card;
 };
 
 Card.place =function(target) {
@@ -99,7 +196,7 @@ Card.move = function(destiny){
 
     var t = card.offset();
     var d = destiny.offset();
-    card.css({top: d.top - t.top - 110, left: d.left - t.left - 20});
+    card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
 
     setTimeout(function(){    
       $(this.card).css({top: '', left: ''}).appendTo(this.destiny);
@@ -159,18 +256,26 @@ Card.die = function(){
   var spot = Map.getPosition(this);
   $('#'+spot).removeClass('block').addClass('free');
   if(this.hasClass('selected')) this.select();
-  
+
   if(this.hasClass('heroes')){
+
     var deaths = this.data('deaths') + 1;
     this.data('deaths', deaths);
     this.find('.deaths').text(deaths);
     this.data('reborn', game.time + game.deadLength);
-    if(this.hasClass('player')) this.appendTo(states.table.playerDeck);
-    else if(this.hasClass('enemy')) this.appendTo(states.table.enemyDeck);
+    if(this.hasClass('player')) this.appendTo(states.table.playerHeroesDeck);
+    else if(this.hasClass('enemy')) this.appendTo(states.table.enemyHeroesDeck);
+
+  } else if(this.hasClass('skills')){ 
+
+    if(this.hasClass('player')) this.appendTo(states.table.playerSkillsDeck);
+    else if(this.hasClass('enemy')) this.appendTo(states.table.enemySkillsDeck);
 
   } else if(this.hasClass('tower')) {
+
     if(this.hasClass('player')) states.table.lose();
     else if(this.hasClass('enemy')) states.table.win();
+
   }
   else this.remove();
 };
@@ -178,79 +283,31 @@ Card.die = function(){
 $.fn.die = Card.die;
 
 Card.reborn = function(){console.log(this);
-  this.removeClass('dead');
-  var hp = this.data('hp');
-  this.find('.hp').text(hp);
-  this.data('currenthp', hp);
-  this.data('reborn', undefined);
-  var x, y, spot, freeSpot;
-  
-  if(this.hasClass('player')){
-    x = 0, y = '4';
-    spot = Map.letters[x]+y;
-    while($('#'+spot).hasClass('block')) {
-      x++;
-      spot = Map.letters[x]+y;
-    }    
-  }
-  else if(this.hasClass('enemy')) {
-    x = 11, y = '2';
-    spot = Map.letters[x]+y;
-    while($('#'+spot).hasClass('block')) {
-      x--;
-      spot = Map.letters[x]+y;
-    }
-  }
-  this.place(spot);
-};
+                         this.removeClass('dead');
+                         var hp = this.data('hp');
+                         this.find('.hp').text(hp);
+                         this.data('currenthp', hp);
+                         this.data('reborn', undefined);
+                         var x, y, spot, freeSpot;
+
+                         if(this.hasClass('player')){
+                           x = 0, y = '4';
+                           spot = Map.letters[x]+y;
+                           while($('#'+spot).hasClass('block')) {
+                             x++;
+                             spot = Map.letters[x]+y;
+                           }    
+                         }
+                         else if(this.hasClass('enemy')) {
+                           x = 11, y = '2';
+                           spot = Map.letters[x]+y;
+                           while($('#'+spot).hasClass('block')) {
+                             x--;
+                             spot = Map.letters[x]+y;
+                           }
+                         }
+                         this.place(spot);
+                        };
 
 $.fn.reborn = Card.reborn;
-
-var Deck = function(/* name, [filter], callback */){  
-  var name = arguments[0];
-  var filter, cb;
-  if(typeof arguments[1] == 'function') cb = arguments[1];
-  else {
-    filter = arguments[1];
-    cb = arguments[2];
-  } 
-  var el = $('<div>').addClass('deck '+name);
-
-  if(!Deck.loadedDecks[name]){
-    $.ajax({
-      type: "GET", 
-      url: 'json/'+name+'.json',
-      complete: function(response){
-        var data = JSON.parse(response.responseText);
-        Deck.loadedDecks[name] = data;
-        Deck.createCards(el, name, cb, filter);
-      }
-    });
-  } else Deck.createCards(el, name, cb, filter);
-
-  return el;
-};
-
-Deck.loadedDecks = {};
-
-Deck.createCards = function(el, name, cb, filter){   
-  var data = Deck.loadedDecks[name];
-  var cards = {};
-  $.each(data, function(id, type){
-    if(filter){
-      var found = false;
-      $.each(filter, function(i, pick){
-        if(pick == id) found = true;
-      });
-    }
-    if(found || !filter){
-      type.id = id;
-      type.className = name;
-      cards[id] = Card(type);
-      cards[id].appendTo(el);
-    }
-  });
-  el.data('cards', cards);
-  if(cb) cb(el);     
-};
 

@@ -1,19 +1,65 @@
 {
+  "wk":{
+    "stun": {
+      "name": "Wraithfire Blast",
+      "type": "Target Unit",
+      "target": "enemy",
+      "damage": 10,
+      "damageType": "Magical",
+      "duration": 2,
+      "dot": 2,
+      "cards": 10
+    },
+    "lifesteal": {
+      "name": "Vampiric Aura",
+      "type": "Aura",
+      "percentage": 30,
+      "target": "player",
+      "cards": 1    
+    },
+    "crit": {
+      "name": "Mortal Strike",
+      "type": "Passive",
+      "chance": 15,
+      "percentage": 300,
+      "target": "self",
+      "cards": 1
+    },
+    "ult": {
+      "name": "Reincarnation",
+      "type": "Passive",
+      "target": "self",
+      "duration": 3,
+      "delay": 1,
+      "cards": 1 
+    }    
+  },
   "ktol":{
     "illuminate": {
       "name": "Illuminate",
+      "type": "Area of effect",
+      "damage": 5,
+      "width": 1,
+      "range": 5,
+      "target": "enemy",
       "cards": 10    
     },
-    "drain": {
+    "leak": {
       "name": "Mana Leak",
+      "type": "Target Enemy Unit",
+      "target": "enemy",
       "cards": 6    
     },
     "mana": {
       "name": "Chakra Magic",
+      "type": "Target Friend Unit",
+      "target": "friend",
       "cards": 5
     },
     "ult": {
       "name": "Spirit Form",
+      "type": "Transform",
+      "target": "self",
       "cards": 1 
     }    
   }
