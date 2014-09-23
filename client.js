@@ -1,6 +1,6 @@
 var game = {  
   player: {}, enemy: {}, currentData: {},
-  debug: 0,// location.host == "localhost",  
+  debug: location.host == "localhost",  
   width: 12,  height: 5, //slots   
   container: $('<div>').appendTo(document.body).addClass('container'), 
   loader: $('<span>').addClass('loader'),
@@ -94,21 +94,26 @@ var states = {
       if(!game.debug){        
         this.box = $('<div>').appendTo(this.el).attr({'class': 'box'}).hide();
         this.text = $('<p>').appendTo(this.box).attr({'class': 'intro'}).html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
+        this.player = this.el.tubular({
+          videoId: '-cSFPIwMEq4',
+          scale: 1.2,
+          onBeforeLoad: function(tubular){ console.log('hide before', tubular);
+            tubular.hide();
+          },
+          onReady: function(tubular){ console.log('hide before', tubular);
+            tubular.fadeIn(1000);
+            states.intro.timeout = setTimeout(function(){
+              states.changeTo('login');
+            }, 102600);
+          }
+        });   
       }
     },
     
     start: function(){
       if(!game.debug){
         this.box.fadeIn(3000).delay(3000).fadeOut(3000);
-        this.el.tubular({
-          videoId: '-cSFPIwMEq4',
-          onReady: function(){
-            $('.tubular').show(1000);
-            states.intro.timeout = setTimeout(function(){
-              states.changeTo('login');
-            }, 102600);
-          }
-        });        
+             
         this.el.click(function(){
           clearTimeout(states.intro.timeout);
           states.changeTo('login');
@@ -120,8 +125,7 @@ var states = {
     
     end: function(){
       if(!game.debug){
-        player.pauseVideo();
-        $('.tubular').remove();
+        this.el.data('tubular-player').pauseVideo();
       }
     }
   },
@@ -218,8 +222,7 @@ var states = {
   ////////////////////////////////////////////////////////////////////////////////////////  
     
     build: function(){   
-      this.message = $('<p>').appendTo(this.el).attr({'class': 'message'});
-      game.loader.appendTo(this.el);
+      this.message = $('<p>').appendTo(this.el).attr({'class': 'message'});      
       this.triesCounter = $('<small>').addClass('triescounter').appendTo(this.el);
       this.pickbox = $('<div>').appendTo(this.el).attr({'class': 'pickbox'});
       this.pickedbox = $('<div>').appendTo(this.el).attr({'class': 'pickedbox'}).addClass('hidden');
@@ -246,6 +249,7 @@ var states = {
     },
     
     start: function(){
+      game.loader.appendTo(this.el);
       this.findGame();
     },
 
@@ -437,8 +441,7 @@ var states = {
   ////////////////////////////////////////////////////////////////////////////////////////
     
     build: function(){
-      this.message =  $('<p>').appendTo(this.el).attr({'class': 'message'}).text('Muuuuuuuuuuuuu!');
-      game.loader.show().appendTo(this.el);
+      this.message =  $('<p>').appendTo(this.el).attr({'class': 'message'}).text('Muuuuuuuuuuuuu!');      
       this.triesCounter = $('<small>').addClass('triescounter').appendTo(this.el);      
       this.time =  $('<p>').appendTo(this.el).attr({'class': 'time'}).text('Time: 0:00 Day Turns: 0/0 (0)');
       this.selectedArea = $('<div>').appendTo(this.el).attr({'class': 'selectedarea'});
@@ -446,6 +449,7 @@ var states = {
     },
     
     start: function(){
+      game.loader.show().appendTo(this.el);
       this.placeTowers(); 
       this.placeHeroes(); 
       this.buildSkills(); 
@@ -551,7 +555,8 @@ var states = {
       //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand   
            
       if(game.status != 'over') {        
-        states.table.el.addClass(game.status);        
+        states.table.el.addClass(game.status);   
+        $('.card .damage').remove();
         $('.card.dead').each(function(){
           var dead = $(this);
           if(game.time > dead.data('reborn')) dead.reborn();
@@ -718,4 +723,4 @@ var states = {
 };// states end //////////////////////////////////////////////////////////////////////////////////////
 
 //start the game
-states.build();  
+$(states.build);

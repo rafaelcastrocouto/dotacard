@@ -34,11 +34,13 @@
       "cards": 1 
     }    
   },
+  
   "ktol":{
     "illuminate": {
       "name": "Illuminate",
       "type": "Area of effect",
       "damage": 5,
+      "damageType": "Magical",     
       "width": 1,
       "range": 5,
       "target": "enemy",
@@ -53,13 +55,71 @@
     "mana": {
       "name": "Chakra Magic",
       "type": "Target Friend Unit",
-      "target": "friend",
+      "target": "player",
       "cards": 5
     },
     "ult": {
       "name": "Spirit Form",
       "type": "Transform",
       "target": "self",
+      "cards": 1 
+    },
+    "illuminate-ult": {
+      "name": "Illuminate",
+      "type": "Area of effect",
+      "target": "enemy",
+      "damage": 5,
+      "damageType": "Magical",     
+      "width": 1,
+      "range": 5,      
+      "cards": 1 
+    },
+    "blind": {
+      "name": "Blinding Light",
+      "type": "Area of effect",
+      "target": "enemy",  
+      "cards": 1 
+    },
+    "recall": {
+      "name": "Recall",
+      "type": "Target Unit",
+      "target": "player",  
+      "cards": 1 
+    }
+  },
+  
+  "cm":{
+    "slow": {
+      "name": "Crystal Nova",
+      "type": "Target Unit",
+      "target": "enemy",
+      "duration": 2,
+      "damage": 12,
+      "damageType": "Magical",      
+      "cards": 6
+    },
+    "aura": {
+      "name": "Arcane Aura",
+      "type": "Aura",
+      "target": "player",
+      "cards": 1    
+    },
+    "freeze": {
+      "name": "Frostbite",
+      "type": "Target Unit",     
+      "target": "self",
+      "duration": 3,
+      "dot": 3,
+      "damageType": "Magical", 
+      "cards": 1
+    },
+    "ult": {
+      "name": "Freezing Field",
+      "type": "Area of Effect",
+      "target": "enemy",
+      "duration": 5,
+      "dot": 8,
+      "damageType": "Magical",       
       "cards": 1 
     }    
   }

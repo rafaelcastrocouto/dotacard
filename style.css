@@ -85,7 +85,7 @@ input:focus {
   position: relative;  
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: 0 0 6px black;
+  box-shadow: 0 0 6px black;  
 }
 #states > div {
   width: 100%; height: 100%;
@@ -266,6 +266,7 @@ input:focus {
   width: 185px; height: 104px;
   border-radius: 5px;
   background-size: cover;
+  background-position: 50% 50%;
 }
 .card .overlay {
   box-shadow: 0 0 20px #000 inset;
@@ -337,17 +338,23 @@ input:focus {
   top: 0;
   right: 0;
   font-size: 180px;
-  animation: slideup 1s;
+  animation: slideup 5s;
   text-shadow: 1px 0 2px red,
     -1px 0 2px red,
     0 1px 2px red,
     0 -1px 2px red;
 }
-.selectedarea .card {
+.table .selectedarea .card {
   transform: scale(1);
 }
-.selectedarea .card .damage {
+.table .selectedarea .card .damage {
   display: none;
+}
+.table .deck .card {
+  transform: scale(0.4);
+}
+.table .deck .card:hover {
+  transform: scale(0.45);
 }
 .table .deck.heroes .card,
 .table .deck.skills .card {
@@ -373,6 +380,8 @@ input:focus {
   background: rgba(0,0,0,0.3);
   border-radius: 5px;
 }
+
+/*MAP*/
 
 .map {
   cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
@@ -457,27 +466,28 @@ input:focus {
   margin-left: 35%;
 }
 
-.table .deck.player.heroes {
+.table .deck {
   position: absolute;
-  top: 410px;
-  left: 10px;
-}
-
-.table .deck.enemy.heroes {
-  position: absolute;
-  top: 410px;
-  left: 200px;
-}
-
-.table .deck.player.skills {
-  position: absolute;
-  bottom: 10px;
-  right: 20px;
   height: 200px;
   width: 400px;
 }
 
-.selectedarea {
+.table .deck.player.heroes {
+  bottom: 0;
+  left: 4px;
+}
+
+.table .deck.enemy.heroes {
+  bottom: 0;
+  left: 160px;
+}
+
+.table .deck.player.skills {
+  bottom: 0;
+  right: 20px;
+}
+
+.table .selectedarea {
   position: absolute;
   top: 40px;
   right: 65px;
@@ -485,59 +495,123 @@ input:focus {
 
 /*HEROES*/
 
-.kotl {
-  background: #fd8;
-}
-.kotl .img {
-  background-image: url("img/heroes/keeper_of_the_light_full.png");
-}
+
 .pud {
   background: #b43;
 }
 .pud .img {
   background-image: url("img/heroes/pudge_full.png");
 }
-.cm {
-  background: #78c;
+.pud-hook .img {
+  background-image: url("img/skills/pudge_meat_hook.png");
 }
-.cm .img {
-  background-image: url("img/heroes/crystal_maiden_full.png");
+.pud-rot .img {
+  background-image: url("img/skills/pudge_rot.png");
 }
+.pud-passive .img {
+  background-image: url("img/skills/pudge_flesh_heap.png");
+}
+.pud-ult .img {
+  background-image: url("img/skills/pudge_dismember.png");
+}
+
+
 .nyx {
   background: #145;
 }
 .nyx .img {
   background-image: url("img/heroes/nyx_assassin_full.png");
 }
-.wk {
-  background: #483;
+.nyx-stun .img {
+  background-image: url("img/skills/nyx_assassin_impale.png");
 }
-.wk .img {
-  background-image: url("img/heroes/skeleton_king_full.png");
+.nyx-burn .img {
+  background-image: url("img/skills/nyx_assassin_mana_burn.png");
 }
+.nyx-spike .img {
+  background-image: url("img/skills/nyx_assassin_spiked_carapace.png");
+}
+.nyx-ult .img {
+  background-image: url("img/skills/nyx_assassin_vendetta.png");
+}
+
+
 .am {
   background: #674f80;
 }
 .am .img {
   background-image: url("img/heroes/antimage_full.png");
 }
+.am-burn .img {
+  background-image: url("img/skills/antimage_mana_break.png");
+}
+.am-blink .img {
+  background-image: url("img/skills/antimage_blink.png");
+}
+.am-passive .img {
+  background-image: url("img/skills/antimage_spell_shield.png");
+}
+.am-ult .img {
+  background-image: url("img/skills/antimage_mana_void.png");
+}
+
+
 .ld {
   background: #62a64e;
 }
 .ld .img {
   background-image: url("img/heroes/lone_druid_full.png");
 }
-.ptw .img {
-  background-image: url("img/towers/tower-player.png");
+.ld-bear .img {
+  background-image: url("img/skills/lone_druid_spirit_bear.png");
 }
-.etw .img {
-  background-image: url("img/towers/tower-enemy.png");
+.ld-rabid .img {
+  background-image: url("img/skills/lone_druid_rabid.png");
+}
+.ld-passive .img {
+  background-image: url("img/skills/lone_druid_synergy.png");
+}
+.ld-cry .img {
+  background-image: url("img/skills/lone_druid_true_form_battle_cry.png");
+}
+.ld-ult .img {
+  background-image: url("img/skills/lone_druid_true_form.png");
+}
+.ld-transform .img {
+  background-image: url("img/skills/lone_druid_true_form_druid.png");
 }
 
-/*SKILLS*/
+.wk {
+  background: #483;
+}
+.wk .img {
+  background-image: url("img/heroes/skeleton_king_full.png");
+}
+.wk-stun .img {
+  background-image: url("img/skills/skeleton_king_hellfire_blast.png");
+}
+.wk-lifesteal .img {
+  background-image: url("img/skills/skeleton_king_vampiric_aura.png");
+}
+.wk-crit .img {
+  background-image: url("img/skills/skeleton_king_mortal_strike.png");
+}
+.wk-ult .img {
+  background-image: url("img/skills/skeleton_king_reincarnation.png");
+}
 
+
+.kotl {
+  background: #fd8;
+}
+.kotl .img {
+  background-image: url("img/heroes/keeper_of_the_light_full.png");
+}
 .ktol-illuminate .img {
   background-image: url("img/skills/keeper_of_the_light_illuminate.png");
+}
+.ktol-illuminate-end .img {
+  background-image: url("img/skills/keeper_of_the_light_illuminate_end.png");
 }
 .ktol-leak .img {
   background-image: url("img/skills/keeper_of_the_light_mana_leak.png");
@@ -551,7 +625,41 @@ input:focus {
 .ktol-illuminate-ult .img {
   background-image: url("img/skills/keeper_of_the_light_spirit_form_illuminate.png");
 }
+.ktol-blind .img {
+  background-image: url("img/skills/keeper_of_the_light_blinding_light.png");
+}
+.ktol-recall .img {
+  background-image: url("img/skills/keeper_of_the_light_recall.png");
+}
 
+
+.cm {
+  background: #78c;
+}
+.cm .img {
+  background-image: url("img/heroes/crystal_maiden_full.png");
+}
+.cm-slow .img {
+  background-image: url("img/skills/crystal_maiden_crystal_nova.png")
+}
+.cm-aura .img {
+  background-image: url("img/skills/crystal_maiden_brilliance_aura.png")
+}
+.cm-freeze .img {
+  background-image: url("img/skills/crystal_maiden_frostbite.png")
+}
+.cm-ult .img {
+  background-image: url("img/skills/crystal_maiden_freezing_field.png")
+}
+
+/*TOWERS*/
+
+.ptw .img {
+  background-image: url("img/towers/tower-player.png");
+}
+.etw .img {
+  background-image: url("img/towers/tower-enemy.png");
+}
 
 
 /*FORK*/

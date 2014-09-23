@@ -242,9 +242,6 @@ Card.damage = function(damage, target){
   } else {
     damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
   } 
-  clearTimeout(this.data('timeout'));
-  var remove = setTimeout(damageFx.remove.bind(damageFx), 1000);
-  this.data('timeout', remove);
 };
 
 $.fn.damage = Card.damage;
