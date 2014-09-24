@@ -219,6 +219,7 @@ input:focus {
   top: 0; left: 0;
   text-align: left;  
   transition: all 0.4s;
+  transform: scale(0.4); 
   margin: 0 -56px;
   padding: 5px;
   width: 200px; height: 300px;
@@ -240,6 +241,9 @@ input:focus {
 }
 .card.dead {
   -webkit-filter: grayscale(0.9);
+}
+.card:hover {
+  z-index: 1;
 }
 
 .card fieldset {
@@ -360,23 +364,6 @@ input:focus {
     0 1px 2px red,
     0 -1px 2px red;
 }
-.table .selectedarea .card {
-  transform: scale(1);
-}
-.table .selectedarea .card .damage {
-  display: none;
-}
-
-.table .deck .card {
-  transform: scale(0.4);
-}
-.table .deck .card:hover {
-  transform: scale(0.45);
-}
-.table .deck.heroes .card,
-.table .deck.skills .card {
-  margin-right: -140px;
-}
 
 /*TABLE*/
 
@@ -386,8 +373,6 @@ input:focus {
   background: rgba(0,0,0,0.3);
   border-radius: 5px;
 }
-
-/*MAP*/
 
 .map {
   cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
@@ -472,12 +457,27 @@ input:focus {
   margin-left: 35%;
 }
 
-.table .deck {
+.table .deck,
+.table .hand {
   position: absolute;
-  height: 200px;
-  width: 400px;
+  height: 200px;  
+}
+.table .deck .card,
+.table .hand .card {
+  transform: scale(0.4);
+}
+.table .deck .card:hover,
+.table .hand .card:hover {
+  transform: scale(0.45);
+}
+.table .deck .card,
+.table .hand .card {
+  margin-right: -140px;
 }
 
+.table .deck.heroes {
+  width: 160px;
+}
 .table .deck.player.heroes {
   bottom: 0;
   left: 4px;
@@ -488,10 +488,13 @@ input:focus {
   left: 160px;
 }
 
-.table .playerhand {
-  position: absolute;
+.table .player.skills.hand {
   bottom: 0;
-  right: 20px;
+  right: 10px;
+  width: 620px;
+}
+.table .player.skills.hand .card {
+  margin-right: -100px;
 }
 
 .table .selectedarea {
@@ -499,9 +502,14 @@ input:focus {
   top: 40px;
   right: 65px;
 }
+.table .selectedarea .card {
+  transform: scale(1);
+}
+.table .selectedarea .card .damage {
+  display: none;
+}
 
 /*HEROES*/
-
 
 .pud {
   background: #b43;

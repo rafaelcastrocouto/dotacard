@@ -67,7 +67,6 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
   var deckData = Deck.loadedDecks[name];
   var cards = [];
   $.each(deckData, function(heroId, heroSkillsData){ 
-    console.log(heroSkillsData);
     if(filter){
       var found = false;
       $.each(filter, function(i, pick){
@@ -78,7 +77,6 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
       $.each(heroSkillsData, function(id, skillData){ 
         skillData.id = heroId+'-'+id;
         skillData.className = name;
-        console.log(skillData);
         for(var k=0; k < skillData.cards; k++){
           cards.push(Card(skillData).appendTo(deck));
         }
@@ -97,20 +95,20 @@ var Card = function(data){
   var card = $('<div>').addClass(data.id+' card '+ data.className);   
   var fieldset = $('<fieldset>').appendTo(card); 
   $('<legend>').appendTo(fieldset).text(data.name);
-  
+
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
-    $('<div>').appendTo(portrait).addClass('img');
-    $('<div>').addClass('overlay').appendTo(portrait);
-  
+  $('<div>').appendTo(portrait).addClass('img');
+  $('<div>').addClass('overlay').appendTo(portrait);
+
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  if(data.cards) $('<h1>').appendTo(fieldset).text('Cards: '+ data.cards.length + ' | ' + data.type );  
-  
+  if(data.cards) $('<h1>').appendTo(fieldset).text('Cards: '+ data.cards + ' | ' + data.type );  
+
   if(data.hp) {
     $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
     data.currenthp = data.hp;
     $('<span>').addClass('hp').appendTo(card).text(data.currenthp);   
   }
-  
+
   if(data.chance)    $('<p>').appendTo(fieldset).text('Chance: '+data.chance+'%');
   if(data.percentage)$('<p>').appendTo(fieldset).text('Percentage: '+data.percentage+'%');
   if(data.delay)     $('<p>').appendTo(fieldset).text('Delay: '+data.delay);
@@ -124,13 +122,13 @@ var Card = function(data){
   if(data.passive)   $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   if(data.permanent) $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   if(data.temporary) $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
-  
+
   if(data.className == 'heroes'){
     data.kills = 0;
     data.deaths = 0;
     $('<p>').addClass('kd').appendTo(fieldset).html('KD: <span class="kills">0</span>/<span class="deaths">0</span>');
   }
-  
+
   $.each(data, function(item, value){card.data(item, value);});
   return card;
 };
@@ -283,32 +281,32 @@ Card.die = function(){
 
 $.fn.die = Card.die;
 
-Card.reborn = function(){console.log(this);
-                         this.removeClass('dead');
-                         var hp = this.data('hp');
-                         this.find('.hp').text(hp);
-                         this.data('currenthp', hp);
-                         this.data('reborn', undefined);
-                         var x, y, spot, freeSpot;
+Card.reborn = function(){
+  this.removeClass('dead');
+  var hp = this.data('hp');
+  this.find('.hp').text(hp);
+  this.data('currenthp', hp);
+  this.data('reborn', undefined);
+  var x, y, spot, freeSpot;
 
-                         if(this.hasClass('player')){
-                           x = 0, y = '4';
-                           spot = Map.letters[x]+y;
-                           while($('#'+spot).hasClass('block')) {
-                             x++;
-                             spot = Map.letters[x]+y;
-                           }    
-                         }
-                         else if(this.hasClass('enemy')) {
-                           x = 11, y = '2';
-                           spot = Map.letters[x]+y;
-                           while($('#'+spot).hasClass('block')) {
-                             x--;
-                             spot = Map.letters[x]+y;
-                           }
-                         }
-                         this.place(spot);
-                        };
+  if(this.hasClass('player')){
+    x = 0, y = '4';
+    spot = Map.letters[x]+y;
+    while($('#'+spot).hasClass('block')) {
+      x++;
+      spot = Map.letters[x]+y;
+    }    
+  }
+  else if(this.hasClass('enemy')) {
+    x = 11, y = '2';
+    spot = Map.letters[x]+y;
+    while($('#'+spot).hasClass('block')) {
+      x--;
+      spot = Map.letters[x]+y;
+    }
+  }
+  this.place(spot);
+};
 
 $.fn.reborn = Card.reborn;
 
