@@ -1,7 +1,7 @@
 //damage = lvl15 d * .05
 //hp = lvl15 hp * 0.05
 //reg = hp*0.03  (hp/33.333...)
-//mana = lvl15 mana * 0.001
+//mana = lvl15 mana * 0.005
 //skills lvl3 ults lvl2
 //skill card count = 100/cooldown 
 
@@ -87,6 +87,10 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
   });
   deck.data('cards', cards);
   if(cb) cb(deck);     
+};
+
+Deck.randomCard = function(cards){
+  return $(cards[ parseInt(Math.random() * cards.length) ]);
 };
 
 var Card = function(data){ 

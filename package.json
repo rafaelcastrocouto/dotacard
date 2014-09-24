@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "author": "rafaelcastrocouto",
   "repository": "git://github.com/rafaelcastrocouto/dotacard",
+  "engine": "node >= 0.10.x",
   "dependencies": {
-    "db": ">= 1.00.x"
-  },
-  "engine": "node >= 0.10.x"
+    "db": ">= 0.0.x",
+    "static": ">= 0.0.x"
+  }
 }
