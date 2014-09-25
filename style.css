@@ -577,7 +577,7 @@ input:focus {
 .ld .img {
   background-image: url("img/heroes/lone_druid_full.png");
 }
-.ld-bear .img {
+.ld-summon .img {
   background-image: url("img/skills/lone_druid_spirit_bear.png");
 }
 .ld-rabid .img {

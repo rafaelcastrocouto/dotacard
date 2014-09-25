@@ -13,6 +13,7 @@
     "temporary": "Spirit Illuminate | Blinding Light | Recall",
     "buffs": "Mana Leaking | Blinded"
   },
+  
   "wk":{
     "name": "Wraith King",
     "attribute": "Strength",
@@ -27,6 +28,7 @@
     "temporary": "",    
     "buffs": "Wraithfire Blast Stun | Wraithfire Blast Burn | Vampiric Aura | Reincarnation Slow"
   },
+  
   "pud":{
     "name": "Pudge, the Butcher",
     "attribute": "Strength",
@@ -41,6 +43,7 @@
     "temporary": "",    
     "buffs": "Dismember Hold"
   },
+  
   "cm":{
     "name": "Crystal Maiden",
     "attribute": "Intelligence",
@@ -55,6 +58,7 @@
     "temporary": "",    
     "buffs": "Crystal Nova Slow | Frostbitten | Arcane Aura"
   },
+  
   "nyx":{
     "name": "Nyx Assassin",
     "attribute": "Agility",
@@ -69,6 +73,7 @@
     "temporary": "",    
     "buffs": "Impale Stun | Spiked Stun | Vendetta"    
   },
+  
   "am":{
     "name": "Anti Mage",
     "attribute": "Agility",
@@ -83,6 +88,7 @@
     "temporary": "",    
     "buffs": ""
   },
+  
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
@@ -97,4 +103,5 @@
     "temporary": "Battle Cry",    
     "buffs": "Rabid | Battle Cry | True Form"
   }
+  
 }

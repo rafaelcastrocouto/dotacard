@@ -569,8 +569,7 @@ var states = {
         deck.addClass('player').hide().appendTo(states.table.el);
         $.each(deck.data('cards'), function(i, card){   
           card.addClass('player').click(Card.select);
-        });
-        states.table.selectHand();
+        });        
       });
     },
     
@@ -606,6 +605,7 @@ var states = {
           if(game.time > dead.data('reborn')) dead.reborn();
         });         
         if(game.status == 'turn'){
+          states.table.selectHand();
           $('.card.player.done').removeClass('done');        
           game.currentData.moves = [];        
           states.table.towerAutoAttack();        

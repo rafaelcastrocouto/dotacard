@@ -3,7 +3,8 @@
 //reg = hp*0.03  (hp/33.333...)
 //mana = lvl15 mana * 0.005
 //skills lvl3 ults lvl2
-//skill card count = 100/cooldown 
+//skill card count = 50/cooldown + 50/manacost = function(cool,mana){return Math.round((50/cool)+(50/mana))} 
+//ats = (1 + AS%) / BAT  (avarage BAT = 1.7)
 
 var Deck = function(/* name, [filter], callback */){  
   var name = arguments[0];
@@ -101,7 +102,7 @@ var Card = function(data){
   $('<div>').addClass('overlay').appendTo(portrait);
 
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  if(data.cards) $('<h1>').appendTo(fieldset).text('Cards: '+ data.cards + ' | ' + data.type );  
+  if(data.cards) $('<h1>').appendTo(fieldset).text(data.type + ' | Cards: ' + data.cards );  
 
   if(data.hp) {
     $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
