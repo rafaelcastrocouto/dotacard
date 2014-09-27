@@ -358,7 +358,7 @@ input:focus {
   top: 0;
   right: 0;
   font-size: 180px;
-  animation: slideup 5s;
+  animation: slideup 5s linear;
   text-shadow: 1px 0 2px red,
     -1px 0 2px red,
     0 1px 2px red,
@@ -399,17 +399,17 @@ input:focus {
 }
 
 .map td.playerarea {
-  background: rgba(100,255,100,0.1);
+  background: rgba(100,255,100,0.2);
 }
 .map td.playerarea:hover {
-  background: rgba(100,255,100,0.2);
+  background: rgba(100,255,100,0.25);
 }
 
 .map td.enemyarea {
-  background: rgba(255,100,100,0.1);
+  background: rgba(255,100,100,0.2);
 }
 .map td.enemyarea:hover {
-  background: rgba(255,100,100,0.2);
+  background: rgba(255,100,100,0.25);
 }
 
 .turn .map td.movearea {  
@@ -417,32 +417,16 @@ input:focus {
   animation: innerlight 0.5s infinite;
 }
 
-.turn .map td.attackarea.top,
-.turn .map td.attackarea.topLeftin,
-.turn .map td.attackarea.topRightin,
-.turn .map td.attackarea.bottomLeftout,
-.turn .map td.attackarea.bottomRightout { 
+.turn .map td.stroke.top { 
   border-top: 1px solid rgba(255,255,255,0.5);
 }
-.turn .map td.attackarea.bottom,
-.turn .map td.attackarea.topLeftout,
-.turn .map td.attackarea.topRightout,
-.turn .map td.attackarea.bottomLeftin,
-.turn .map td.attackarea.bottomRightin { 
+.turn .map td.stroke.bottom { 
   border-bottom: 1px solid rgba(255,255,255,0.5);
 }
-.turn .map td.attackarea.left,
-.turn .map td.attackarea.topLeftin,
-.turn .map td.attackarea.topRightout,
-.turn .map td.attackarea.bottomLeftin,
-.turn .map td.attackarea.bottomRightout { 
+.turn .map td.stroke.left { 
   border-left: 1px solid rgba(255,255,255,0.5);
 }
-.turn .map td.attackarea.right,
-.turn .map td.attackarea.topLeftout,
-.turn .map td.attackarea.topRightin,
-.turn .map td.attackarea.bottomLeftout,
-.turn .map td.attackarea.bottomRightin { 
+.turn .map td.stroke.right { 
   border-right: 1px solid rgba(255,255,255,0.5);
 }
 

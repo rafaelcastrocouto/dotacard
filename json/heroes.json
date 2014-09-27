@@ -92,7 +92,7 @@
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
-    "attackType": "Ranged",
+    "attackType": "Short range",
     "hp": 51,
     "regen": 1,
     "mana": 2,

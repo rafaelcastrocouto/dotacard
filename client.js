@@ -137,11 +137,11 @@ var states = {
       setTimeout(function(){
         states.intro.video.data('tubular-player').playVideo();
       }, 3000)
-      states.intro.timeout = setTimeout(function(){
+      game.timeout = setTimeout(function(){
         states.changeTo('login');
       }, 102600);
       this.el.click(function(){
-        clearTimeout(states.intro.timeout);
+        clearTimeout(game.timeout);
         states.changeTo('login');
       });      
     },
@@ -309,7 +309,7 @@ var states = {
         } else {
           game.triesCounter.text('('+(game.tries++)+')');  
           if(game.tries > game.connectionLimit) states.load.reset();
-          else states.choose.timeout = setTimeout(states.choose.getChallenged, 1000);
+          else game.timeout = setTimeout(states.choose.getChallenged, 1000);
         }
       });
     },
@@ -326,7 +326,7 @@ var states = {
         } else {
           game.triesCounter.text('('+(game.tries++)+')');                
           if(game.tries > game.waitLimit) states.load.reset(); //todo: sugest bot match         
-          else states.choose.timeout = setTimeout(states.choose.getChallenger, 1000);
+          else game.timeout = setTimeout(states.choose.getChallenger, 1000);
         }
       });
     },
@@ -341,8 +341,8 @@ var states = {
       game.status = 'picking';
       this.count = game.debug ? 2 : game.timeToPick;
       this.enablePick();
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(states.choose.pickCount, 1000);      
+      clearTimeout(game.timeout);
+      game.timeout = setTimeout(states.choose.pickCount, 1000);      
     },
 
     enablePick: function(){
@@ -427,7 +427,7 @@ var states = {
         } else {
           game.triesCounter.text('('+(game.tries++)+')');
           if(game.tries > game.connectionLimit) states.load.reset();
-          else states.choose.timeout = setTimeout(states.choose.getChallengerDeck, 1000);
+          else game.timeout = setTimeout(states.choose.getChallengerDeck, 1000);
         }
       });
     },
@@ -448,14 +448,13 @@ var states = {
         } else {
           game.triesCounter.text('('+(game.tries++)+')');
           if(game.tries > game.connectionLimit) states.load.reset();
-          else states.choose.timeout = setTimeout(states.choose.getChallengedDeck, 1000);
+          else game.timeout = setTimeout(states.choose.getChallengedDeck, 1000);
         }      
       });  
     },
 
     end: function(){           
-      clearTimeout(states.choose.timeout);           
-      clearTimeout(states.choose.pickCount);           
+      clearTimeout(game.timeout);                   
       this.pickedbox.addClass('hidden');
       this.prepickbox.addClass('hidden');       
       $('.card.picked').removeClass('picked').appendTo(this.pickDeck);
@@ -482,7 +481,7 @@ var states = {
       this.buildSkills(); 
       this.buildTurns(); 
       //todo: build storage.state
-      states.table.timeout = setTimeout(states.table.beginTurn, 1000);
+      game.timeout = setTimeout(states.table.beginTurn, 1000);
     },
     
     buildMap: function(){
@@ -491,7 +490,6 @@ var states = {
         'height': game.height,
         'class': 'map'
       }).appendTo(this.el);
-      game.map = this.map;
     },
     
     createTower: function(type, spot){
@@ -505,13 +503,16 @@ var states = {
         hp: 80
       });        
       tower.click(Card.select).appendTo($('#'+spot).removeClass('free').addClass('block'));
-      Map.paint(spot, 3, type == 'player' ? 'playerarea' : 'enemyarea', true);
+      Map.inRange(spot, 4, function(n){
+         n.addClass(type == 'player' ? 'playerarea' : 'enemyarea');
+      }, true);
+      //Map.paint(spot, 3, type == 'player' ? 'playerarea' : 'enemyarea', true);
       return tower;
     },
     
     placeTowers: function(){      
       game.player.tower = states.table.createTower('player', 'C5');
-      game.enemy.tower = states.table.createTower('enemy', 'J1');    
+      //game.enemy.tower = states.table.createTower('enemy', 'J1');    
     },
     
     towerAutoAttack : function(){
@@ -537,33 +538,35 @@ var states = {
     },
     
     placeHeroes: function(){ 
-      
-      game.player.mana = 0;      
-      this.playerHeroesDeck = Deck('heroes', game.player.picks, function(deck){        
-        deck.addClass('player').appendTo(states.table.el);
-        var x = 0, y = '4';
-        $.each(deck.data('cards'), function(i, card){          
-          card.addClass('player').click(Card.select);
-          card.place(Map.letters[x]+y);
-          x++;
-          game.player.mana += card.data('mana');
-        });
-      });  
-      
-      this.enemyHeroesDeck = Deck('heroes', game.enemy.picks, function(deck){
-        deck.addClass('enemy').appendTo(states.table.el);        
-        var x = 11, y = '2';
-        $.each(deck.data('cards'), function(i, card){       
-          card.addClass('enemy').click(Card.select);          
-          card.place(Map.letters[x]+y);          
-          x--;
-        });
-      });  
+      if(game.player.picks){
+        game.player.mana = 0;      
+        this.playerHeroesDeck = Deck('heroes', game.player.picks, function(deck){        
+          deck.addClass('player').appendTo(states.table.el);
+          var x = 0, y = '4';
+          $.each(deck.data('cards'), function(i, card){          
+            card.addClass('player').click(Card.select);
+            card.place(Map.letters[x]+y);
+            x++;
+            game.player.mana += card.data('mana');
+          });
+        });  
+
+        this.enemyHeroesDeck = Deck('heroes', game.enemy.picks, function(deck){
+          deck.addClass('enemy').appendTo(states.table.el);        
+          var x = 11, y = '2';
+          $.each(deck.data('cards'), function(i, card){       
+            card.addClass('enemy').click(Card.select);          
+            card.place(Map.letters[x]+y);          
+            x--;
+          });
+        }); 
+      }
     },
     
     buildSkills: function(){      
       game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);      
       game.player.maxCards = Math.round(game.player.mana/2);      
+      this.playerCemitery = $('<div>').appendTo(this.el).addClass('player skills cemitery');
       this.playerHand = $('<div>').appendTo(this.el).addClass('player skills hand');
       this.playerSkillsDeck = Deck('skills', game.player.picks, function(deck){        
         deck.addClass('player').hide().appendTo(states.table.el);
@@ -593,8 +596,7 @@ var states = {
     },
     
     beginTurn: function(){      
-      //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand   
-           
+      //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand
       if(game.status != 'over') {        
         states.table.el.addClass(game.status);
         if(game.status == 'turn') game.message.text('Your turn now!');
@@ -611,9 +613,10 @@ var states = {
           states.table.towerAutoAttack();        
           Map.highlight(); 
         }
+        game.time = game.player.turn + game.enemy.turn;  
         states.table.counter = game.timeToPlay;
-        clearTimeout(states.table.timeout);
-        states.table.timeout = setTimeout(states.table.turnCount, 1000);
+        clearTimeout(game.timeout);
+        game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
 
@@ -627,7 +630,7 @@ var states = {
         if(game.status == 'unturn') states.table.getMoves();    
       } else {
         game.time += 1 / game.timeToPlay;
-        states.table.timeout = setTimeout(states.table.turnCount, 1000);
+        game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
     
@@ -683,7 +686,7 @@ var states = {
       game.player.turn++;
       game.currentData[game.player.type + 'Turn'] = game.player.turn;      
       game.currentData.moves = game.currentData.moves.join('|');      
-      clearTimeout(states.table.timeout);
+      clearTimeout(game.timeout);
       states.table.sendData();
     },
 
@@ -692,14 +695,14 @@ var states = {
       game.loader.show();
       game.tries = 1;  
       states.table.el.removeClass('unturn');
-      clearTimeout(states.table.timeout);
-      states.table.timeout = setTimeout(states.table.getData, 1000);
+      clearTimeout(game.timeout);
+      game.timeout = setTimeout(states.table.getData, 1000);
     },
 
     sendData: function(){
       db({'set': game.id, 'data': game.currentData}, function(){
-        clearTimeout(states.table.timeout);
-        states.table.timeout = setTimeout(states.table.beginTurn, 1000);
+        clearTimeout(game.timeout);
+        game.timeout = setTimeout(states.table.beginTurn, 1000);
       });      
     },
 
@@ -713,7 +716,7 @@ var states = {
         } else {
           game.triesCounter.text('('+(game.tries++)+')');
           if(game.tries > game.connectionLimit) states.load.reset();
-          else states.table.timeout = setTimeout(states.table.getData, 1000);
+          else game.timeout = setTimeout(states.table.getData, 1000);
         }
       });
     },
@@ -737,11 +740,11 @@ var states = {
           if(!source.hasClass('done') && source.hasClass('enemy') && source.attack) source.attack(toSpot);
         }        
       }      
-      clearTimeout(states.table.timeout);
-      states.table.timeout = setTimeout(function(){
+      clearTimeout(game.timeout);
+      game.timeout = setTimeout(function(){
         game.status = 'turn';
         states.table.beginTurn();
-      }, 1000);
+      }, 2000);
     },
 
     lose: function(){

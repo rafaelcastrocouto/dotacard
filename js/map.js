@@ -1,128 +1,256 @@
 var Map = {
+  
   letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
+  
   build: function(opt){
-    var table = $('<table>').attr({'class':'map'});
-
+    game.map = [], table = $('<table>').attr({'class':'map'});
     for(var h = 0; h < opt.height; h++){
+      game.map[h] = [];
       var tr = $('<tr>').appendTo(table);
       for(var w = 0; w < opt.width; w++){
-        var L1 = Map.letters[w]+(h+1);
-        $('<td>').attr({'id': L1}).addClass('free').appendTo(tr).on('contextmenu',function(){
+        game.map[h][w] = $('<td>').attr({'id': Map.toId(w, h)}).addClass('free spot').appendTo(tr)
+        .on('contextmenu',function(){
           return false
-        });
+        });         
       }
     }
-
     return table;
   },
-  neightbors: function(spot, radius, cb, removeDiag, filter){
-    if(radius == 0) return;
-    var fil = function(td){      
-      if(filter) {
-        if(!td.hasClasses(filter)) cb(td);
-      }
-      else cb(td);
-    };
-    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
-    $('.map td').each(function(){
-      var td = $(this), id = this.id;
-      var tw = Map.letters.indexOf(id[0]), th = parseInt(id[1]);
-      if(w > tw - radius && w < tw + radius){
-        if(h > th - radius && h < th + radius){
-          if(removeDiag) {
-            if(Math.abs(w - tw) == (radius - 1) && Math.abs(h - th) == (radius - 1)){/*diag*/}
-            else fil(td);     
-          }
-          else fil(td);
-        }
-      }
-    });
+  
+  toId: function(w, h){
+    if(w >= 0 && h >=0 && w < game.width && h < game.height) return Map.letters[w] + (h + 1);
   },
-  paint: function(spot, radius, c, removeDiag, filter){
-    if(radius == 0) return;
-    var fil = function(td){
-      if(filter) {
-        if(!td.hasClasses(filter)) td.addClass(c);
-      }
-      else td.addClass(c);
-    };
-    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
-    $('.map td').each(function(){
-      var td = $(this), id = this.id;
-      var tw = Map.letters.indexOf(id[0]), th = parseInt(id[1]);
-      if(w > tw - radius && w < tw + radius){
-        if(h > th - radius && h < th + radius){
-          if(removeDiag) {
-            if(Math.abs(w - tw) == (radius - 1) && Math.abs(h - th) == (radius - 1)){/*diag*/}
-            else fil(td);     
-          }
-          else fil(td);
-        }
-      }
-    });
+  
+  getX: function(spot){
+    var w = Map.letters.indexOf(spot[0]);
+    if(w >= 0 && w < game.width) return w;
+  },  
+  getY: function(spot){
+    var h = parseInt(spot[1]) - 1;
+    if(h >=0 && h < game.height) return h;
   },
-  stroke: function(spot, radius, c, removeDiag, filter){ 
-    if(radius == 0) return;
-    var fil = function(id, b){
-      var td = $('#'+id);   
-      if(filter) {
-        if(!td.hasClasses(filter)) td.addClass(c+' '+b);
-      }
-      else td.addClass(c+' '+b);
-    };
-    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]);
-
-    var d = (radius - 1);
-    var sideLength = (2 * d) - 1;
-    var diag = removeDiag ? 'out' : 'in';
     
-    var topLeft = Map.letters[(w - d)] + (h - d);
-    fil(topLeft, 'topLeft'+diag);   
-    var topRight = Map.letters[(w + d)] + (h - d);
-    fil(topRight, 'topRight'+diag);    
-    var bottomLeft = Map.letters[(w - d)] + (h + d);
-    fil(bottomLeft, 'bottomLeft'+diag);   
-    var bottomRight = Map.letters[(w + d)] + (h + d);
-    fil(bottomRight, 'bottomRight'+diag);
-
-    var startHeight = h - d + 1;
-    for(var i=startHeight; i<(startHeight + sideLength); i++){
-      var left = Map.letters[(w - d)] + i;
-      fil(left, 'left');
-      var right = Map.letters[(w + d)] + i;      
-      fil(right, 'right');
-    }
-
-    var startWidth = w - d + 1;
-    for(var i=startWidth; i<(startWidth + sideLength); i++){
-      var top = Map.letters[i] + (h - d);
-      fil(top, 'top');
-      var bottom = Map.letters[i] + (h + d);      
-      fil(bottom, 'bottom');
-    }        
-
+  getTd: function(w,h){
+    if(game.map[h] && game.map[h][w]) return game.map[h][w];
   },
+  
   getPosition: function(el){
-    var p = el.closest('td').attr('id');
-    return p;
+    return el.closest('td').attr('id');
   },
-  mirrorPosition: function(spot, map){
-    var w = Map.letters.indexOf(spot[0]) + 1, h = parseInt(spot[1]);
-    if(map) var mh = map.find('tr').length, mw = map.find('td').length / mh;    
-    else var mh = game.height + 1, mw = game.width;    
-    var nw = mw - w, nh = mh - h;
-    return Map.letters[nw] + nh;
+  
+  mirrorPosition: function(spot){
+    var w = Map.getX(spot), h = Map.getY(spot);  
+    var x = game.width - w - 1, y = game.height - h - 1;
+    return Map.toId(x, y);
   },
+  
+  rangeArray: [0.5, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4],
+  
+  atRange: function(spot, range, cb, filter){
+    if(range < 0 || range > Map.rangeArray.length) return;
+    var fil = function(x, y){
+      var td = Map.getTd(x, y);
+      if(td){
+        if(filter) {
+          if(!td.hasClasses(filter)) cb(td);
+        }
+        else cb(td);
+      }
+    };
+    var w = Map.getX(spot), h = Map.getY(spot); 
+    if(range == 0) fil(w, h);
+    else {
+      var radius = Map.rangeArray[range];  
+      var x, y, r = Math.round(radius), r2 = radius * radius, l = (Math.ceil(radius) * Math.cos(Math.PI/4)); 
+
+      fil(w, h + r);
+      fil(w, h - r);
+      fil(w - r, h);  
+      fil(w + r, h); 
+
+      if(range == 2 || range == 3){
+        for(x = 1; x <= l; x++){
+          y = Math.round(Math.sqrt(r2 - x*x)); 
+          fil(w + x, h + y); 
+          fil(w + x, h - y);     
+          fil(w - x, h + y);
+          fil(w - x, h - y); 
+        }
+      } else if(range > 3){
+        for(x = 1; x <= l; x++){
+          y = Math.round(Math.sqrt(r2 - x*x)); 
+          fil(w + x, h + y); 
+          fil(w + y, h + x);
+          fil(w + x, h - y); 
+          fil(w + y, h - x);      
+          fil(w - x, h + y); 
+          fil(w - y, h + x);
+          fil(w - x, h - y); 
+          fil(w - y, h - x);
+        }
+      }
+    }
+  },   
+
+  atMovementRange: function(card, range, cb, filter){
+    if(range < 0 || range > Map.rangeArray.length) return;
+    var spot = Map.getPosition(card);  
+    var fil = function(x, y){
+      var td = Map.getTd(x, y);
+      if(td){
+        if(filter) {
+          if(!td.hasClasses(filter)) cb(td);
+        }
+        else cb(td);
+      }
+    };
+    var w = Map.getX(spot), h = Map.getY(spot); 
+    if(range > 0) { 
+      var radius = Map.rangeArray[range];  
+      var x, y, r = Math.round(radius), r2 = radius * radius, l = (Math.ceil(radius) * Math.cos(Math.PI/4)); 
+
+      fil(w, h + 1);
+      fil(w, h - 1);
+      fil(w - 1, h);  
+      fil(w + 1, h); 
+
+      if(range == 2 || range == 3){
+        for(x = 1; x <= l; x++){
+          y = Math.round(Math.sqrt(r2 - x*x)); 
+          fil(w + x, h + y); 
+          fil(w + x, h - y);     
+          fil(w - x, h + y);
+          fil(w - x, h - y); 
+        }
+      }
+      if(range == 3 && !card.hasClass('phased')){
+        var a = [
+          {a: w, b: h+2, c: w, d: h+1, e: w+1, f: h+1, g: w-1, h: h+1},
+          {a: w, b: h-2, c: w, d: h-1, e: w+1, f: h-1, g: w-1, h: h-1},
+          {a: w-2, b: h, c: w-1, d: h, e: w-1, f: h+1, g: w-1, h: h-1},
+          {a: w+2, b: h, c: w+1, d: h, e: w+1, f: h+1, g: w+1, h: h-1}
+        ];
+        for(var i=0; i<a.length; i++){
+          var o = a[i], m = Map.getTd(o.a, o.b);
+          var td = Map.getTd(o.c,o.d);
+          if(td && td.hasClass('free')){
+            if(m) m.data('detour', false);
+            fil(o.a, o.b);
+          } else {
+            td = Map.getTd(o.e,o.f);
+            if(td && td.hasClass('free')){
+              if(m) m.data('detour', td);
+              fil(o.a, o.b);
+            } else {
+              td = Map.getTd(o.g,o.h);              
+              if(td && td.hasClass('free')){
+                if(m) m.data('detour', td);
+                fil(o.a, o.b);
+              }
+            }
+          }                 
+        }     
+      }
+    }
+  },     
+  
+
+  inRange: function(spot, r, cb){
+    for(var i = 0; i <= r; i++){
+      Map.atRange(spot, i, cb);
+    }
+  },
+  
+  around: function(spot, r, cb){
+    for(var i = 1; i <= r; i++){
+      Map.atRange(spot, i, cb);
+    }
+  },
+  
+  stroke: function(spot, range, filter){
+    var fil = function(x, y, border){
+      var td = Map.getTd(x, y);
+      if(td){
+        if(filter) {
+          if(!td.hasClasses(filter)) td.addClass('stroke '+border);
+        }
+        else td.addClass('stroke '+border);
+      }
+    };
+    var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]) - 1; 
+                                        
+    if(range == 0) return fil(w, h, 'left right top bottom'); 
+                                        
+    var radius = Map.rangeArray[range];
+    var x, y, r = Math.round(radius), r2 = radius * radius, l = (Math.ceil(radius) * Math.cos(Math.PI/4));
+                                        
+    if(range%2 === 0){  
+      fil(w, h + r, 'bottom');
+      fil(w, h - r, 'top');
+      fil(w - r, h, 'left');  
+      fil(w + r, h, 'right'); 
+    } else if(range%2 == 1){  
+      fil(w, h + r, 'bottom left right');
+      fil(w, h - r, 'top  left right');   
+      fil(w - r, h, 'left top bottom');  
+      fil(w + r, h, 'right top bottom');  
+    }   
+    if(range == 2 || range == 3){
+      for(x = 1; x <= l; x++){
+        y = 1; 
+        fil(w + x, h + y, 'right bottom'); 
+        fil(w + x, h - y, 'right top');     
+        fil(w - x, h + y, 'left bottom');
+        fil(w - x, h - y, 'left top'); 
+      }
+    } else if(range == 4 || range == 6 || range == 8){
+      for(x = 1; x <= l; x++){
+        y = Math.round(Math.sqrt(r2 - x*x)); 
+        fil(w + x, h + y, 'right bottom'); 
+        fil(w + y, h + x, 'right bottom');
+        fil(w + x, h - y, 'right top'); 
+        fil(w + y, h - x, 'right top');      
+        fil(w - x, h + y, 'left bottom'); 
+        fil(w - y, h + x, 'left bottom');
+        fil(w - x, h - y, 'left top'); 
+        fil(w - y, h - x, 'left top');
+      }
+    } else if (range >= 5) {
+      for(x = 1; x <= l; x++){
+        y = Math.round(Math.sqrt(r2 - x*x)); 
+        fil(w + x, h + y, 'bottom'); 
+        fil(w - x, h + y, 'bottom'); 
+        fil(w + x, h - y, 'top'); 
+        fil(w - x, h - y, 'top');        
+        fil(w - y, h + x, 'left');         
+        fil(w - y, h - x, 'left');
+        fil(w + y, h - x, 'right');   
+        fil(w + y, h + x, 'right');
+      }
+    }
+    if(range == 7) {
+      fil(w + 3, h + 2, 'bottom'); 
+      fil(w - 3, h + 2, 'bottom');      
+      fil(w + 3, h - 2, 'top');
+      fil(w - 3, h - 2, 'top'); 
+      fil(w - 2, h + 3, 'left');
+      fil(w - 2, h - 3, 'left');
+      fil(w + 2, h + 3, 'right');       
+      fil(w + 2, h - 3, 'right');
+    }
+  },  
+  
   highlight: function(){
     if(game.status == 'turn' && game.selectedCard){
       game.selectedCard.highlightMove();
       game.selectedCard.highlightAttack();       
     }
   },
+  
   unhighlight: function(){
     $('.map .card').removeClass('target');
     $('.map td').off('contextmenu.move contextmenu.attack')
-    .removeClass('movearea attackarea top bottom left right topLeftin topLeftout topRightin topRightout bottomLeftin bottomLeftout bottomRightin bottomRightout');
+    .removeClass('movearea stroke top bottom left right');    
   },
 };
 
@@ -138,13 +266,13 @@ $.fn.hasClasses = function(list) {
   return false;
 };
 $.fn.hasAllClasses = function(list) {
-  var classes = list.split(' '), all = true;
+  var classes = list.split(' ');
   for (var i = 0; i < classes.length; i++) {
     if (!this.hasClass(classes[i])) {
-      all = false;
+      return false;
     }
   }
-  return all;
+  return true;
 };
 
 //js bonus!

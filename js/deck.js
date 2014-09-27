@@ -56,6 +56,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
     }
     if(found || !filter){
       heroData.id = id;
+      heroData.speed = 2;
       heroData.className = name;
       cards.push(Card(heroData).appendTo(deck));
     }
@@ -77,6 +78,8 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
     if(found || !filter){
       $.each(heroSkillsData, function(id, skillData){ 
         skillData.id = heroId+'-'+id;
+        skillData.hero = heroId;
+        skillData.skill = id;
         skillData.className = name;
         for(var k=0; k < skillData.cards; k++){
           cards.push(Card(skillData).appendTo(deck));
@@ -91,6 +94,8 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
 Deck.randomCard = function(cards){
   return $(cards[ parseInt(Math.random() * cards.length) ]);
 };
+
+////////////////////////////////////////////////////////////////////////////////////
 
 var Card = function(data){ 
   var card = $('<div>').addClass(data.id+' card '+ data.className);   
@@ -110,19 +115,20 @@ var Card = function(data){
     $('<span>').addClass('hp').appendTo(card).text(data.currenthp);   
   }
 
-  if(data.chance)    $('<p>').appendTo(fieldset).text('Chance: '+data.chance+'%');
-  if(data.percentage)$('<p>').appendTo(fieldset).text('Percentage: '+data.percentage+'%');
-  if(data.delay)     $('<p>').appendTo(fieldset).text('Delay: '+data.delay);
-  if(data.damageType)$('<p>').appendTo(fieldset).text('Damage Type: '+data.damageType);
-  if(data.duration)  $('<p>').appendTo(fieldset).text('Duration: '+data.duration);
-  if(data.dot)       $('<p>').appendTo(fieldset).text('Damage over time: '+data.dot);
-  if(data.regen)     $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
-  if(data.damage)    $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
-  if(data.mana)      $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
-  if(data.skills)    $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
-  if(data.passive)   $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
-  if(data.permanent) $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
-  if(data.temporary) $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
+  if(data.chance)     $('<p>').appendTo(fieldset).text('Chance: '+data.chance+'%');
+  if(data.percentage) $('<p>').appendTo(fieldset).text('Percentage: '+data.percentage+'%');
+  if(data.delay)      $('<p>').appendTo(fieldset).text('Delay: '+data.delay);
+  if(data.damageType) $('<p>').appendTo(fieldset).text('Damage Type: '+data.damageType);
+  if(data.duration)   $('<p>').appendTo(fieldset).text('Duration: '+data.duration);
+  if(data.dot)        $('<p>').appendTo(fieldset).text('Damage over time: '+data.dot);
+  if(data.regen)      $('<p>').appendTo(fieldset).text('Regeneration: '+data.regen);
+  if(data.damage)     $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
+  if(data.mana)       $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
+  if(data.skills)     $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
+  if(data.passive)    $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
+  if(data.permanent)  $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
+  if(data.temporary)  $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
+  if(data.description)$('<p>').appendTo(fieldset).text(data.description);
 
   if(data.className == 'heroes'){
     data.kills = 0;
@@ -134,10 +140,11 @@ var Card = function(data){
   return card;
 };
 
-Card.place =function(target) {
+Card.place = function(target) {
   if(typeof target == 'string') target = $('#'+target);
   this.appendTo(target.removeClass('free').addClass('block'));
-}
+  return this;
+};
 
 $.fn.place = Card.place;
 
@@ -150,39 +157,45 @@ Card.select = function(){
   states.table.selectedArea.empty();      
   var zoom = card.clone().appendTo(states.table.selectedArea);
   card.addClass('selected').children('span.damage').remove();
-  return false;
+  return card;
 };
 
 $.fn.select = Card.select;
 
 Card.highlightMove = function(){
   var card = this;
-  if(!card.hasClasses('enemy done static dead') && card.hasClass('player')){ 
-    var spot = Map.getPosition(card);
-    Map.paint(spot, 2, 'movearea', false, 'block');      
+  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done static dead')){       
+    var speed = card.data('speed') + (card.data('speedBonus') || 0);
+    if(speed < 1) return; 
+    if(speed > 3) speed = 3;
+    Map.atMovementRange(card, Math.round(speed), function(neighbor){ 
+      if(!neighbor.hasClass('block')) neighbor.addClass('movearea');
+    });    
     $('.movearea').on('contextmenu.move', states.table.moveSelected);
   }
+  return card;
 };
 
 $.fn.highlightMove = Card.highlightMove;
 
 Card.highlightAttack = function(){    
   var card = this;
-  if(!card.hasClasses('enemy done dead') && card.hasClass('player')){        
+  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead')){        
     var spot = Map.getPosition(card);
-    var att = card.data('attackType'), range, removeDiag;
-    if(att == 'Melee') {
-      range = 2; removeDiag = false;
-    }
-    if(att == 'Ranged') {
-      range = 3; removeDiag = true;     
-    }
-    Map.stroke(spot, range, 'attackarea', removeDiag, 'block');
-    Map.neightbors(spot, range, function(neighbor){        
+    
+    var att = card.data('attackType'), range;    
+    if(att == 'Melee')       range = 2; 
+    if(att == 'Short range') range = 3;
+    if(att == 'Ranged')      range = 4;
+    if(att == 'Long range')  range = 5;
+    
+    Map.stroke(spot, range);
+    Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
       if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', states.table.attackWithSelected);        
-    }, false, 'free');
+    });
   }
+  return card;
 };
 
 $.fn.highlightAttack = Card.highlightAttack;
@@ -193,18 +206,27 @@ Card.move = function(destiny){
   var fromSpot = Map.getPosition(card);
   var toSpot = Map.getPosition(destiny);
   if(destiny.hasClass('free') && (fromSpot != toSpot) && !card.hasClass('done')){
-    card.addClass('done').closest('td').removeClass('block').addClass('free');  
+    Map.unhighlight();
+    card.closest('.spot').removeClass('block').addClass('free');      
     destiny.removeClass('free').addClass('block');    
-    Map.unhighlight();   
-
-    var t = card.offset();
-    var d = destiny.offset();
-    card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
-
-    setTimeout(function(){    
-      $(this.card).css({top: '', left: ''}).appendTo(this.destiny);
+    var t = card.offset(), d = destiny.offset();
+    if(!destiny.data('detour')) card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
+    else {
+      var x = destiny.data('detour').offset();
+      card.css({top: x.top - t.top - 112, left: x.left - t.left - 22});
+      setTimeout(function(){
+        card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
+      }.bind({ card: card, destiny: destiny }), 250);
+    }    
+    if(card.data('movementBonus')) card.data('movementBonus', false);
+    else card.addClass('done');    
+    setTimeout(function(){          
+      $(this.card).css({top: '', left: ''}).appendTo(this.destiny);     
+      $('.map td').data('detour', false);
+      Map.highlight();   
     }.bind({ card: card, destiny: destiny }), 500);  
   }
+  return card;
 };
 
 $.fn.move = Card.move;
@@ -217,6 +239,7 @@ Card.attack = function(target){
   if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
     source.addClass('done').damage(source.data('damage'), target);
   }
+  return this;
 };
 
 $.fn.attack = Card.attack;
@@ -244,7 +267,8 @@ Card.damage = function(damage, target){
     this.data('timeout', remove);
   } else {
     damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
-  } 
+  }
+  return this;
 };
 
 $.fn.damage = Card.damage;
@@ -258,7 +282,6 @@ Card.die = function(){
   if(this.hasClass('selected')) this.select();
 
   if(this.hasClass('heroes')){
-
     var deaths = this.data('deaths') + 1;
     this.data('deaths', deaths);
     this.find('.deaths').text(deaths);
@@ -267,17 +290,15 @@ Card.die = function(){
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemyHeroesDeck);
 
   } else if(this.hasClass('skills')){ 
-
     if(this.hasClass('player')) this.appendTo(states.table.playerSkillsDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemySkillsDeck);
 
   } else if(this.hasClass('tower')) {
-
     if(this.hasClass('player')) states.table.lose();
     else if(this.hasClass('enemy')) states.table.win();
-
   }
   else this.remove();
+  return false;
 };
 
 $.fn.die = Card.die;
@@ -307,6 +328,7 @@ Card.reborn = function(){
     }
   }
   this.place(spot);
+  return this;
 };
 
 $.fn.reborn = Card.reborn;
