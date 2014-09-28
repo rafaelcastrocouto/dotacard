@@ -494,7 +494,7 @@ var states = {
     
     createTower: function(type, spot){
       var tower = Card({
-        className: 'tower static '+type,
+        className: 'towers static '+type,
         id:  type == 'player' ? 'ptw' : 'etw' ,
         name: 'Tower',        
         attribute: 'Building',
@@ -502,17 +502,16 @@ var states = {
         damage: 7,
         hp: 80
       });        
-      tower.click(Card.select).appendTo($('#'+spot).removeClass('free').addClass('block'));
-      Map.inRange(spot, 4, function(n){
-         n.addClass(type == 'player' ? 'playerarea' : 'enemyarea');
+      tower.click(Card.select).place(spot);
+      Map.around(spot, 4, function(td){
+         td.addClass(type == 'player' ? 'playerarea' : 'enemyarea');
       }, true);
-      //Map.paint(spot, 3, type == 'player' ? 'playerarea' : 'enemyarea', true);
       return tower;
     },
     
     placeTowers: function(){      
       game.player.tower = states.table.createTower('player', 'C5');
-      //game.enemy.tower = states.table.createTower('enemy', 'J1');    
+      game.enemy.tower = states.table.createTower('enemy', 'J1');    
     },
     
     towerAutoAttack : function(){
@@ -552,7 +551,7 @@ var states = {
         });  
 
         this.enemyHeroesDeck = Deck('heroes', game.enemy.picks, function(deck){
-          deck.addClass('enemy').appendTo(states.table.el);        
+          deck.addClass('enemy').hide().appendTo(states.table.el);        
           var x = 11, y = '2';
           $.each(deck.data('cards'), function(i, card){       
             card.addClass('enemy').click(Card.select);          
@@ -566,12 +565,18 @@ var states = {
     buildSkills: function(){      
       game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);      
       game.player.maxCards = Math.round(game.player.mana/2);      
-      this.playerCemitery = $('<div>').appendTo(this.el).addClass('player skills cemitery');
       this.playerHand = $('<div>').appendTo(this.el).addClass('player skills hand');
+      this.playerPermanent = $('<div>').appendTo(this.el).addClass('player skills hand permanent');
+      this.playerUlt = $('<div>').hide().appendTo(this.el).addClass('player skills ult');      
+      this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player skills cemitery');
       this.playerSkillsDeck = Deck('skills', game.player.picks, function(deck){        
         deck.addClass('player').hide().appendTo(states.table.el);
-        $.each(deck.data('cards'), function(i, card){   
-          card.addClass('player').click(Card.select);
+        $.each(deck.data('cards'), function(i, skill){   
+          skill.addClass('player').click(Card.select);
+          if(skill.data('special')) {
+            if(skill.data('special') == 'permanent') skill.appendTo(states.table.playerPermanent);
+            if(skill.data('special') == 'ult') skill.appendTo(states.table.playerUlt);
+          }        
         });        
       });
     },
@@ -619,7 +624,7 @@ var states = {
         game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
-
+    
     turnCount: function(){
       game.loader.hide();
       states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight()+' Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
@@ -655,6 +660,7 @@ var states = {
     
     moveSelected: function(){
       var spot = $(this), card = game.selectedCard;
+      if(game.selectedCard.hasClass('skills') && game.selectedCard.data('hero')) card = $('.map .card.player.'+game.selectedCard.data('hero'));
       var fromSpot = Map.getPosition(card);  
       var toSpot = Map.getPosition(spot);
       if(game.status == 'turn' && spot.hasClass('free') && (fromSpot != toSpot) && !card.hasClass('done')){

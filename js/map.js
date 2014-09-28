@@ -167,14 +167,14 @@ var Map = {
     }
   },
   
-  stroke: function(spot, range, filter){
+  stroke: function(spot, range, cl, filter){
     var fil = function(x, y, border){
       var td = Map.getTd(x, y);
       if(td){
         if(filter) {
-          if(!td.hasClasses(filter)) td.addClass('stroke '+border);
+          if(!td.hasClasses(filter)) td.addClass(cl+' stroke '+border);
         }
-        else td.addClass('stroke '+border);
+        else td.addClass(cl+' stroke '+border);
       }
     };
     var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]) - 1; 
@@ -238,19 +238,38 @@ var Map = {
       fil(w + 2, h + 3, 'right');       
       fil(w + 2, h - 3, 'right');
     }
-  },  
+  },
+  
+  getRange: function(att){  
+    var range = 1;
+    if(att == 'Melee')       range = 2; 
+    if(att == 'Short range') range = 3;
+    if(att == 'Ranged')      range = 4;
+    if(att == 'Long range')  range = 5;
+    return range;
+  },
   
   highlight: function(){
-    if(game.status == 'turn' && game.selectedCard){
-      game.selectedCard.highlightMove();
-      game.selectedCard.highlightAttack();       
+    if(game.selectedCard){
+      if(game.selectedCard.hasClass('heroes')){
+        game.selectedCard.strokeAttack(); 
+        if(game.status == 'turn') {
+          game.selectedCard.highlightMove();
+          game.selectedCard.highlightAttack(); 
+        }
+      } else if(game.selectedCard.hasClass('skills')){
+        game.selectedCard.highlightSource();
+        game.selectedCard.highlightTargets();
+      } else if(game.selectedCard.hasClass('towers')){
+        game.selectedCard.strokeAttack(); 
+      }
     }
   },
   
   unhighlight: function(){
     $('.map .card').removeClass('target');
     $('.map td').off('contextmenu.move contextmenu.attack')
-    .removeClass('movearea stroke top bottom left right');    
+    .removeClass('movearea stroke skill top bottom left right');    
   },
 };
 

@@ -142,6 +142,7 @@ var Card = function(data){
 
 Card.place = function(target) {
   if(typeof target == 'string') target = $('#'+target);
+  this.closest('td.block').removeClass('block').addClass('free');
   this.appendTo(target.removeClass('free').addClass('block'));
   return this;
 };
@@ -151,6 +152,7 @@ $.fn.place = Card.place;
 Card.select = function(){
   var card = $(this);      
   $('.card.selected').removeClass('selected');      
+  $('.card.source').removeClass('source');
   Map.unhighlight();      
   game.selectedCard = card;
   Map.highlight();
@@ -161,6 +163,40 @@ Card.select = function(){
 };
 
 $.fn.select = Card.select;
+
+Card.highlightSource = function(){
+  var skill = this, hero = skill.data('hero');
+  if(hero) $('.map .card.player.'+hero).addClass('source');
+  return skill;
+};
+
+$.fn.highlightSource = Card.highlightSource;
+
+Card.highlightTargets = function(){
+  var skill = this, hero = skill.data('hero');
+  if(hero){
+    var source = $('.map .card.player.'+hero);
+    if(source.hasClass('heroes') && !source.hasClasses('dead done')){
+      source.highlightMove();
+      if(skill.data('target') == 'enemy'){
+        var spot = Map.getPosition(source);
+        var att = skill.data('range'), range;    
+        if(att == 'Melee')       range = 2; 
+        if(att == 'Short range') range = 3;
+        if(att == 'Ranged')      range = 4;
+        if(att == 'Long range')  range = 5;   
+        Map.stroke(spot, range, 'skill');
+        Map.inRange(spot, range, function(neighbor){
+          var card = $('.card', neighbor);        
+          if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', states.table.attackWithSelected);        
+        });
+      }
+    }
+  }
+  return skill;
+};
+
+$.fn.highlightTargets = Card.highlightTargets;
 
 Card.highlightMove = function(){
   var card = this;
@@ -181,15 +217,7 @@ $.fn.highlightMove = Card.highlightMove;
 Card.highlightAttack = function(){    
   var card = this;
   if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead')){        
-    var spot = Map.getPosition(card);
-    
-    var att = card.data('attackType'), range;    
-    if(att == 'Melee')       range = 2; 
-    if(att == 'Short range') range = 3;
-    if(att == 'Ranged')      range = 4;
-    if(att == 'Long range')  range = 5;
-    
-    Map.stroke(spot, range);
+    var spot = Map.getPosition(card), att = card.data('attackType'), range = Map.getRange(att); 
     Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
       if(card.is('.enemy')) card.addClass('target').on('contextmenu.attack', states.table.attackWithSelected);        
@@ -199,6 +227,17 @@ Card.highlightAttack = function(){
 };
 
 $.fn.highlightAttack = Card.highlightAttack;
+
+Card.strokeAttack = function(){    
+  var card = this;
+  if(card.hasClass('player') && !card.hasClasses('enemy done dead')){        
+    var spot = Map.getPosition(card), att = card.data('attackType'), range = Map.getRange(att);     
+    Map.stroke(spot, range, 'attack');
+  }
+  return card;
+};
+
+$.fn.strokeAttack = Card.strokeAttack;
 
 Card.move = function(destiny){
   var card = this;
@@ -293,7 +332,7 @@ Card.die = function(){
     if(this.hasClass('player')) this.appendTo(states.table.playerSkillsDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemySkillsDeck);
 
-  } else if(this.hasClass('tower')) {
+  } else if(this.hasClass('towers')) {
     if(this.hasClass('player')) states.table.lose();
     else if(this.hasClass('enemy')) states.table.win();
   }

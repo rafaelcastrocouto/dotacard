@@ -75,8 +75,7 @@
       "cards": 4,
       "description": "Ezalor becomes one with the light!" 
     },
-    "illuminateult": {
-      "special": "ult",
+    "illuminate-ult": {
       "name": "Illuminate",
       "type": "Area of effect",
       "target": "spot",
@@ -88,7 +87,6 @@
       "description": "Summon a spirit to channel light to damage enemies in a line"
     },
     "blind": {
-      "special": "ult",
       "name": "Blinding Light",
       "type": "Area of effect",
       "target": "spot",  
@@ -96,13 +94,12 @@
       "description": "Knock back and blind enemies, causing them to miss attacks"
     },
     "recall": {
-      "special": "ult",
       "name": "Recall",
       "type": "Target Friend Unit",
       "target": "player",        
       "delay": 1,
       "cards": 1,
-      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
+      "description": "If unharmed after enemy turn, target is teleported a free spot near Ezalor"
     }
   },
 
@@ -140,12 +137,12 @@
       "name": "Freezing Field",
       "type": "Area of Effect",
       "target": "self",
-      "range": "Long range",
+      "radius": 6,
       "duration": 5,
       "dot": 8,
       "damageType": "Magical",       
       "cards": 1,
-      "description": "Rylai channels icy explosions around her!"    
+      "description": "Rylai channels icy explosions!"    
     }    
   },
 
@@ -197,7 +194,6 @@
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
     "rot": {
-      "special": "permanent",
       "name": "Rot",
       "type": "Toggle",
       "target": "self",      
@@ -309,7 +305,6 @@
       "description": "Lone Druid morphs himself into a raging bear"       
     },
     "cry": {
-      "special": "ult",
       "name": "Battle Cry",
       "type": "Actice",
       "target": "self",
@@ -319,7 +314,6 @@
       "description": "Increases the attack of Syllabear and the Spirit Bear"       
     },
     "transform": {
-      "special": "ult",
       "name": "Druid Form",
       "type": "Actice",
       "target": "self",

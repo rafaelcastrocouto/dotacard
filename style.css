@@ -257,7 +257,7 @@ input:focus {
   font-family: 'Luckiest Guy';
   font-size: 16px;
   color: #533; 
-  text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -2px 0 white;
+  text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -1px 0 white;
 }
 .card .hp {
   height: 18px;
@@ -352,6 +352,9 @@ input:focus {
   outline: 3px solid white;
   z-index: 5;
 }
+.map .card.source {
+  outline: 3px solid springgreen;
+}
 .map .card .damage {
   color: yellow;
   position: absolute;
@@ -364,7 +367,6 @@ input:focus {
     0 1px 2px red,
     0 -1px 2px red;
 }
-
 /*TABLE*/
 
 .table .time {
@@ -417,17 +419,29 @@ input:focus {
   animation: innerlight 0.5s infinite;
 }
 
-.turn .map td.stroke.top { 
-  border-top: 1px solid rgba(255,255,255,0.5);
+.turn .map td.stroke.attack.top { 
+  border-top: 1px solid rgba(255,255,255,0.7);
 }
-.turn .map td.stroke.bottom { 
-  border-bottom: 1px solid rgba(255,255,255,0.5);
+.turn .map td.stroke.attack.bottom { 
+  border-bottom: 1px solid rgba(255,255,255,0.7);
 }
-.turn .map td.stroke.left { 
-  border-left: 1px solid rgba(255,255,255,0.5);
+.turn .map td.stroke.attack.left { 
+  border-left: 1px solid rgba(255,255,255,0.7);
 }
-.turn .map td.stroke.right { 
-  border-right: 1px solid rgba(255,255,255,0.5);
+.turn .map td.stroke.attack.right { 
+  border-right: 1px solid rgba(255,255,255,0.7);
+}
+.turn .map td.stroke.skill.top { 
+  border-top: 1px solid springgreen;
+}
+.turn .map td.stroke.skill.bottom { 
+  border-bottom: 1px solid springgreen;
+}
+.turn .map td.stroke.skill.left { 
+  border-left: 1px solid springgreen;
+}
+.turn .map td.stroke.skill.right { 
+  border-right: 1px solid springgreen;
 }
 
 /*DECKS*/
@@ -467,7 +481,7 @@ input:focus {
   left: 4px;
 }
 
-.table .deck.enemy.heroes {
+.table .player.hand.permanent {
   bottom: 0;
   left: 160px;
 }
@@ -479,6 +493,11 @@ input:focus {
 }
 .table .player.skills.hand .card {
   margin-right: -100px;
+  z-index: 4;
+}
+.table .player.skills.hand .card.selected {
+  outline: 3px solid white;
+  transform: scale(0.5);
 }
 
 .table .selectedarea {
@@ -488,6 +507,10 @@ input:focus {
 }
 .table .selectedarea .card {
   transform: scale(1);
+  z-index: 5; 
+}
+.table .selectedarea .card:hover {
+  transform: scale(1.9) translate(-50px,55px); 
 }
 .table .selectedarea .card .damage {
   display: none;

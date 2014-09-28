@@ -3,7 +3,8 @@ var http = require('http'),
     db = require('db'),
     static = require('static'),
     host = 'localhost',
-    port = 80;
+    port = 80,
+    waiting = '{"id":"none"}';
 
 var send = function(response, data){
   response.writeHead(200, {
@@ -12,10 +13,6 @@ var send = function(response, data){
   });
   response.end(''+data);
 };
-
-db.set('server', '{"status":"online"}', function(){
-  db.set('waiting', '{"id":"none"}');
-});
 
 http.createServer(function(request, response){
   var urlObj = url.parse(request.url, true);
@@ -27,11 +24,19 @@ http.createServer(function(request, response){
   if(pathname == 'db'){
     var query = urlObj.query;
     if(query.set) {
-      db.set(query.set, query.data || '', function(data){
+      console.log('set: '+ query.set);
+      if(query.set == 'waiting') {
+        waiting = query.data;
+        send(response, true);
+      }
+      else db.set(query.set, query.data, function(data){
         send(response, data);
       });      
     } else if (query.get) {
-      db.get(query.get, function(data){    
+      console.log('get: '+ query.get);
+      if(query.get == 'server') send(response, '{"status":"online"}');
+      else if(query.get == 'waiting') send(response, waiting);
+      else db.get(query.get, function(data){    
         send(response, data);
       });
     } else send(response, {data: 'It works!'});
