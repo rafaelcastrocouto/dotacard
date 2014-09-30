@@ -172,7 +172,7 @@
       "name": "Blink",
       "type": "Target spot",     
       "target": "spot",
-      "range": 5,
+      "range": "Long range",
       "cards": 11,
       "description": "Teleport Anti Mage to the target spot" 
     },
@@ -195,7 +195,7 @@
       "target": "spot",
       "damage": 18,
       "damageType": "Pure",
-      "range": 5,
+      "range": "Long range",
       "cards": 5,
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
@@ -203,7 +203,8 @@
       "special": "permanent",
       "name": "Rot",
       "type": "Toggle",
-      "target": "skill",      
+      "target": "skill",   
+      "range": "Short range",
       "dot": 5,
       "damageType": "Magical",  
       "cards": 1,
@@ -240,7 +241,7 @@
       "type": "Area of Effect",
       "target": "spot",      
       "width": 1,
-      "range": 3,
+      "range": "Ranged",
       "cards": 4,
       "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
     },

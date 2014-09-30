@@ -714,10 +714,11 @@ var states = {
       return false;
     },   
 
-    passiveSelected: function(){
+    passiveActivate: function(){
       var target = $(this), skill = game.selectedCard;
       var hero = skill.data('hero');
       var skillid = skill.data('skill');
+      var toSpot = Map.getPosition(target);  
       if(hero && skillid && game.status == 'turn'){ 
         game.currentData.moves.push('P:'+toSpot+':'+hero+':'+skillid); 
         skill.activate(target);
@@ -738,14 +739,16 @@ var states = {
       var skillid = skill.data('skill');
       if(hero && skillid && fromSpot && toSpot && game.status == 'turn' && !source.hasClass('done')){ 
         game.currentData.moves.push('C:'+fromSpot+':'+toSpot+':'+skillid+':'+hero); 
-        source.cast(skill, target);    
-        var t = skill.offset(), d = target.offset();
-        skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
-        setTimeout(function(){          
-          $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);
-          source.select();
-        }.bind({ card: skill, destiny: states.table.playerCemitery }), 500);           
+        source.cast(skill, target);         
       }
+    },
+    
+    animateCast: function(skill, target, destiny){
+      var t = skill.offset(), d = target.offset();
+      skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
+      setTimeout(function(){          
+        $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
+      }.bind({ card: skill, destiny: destiny }), 500);
     },
 
     executeEnemyMoves: function(){
@@ -755,7 +758,7 @@ var states = {
       for(var m = 0; m < moves.length; m++){
         var move = moves[m].split(':');
         var fromSpot = Map.mirrorPosition(move[1]), toSpot = Map.mirrorPosition(move[2]);
-        var source, target, hero, skillid, skill, sk;
+        var source, target, hero, skillid, skill;
         
         if(move[0] == 'M'){   
           target = $('#'+fromSpot+' .card');
@@ -770,17 +773,15 @@ var states = {
           hero = move[4];   
           source = $('#'+fromSpot+' .card');
           target = $('#'+toSpot+' .card');
-          sk = skills[hero][skillid].cast;
           skill = $('.enemy.skills .'+hero+'-'+skillid);
-          if(sk && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) source.cast(skill, target);
+          if(skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) source.cast(skill, target);
         }         
         if(move[0] == 'P'){
           skillid = move[3]; 
           hero = move[4];
           target = $('#'+toSpot+' .card');
-          sk = skills[hero][skillid].passive;
           skill = $('.enemy.skills .'+hero+'-'+skillid);
-          if(sk && skill && target.hasClass('enemy') && skill.passive) skill.passive(target);
+          if(skills[hero][skillid].activate && skill && target.hasClass('enemy') && skill.activate) skill.activate(target);
         }        
       }      
       clearTimeout(game.timeout);

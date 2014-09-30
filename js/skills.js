@@ -1,7 +1,9 @@
 var skills = {
   wk: {
     stun: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){       
+        states.table.animateCast(skill, target, states.table.playerCemitery);
+      },
       dot: function(){},
       end: function(){}
     },
@@ -19,6 +21,7 @@ var skills = {
       reborn: function(){}
     }    
   },
+  
 
   ktol: {
     illuminate: {      
@@ -30,19 +33,27 @@ var skills = {
       release: function(){}
     },
     leak: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+        states.table.animateCast(skill, target, states.table.playerCemitery);
+      },
       movement: function(){},
       end: function(){}
     },
     mana: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+        states.table.animateCast(skill, target, states.table.playerCemitery);
+      },
     },
     ult: {
-      cast: function(skill, source){},
+      cast: function(skill, source){
+        states.table.animateCast(skill, source, states.table.playerCemitery);
+      },
       end: function(){}
     },
     blind: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+        states.table.animateCast(skill, target, states.table.playerCemitery);
+      },
       hit: function(){},
       end: function(){}
     },
@@ -52,10 +63,13 @@ var skills = {
       end: function(){}
     }
   },
+  
 
   cm: {
     slow: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+        states.table.animateCast(skill, source, states.table.playerCemitery);
+      },
       end: function(){}
     },
     aura: {
@@ -63,16 +77,21 @@ var skills = {
       buy: function(){}
     },
     freeze: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+        states.table.animateCast(skill, target, states.table.playerCemitery);
+      },
       dot: function(){},
       end: function(){}
     },
     ult: {
-      cast: function(skill, source){},
+      cast: function(skill, source){
+        states.table.animateCast(skill, source, states.table.playerCemitery);
+      },
       dot: function(){},
       end: function(){}
     }    
   },
+  
 
   am: {
     burn: {
@@ -84,7 +103,14 @@ var skills = {
       damage: function(){}
     },
     blink: {
-      cast: function(skill, source, target){}
+      cast: function(skill, source, target){
+        source.css({opacity: 0});
+        skill.css({opacity: 0});
+        setTimeout(function(){
+          this.source.place(this.target).css({opacity: 1});
+          this.skill.appendTo(states.table.playerCemitery);
+        }.bind({skill: skill, source: source, target: target}), 500);        
+      }
     },
     ult: {
       cast: function(skill, source, target){}

@@ -182,7 +182,7 @@ Card.highlightTargets = function(){
       var range = Map.getRange(skill.data('range'));
       
       if(skill.data('target') == 'passive') {        
-        source.addClass('target').on('contextmenu.passive', states.table.passiveSelected);
+        source.addClass('target').on('contextmenu.activate', states.table.passiveActivate);
         
       } else if(skill.data('target') == 'self'){  
         source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
@@ -208,7 +208,7 @@ Card.highlightTargets = function(){
         
       } else if(skill.data('target') == 'spot'){
         Map.inRange(spot, range, function(neighbor){        
-          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
+          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
           else {
             var card = $('.card', neighbor); 
             card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
@@ -245,7 +245,7 @@ Card.highlightMove = function(){
     if(speed < 1) return; 
     if(speed > 3) speed = 3;
     Map.atMovementRange(card, Math.round(speed), function(neighbor){ 
-      if(!neighbor.hasClass('block')) neighbor.addClass('movearea').on('contextmenu.move', states.table.moveSelected);
+      if(!neighbor.hasClass('block')) neighbor.addClass('movearea').on('contextmenu.movearea', states.table.moveSelected);
     });    
   }
   return card;
@@ -305,13 +305,14 @@ Card.move = function(destiny){
 };
 $.fn.move = Card.move;
 
-Card.cast = function(skill, target){
+Card.cast = function(skill, target){  
   var source = this;
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
-  if(skillid && hero && target.data('hero') == hero) {
+  if(skillid && hero && source.data('hero') == hero) {
     skills[hero][skillid].cast(skill, source, target);
-    this.addClass('done');
+    Map.unhighlight();
+    this.addClass('done').select();
   }
   return this;
 };
@@ -323,6 +324,7 @@ Card.activate = function(target){
   var skillid = skill.data('skill');
   if(skillid && hero && target.data('hero') == hero) {
     skills[hero][skillid].activate(skill, target);
+    Map.unhighlight();
   }
   return this;
 };

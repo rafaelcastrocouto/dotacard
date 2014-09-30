@@ -285,8 +285,8 @@ var Map = {
   },
   
   unhighlight: function(){
-    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.passive').removeClass('target');
-    $('.map td').off('contextmenu.move contextmenu.cast').removeClass('movearea stroke skill top bottom left right');    
+    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate').removeClass('target');
+    $('.map td').off('contextmenu.movearea contextmenu.castarea').removeClass('movearea targetarea stroke skill top bottom left right');    
   },
 };
 
