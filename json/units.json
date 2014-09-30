@@ -1,0 +1,34 @@
+{
+  "ld":{
+    "bear":{
+      "name": "Spirit Bear",
+      "hp": 135,
+      "regen": 4,
+      "damage": 2,
+      "attackType": "Melee",
+      "passive": "Entangling Claws, Demolish",
+      "permanent": "Return"
+    }
+  },
+  "forest":{    
+    "cent": {
+      "name": "Centaur",
+      "attackType": "Melee",
+      "hp": 135,
+      "regen": 2,
+      "mana": 3,
+      "damage": 5,
+      "skills": "War Stomp",
+      "buffs": "War Stompt Stun"
+     },
+    
+    "golem": {
+      "name": "Golem",
+      "attackType": "Melee",
+      "hp": 135,
+      "regen": 1,
+      "damage": 5,
+      "passive": "Spell Immunity"
+    }    
+  }
+}

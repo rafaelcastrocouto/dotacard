@@ -1,20 +1,20 @@
 var skills = {
   wk: {
     stun: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       dot: function(){},
       end: function(){}
     },
     "lifesteal": {
-      activate: function(){},
+      activate: function(skill, source){},
       hit: function(){}
     },
     "crit": {
-      activate: function(){},
+      activate: function(skill, source){},
       hit: function(){}
     },
     "ult": {
-      activate: function(){},
+      activate: function(skill, source){},
       die: function(){},
       reborn: function(){}
     }    
@@ -22,32 +22,32 @@ var skills = {
 
   ktol: {
     illuminate: {      
-      channel: function(){},
+      cast: function(skill, source, target){},
       release: function(){}
     },
     illuminateult: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       release: function(){}
     },
     leak: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       movement: function(){},
       end: function(){}
     },
     mana: {
-      cast: function(){},
+      cast: function(skill, source, target){},
     },
     ult: {
-      cast: function(){},
+      cast: function(skill, source){},
       end: function(){}
     },
     blind: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       hit: function(){},
       end: function(){}
     },
     recall: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       damage: function(){},
       end: function(){}
     }
@@ -55,20 +55,20 @@ var skills = {
 
   cm: {
     slow: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       end: function(){}
     },
     aura: {
-      activate: function(){},
+      activate: function(skill, source){},
       buy: function(){}
     },
     freeze: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       dot: function(){},
       end: function(){}
     },
     ult: {
-      channel: function(){},
+      cast: function(skill, source){},
       dot: function(){},
       end: function(){}
     }    
@@ -76,36 +76,36 @@ var skills = {
 
   am: {
     burn: {
-      activate: function(){},
+      activate: function(skill, source){},
       damage: function(){}
     },
     passive: {
-      activate: function(){},
+      activate: function(skill, source){},
       damage: function(){}
     },
     blink: {
-      cast: function(){}
+      cast: function(skill, source, target){}
     },
     ult: {
-      cast: function(){}
+      cast: function(skill, source, target){}
     }    
   },
 
 
   pud: {
     hook: {
-      cast: function(){}
+      cast: function(skill, source, target){}
     },
     rot: {
-      cast: function(){}
+      cast: function(skill, source){}
     },
     passive: {
-      activate: function(){},
+      activate: function(skill, source){},
       damage: function(){},
       die: function(){}
     },
     ult: {
-      channel: function(){},
+      cast: function(skill, source, target){},
       dot: function(){},
       end: function(){}
     }    
@@ -114,51 +114,43 @@ var skills = {
 
   nyx: {
     stun: {
-      cast: function(){},
+      cast: function(skill, source, target){},
       end: function(){}
     },
     burn: {
-      activate: function(){},
+      cast: function(skill, source, target){},
       damage: function(){} 
     },
     spike: {
-      cast: function(){},
+      cast: function(skill, source){},
       damage: function(){}
     },
     ult: {
-      cast: function(){},
+      cast: function(skill, source){},
       damage: function(){}
     }    
   },
 
   ld: {
     summon: {
-      cast: function(){}
+      cast: function(skill, source, target){}
     },
     rabid: {
-      cast: function(){},
+      cast: function(skill, source){},
       end: function(){}
     },
     passive: {
-      activate: function(){}
+      activate: function(skill, source){}
     },
     ult: {
-      cast: function(){},
-      cast: function(){}    
+      cast: function(skill, source){}  
     },
     cry: {
-      cast: function(){},
+      cast: function(skill, source){},
       end: function(){}
     },
     transform: {
-      "name": "Druid Form",
-      "type": "Actice",
-      "target": "self",
-      "duratioin": 8,
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 1, 
-      "description": "Syllabear morphs himself back into a druid"       
+      cast: function(skill, source){}      
     }
   }
 

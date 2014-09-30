@@ -1,3 +1,17 @@
+// Ranges and speed:
+//
+//   0     1       2         3          4          5           6          7           8
+//              Melee / Short range / Ranged / Long Range / 
+//       Slow             Fast                                            ▒          ▒▒▒
+//                                                 ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
+//                           ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//         ▒      ▒▒▒       ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//   ▓    ▒▓▒     ▒▓▒      ▒▒▓▒▒      ▒▒▓▒▒     ▒▒▒▓▒▒▒     ▒▒▒▓▒▒▒   ▒▒▒▒▓▒▒▒▒   ▒▒▒▒▓▒▒▒▒
+//         ▒      ▒▒▒       ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//                           ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//                                                 ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
+//                                                                        ▒          ▒▒▒
+
 var Map = {
   
   letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
@@ -8,10 +22,7 @@ var Map = {
       game.map[h] = [];
       var tr = $('<tr>').appendTo(table);
       for(var w = 0; w < opt.width; w++){
-        game.map[h][w] = $('<td>').attr({'id': Map.toId(w, h)}).addClass('free spot').appendTo(tr)
-        .on('contextmenu',function(){
-          return false
-        });         
+        game.map[h][w] = $('<td>').attr({'id': Map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu',game.nomenu);         
       }
     }
     return table;
@@ -22,12 +33,16 @@ var Map = {
   },
   
   getX: function(spot){
-    var w = Map.letters.indexOf(spot[0]);
-    if(w >= 0 && w < game.width) return w;
+    if(spot){
+      var w = Map.letters.indexOf(spot[0]);
+      if(w >= 0 && w < game.width) return w;
+    }
   },  
   getY: function(spot){
-    var h = parseInt(spot[1]) - 1;
-    if(h >=0 && h < game.height) return h;
+    if(spot){
+      var h = parseInt(spot[1]) - 1;
+      if(h >=0 && h < game.height) return h;
+    }
   },
     
   getTd: function(w,h){
@@ -257,9 +272,12 @@ var Map = {
           game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack(); 
         }
-      } else if(game.selectedCard.hasClass('skills')){
+      } else if(game.selectedCard.hasClass('skills')){        
         game.selectedCard.highlightSource();
-        game.selectedCard.highlightTargets();
+        game.selectedCard.strokeSkill(); 
+        if(game.status == 'turn') {
+          game.selectedCard.highlightTargets();
+        }
       } else if(game.selectedCard.hasClass('towers')){
         game.selectedCard.strokeAttack(); 
       }
@@ -267,9 +285,8 @@ var Map = {
   },
   
   unhighlight: function(){
-    $('.map .card').removeClass('target');
-    $('.map td').off('contextmenu.move contextmenu.attack')
-    .removeClass('movearea stroke skill top bottom left right');    
+    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.passive').removeClass('target');
+    $('.map td').off('contextmenu.move contextmenu.cast').removeClass('movearea stroke skill top bottom left right');    
   },
 };
 

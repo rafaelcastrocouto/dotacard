@@ -1,90 +1,31 @@
 {
   "wk": {
     "stun": {
-      "name": "Wraithfire Blast",
-      "type": "Target Enemy Unit",
-      "target": "enemy",
-      "range": "Short range",
-      "damage": 10,
-      "damageType": "Magical",
-      "duration": 2,      
-      "dot": 2,
-      "cards": 7,
-      "description": "Stun and damage over time an enemy"      
+      "name": "Wraithfire Blast Stun",
+      "description": "Wraithfire Blast stun" 
+    },
+    "dot": {
+      "name": "Wraithfire Blast Burn",
+      "description": "Wraithfire Blast damage over time"  
     },
     "lifesteal": {
-      "name": "Vampiric Aura",
-      "type": "Aura",
-      "percentage": 30,
-      "target": "player",
-      "cards": 1,    
+      "name": "Wraithfire Blast Burn",
       "description": "Drain the life of enemy on every attack"  
     },
     "crit": {
       "name": "Mortal Strike",
-      "type": "Passive",
-      "chance": 15,
-      "percentage": 300,
-      "target": "self",
-      "cards": 1,
       "description": "Chance of bonus damage"  
     },
     "ult": {
-      "name": "Reincarnation",
-      "type": "Passive",
-      "target": "self",
-      "duration": 3,
-      "delay": 1,
-      "cards": 1,
-      "description": "You cannot kill the Wraith King!"
+      "name": "Reincarnation Slow",
+      "description": "Witness the Wraith King return!"
     }    
   },
 
   "ktol": {
-    "illuminate": {
-      "name": "Illuminate",
-      "type": "Area of effect",
-      "target": "spot",
-      "damage": 5,
-      "damageType": "Magical",     
-      "width": 1,
-      "range": 5,      
-      "cards": 5,
-      "description": "Channels light to damage enemies in a line"
-    },
     "leak": {
-      "name": "Mana Leak",
-      "type": "Target Enemy Unit",
-      "target": "enemy",      
-      "range": "Long range",
-      "duration": 4,
-      "cards": 4,
-      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
-    },
-    "mana": {
-      "name": "Chakra Magic",
-      "type": "Target Friend Unit",
-      "target": "player",
-      "cards": 4,
-      "description": "Gives the player two skill cards"
-    },
-    "ult": {
-      "name": "Spirit Form",
-      "type": "Transform",
-      "target": "self",
-      "cards": 4,
-      "description": "Ezalor becomes one with the light!" 
-    },
-    "illuminate-ult": {
-      "name": "Illuminate",
-      "type": "Area of effect",
-      "target": "spot",
-      "damage": 5,
-      "damageType": "Magical",     
-      "width": 1,
-      "range": 5,      
-      "cards": 1,
-      "description": "Summon a spirit to channel light to damage enemies in a line"
+      "name": "Mana Leaking"
+      "description": "Cursed, this card will cause a skill card loss on every move and will get stuned if there are no more cards of that hero"
     },
     "blind": {
       "name": "Blinding Light",
@@ -94,234 +35,60 @@
       "description": "Knock back and blind enemies, causing them to miss attacks"
     },
     "recall": {
-      "name": "Recall",
-      "type": "Target Friend Unit",
-      "target": "player",        
-      "delay": 1,
-      "cards": 1,
-      "description": "If unharmed after enemy turn, target is teleported a free spot near Ezalor"
+      "name": "Recalling",
+      "description": "If unharmed after enemy turn, this unit will be teleported to a free spot near Ezalor"
     }
   },
 
   "cm": {
     "slow": {
-      "name": "Crystal Nova",
-      "type": "Area of Effect",
-      "target": "spot",
-      "radius": 2,
-      "duration": 2,
-      "damage": 12,
-      "damageType": "Magical",      
-      "cards": 4,
-      "description": "A burst of damaging frost slows enemies in the targeted area"
-    },
-    "aura": {
-      "name": "Arcane Aura",
-      "type": "Aura",
-      "target": "player",
-      "cards": 1,
-      "description": "Give an extra bonus skill card per turn"    
+      "name": "Crystal Nova Slow",
+      "description": "Slowed by a burst of damaging frost"
     },
     "freeze": {
-      "name": "Frostbite",
-      "type": "Target Enemy Unit",     
-      "target": "enemy",
-      "range": "Ranged",
-      "duration": 3,
-      "dot": 3,
-      "damageType": "Magical", 
-      "cards": 5,
-      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"    
+      "name": "Frostbitten",
+      "description": "Encased in ice, prohibited to move and attack and receiving damage over time"    
     },
     "ult": {
       "name": "Freezing Field",
-      "type": "Area of Effect",
-      "target": "self",
-      "radius": 6,
-      "duration": 5,
-      "dot": 8,
-      "damageType": "Magical",       
-      "cards": 1,
-      "description": "Rylai channels icy explosions!"    
+      "description": "Slowed by icy explosions"    
     }    
   },
-
-  "am": {
-    "burn": {
-      "name": "Mana Break",
-      "type": "Passive",
-      "target": "enemy",
-      "cards": 1,
-      "description": "Everytime Antimage attacks enemy player loses a card of the attaked hero"
-    },
-    "passive": {
-      "name": "Spell Shield",
-      "type": "Passive",
-      "target": "player",      
-      "percentage": 50,
-      "cards": 1,
-      "description": "Reduces magic damage"    
-    },
-    "blink": {
-      "name": "Blink",
-      "type": "Target spot",     
-      "target": "spot",
-      "range": 5,
-      "cards": 11,
-      "description": "Teleport Anti Mage to the target spot" 
-    },
-    "ult": {
-      "name": "Mana Void",
-      "type": "Area of Effect",
-      "target": "enemy",
-      "range": "Short range", 
-      "damageType": "Magical",       
-      "cards": 1,
-      "description": "Damages area around an enemy for every card player could have times 5"
-    }    
-  },
-
 
   "pud": {
-    "hook": {
-      "name": "Meat Hook",
-      "type": "Target spot",
-      "target": "spot",
-      "damage": 18,
-      "damageType": "Pure",
-      "range": 5,
-      "cards": 5,
-      "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
-    },
-    "rot": {
-      "name": "Rot",
-      "type": "Toggle",
-      "target": "self",      
-      "dot": 5,
-      "damageType": "Magical",  
-      "cards": 1,
-      "description": "A toxic cloud that deals intense damage to himself and enemies around"    
-    },
-    "passive": {
-      "name": "Flesh Heap",
-      "type": "Passive",     
-      "target": "self",     
-      "percentage": 12,
-      "hpBonus": 3,
-      "regenBonus": 1,
-      "damageBonus": 1,
-      "cards": 1,
-      "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill" 
-    },
     "ult": {
-      "name": "Dismember",
-      "type": "Target Enemy Unit",
-      "target": "enemy",        
-      "range": "Melee",
-      "dot": 6,
-      "damageType": "Magical", 
-      "cards": 2,
-      "description": "Channels to disable and deal damage over time to an enemy"
+      "name": "Dismember Hold",
+      "description": "Disabled and receiving damage over time by Pudge claws"
     }    
   },
-
 
   "nyx": {
     "stun": {
-      "name": "Impale",
-      "type": "Area of Effect",
-      "target": "spot",      
-      "width": 1,
-      "range": 3,
-      "cards": 4,
-      "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
-    },
-    "burn": {
-      "name": "Mana Burn",
-      "type": "Target Enemy Unit",
-      "target": "enemy",      
-      "range": "Ranged",
-      "multiplier": 4,
-      "damageType": "Magical",   
-      "cards": 13,
-      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"    
+      "name": "Impale Stun",
+      "description": "Stunned by rock spikes"
     },
     "spike": {
-      "name": "Spiked Carapace",
-      "type": "Active",     
-      "target": "self",      
-      "duration": 2,
-      "damageType": "Pure",
-      "cards": 5,
-      "description": "Reflects and negates damage received, while stunning the source of damage" 
+      "name": "Spiked Stun",
+      "description": "Stunned by Spiked Carapace reflected damage" 
     },
     "ult": {
       "name": "Vendetta",
-      "type": "Actice",
-      "target": "self",
-      "duratioin": 8,
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 1, 
-      "description": "Nyx Assassin to become invisible and gain bonus on next attack"       
+      "description": "Nyx Assassin is invisible and will deal bonus damage on next attack"       
     }    
   },
 
   "ld": {
-    "summon": {
-      "name": "Spirit Bear",
-      "type": "Summon",
-      "target": "spot",      
-      "cards": 2,
-      "description": "Summons a powerful Spirit Bear companion"
-    },
     "rabid": {
       "name": "Rabid",
-      "type": "Active",
-      "target": "self",      
-      "percentage": 40,   
-      "duration": 3,
-      "cards": 5,
-      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear by a percentage"    
-    },
-    "passive": {
-      "name": "Synergy",
-      "type": "Active",     
-      "target": "self",
-      "cards": 1,
-      "bearBonus": 2,
-      "rabidBonus": 3,      
-      "hpBonus": 20,      
-      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
+      "description": "Increased attack and movement speed of Syllabear and the Spirit Bear"    
     },
     "ult": {
       "name": "True Form",
-      "type": "Actice",
-      "target": "self",
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 4,
-      "hpBonus": 20,
-      "description": "Lone Druid morphs himself into a raging bear"       
+      "description": "Lone Druid morphed himself into a raging bear"       
     },
     "cry": {
       "name": "Battle Cry",
-      "type": "Actice",
-      "target": "self",
-      "duratioin": 2,
-      "damage": 3,
-      "cards": 1, 
-      "description": "Increases the attack of Syllabear and the Spirit Bear"       
-    },
-    "transform": {
-      "name": "Druid Form",
-      "type": "Actice",
-      "target": "self",
-      "duratioin": 8,
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 1, 
-      "description": "Syllabear morphs himself back into a druid"       
+      "description": "Increased attack of Syllabear and the Spirit Bear"       
     }
   }
 

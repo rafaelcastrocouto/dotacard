@@ -7,11 +7,9 @@
     "regen": 1,
     "mana": 4,
     "damage": 4,
-    "skills": "Illuminate | Mana Leak | Chakra Magic | Spirit Form",
-    "passive": "",
-    "permanent": "",
-    "temporary": "Spirit Illuminate | Blinding Light | Recall",
-    "buffs": "Mana Leaking | Blinded"
+    "skills": "Illuminate, Mana Leak, Chakra Magic, Spirit Form",
+    "temporary": "Blinding Light, Recall",
+    "buffs": "Mana Leaking, Blinded, Recalling"
   },
   
   "wk":{
@@ -22,11 +20,9 @@
     "regen": 2,
     "mana": 3,
     "damage": 5,
-    "skills": "Wraithfire Blast | Reincarnation",
+    "skills": "Wraithfire Blast, Reincarnation",
     "passive": "Mortal Strike, Vampiric Aura",
-    "permanent": "",    
-    "temporary": "",    
-    "buffs": "Wraithfire Blast Stun | Wraithfire Blast Burn | Vampiric Aura | Reincarnation Slow"
+    "buffs": "Wraithfire Blast Stun, Wraithfire Blast Burn, Vampiric Aura, Reincarnation Slow"
   },
   
   "pud":{
@@ -37,10 +33,9 @@
     "regen": 2,
     "mana": 2,
     "damage": 5,
-    "skills": "Meat Hook | Dismember",
+    "skills": "Meat Hook, Dismember",
     "passive": "Flesh Heap",
     "permanent": "Rot",
-    "temporary": "",    
     "buffs": "Dismember Hold"
   },
   
@@ -52,11 +47,9 @@
     "regen": 1,
     "mana": 4, 
     "damage": 4,
-    "skills": "Crystal Nova | Frostbite | Freezing Field",
+    "skills": "Crystal Nova, Frostbite, Freezing Field",
     "passive": "Arcane Aura",
-    "permanent": "",
-    "temporary": "",    
-    "buffs": "Crystal Nova Slow | Frostbitten | Arcane Aura"
+    "buffs": "Crystal Nova Slow, Frostbitten, Freezing Field"
   },
   
   "nyx":{
@@ -67,11 +60,9 @@
     "regen": 1,
     "mana": 3,
     "damage": 4,
-    "skills": "Impale | Mana Burn | Spiked Carapace | Vendetta",
+    "skills": "Impale, Mana Burn, Spiked Carapace, Vendetta",
     "passive": "Arcane Aura",
-    "permanent": "",
-    "temporary": "",    
-    "buffs": "Impale Stun | Spiked Stun | Vendetta"    
+    "buffs": "Impale Stun, Spiked Stun, Vendetta"    
   },
   
   "am":{
@@ -82,11 +73,8 @@
     "regen": 1,
     "mana": 3,
     "damage": 4,
-    "skills": "Blink | Mana Burn | Mana Void",
-    "passive": "Mana Break | Spell Shield",
-    "permanent": "",
-    "temporary": "",    
-    "buffs": ""
+    "skills": "Blink, Mana Burn, Mana Void",
+    "passive": "Mana Break, Spell Shield"
   },
   
   "ld":{
@@ -97,11 +85,10 @@
     "regen": 1,
     "mana": 2,
     "damage": 4,
-    "skills": "Summon Spirit Bear | Rabid | True Form",
+    "skills": "Spirit Bear, Rabid, True Form",
     "passive": "Synergy",
-    "permanent": "",
     "temporary": "Battle Cry",    
-    "buffs": "Rabid | Battle Cry | True Form"
+    "buffs": "Rabid, Battle Cry, True Form"
   }
   
 }

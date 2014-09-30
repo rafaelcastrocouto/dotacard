@@ -236,8 +236,11 @@ input:focus {
   cursor: url("img/cursor/cursor-red.png"), url("img/cursor/cursor-red.cur"), pointer;
   box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
 }
-.card.target {
-  animation: targetlight 0.5s infinite;
+.card.enemy.target {
+  animation: enemytarget 0.5s infinite;
+}
+.card.player.target {
+  animation: playertarget 0.5s infinite;
 }
 .card.dead {
   -webkit-filter: grayscale(0.9);
@@ -300,7 +303,7 @@ input:focus {
   font-size: 14px;
   color: #533;
   text-shadow: 0 1px 0 #fff;
-  margin: 5px 5px 2px;
+  margin: 5px 0 0;
 }
 .card p { 
   font-family: 'Special Elite';
@@ -308,7 +311,8 @@ input:focus {
   color: #533;
   text-shadow: 0 1px 0 #fff;
   text-align: justify;
-  margin: 0 1px;
+  margin: 0;
+  border: 0;
 }
 
 .choose .card .hp,
@@ -417,6 +421,10 @@ input:focus {
 .turn .map td.movearea {  
   cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
   animation: innerlight 0.5s infinite;
+}
+.turn .map td.targetarea {  
+  cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
+  animation: innergreen 0.5s infinite;
 }
 
 .turn .map td.stroke.attack.top { 
@@ -676,10 +684,10 @@ input:focus {
 
 /*TOWERS*/
 
-.ptw .img {
+.card.player.towers .img {
   background-image: url("img/towers/tower-player.png");
 }
-.etw .img {
+.card.enemy.towers .img {
   background-image: url("img/towers/tower-enemy.png");
 }
 
@@ -720,9 +728,17 @@ input:focus {
   0%, 100% {box-shadow: inset 0 0 40px white;}
   50% {box-shadow: inset 0 0 20px white;}
 }
-@keyframes targetlight {
-  0%, 100% {box-shadow: 0 0 4px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
-  50% {box-shadow: 0 0 4px 4px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+@keyframes innergreen {
+  0%, 100% {box-shadow: inset 0 0 40px springgreen;}
+  50% {box-shadow: inset 0 0 20px springgreen;}
+}
+@keyframes enemytarget {
+  0%, 100% {box-shadow: 0 0 6px 8px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+  50% {box-shadow: 0 0 4px 2px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
+}
+@keyframes playertarget {
+  0%, 100% {box-shadow: 0 0 6px 8px springgreen, inset 0 0 0 25px rgba(0,185,0,0.5);}
+  50% {box-shadow: 0 0 4px 2px springgreen, inset 0 0 0 25px rgba(0,185,0,0.5);}
 }
 @keyframes shade {
   50% {opacity: 0.5;}
