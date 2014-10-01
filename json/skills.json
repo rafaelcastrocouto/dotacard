@@ -45,7 +45,7 @@
       "name": "Illuminate",
       "channel": true,
       "type": "Area of effect",
-      "target": "spot",
+      "target": "around",
       "range": 2, 
       "damage": 5,
       "damageType": "Magical",     
@@ -171,7 +171,7 @@
     "blink": {
       "name": "Blink",
       "type": "Target spot",     
-      "target": "spot",
+      "target": "around",
       "range": "Long range",
       "cards": 11,
       "description": "Teleport Anti Mage to the target spot" 
@@ -192,7 +192,7 @@
     "hook": {
       "name": "Meat Hook",
       "type": "Target spot",
-      "target": "spot",
+      "target": "around",
       "damage": 18,
       "damageType": "Pure",
       "range": "Long range",
@@ -239,7 +239,7 @@
     "stun": {
       "name": "Impale",
       "type": "Area of Effect",
-      "target": "spot",      
+      "target": "around",      
       "width": 1,
       "range": "Ranged",
       "cards": 4,
@@ -280,7 +280,7 @@
     "summon": {
       "name": "Spirit Bear",
       "type": "Summon",
-      "target": "spot",   
+      "target": "around",   
       "range": 2,
       "cards": 2,
       "description": "Summons a powerful Spirit Bear companion"

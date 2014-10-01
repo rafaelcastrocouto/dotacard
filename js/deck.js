@@ -7,21 +7,14 @@
 //Skill card count = 50/cooldown + 50/manacost // function(cool,mana){return Math.round((50/cool)+(50/mana))} 
 //ATS = (1 + ATS%) / BAT  (avarage BAT = 1.7)
 
-var Deck = function(/* name, [filter], callback */){  
-  var name = arguments[0];
-  var filter, cb;
-  if(typeof arguments[1] == 'function') cb = arguments[1];
-  else {
-    filter = arguments[1];
-    cb = arguments[2];
-  } 
+var Deck = function(op/* name, [filter], callback */){  
+  var name = op.name, filter = op.filter, cb = op.cb, multi = op.multi;
   var deck = $('<div>').addClass('deck '+name);
-
   if(!Deck.loadedDecks[name])
     Deck.loadDeck(name, function(){
-      Deck.createCards(deck, name, cb, filter);
+      Deck.createCards(deck, name, cb, filter, multi);
     });    
-  else Deck.createCards(deck, name, cb, filter);
+  else Deck.createCards(deck, name, cb, filter, multi);
 
   return deck;
 };
@@ -40,9 +33,9 @@ Deck.loadDeck = function(name, cb){
   });
 };
 
-Deck.createCards = function(deck, name, cb, filter){   
+Deck.createCards = function(deck, name, cb, filter, multi){   
   if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
-  if(name == 'skills') Deck.createSkillsCards(deck, name, cb, filter);
+  if(name == 'skills') Deck.createSkillsCards(deck, name, cb, filter, multi);
 };
 
 Deck.createHeroesCards = function(deck, name, cb, filter){   
@@ -67,7 +60,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
   if(cb) cb(deck);     
 };
 
-Deck.createSkillsCards = function(deck, name, cb, filter){   
+Deck.createSkillsCards = function(deck, name, cb, filter, multi){   
   var deckData = Deck.loadedDecks[name];
   var cards = [];
   $.each(deckData, function(hero, heroSkillsData){ 
@@ -82,9 +75,12 @@ Deck.createSkillsCards = function(deck, name, cb, filter){
         skillData.hero = hero;
         skillData.skill = skill;
         skillData.className = hero+'-'+skill + ' ' + name;
-        for(var k=0; k < skillData.cards; k++){
-          cards.push(Card(skillData).appendTo(deck));
-        }
+        if(multi){
+          for(var k=0; k < skillData.cards; k++){
+            cards.push(Card(skillData).appendTo(deck));
+          }
+        } else cards.push(Card(skillData).appendTo(deck));
+        
       });
     }    
   });
@@ -207,7 +203,16 @@ Card.highlightTargets = function(){
         });
         
       } else if(skill.data('target') == 'spot'){
+        source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){        
+          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+          else {
+            var card = $('.card', neighbor); 
+            card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
+          }
+        });
+      } else if(skill.data('target') == 'around'){
+        Map.around(spot, range, function(neighbor){        
           if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
           else {
             var card = $('.card', neighbor); 
@@ -308,7 +313,7 @@ $.fn.move = Card.move;
 Card.cast = function(skill, target){  
   var source = this;
   var hero = skill.data('hero');
-  var skillid = skill.data('skill');
+  var skillid = skill.data('skill');console.log('card.cast',skill,skillid,hero,target, source.data('hero'));
   if(skillid && hero && source.data('hero') == hero) {
     skills[hero][skillid].cast(skill, source, target);
     Map.unhighlight();

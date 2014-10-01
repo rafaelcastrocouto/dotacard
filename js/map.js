@@ -73,7 +73,7 @@ var Map = {
       }
     };
     var w = Map.getX(spot), h = Map.getY(spot); 
-    if(range == 0) fil(w, h);
+    if(range === 0) fil(w, h);
     else {
       var radius = Map.rangeArray[range];  
       var x, y, r = Math.round(radius), r2 = radius * radius, l = (Math.ceil(radius) * Math.cos(Math.PI/4)); 
@@ -194,7 +194,7 @@ var Map = {
     };
     var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]) - 1; 
                                         
-    if(range == 0) return fil(w, h, 'left right top bottom'); 
+    if(range === 0) return fil(w, h, 'left right top bottom'); 
                                         
     var radius = Map.rangeArray[range];
     var x, y, r = Math.round(radius), r2 = radius * radius, l = (Math.ceil(radius) * Math.cos(Math.PI/4));

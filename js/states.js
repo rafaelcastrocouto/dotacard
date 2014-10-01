@@ -87,6 +87,8 @@ var states = {
             states.intro.videoLoaded = true;
             if(states.currentstate == 'intro' && game.status != 'playing'){              
               states.intro.playVideo();
+            } else if(states.currentstate != 'intro' && game.status == 'playing'){
+              states.intro.pauseVideo();
             }
           }
         });  
@@ -238,21 +240,24 @@ var states = {
       this.prepickbox = $('<div>').appendTo(this.el).attr({'class': 'prepickbox'}).html('My Decks<br>Comming soon...').addClass('hidden');
       this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').addClass('hidden');
       
-      this.pickDeck = Deck('heroes', function(pickDeck){
-        pickDeck.addClass('pickdeck').appendTo(states.choose.pickbox);
-        states.choose.size = 100;
-        $.each(pickDeck.data('cards'), function(id, card){
-          card.data('place', card.index());  
-          card.on('click.active', function(){
-            var clickedCard = $(this);
-            if(!clickedCard.hasClass('picked')){
-              $('.card.active').removeClass('active');
-              clickedCard.addClass('active');
-              states.choose.pickDeck.css('left', clickedCard.index() * states.choose.size * -1);
-            }
+      this.pickDeck = Deck({
+        name: 'heroes', 
+        cb: function(pickDeck){
+          pickDeck.addClass('pickdeck').appendTo(states.choose.pickbox);
+          states.choose.size = 100;
+          $.each(pickDeck.data('cards'), function(id, card){
+            card.data('place', card.index());  
+            card.on('click.active', function(){
+              var clickedCard = $(this);
+              if(!clickedCard.hasClass('picked')){
+                $('.card.active').removeClass('active');
+                clickedCard.addClass('active');
+                states.choose.pickDeck.css('left', clickedCard.index() * states.choose.size * -1);
+              }
+            });
           });
-        });
-        pickDeck.width((states.choose.size + 100) * pickDeck.children().length);
+          pickDeck.width((states.choose.size + 100) * pickDeck.children().length);
+        }
       });      
     },
     
@@ -520,25 +525,33 @@ var states = {
     placeHeroes: function(){ 
       if(game.player.picks && game.enemy.picks){
         game.player.mana = 0;      
-        this.playerHeroesDeck = Deck('heroes', game.player.picks, function(deck){        
-          deck.addClass('player').appendTo(states.table.el);
-          var x = 0, y = 3;
-          $.each(deck.data('cards'), function(i, card){          
-            card.addClass('player').click(Card.select);
-            card.place(Map.toId(x,y)); 
-            x++;
-            game.player.mana += card.data('mana');
-          });
+        this.playerHeroesDeck = Deck({
+          name: 'heroes', 
+          filter: game.player.picks, 
+          cb: function(deck){        
+            deck.addClass('player').appendTo(states.table.el);
+            var x = 0, y = 3;
+            $.each(deck.data('cards'), function(i, card){          
+              card.addClass('player').click(Card.select);
+              card.place(Map.toId(x,y)); 
+              x++;
+              game.player.mana += card.data('mana');
+            });
+          }
         });  
 
-        this.enemyHeroesDeck = Deck('heroes', game.enemy.picks, function(deck){
-          deck.addClass('enemy').hide().appendTo(states.table.el);        
-          var x = 11, y = 1;
-          $.each(deck.data('cards'), function(i, card){       
-            card.addClass('enemy').click(Card.select);          
-            card.place(Map.toId(x,y));          
-            x--;
-          });
+        this.enemyHeroesDeck = Deck({
+          name: 'heroes', 
+          filter: game.enemy.picks, 
+          cb: function(deck){
+            deck.addClass('enemy').hide().appendTo(states.table.el);        
+            var x = 11, y = 1;
+            $.each(deck.data('cards'), function(i, card){       
+              card.addClass('enemy').click(Card.select);          
+              card.place(Map.toId(x,y));          
+              x--;
+            });
+          }
         }); 
       }
     },
@@ -550,21 +563,29 @@ var states = {
       this.playerPermanent = $('<div>').appendTo(this.el).addClass('player skills hand permanent');
       this.playerUlt = $('<div>').hide().appendTo(this.el).addClass('player skills ult');      
       this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player skills cemitery');
-      this.playerSkillsDeck = Deck('skills', game.player.picks, function(deck){        
-        deck.addClass('player').hide().appendTo(states.table.el);
-        $.each(deck.data('cards'), function(i, skill){   
-          skill.addClass('player').click(Card.select);
-          if(skill.data('special')) {
-            if(skill.data('special') == 'permanent') skill.appendTo(states.table.playerPermanent);
-            if(skill.data('special') == 'ult') skill.appendTo(states.table.playerUlt);
-          }        
-        });        
+      this.playerSkillsDeck = Deck({
+        name: 'skills', 
+        filter: game.player.picks, 
+        cb: function(deck){        
+          deck.addClass('player').hide().appendTo(states.table.el);
+          $.each(deck.data('cards'), function(i, skill){   
+            skill.addClass('player').click(Card.select);
+            if(skill.data('special')) {
+              if(skill.data('special') == 'permanent') skill.appendTo(states.table.playerPermanent);
+              if(skill.data('special') == 'ult') skill.appendTo(states.table.playerUlt);
+            }        
+          });        
+        }
       });
-      this.enemySkillsDeck = Deck('skills', game.player.picks, function(deck){        
-        deck.addClass('enemy').hide().appendTo(states.table.el);
-        $.each(deck.data('cards'), function(i, skill){   
-          skill.addClass('enemy');        
-        });        
+      this.enemySkillsDeck = Deck({
+        name: 'skills', 
+        filter: game.enemy.picks, 
+        cb: function(deck){        
+          deck.addClass('enemy').hide().appendTo(states.table.el);
+          $.each(deck.data('cards'), function(i, skill){   
+            skill.addClass('enemy');        
+          });        
+        }
       });
     },
     
@@ -720,7 +741,7 @@ var states = {
       var skillid = skill.data('skill');
       var toSpot = Map.getPosition(target);  
       if(hero && skillid && game.status == 'turn'){ 
-        game.currentData.moves.push('P:'+toSpot+':'+hero+':'+skillid); 
+        game.currentData.moves.push('P:'+toSpot+':'+skillid+':'+hero); 
         skill.activate(target);
         var t = skill.offset(), d = target.offset();
         skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
@@ -739,16 +760,8 @@ var states = {
       var skillid = skill.data('skill');
       if(hero && skillid && fromSpot && toSpot && game.status == 'turn' && !source.hasClass('done')){ 
         game.currentData.moves.push('C:'+fromSpot+':'+toSpot+':'+skillid+':'+hero); 
-        source.cast(skill, target);         
+        source.cast(skill, toSpot);         
       }
-    },
-    
-    animateCast: function(skill, target, destiny){
-      var t = skill.offset(), d = target.offset();
-      skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
-      setTimeout(function(){          
-        $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
-      }.bind({ card: skill, destiny: destiny }), 500);
     },
 
     executeEnemyMoves: function(){
@@ -768,17 +781,18 @@ var states = {
           source = $('#'+fromSpot+' .card');
           if(toSpot && !source.hasClass('done') && source.hasClass('enemy') && source.attack) source.attack(toSpot);
         }        
-        if(move[0] == 'C'){
+        if(move[0] == 'C'){ 
           skillid = move[3]; 
           hero = move[4];   
           source = $('#'+fromSpot+' .card');
-          target = $('#'+toSpot+' .card');
+          target = $('#'+toSpot);
           skill = $('.enemy.skills .'+hero+'-'+skillid);
           if(skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) source.cast(skill, target);
         }         
         if(move[0] == 'P'){
-          skillid = move[3]; 
-          hero = move[4];
+          toSpot = Map.mirrorPosition(move[1]);
+          skillid = move[2]; 
+          hero = move[3];
           target = $('#'+toSpot+' .card');
           skill = $('.enemy.skills .'+hero+'-'+skillid);
           if(skills[hero][skillid].activate && skill && target.hasClass('enemy') && skill.activate) skill.activate(target);
@@ -790,7 +804,15 @@ var states = {
         states.table.beginTurn();
       }, 2000);
     },
-
+    
+    animateCast: function(skill, target, destiny){
+      var t = skill.offset(), d = target.offset();
+      skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
+      setTimeout(function(){          
+        $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
+      }.bind({ card: skill, destiny: destiny }), 500);
+    },
+    
     lose: function(){
       states.table.el.addClass('unturn');
       game.message.text('Game Over!');
