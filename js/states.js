@@ -11,9 +11,6 @@ each states
 
 ////////////////////////////////////////////////////////*/
 var states = {
-  
-  el: $('<div>').attr('id','states').appendTo(game.container), 
-  
   changeTo: function(state){
     if(state == states.currentstate) return;    
     var oldstate = states[states.currentstate];
@@ -25,12 +22,13 @@ var states = {
       newstate.builded = true;
     }
     states.el.removeClass(states.currentstate).addClass(state);
-    if(newstate.el) newstate.el.removeClass('hidden').append(game.message, game.loader, game.triesCounter);
+    if(newstate.el) newstate.el.removeClass('hidden').append(game.loader, game.message, game.triesCounter);
     states.currentstate = state;
     if(newstate.start) newstate.start();
   },
   
   build: function(){
+    states.el = $('<div>').attr('id','states').appendTo(game.container);
     $.each(states, function(id){
       if(id == 'load' || id == 'el' || id == 'changeTo' || id == 'build' || id == 'currentstate') return;
       states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
@@ -38,8 +36,7 @@ var states = {
         states[id].build();
         states[id].builded = true;
       }
-    });      
-    game.states = states;
+    });     
     game.states.changeTo('intro');
   }, 
   
@@ -193,7 +190,8 @@ var states = {
         states.menu.public.attr( "disabled", true );
         db({'get':'waiting'}, function(waiting){          
           if(waiting.id == 'none'){
-            game.id = btoa(new Date().valueOf() +''+ parseInt(Math.random()*10E10));
+            game.seed = new Date().valueOf();
+            game.id = btoa(game.seed);
             var myGame = {id: game.id};
             db({'set': 'waiting', 'data': myGame}, function(){ 
               game.status = 'waiting';
@@ -201,7 +199,8 @@ var states = {
             });
             
           } else {             
-            game.id = waiting.id;         
+            game.id = waiting.id;     
+            game.seed = atob(game.id);
             game.status = 'found';
             var clearWait = {id: 'none'};            
             db({'set': 'waiting', 'data': clearWait}, function(){               
@@ -747,7 +746,7 @@ var states = {
         skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
         setTimeout(function(){          
           $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);
-          source.select();
+          target.select();
         }.bind({ card: skill, destiny: states.table.playerCemitery }), 500);        
       }
     },
@@ -835,7 +834,3 @@ var states = {
   //table end
 };
 // states end /////////////////////////////////////////////////////////
-
-//start the game///
-$(states.build);
-///////////////////

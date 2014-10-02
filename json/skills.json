@@ -27,7 +27,8 @@
       "chance": 15,
       "percentage": 300,      
       "cards": 1,
-      "description": "Chance of bonus damage"  
+      "description": "Chance of bonus damage",
+      "buff": "Mortal Strike"
     },
     "ult": {
       "name": "Reincarnation",
@@ -45,12 +46,12 @@
       "name": "Illuminate",
       "channel": true,
       "type": "Area of effect",
-      "target": "around",
-      "range": 2, 
+      "target": "allaround",
+      "range": "Melee", 
       "damage": 5,
       "damageType": "Magical",     
-      "width": 6,           
-      "height": 1,           
+      "length": 6,           
+      "width": 1,           
       "cards": 5,
       "description": "Channels light to damage enemies in a line"
     },
@@ -67,6 +68,7 @@
       "name": "Chakra Magic",
       "type": "Target Friend Unit",
       "target": "player",
+      "range": "Ranged",
       "cards": 4,
       "description": "Gives the player two skill cards"
     },
@@ -82,10 +84,11 @@
       "name": "Illuminate",
       "type": "Area of effect",
       "target": "spot",
+      "range": "Melee", 
       "damage": 5,
       "damageType": "Magical",     
-      "width": 1,
-      "range": 5,      
+      "length": 6,           
+      "width": 1,           
       "cards": 1,
       "description": "Summon a spirit to channel light to damage enemies in a line"
     },
@@ -94,6 +97,7 @@
       "name": "Blinding Light",
       "type": "Area of effect",
       "target": "spot",  
+      "range": "Ranged", 
       "cards": 1,
       "description": "Knock back and blind enemies, causing them to miss attacks"
     },
@@ -101,7 +105,8 @@
       "special": "ult",
       "name": "Recall",
       "type": "Target Friend Unit",
-      "target": "ally",        
+      "target": "ally",
+      "range": "Global", 
       "delay": 1,
       "cards": 1,
       "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
@@ -113,6 +118,7 @@
       "name": "Crystal Nova",
       "type": "Area of Effect",
       "target": "spot",
+      "range": "Ranged", 
       "radius": 2,
       "duration": 2,
       "damage": 12,
@@ -195,8 +201,9 @@
       "target": "around",
       "damage": 18,
       "damageType": "Pure",
-      "range": "Long range",
+      "range": "Melee",
       "cards": 5,
+      "length": 5,
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
     "rot": {
@@ -239,9 +246,9 @@
     "stun": {
       "name": "Impale",
       "type": "Area of Effect",
-      "target": "around",      
+      "target": "allaround",      
       "width": 1,
-      "range": "Ranged",
+      "range": "Melee",
       "cards": 4,
       "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
     },
@@ -280,7 +287,8 @@
     "summon": {
       "name": "Spirit Bear",
       "type": "Summon",
-      "target": "around",   
+      "target": "around",
+      "range": "Melee", 
       "range": 2,
       "cards": 2,
       "description": "Summons a powerful Spirit Bear companion"

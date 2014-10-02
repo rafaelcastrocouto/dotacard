@@ -10,7 +10,7 @@
 var Deck = function(op/* name, [filter], callback */){  
   var name = op.name, filter = op.filter, cb = op.cb, multi = op.multi;
   var deck = $('<div>').addClass('deck '+name);
-  if(!Deck.loadedDecks[name])
+  if(!game[name])
     Deck.loadDeck(name, function(){
       Deck.createCards(deck, name, cb, filter, multi);
     });    
@@ -19,27 +19,29 @@ var Deck = function(op/* name, [filter], callback */){
   return deck;
 };
 
-Deck.loadedDecks = {};
-
 Deck.loadDeck = function(name, cb){
   $.ajax({
     type: "GET", 
     url: 'json/'+name+'.json',
     complete: function(response){
       var data = JSON.parse(response.responseText);
-      Deck.loadedDecks[name] = data;
-      cb();
+      game[name] = data;
+      cb(data);
     }
   });
 };
 
 Deck.createCards = function(deck, name, cb, filter, multi){   
   if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
-  if(name == 'skills') Deck.createSkillsCards(deck, name, cb, filter, multi);
+  if(name == 'skills') {
+    Deck.loadDeck('buffs', function(){
+      Deck.createSkillsCards(deck, name, cb, filter, multi);
+    });
+  }
 };
 
 Deck.createHeroesCards = function(deck, name, cb, filter){   
-  var deckData = Deck.loadedDecks[name];
+  var deckData = game[name];
   var cards = [];
   $.each(deckData, function(heroid, herodata){
     var found = false;
@@ -52,6 +54,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
       herodata.hero = heroid;
       herodata.speed = 2;
       herodata.kd = true;
+      herodata.buffs = true;
       herodata.className = heroid + ' ' +name;
       cards.push(Card(herodata).appendTo(deck));
     }
@@ -61,7 +64,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
 };
 
 Deck.createSkillsCards = function(deck, name, cb, filter, multi){   
-  var deckData = Deck.loadedDecks[name];
+  var deckData = game[name];
   var cards = [];
   $.each(deckData, function(hero, heroSkillsData){ 
     var found = false;
@@ -75,6 +78,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.hero = hero;
         skillData.skill = skill;
         skillData.className = hero+'-'+skill + ' ' + name;
+        if(skillData.buff) skillData.buff = game.buffs[hero][skill];
         if(multi){
           for(var k=0; k < skillData.cards; k++){
             cards.push(Card(skillData).appendTo(deck));
@@ -101,10 +105,10 @@ var Card = function(data){
 
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
   $('<div>').appendTo(portrait).addClass('img');
-  $('<div>').addClass('overlay').appendTo(portrait);
+  $('<div>').appendTo(portrait).addClass('overlay');
 
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute + ' | ' + data.attackType );  
-  if(data.cards) $('<h1>').appendTo(fieldset).text(Deck.loadedDecks.heroes[data.hero].name);  
+  if(data.cards) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
 
   if(data.hp) {
     $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
@@ -134,6 +138,8 @@ var Card = function(data){
     data.deaths = 0;
     $('<p>').addClass('kd').appendTo(fieldset).html('KD: <span class="kills">0</span>/<span class="deaths">0</span>');
   }
+  
+  if(data.buffs) $('<div>').addClass('buffs').appendTo(card);
 
   $.each(data, function(item, value){card.data(item, value);});
   return card;
@@ -202,24 +208,28 @@ Card.highlightTargets = function(){
           if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);        
         });
         
-      } else if(skill.data('target') == 'spot'){
-        source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
-        Map.inRange(spot, range, function(neighbor){        
+      }else if(skill.data('target') == 'around'){
+        Map.around(spot, range, function(neighbor){        
           if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
-          else {
-            var card = $('.card', neighbor); 
-            card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
-          }
         });
-      } else if(skill.data('target') == 'around'){
+      } else if(skill.data('target') == 'allaround'){
         Map.around(spot, range, function(neighbor){        
           if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
           else {
             var card = $('.card', neighbor); 
-            card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
+            card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
           }
         });
-      }
+      } else if(skill.data('target') == 'spot'){
+        source.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
+        Map.inRange(spot, range, function(neighbor){        
+          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+          else {
+            var card = $('.card', neighbor); 
+            card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
+          }
+        });
+      } 
     }
   }
   return skill;
@@ -231,7 +241,7 @@ Card.strokeSkill = function(){
   if(hero){
     var source = $('.map .card.player.'+hero);
     if(source.hasClass('heroes') && !source.hasClasses('dead done')){
-      if(skill.data('target') == 'enemy'){
+      if(skill.data('range')){
         game.castSource = source;
         var spot = Map.getPosition(source);
         var range = Map.getRange(skill.data('range'));  
@@ -335,20 +345,37 @@ Card.activate = function(target){
 };
 $.fn.activate = Card.activate;
 
+Card.addBuff = function(skill){ 
+  var target = this;
+  var hero = skill.data('hero');
+  var skillid = skill.data('skill');
+  var data = skill.data('buff');
+  if(skillid && hero && data) {
+    var buff = $('<div>').addClass('buff '+hero+'-'+skillid).attr({title: data.name +': '+ data.description});
+    $('<div>').appendTo(buff).addClass('img');
+    $('<div>').appendTo(buff).addClass('overlay');
+    target.addClass('buff-'+hero+'-'+skillid).children('.buffs').append(buff);
+  }
+  return this;
+};
+$.fn.addBuff = Card.addBuff;
+
 Card.attack = function(target){ 
   if(typeof target == 'string') target = $('#'+target+' .card');
   var source = this;
   var fromSpot = Map.getPosition(source); 
   var toSpot = Map.getPosition(target);
   if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
-    source.addClass('done').damage(source.data('damage'), target);
+    if(source.data('hit')) source.trigger('hit', {source: source, target: target});
+    else source.addClass('done').damage(source.data('damage'), target, 'Physical');
   }
   return this;
 };
 $.fn.attack = Card.attack;
 
-Card.damage = function(damage, target){ 
+Card.damage = function(damage, target, type){ 
   var source = this;
+  if(!type) type = 'Physical';
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;
   if(hp < 1) {
@@ -364,12 +391,16 @@ Card.damage = function(damage, target){
   target.data('currenthp', hp);  
   if(target.hasClass('selected')) target.select();
   var damageFx = target.children('span.damage'); 
+  var crit = '';
+  if(source.data('crit')){
+    crit = 'critical';
+    source.data('crit', false);
+  }
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
-    damageFx.text(currentDamage + damage).appendTo(target);
-    this.data('timeout', remove);
+    damageFx.text(currentDamage + damage).addClass(crit);
   } else {
-    damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
+    damageFx = $('<span>').addClass('damage '+crit).text(damage).appendTo(target);    
   }
   return this;
 };

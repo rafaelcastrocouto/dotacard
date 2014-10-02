@@ -7,15 +7,30 @@ var skills = {
       dot: function(){},
       end: function(){}
     },
-    "lifesteal": {
+    lifesteal: {
       activate: function(skill, source){},
       hit: function(){}
     },
-    "crit": {
-      activate: function(skill, source){},
-      hit: function(){}
+    crit: {
+      activate: function(skill, source){
+        source.addBuff(skill).data('hit', true).on('hit', this.hit);
+      },
+      hit: function(e, data){
+        var source = data.source, target = data.target;
+        var skill = game.skills.wk.crit;
+        var damage = source.data('damage');
+        var chance = skill.chance / 100;
+        var bonus = skill.percentage / 100;
+        var r = game.random();
+        console.log('hit', r, chance, damage);
+        if(r < chance){
+          damage *= bonus;
+          source.data('crit', true);          
+        }
+        source.addClass('done').damage(damage, target, 'Physical');
+      }
     },
-    "ult": {
+    ult: {
       activate: function(skill, source){},
       die: function(){},
       reborn: function(){}

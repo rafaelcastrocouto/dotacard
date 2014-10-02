@@ -24,7 +24,7 @@
 
   "ktol": {
     "leak": {
-      "name": "Mana Leaking"
+      "name": "Mana Leaking",
       "description": "Cursed, this card will cause a skill card loss on every move and will get stuned if there are no more cards of that hero"
     },
     "blind": {

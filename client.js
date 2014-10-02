@@ -8,17 +8,35 @@ client.js dependencies: {
   tubular: ">= 1.x.x"
 }
 */
-
 var game = {  
-  status: 'loading',
-  player: {}, enemy: {}, currentData: {},
-  debug: location.host == "localhost",  
-  width: 12,  height: 5, //slots   
+  
+  debug: (location.host == "localhost"), 
+  
+  status: 'loading', states: states,  
+  
+  id: null, skills: null, heroes: null, buffs: null, //json
+  
+  player: {}, enemy: {}, currentData: {}, //db  
+  
   container: $('<div>').appendTo(document.body).addClass('container'), 
-  message: $('<p>').addClass('message'),    
-  loader: $('<span>').addClass('loader'),
-  triesCounter: $('<small>').addClass('triescounter'), tries: 0,
+  
+  loader: $('<span>').addClass('loader'), 
+  message: $('<p>').addClass('message'), 
+  triesCounter: $('<small>').addClass('triescounter'), tries: 0,  
+  
   timeToPick: 15, timeToPlay: 5, waitLimit: 300, connectionLimit: 90, //seconds    
   dayLength: 6, deadLength: 4, //turns   
-  nomenu: function(){return false;}
+  
+  map: null, width: 12,  height: 5, //slots  
+  
+  nomenu: function(){return false;},
+  
+  seed: 0, random: function(){ 
+    console.log('random', game.seed); 
+    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
+  }
 };
+
+////start the game////
+$(game.states.build);
+//////////////////////
