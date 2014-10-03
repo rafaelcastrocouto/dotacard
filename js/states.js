@@ -614,6 +614,7 @@ var states = {
         if(game.status == 'turn') game.message.text('Your turn now!');
         if(game.status == 'unturn') game.message.text('Enemy turn now!');        
         $('.card .damage').remove();
+        $('.card .heal').remove();
         $('.card.dead').each(function(){
           var dead = $(this);
           if(game.time > dead.data('reborn')) dead.reborn();
@@ -649,7 +650,9 @@ var states = {
     sendMoves: function(){
       game.message.text('Uploading your turn '+game.player.turn);
       game.loader.show();
-      Map.unhighlight();       
+      Map.unhighlight();
+      $('.card .damage').remove();
+      $('.card .heal').remove();
       game.status = 'unturn';
       states.table.el.removeClass('turn');
       game.player.turn++;

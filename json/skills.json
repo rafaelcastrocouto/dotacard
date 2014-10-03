@@ -13,22 +13,22 @@
       "description": "Stun and damage over time an enemy"      
     },
     "lifesteal": {
-      "name": "Vampiric Aura",
+      "name": "Vampiric Aura",      
       "type": "Aura",
       "target": "passive",
       "percentage": 30,      
-      "cards": 1,    
+      "cards": 1,
       "description": "Drain the life of enemy on every attack"  
     },
     "crit": {
       "name": "Mortal Strike",
       "type": "Passive",
-      "target": "passive",
+      "target": "passive",      
       "chance": 15,
       "percentage": 300,      
       "cards": 1,
-      "description": "Chance of bonus damage",
-      "buff": "Mortal Strike"
+      "description": "Chance of bonus damage"
+      
     },
     "ult": {
       "name": "Reincarnation",

@@ -400,21 +400,35 @@ input:focus {
 .map .card .damage {
   color: yellow;
   position: absolute;
-  top: 0;
+  opacity: 0;
+  top: 0;  
   right: 0;
   font-size: 180px;
-  animation: slideup 5s linear;
-  text-shadow: 1px 0 2px red,
-    -1px 0 2px red,
-    0 1px 2px red,
-    0 -1px 2px red;
+  animation: slideup 6s linear;
+  text-shadow: 2px 0 2px red,
+    -2px 0 2px red,
+    0 2px 2px red,
+    0 -2px 2px red;
 }
 .map .card .damage.critical {
   color: red;
-  text-shadow: 1px 0 2px yellow,
-    -1px 0 2px yellow,
-    0 1px 2px yellow,
-    0 -1px 2px yellow;
+  text-shadow: 2px 0 2px yellow,
+    -2px 0 2px yellow,
+    0 2px 2px yellow,
+    0 -2px 2px yellow;
+}
+.map .card .heal {
+  color: springgreen;
+  position: absolute;
+  opacity: 0;
+  top: 0;  
+  left: 0;
+  font-size: 180px;
+  animation: slideup 6s linear;
+  text-shadow: 2px 0 2px white,
+    -2px 0 2px white,
+    0 2px 2px white,
+    0 -2px 2px white;
 }
 /*TABLE*/
 
@@ -607,7 +621,7 @@ input:focus {
 .pud {
   background: #b43;
 }
-.pud .img {
+.pud .portrait .img {
   background-image: url("img/heroes/pudge_full.png");
 }
 .pud-hook .img {
@@ -627,7 +641,7 @@ input:focus {
 .nyx {
   background: #145;
 }
-.nyx .img {
+.nyx .portrait .img {
   background-image: url("img/heroes/nyx_assassin_full.png");
 }
 .nyx-stun .img {
@@ -647,7 +661,7 @@ input:focus {
 .am {
   background: #674f80;
 }
-.am .img {
+.am .portrait .img {
   background-image: url("img/heroes/antimage_full.png");
 }
 .am-burn .img {
@@ -667,7 +681,7 @@ input:focus {
 .ld {
   background: #62a64e;
 }
-.ld .img {
+.ld .portrait .img {
   background-image: url("img/heroes/lone_druid_full.png");
 }
 .ld-summon .img {
@@ -692,7 +706,7 @@ input:focus {
 .wk {
   background: #483;
 }
-.wk .img {
+.wk .portrait .img {
   background-image: url("img/heroes/skeleton_king_full.png");
 }
 .wk-stun .img {
@@ -712,7 +726,7 @@ input:focus {
 .kotl {
   background: #fd8;
 }
-.kotl .img {
+.kotl .portrait .img {
   background-image: url("img/heroes/keeper_of_the_light_full.png");
 }
 .ktol-illuminate .img {
@@ -744,7 +758,7 @@ input:focus {
 .cm {
   background: #78c;
 }
-.cm .img {
+.cm .portrait .img {
   background-image: url("img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {
@@ -839,6 +853,7 @@ input:focus {
   100% {top: 0;}
 }
 @keyframes slideup {
-  0% {top: 0;}
-  100% {top: -175px;}
+  0% {top: 0;opacity: 1;}
+  60% {opacity: 1;}
+  100% {top: -175px;opacity: 0;}
 }

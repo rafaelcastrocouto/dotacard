@@ -78,7 +78,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.hero = hero;
         skillData.skill = skill;
         skillData.className = hero+'-'+skill + ' ' + name;
-        if(skillData.buff) skillData.buff = game.buffs[hero][skill];
+        if(game.buffs[hero] && game.buffs[hero][skill]) skillData.buff = game.buffs[hero][skill];
         if(multi){
           for(var k=0; k < skillData.cards; k++){
             cards.push(Card(skillData).appendTo(deck));
@@ -93,7 +93,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
 };
 
 Deck.randomCard = function(cards){
-  return $(cards[ parseInt(Math.random() * cards.length) ]);
+  return $(cards[ parseInt(game.random() * cards.length) ]);
 };
 
 ////////////////////////////////////////////////////////////////////////////////////
@@ -323,7 +323,7 @@ $.fn.move = Card.move;
 Card.cast = function(skill, target){  
   var source = this;
   var hero = skill.data('hero');
-  var skillid = skill.data('skill');console.log('card.cast',skill,skillid,hero,target, source.data('hero'));
+  var skillid = skill.data('skill');
   if(skillid && hero && source.data('hero') == hero) {
     skills[hero][skillid].cast(skill, source, target);
     Map.unhighlight();
@@ -374,6 +374,8 @@ Card.attack = function(target){
 $.fn.attack = Card.attack;
 
 Card.damage = function(damage, target, type){ 
+  if(damage < 1) return this;
+  else damage = Math.round(damage);
   var source = this;
   if(!type) type = 'Physical';
   if(typeof target == 'string') target = $('#'+target+' .card');
@@ -387,29 +389,58 @@ Card.damage = function(damage, target, type){
       source.find('.kills').text(kills);
     }
   }
-  target.children('span.hp').text(hp);
-  target.data('currenthp', hp);  
-  if(target.hasClass('selected')) target.select();
+  target.changehp(hp);  
   var damageFx = target.children('span.damage'); 
-  var crit = '';
-  if(source.data('crit')){
-    crit = 'critical';
-    source.data('crit', false);
-  }
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
-    damageFx.text(currentDamage + damage).addClass(crit);
+    damageFx.text(currentDamage + damage);
   } else {
-    damageFx = $('<span>').addClass('damage '+crit).text(damage).appendTo(target);    
+    damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
+  }
+  if(source.data('crit')) {
+    source.data('crit', false);
+    damageFx.addClass('critical');
   }
   return this;
 };
 $.fn.damage = Card.damage;
 
+Card.heal = function(healhp){
+  healhp = Math.round(healhp);
+  var target = this;
+  var currenthp = target.data('currenthp');
+  var maxhp = this.data('hp');
+  var hp = currenthp + healhp;
+  if(hp > maxhp) {
+    healhp = maxhp - currenthp;
+    target.changehp(maxhp);
+  } else {
+    target.changehp(hp);
+  }  
+  if(healhp > 0){
+    var healFx = target.children('span.heal'); 
+    if(healFx.length){
+      var currentHeal = parseInt(healFx.text());
+      healFx.text(currentHeal + healhp);
+    } else {
+      healFx = $('<span>').addClass('heal').text(healhp).appendTo(target);    
+    }
+  }
+  return this;  
+};
+$.fn.heal = Card.heal;
+
+Card.changehp = function(hp){
+  this.children('span.hp').text(hp);
+  this.data('currenthp', hp);    
+  if(this.hasClass('selected')) this.select();
+  return this;
+};
+$.fn.changehp = Card.changehp;
+
 Card.die = function(){
   this.addClass('dead').removeClass('target');
-  this.find('.hp').text(0);
-  this.data('currenthp', 0);
+  this.changehp(0);
   var spot = Map.getPosition(this);
   $('#'+spot).removeClass('block').addClass('free');
   if(this.hasClass('selected')) this.select();

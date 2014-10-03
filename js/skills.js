@@ -8,14 +8,24 @@ var skills = {
       end: function(){}
     },
     lifesteal: {
-      activate: function(skill, source){},
-      hit: function(){}
+      activate: function(skill, source){
+        var side = 'player';
+        if(source.hasClass('enemy')) side = 'enemy';
+        $('.table .card.heroes.'+side).addBuff(skill).data('hit', true).on('hit', this.hit);        
+      },
+      hit: function(event, data){
+        var source = data.source, target = data.target;
+        var skill = game.skills.wk.lifesteal;
+        var damage = source.data('damage');
+        var bonus = skill.percentage / 100;
+        source.addClass('done').damage(damage, target, 'Physical').heal(damage * bonus);
+      }
     },
     crit: {
       activate: function(skill, source){
         source.addBuff(skill).data('hit', true).on('hit', this.hit);
       },
-      hit: function(e, data){
+      hit: function(event, data){
         var source = data.source, target = data.target;
         var skill = game.skills.wk.crit;
         var damage = source.data('damage');
