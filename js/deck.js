@@ -179,7 +179,7 @@ Card.highlightTargets = function(){
   var skill = this, hero = skill.data('hero');
   if(hero){
     var source = $('.map .card.player.'+hero);
-    if(source.hasClass('heroes') && !source.hasClasses('dead done')){
+    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){
       game.castSource = source;  
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
@@ -345,8 +345,8 @@ Card.activate = function(target){
   var skill = this;
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
-  if(skillid && hero && target.data('hero') == hero) {
-    if(typeof target == 'string') target = $('#'+target+' .card');
+  if(typeof target == 'string') target = $('#'+target+' .card');   game.log('active', this,target);                             
+  if(skillid && hero && target.data('hero') == hero) {    
     skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
   }
@@ -379,6 +379,7 @@ $.fn.addBuff = Card.addBuff;
 Card.removeBuff = function(buff){ 
   var target = this;
   target.find('.buffs .'+buff).remove();
+  if(target.hasClass('selected')) target.select();
 };
 $.fn.removeBuff = Card.removeBuff;
 
@@ -391,14 +392,14 @@ Card.addStun = function(stun){
 $.fn.addStun = Card.addStun;
 
 Card.reduceStun = function(stun){
-  if(this.data('stun')){
+  if(this.hasClass('stunned')){
     if(!stun) stun = 1;
-    var currentstun = parseInt(this.data('stun')) - stun;
+    var currentstun = parseInt(this.data('stun')); game.log('red',currentstun,this);
     if(currentstun < 1) {
       this.trigger('stunend', {target: this}).data('stun', 0).removeClass('stunned').removeBuff('stun');
-    } else this.data('stun', currentstun); 
-    console.log('reduceStun',currentstun);
+    } else this.data('stun', currentstun - stun); 
   }
+  if(this.hasClass('selected')) this.select();
   return this;
 };
 $.fn.reduceStun = Card.reduceStun;
@@ -408,7 +409,7 @@ Card.attack = function(target){
   var source = this;
   var fromSpot = Map.getPosition(source); 
   var toSpot = Map.getPosition(target);  
-  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){ console.log('card.attack', source.data('replacedamage'));
+  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
     if(source.data('replacedamage')) source.trigger('attack', {source: source, target: target});
     else {
       source.trigger('attack', {source: source, target: target}).damage(source.data('damage'), target, 'Physical');
@@ -428,7 +429,9 @@ Card.damage = function(damage, target, type){
   var hp = target.data('currenthp') - damage;
   if(hp < 1) {
     hp = 0;
-    setTimeout(target.die.bind(target), 1000);
+    var spot = Map.getPosition(target);
+    target.trigger('die', {source: this, target: target, spot: spot});
+    setTimeout(target.die.bind(target), 2000);
     if(source.hasClass('heroes')){
       var kills = source.data('kills') + 1;
       source.data('kills', kills);
@@ -488,9 +491,10 @@ $.fn.changehp = Card.changehp;
 
 Card.die = function(){
   this.addClass('dead').removeClass('target');
-  this.changehp(0);
+  this.changehp(0);  
   var spot = Map.getPosition(this);
-  $('#'+spot).removeClass('block').addClass('free');
+  var td = $('#'+spot);
+  if(!td.hasClass('cript')) td.removeClass('block').addClass('free');
   if(this.hasClass('selected')) this.select();
   if(this.hasClass('heroes')){
     var deaths = this.data('deaths') + 1;
@@ -513,28 +517,29 @@ Card.die = function(){
 };
 $.fn.die = Card.die;
 
-Card.reborn = function(){
+Card.reborn = function(spot){
   this.removeClass('dead');
   var hp = this.data('hp');
   this.find('.hp').text(hp);
   this.data('currenthp', hp);
-  this.data('reborn', undefined);
-  var x, y, spot, freeSpot;
-
-  if(this.hasClass('player')){
-    x = 0; y = 3;
-    spot = Map.toId(x,y);
-    while($('#'+spot).hasClass('block')) {
-      x++;
+  this.data('reborn', null);
+  if(!spot){
+    var x, y, freeSpot;
+    if(this.hasClass('player')){
+      x = 0; y = 3;
       spot = Map.toId(x,y);
-    }    
-  }
-  else if(this.hasClass('enemy')) {
-    x = 11; y = 1;
-    spot = Map.toId(x,y);
-    while($('#'+spot).hasClass('block')) {
-      x--;
+      while($('#'+spot).hasClass('block')) {
+        x++;
+        spot = Map.toId(x,y);
+      }    
+    }
+    else if(this.hasClass('enemy')) {
+      x = 11; y = 1;
       spot = Map.toId(x,y);
+      while($('#'+spot).hasClass('block')) {
+        x--;
+        spot = Map.toId(x,y);
+      }
     }
   }
   this.place(spot);

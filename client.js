@@ -16,7 +16,23 @@ var game = {
   
   id: null, skills: null, heroes: null, buffs: null, //json
   
-  player: {}, enemy: {}, currentData: {}, //db  
+  player: {
+    buyCard: function(){
+      var availableSkills = $('.deck.skills.player .card');
+      var card = Deck.randomCard(availableSkills);
+      card.appendTo(states.table.playerHand);
+      if(card.data('target') == 'auto') { game.log('auto', card);
+        var heroid = card.data('hero');        
+        var hero = $('.player.heroes.'+heroid);
+        var toSpot = Map.getPosition(hero);
+        card.activate(toSpot); 
+        game.currentData.moves.push('P:'+toSpot+':'+card.data('skill')+':'+heroid); 
+      }
+    }
+  }, 
+  enemy: { buyCard: function(){ game.random(); } }, 
+  
+  currentData: {}, //db  
   
   container: $('<div>').appendTo(document.body).addClass('container'), 
   
@@ -31,8 +47,13 @@ var game = {
   
   nomenu: function(){return false;},
   
-  seed: 0, random: function(){  console.log(game.seed);
+  seed: 0, random: function(){  
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
+  },
+  
+  log: function(){  
+    if(game.debug) console.log.call(console, arguments);
+    return game;
   }
   
 };

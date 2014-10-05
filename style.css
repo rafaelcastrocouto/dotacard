@@ -543,6 +543,18 @@ input:focus {
 .turn .map td.stroke.skill.right { 
   border-right: 1px solid yellow;
 }
+td.cript {
+  background: rgba(0,0,0,0.2);
+}
+td.cript:after {
+  content: "†";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 32px;
+  color: rgba(255,255,255,0.4);
+}
 
 /*DECKS*/
 

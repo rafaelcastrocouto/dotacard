@@ -47,7 +47,7 @@ var states = {
   ////////////////////////////////////////////////////////////////////////////////////////  
     
     end: function(){
-      console.log('Welcome to DotaCard!');
+      game.log('Welcome to DotaCard!');
       if(!game.debug){
         window.oncontextmenu = game.nomenu;
         window.onbeforeunload = function(){
@@ -58,7 +58,7 @@ var states = {
     
     reset: function(){
       if(game.debug){
-        console.log('Error', game);
+        game.log('Error', game);
       } else {
         alert('Connection error, sorry.');
         location.reload(true);
@@ -169,6 +169,10 @@ var states = {
       game.loader.hide();
       this.input.focus();
       game.status = 'logging';
+      if(game.debug){
+        this.input.val('Bot'+(parseInt(Math.random()*100)));
+        this.button.click();
+      }
     },
     
     end: function(){
@@ -219,6 +223,10 @@ var states = {
     start: function(){
       game.loader.hide();
       this.text.html('Welcome <b>'+game.player.name+'</b>! ');
+      this.public.focus();
+      if(game.debug){
+        this.public.click();
+      }
     },
     
     end: function(){
@@ -318,7 +326,8 @@ var states = {
       game.status = 'picking';
       game.loader.hide();
       this.el.addClass('turn');
-      game.enemy = {name: enemy, type: challenge}; 
+      game.enemy.name = enemy; 
+      game.enemy.type = challenge; 
       game.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name+'</b>');                
       this.counter.removeClass('hidden');
       //todo: play sound and stuff!         
@@ -370,7 +379,12 @@ var states = {
       else setTimeout(states.choose.pickCount, 1000);
     },
     
-    fillDeck: function(){  
+    fillDeck: function(){
+      if(game.debug){
+        game.player.picks = ['wk','wk','wk','wk','wk'];
+        states.choose.sendDeck();        
+        return;
+      }
       game.player.picks = [];
       $('.pickbox .card.active').removeClass('active');
       $('.slot').each(function(){
@@ -533,7 +547,13 @@ var states = {
             $.each(deck.data('cards'), function(i, card){   
               var p = game.player.picks.indexOf(card.data('hero'));
               card.addClass('player').click(Card.select);
-              card.place(Map.toId(x + p,y)); 
+              card.place(Map.toId(x + p,y));
+              
+              if(game.debug){
+                if(p==0) card.place('F3');
+                game.player.mana += 10;
+              }
+              
               game.player.mana += card.data('mana');
             });
           }
@@ -550,6 +570,12 @@ var states = {
               var p = game.enemy.picks.indexOf(card.data('hero'));
               card.addClass('enemy').click(Card.select);          
               card.place(Map.toId(x - p,y));  
+              
+              if(game.debug){
+                if(p==0) card.place('G3');
+                game.enemy.mana += 10;
+              }              
+              
               game.enemy.mana += card.data('mana');
             });
           }
@@ -596,18 +622,15 @@ var states = {
     
     selectHand: function(){      
       for(var i=0; i<game.player.cardsPerTurn; i++){
-        if(states.table.playerHand.children().length < game.player.maxCards){
-          var availableSkills = $('.deck.skills.player .card');
-          var card = Deck.randomCard(availableSkills);
-          card.appendTo(states.table.playerHand);
-        }
+        if(states.table.playerHand.children().length < game.player.maxCards) 
+          game.player.buyCard();
       }      
     },    
     
-    enemyHand: function(){      console.log('enemyhand');
+    enemyHand: function(){
       for(var i=0; i<game.enemy.cardsPerTurn; i++){
         if(game.enemy.hand < game.enemy.maxCards){
-          game.random();
+          game.enemy.buyCard();
           game.enemy.hand++;
         }
       }      
@@ -624,7 +647,8 @@ var states = {
     
     beginTurn: function(){      
       //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand
-      if(game.status != 'over') {        
+      if(game.status != 'over') {    
+        game.currentData.moves = []; 
         states.table.el.addClass(game.status);
         if(game.status == 'turn') game.message.text('Your turn now!');
         if(game.status == 'unturn') game.message.text('Enemy turn now!');        
@@ -636,15 +660,14 @@ var states = {
         });         
         $('.card.heroes').each(function(){
           var hero = $(this);
+          hero.reduceStun();
+          hero.removeClass('done');
           hero.trigger('turnstart', {target: hero});
           if(game.status == 'turn') hero.trigger('playerturnstart', {target: hero});
           else hero.trigger('enemyturnstart', {target: hero});
-          hero.reduceStun();
-          hero.removeClass('done');
         });
         if(game.status == 'turn'){          
-          states.table.selectHand();                
-          game.currentData.moves = [];        
+          states.table.selectHand();               
           states.table.towerAutoAttack();        
           Map.highlight(); 
         } else {
@@ -857,7 +880,7 @@ var states = {
       skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
       setTimeout(function(){          
         $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
-        game.castSource.select();
+        if(skill.hasClass('selected') && game.castSource) game.castSource.select();
       }.bind({ card: skill, destiny: destiny }), 500);
     },
     
@@ -876,7 +899,7 @@ var states = {
     },
 
     showResults: function(){
-      console.log(game);
+      game.log(game);
     }
   
   } 

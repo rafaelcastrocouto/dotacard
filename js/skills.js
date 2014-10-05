@@ -7,28 +7,28 @@ var skills = {
         var stunbuff = source.addBuff(target, skill, 'stun', skill.data('stunduration'));
         target.addStun(skill.data('stunduration'));
         var duration = skill.data('stunduration') + skill.data('dotduration');
-        target.on('turnstart.wk', this.turnstart).data('wk-buff', {
-          duration: duration,
-          currentduration: duration, 
+        target.on('turnstart.wkdot', this.dot).data('wk-buff', {
+          dotduration: skill.data('dotduration'),
+          duration: duration, 
           source: source, 
           skill: skill
         });
       },
-      turnstart: function(event, data){
+      dot: function(event, data){
         var target = data.target;
         var buff = target.data('wk-buff');
         var source = buff.source;
         var skill = buff.skill;
+        var dotduration = buff.dotduration; 
         var duration = buff.duration; 
         if(duration > 0){
-          var dotstart = skill.data('dotduration') + 1;
-          if(duration == dotstart) source.addBuff(target, skill, 'dot');
-          if(duration <= dotstart) source.damage(skill.data('dot'), target, skill.data('damageType'));            
+          if(duration == dotduration) source.addBuff(target, skill, 'dot');
+          if(duration <= dotduration) source.damage(skill.data('dot'), target, skill.data('damageType'));            
           duration--;
           buff.duration = duration;
           target.data('wk-buff', buff);
         } else {
-          target.off('turnstart.wk');
+          target.off('turnstart.wkdot');
           target.data('wk-buff', null);
           target.removeBuff('wk-dot');
         } 
@@ -51,7 +51,7 @@ var skills = {
     },
     crit: {
       activate: function(skill, source){
-        source.addBuff(source, skill)
+        source.addBuff(source, skill);
         source.data('replacedamage', true).on('attack', this.attack);
       },
       attack: function(event, data){
@@ -61,7 +61,6 @@ var skills = {
         var chance = skill.chance / 100;
         var bonus = skill.percentage / 100;
         var r = game.random();
-        console.log('hit', r, chance, damage);
         if(r < chance){
           damage *= bonus;
           source.data('crit', true);          
@@ -70,9 +69,28 @@ var skills = {
       }
     },
     ult: {
-      activate: function(skill, source){},
-      die: function(){},
-      reborn: function(){}
+      activate: function(skill, source){
+        source.on('die.wkult', this.die); game.log('ult', skill, source);
+      },
+      die: function(event, data){       
+        var target = data.target;        
+        var spot = $('#'+data.spot).addClass('cript'); 
+        if(target.hasClass('player')) states.table.animateCast($('.player.hand .wk-ult'), spot, states.table.playerCemitery);
+        target.data('rebornspot', data.spot);
+        target.off('die.wkult');
+        target.on('turnstart.wkult', skills.wk.ult.reborn);  game.log('die',target, spot);
+      },
+      reborn: function(event, data){
+        var target = data.target;        
+        target.changehp(target.data('hp'));
+        var spot = target.data('rebornspot');game.log('reborn',target, spot)
+        game.player.buyCard();
+        $('#'+spot).removeClass('cript');
+        target.reborn(spot).data('rebornspot', null);  
+        var side = 'player'; if(target.hasClass('enemy')) side = 'enemy';
+        game[side].buyCard();
+        target.off('turnstart.wkult');
+      }
     }    
   },
   
@@ -163,6 +181,7 @@ var skills = {
         setTimeout(function(){
           this.source.place(this.target).css({opacity: 1});
           this.skill.appendTo(states.table.playerCemitery);
+          source.select();
         }.bind({skill: skill, source: source, target: target}), 500);        
       }
     },
