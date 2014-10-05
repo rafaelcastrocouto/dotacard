@@ -17,5 +17,7 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 **Easy 3-step setup guide**
 
 1 - Install [nodejs](http://nodejs.org/)
+
 2 - Fork or [download](https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip) this repository
+
 3 - Open the "server.bat" file or run the following command in a prompt or terminal: `node server.js`
