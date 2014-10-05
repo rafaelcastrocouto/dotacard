@@ -7,10 +7,11 @@
       "range": "Short range",
       "damage": 10,
       "damageType": "Magical",
-      "duration": 2,      
+      "dotduration": 3,      
       "dot": 2,
+      "stunduration": 3,
       "cards": 7,
-      "description": "Stun and damage over time an enemy"      
+      "description": "Stun and then damage over time an enemy"      
     },
     "lifesteal": {
       "name": "Vampiric Aura",      

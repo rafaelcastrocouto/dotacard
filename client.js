@@ -31,9 +31,10 @@ var game = {
   
   nomenu: function(){return false;},
   
-  seed: 0, random: function(){ 
+  seed: 0, random: function(){  console.log(game.seed);
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
   }
+  
 };
 
 ////start the game////

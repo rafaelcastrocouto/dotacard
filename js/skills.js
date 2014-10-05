@@ -1,31 +1,60 @@
 var skills = {
   wk: {
     stun: {
-      cast: function(skill, source, target){       
-        states.table.animateCast(skill, target, states.table.playerCemitery);
+      cast: function(skill, source, target){
+        if(game.status == 'turn') states.table.animateCast(skill, target, states.table.playerCemitery);
+        source.damage(skill.data('damage'), target, skill.data('damageType'));
+        var stunbuff = source.addBuff(target, skill, 'stun', skill.data('stunduration'));
+        target.addStun(skill.data('stunduration'));
+        var duration = skill.data('stunduration') + skill.data('dotduration');
+        target.on('turnstart.wk', this.turnstart).data('wk-buff', {
+          duration: duration,
+          currentduration: duration, 
+          source: source, 
+          skill: skill
+        });
       },
-      dot: function(){},
-      end: function(){}
+      turnstart: function(event, data){
+        var target = data.target;
+        var buff = target.data('wk-buff');
+        var source = buff.source;
+        var skill = buff.skill;
+        var duration = buff.duration; 
+        if(duration > 0){
+          var dotstart = skill.data('dotduration') + 1;
+          if(duration == dotstart) source.addBuff(target, skill, 'dot');
+          if(duration <= dotstart) source.damage(skill.data('dot'), target, skill.data('damageType'));            
+          duration--;
+          buff.duration = duration;
+          target.data('wk-buff', buff);
+        } else {
+          target.off('turnstart.wk');
+          target.data('wk-buff', null);
+          target.removeBuff('wk-dot');
+        } 
+      }
     },
     lifesteal: {
       activate: function(skill, source){
-        var side = 'player';
-        if(source.hasClass('enemy')) side = 'enemy';
-        $('.table .card.heroes.'+side).addBuff(skill).data('hit', true).on('hit', this.hit);        
+        var side = 'player'; if(source.hasClass('enemy')) side = 'enemy';
+        var team = $('.table .card.heroes.'+side);
+        source.addBuff(team, skill);
+        team.on('attack', this.attack);     
       },
-      hit: function(event, data){
-        var source = data.source, target = data.target;
-        var skill = game.skills.wk.lifesteal;
+      attack: function(event, data){ 
+        var source = data.source, target = data.target;        
         var damage = source.data('damage');
-        var bonus = skill.percentage / 100;
-        source.addClass('done').damage(damage, target, 'Physical').heal(damage * bonus);
+        var skillData = game.skills.wk.lifesteal;
+        var bonus = skillData.percentage / 100;
+        source.heal(damage * bonus);
       }
     },
     crit: {
       activate: function(skill, source){
-        source.addBuff(skill).data('hit', true).on('hit', this.hit);
+        source.addBuff(source, skill)
+        source.data('replacedamage', true).on('attack', this.attack);
       },
-      hit: function(event, data){
+      attack: function(event, data){
         var source = data.source, target = data.target;
         var skill = game.skills.wk.crit;
         var damage = source.data('damage');
@@ -37,7 +66,7 @@ var skills = {
           damage *= bonus;
           source.data('crit', true);          
         }
-        source.addClass('done').damage(damage, target, 'Physical');
+        source.damage(damage, target, 'Physical');
       }
     },
     ult: {

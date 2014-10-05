@@ -80,7 +80,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.className = hero+'-'+skill + ' ' + name;
         if(game.buffs[hero] && game.buffs[hero][skill]) skillData.buff = game.buffs[hero][skill];
         if(multi){
-          for(var k=0; k < skillData.cards; k++){
+          for(var k=0; k < skillData[multi]; k++){
             cards.push(Card(skillData).appendTo(deck));
           }
         } else cards.push(Card(skillData).appendTo(deck));
@@ -92,7 +92,8 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
   if(cb) cb(deck);     
 };
 
-Deck.randomCard = function(cards){
+Deck.randomCard = function(cards, noseed){
+  if(noseed) return $(cards[ parseInt(Math.random() * cards.length) ])
   return $(cards[ parseInt(game.random() * cards.length) ]);
 };
 
@@ -240,7 +241,7 @@ Card.strokeSkill = function(){
   var skill = this, hero = skill.data('hero');
   if(hero){
     var source = $('.map .card.player.'+hero);
-    if(source.hasClass('heroes') && !source.hasClasses('dead done')){
+    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){
       if(skill.data('range')){
         game.castSource = source;
         var spot = Map.getPosition(source);
@@ -255,7 +256,7 @@ $.fn.strokeSkill = Card.strokeSkill;
 
 Card.highlightMove = function(){
   var card = this;
-  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done static dead')){       
+  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done static dead stunned')){       
     var speed = card.data('speed') + (card.data('speedBonus') || 0);
     if(speed < 1) return; 
     if(speed > 3) speed = 3;
@@ -269,7 +270,7 @@ $.fn.highlightMove = Card.highlightMove;
 
 Card.highlightAttack = function(){    
   var card = this;
-  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead')){        
+  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead stunned')){        
     var spot = Map.getPosition(card), range = Map.getRange(card.data('attackType')); 
     Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
@@ -282,7 +283,7 @@ $.fn.highlightAttack = Card.highlightAttack;
 
 Card.strokeAttack = function(){    
   var card = this;
-  if(card.hasClass('player') && !card.hasClasses('enemy done dead')){        
+  if(card.hasClass('player') && !card.hasClasses('enemy done dead stunned')){        
     var spot = Map.getPosition(card), range = Map.getRange(card.data('attackType'));     
     Map.stroke(spot, range, 'attack');
   }
@@ -309,7 +310,8 @@ Card.move = function(destiny){
       }.bind({ card: card, destiny: destiny }), 250);
     }    
     if(card.data('movementBonus')) card.data('movementBonus', false);
-    else card.addClass('done');    
+    else card.addClass('done');   
+    card.trigger('move', {card: card, target: toSpot});
     setTimeout(function(){          
       $(this.card).css({top: '', left: ''}).appendTo(this.destiny);     
       $('.map td').data('detour', false);
@@ -321,13 +323,19 @@ Card.move = function(destiny){
 $.fn.move = Card.move;
 
 Card.cast = function(skill, target){  
-  var source = this;
+  var source = this;  
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
   if(skillid && hero && source.data('hero') == hero) {
-    skills[hero][skillid].cast(skill, source, target);
+    if(typeof target == 'string') {
+      var t = game.skills[hero][skillid].target;
+      if(t == 'spot' || t == 'around' || t == 'allaround') target = $('#'+target);
+      else target = $('#'+target+' .card');
+    }
+    source.trigger('cast', {skill: skill, source: source, target: target});
+    skills[hero][skillid].cast(skill, source, target);    
     Map.unhighlight();
-    this.addClass('done').select();
+    this.addClass('done');
   }
   return this;
 };
@@ -338,6 +346,7 @@ Card.activate = function(target){
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
   if(skillid && hero && target.data('hero') == hero) {
+    if(typeof target == 'string') target = $('#'+target+' .card');
     skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
   }
@@ -345,30 +354,67 @@ Card.activate = function(target){
 };
 $.fn.activate = Card.activate;
 
-Card.addBuff = function(skill){ 
-  var target = this;
+Card.addBuff = function(target, skill, custombuff, duration){ 
+  var source = this;
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
-  var data = skill.data('buff');
-  if(skillid && hero && data) {
-    var buff = $('<div>').addClass('buff '+hero+'-'+skillid).attr({title: data.name +': '+ data.description});
-    $('<div>').appendTo(buff).addClass('img');
-    $('<div>').appendTo(buff).addClass('overlay');
-    target.addClass('buff-'+hero+'-'+skillid).children('.buffs').append(buff);
+  var buffdata = skill.data('buff');
+  var data = buffdata;
+  var buffid = skillid;
+  if(custombuff) {
+    data = buffdata[custombuff];
+    buffid = custombuff;
+  }  
+  var buff = $('<div>').addClass('buff '+hero+'-'+buffid+' '+buffid).attr({title: data.name +': '+ data.description});
+  buff.data('source', source).data('hero', hero).data('skill', skill).data('skillid', skillid);
+  if(duration) buff.data('duration', duration);
+  $('<div>').appendTo(buff).addClass('img');
+  $('<div>').appendTo(buff).addClass('overlay');
+  target.children('.buffs').append(buff);
+  target.data(hero+'-'+(custombuff||skillid)+'-buff', buff);
+  return buff;
+};
+$.fn.addBuff = Card.addBuff;
+
+Card.removeBuff = function(buff){ 
+  var target = this;
+  target.find('.buffs .'+buff).remove();
+};
+$.fn.removeBuff = Card.removeBuff;
+
+Card.addStun = function(stun){ 
+  this.addClass('stunned');
+  var currentstun = this.data('stun');
+  if(!currentstun || stun > currentstun) this.data('stun', stun);
+  return this;
+};
+$.fn.addStun = Card.addStun;
+
+Card.reduceStun = function(stun){
+  if(this.data('stun')){
+    if(!stun) stun = 1;
+    var currentstun = parseInt(this.data('stun')) - stun;
+    if(currentstun < 1) {
+      this.trigger('stunend', {target: this}).data('stun', 0).removeClass('stunned').removeBuff('stun');
+    } else this.data('stun', currentstun); 
+    console.log('reduceStun',currentstun);
   }
   return this;
 };
-$.fn.addBuff = Card.addBuff;
+$.fn.reduceStun = Card.reduceStun;
 
 Card.attack = function(target){ 
   if(typeof target == 'string') target = $('#'+target+' .card');
   var source = this;
   var fromSpot = Map.getPosition(source); 
-  var toSpot = Map.getPosition(target);
-  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
-    if(source.data('hit')) source.trigger('hit', {source: source, target: target});
-    else source.addClass('done').damage(source.data('damage'), target, 'Physical');
+  var toSpot = Map.getPosition(target);  
+  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){ console.log('card.attack', source.data('replacedamage'));
+    if(source.data('replacedamage')) source.trigger('attack', {source: source, target: target});
+    else {
+      source.trigger('attack', {source: source, target: target}).damage(source.data('damage'), target, 'Physical');
+    }
   }
+  source.addClass('done');
   return this;
 };
 $.fn.attack = Card.attack;
@@ -405,13 +451,14 @@ Card.damage = function(damage, target, type){
 };
 $.fn.damage = Card.damage;
 
-Card.heal = function(healhp){
-  healhp = Math.round(healhp);
+Card.heal = function(healhp){ 
+  healhp = Math.ceil(healhp);
   var target = this;
   var currenthp = target.data('currenthp');
   var maxhp = this.data('hp');
   var hp = currenthp + healhp;
-  if(hp > maxhp) {
+  
+  if(hp > maxhp){
     healhp = maxhp - currenthp;
     target.changehp(maxhp);
   } else {
@@ -426,6 +473,7 @@ Card.heal = function(healhp){
       healFx = $('<span>').addClass('heal').text(healhp).appendTo(target);    
     }
   }
+
   return this;  
 };
 $.fn.heal = Card.heal;

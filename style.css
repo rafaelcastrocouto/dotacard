@@ -709,8 +709,12 @@ input:focus {
 .wk .portrait .img {
   background-image: url("img/heroes/skeleton_king_full.png");
 }
-.wk-stun .img {
+.wk-stun .img,
+.wk-dot .img {
   background-image: url("img/skills/skeleton_king_hellfire_blast.png");
+}
+.wk-stun.buff .img {
+   background-image: url("img/skills/stun.png")
 }
 .wk-lifesteal .img {
   background-image: url("img/skills/skeleton_king_vampiric_aura.png");
@@ -773,6 +777,7 @@ input:focus {
 .cm-ult .img {
   background-image: url("img/skills/crystal_maiden_freezing_field.png")
 }
+
 
 /*TOWERS*/
 
