@@ -2,7 +2,7 @@ var http = require('http'),
     url = require('url'),
     db = require('db'),
     static = require('static'),
-    host = 'localhost',
+    host = process.env.LOCALHOST,
     port = process.env.PORT || 5000,
     waiting = '{"id":"none"}';
 
