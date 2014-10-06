@@ -2,7 +2,7 @@
   "kotl":{
     "name": "Keeper of the Light",
     "attribute": "Intelligence",
-    "attackType": "Ranged",
+    "range": "Ranged",
     "hp": 45,
     "regen": 1,
     "mana": 4,
@@ -15,11 +15,11 @@
   "wk":{
     "name": "Wraith King",
     "attribute": "Strength",
-    "attackType": "Melee",
+    "range": "Melee",
     "hp": 66,
     "regen": 2,
     "mana": 3,
-    "damage": 35,
+    "damage": 85,
     "skills": "Wraithfire Blast, Reincarnation",
     "passive": "Mortal Strike, Vampiric Aura",
     "buffs": "Wraithfire Blast Stun, Wraithfire Blast Burn, Vampiric Aura, Reincarnation Slow"
@@ -28,7 +28,7 @@
   "pud":{
     "name": "Pudge, the Butcher",
     "attribute": "Strength",
-    "attackType": "Melee",
+    "range": "Melee",
     "hp": 74,
     "regen": 2,
     "mana": 2,
@@ -42,7 +42,7 @@
   "cm":{
     "name": "Crystal Maiden",
     "attribute": "Intelligence",
-    "attackType": "Ranged",
+    "range": "Ranged",
     "hp": 45,
     "regen": 1,
     "mana": 4, 
@@ -55,7 +55,7 @@
   "nyx":{
     "name": "Nyx Assassin",
     "attribute": "Agility",
-    "attackType": "Melee",
+    "range": "Melee",
     "hp": 51,
     "regen": 1,
     "mana": 3,
@@ -68,7 +68,7 @@
   "am":{
     "name": "Anti Mage",
     "attribute": "Agility",
-    "attackType": "Melee",
+    "range": "Melee",
     "hp": 42,
     "regen": 1,
     "mana": 3,
@@ -80,7 +80,7 @@
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
-    "attackType": "Short range",
+    "range": "Short range",
     "hp": 51,
     "regen": 1,
     "mana": 2,

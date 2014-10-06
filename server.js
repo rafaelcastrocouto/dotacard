@@ -3,7 +3,7 @@ var http = require('http'),
     db = require('db'),
     static = require('static'),
     host = 'localhost',
-    port = 80,
+    port = process.env.PORT || 80,
     waiting = '{"id":"none"}';
 
 var send = function(response, data){

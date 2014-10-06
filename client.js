@@ -18,12 +18,13 @@ var game = {
   
   player: {
     buyCard: function(){
-      var availableSkills = $('.deck.skills.player .card');
+      var availableSkills = $('.skills.available.player.deck .card');
+      if(game.player.turn > 5) availableSkills.add('.skills.ult.player.deck .card');
       var card = Deck.randomCard(availableSkills);
       card.appendTo(states.table.playerHand);
       if(card.data('target') == 'auto') { game.log('auto', card);
         var heroid = card.data('hero');        
-        var hero = $('.player.heroes.'+heroid);
+        var hero = $('.map .player.heroes.'+heroid);
         var toSpot = Map.getPosition(hero);
         card.activate(toSpot); 
         game.currentData.moves.push('P:'+toSpot+':'+card.data('skill')+':'+heroid); 
@@ -47,12 +48,12 @@ var game = {
   
   nomenu: function(){return false;},
   
-  seed: 0, random: function(){  
+  seed: 0, random: function(){  game.log(game.seed);
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
   },
   
   log: function(){  
-    if(game.debug) console.log.call(console, arguments);
+    if(game.debug) console.log.apply(console, arguments);
     return game;
   }
   

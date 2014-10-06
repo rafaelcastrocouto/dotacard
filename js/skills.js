@@ -4,10 +4,10 @@ var skills = {
       cast: function(skill, source, target){
         if(game.status == 'turn') states.table.animateCast(skill, target, states.table.playerCemitery);
         source.damage(skill.data('damage'), target, skill.data('damageType'));
-        var stunbuff = source.addBuff(target, skill, 'stun', skill.data('stunduration'));
+        var stunbuff = source.addBuff(target, skill, skill.data('stunduration'), 'stun');
         target.addStun(skill.data('stunduration'));
         var duration = skill.data('stunduration') + skill.data('dotduration');
-        target.on('turnstart.wkdot', this.dot).data('wk-buff', {
+        target.on('turnstart.wkdot', this.dot).data('wk-dot', {
           dotduration: skill.data('dotduration'),
           duration: duration, 
           source: source, 
@@ -16,50 +16,50 @@ var skills = {
       },
       dot: function(event, data){
         var target = data.target;
-        var buff = target.data('wk-buff');
-        var source = buff.source;
-        var skill = buff.skill;
-        var dotduration = buff.dotduration; 
-        var duration = buff.duration; 
+        var data = target.data('wk-dot');
+        var source = data.source;
+        var skill = data.skill;
+        var dotduration = data.dotduration; 
+        var duration = data.duration; 
         if(duration > 0){
-          if(duration == dotduration) source.addBuff(target, skill, 'dot');
+          if(duration == dotduration) source.addBuff(target, skill, dotduration, 'dot');
           if(duration <= dotduration) source.damage(skill.data('dot'), target, skill.data('damageType'));            
           duration--;
-          buff.duration = duration;
-          target.data('wk-buff', buff);
+          data.duration = duration;
+          target.data('wk-dot', data);
         } else {
           target.off('turnstart.wkdot');
-          target.data('wk-buff', null);
-          target.removeBuff('wk-dot');
+          target.data('wk-dot', null);
+          //target.removeBuff('wk-dot');
         } 
       }
     },
     lifesteal: {
       activate: function(skill, source){
-        var side = 'player'; if(source.hasClass('enemy')) side = 'enemy';
-        var team = $('.table .card.heroes.'+side);
+        var side = source.data('side');
+        var team = $('.table .card.heroes.'+side).data('wk-ls', skill);
         source.addBuff(team, skill);
         team.on('attack', this.attack);     
       },
       attack: function(event, data){ 
         var source = data.source, target = data.target;        
         var damage = source.data('damage');
-        var skillData = game.skills.wk.lifesteal;
-        var bonus = skillData.percentage / 100;
+        var skill = source.data('wk-ls');
+        var bonus = skill.data('percentage') / 100;
         source.heal(damage * bonus);
       }
     },
     crit: {
       activate: function(skill, source){
         source.addBuff(source, skill);
-        source.data('replacedamage', true).on('attack', this.attack);
+        source.data('replacedamage', true).on('attack', this.attack).data('wk-crit', skill);
       },
       attack: function(event, data){
         var source = data.source, target = data.target;
-        var skill = game.skills.wk.crit;
+        var skill = source.data('wk-crit');
         var damage = source.data('damage');
-        var chance = skill.chance / 100;
-        var bonus = skill.percentage / 100;
+        var chance = skill.data('chance') / 100;
+        var bonus = skill.data('percentage') / 100;
         var r = game.random();
         if(r < chance){
           damage *= bonus;
@@ -75,21 +75,38 @@ var skills = {
       die: function(event, data){       
         var target = data.target;        
         var spot = $('#'+data.spot).addClass('cript'); 
-        if(target.hasClass('player')) states.table.animateCast($('.player.hand .wk-ult'), spot, states.table.playerCemitery);
-        target.data('rebornspot', data.spot);
+        var skill = $('.player.hand .wk-ult');
+        if(target.hasClass('player')) {
+          states.table.animateCast(skill, spot, states.table.playerCemitery);
+        } else skill = $('.enemy.hand .wk-ult');
         target.off('die.wkult');
-        target.on('turnstart.wkult', skills.wk.ult.reborn);  game.log('die',target, spot);
+        target.data('wk-ult', {
+          duration: game.skills.wk.ult.delay, 
+          spot: data.spot,
+          skill: skill
+        }).on('turnstart.wkult', skills.wk.ult.reborn);  game.log('die',target, spot);
       },
       reborn: function(event, data){
-        var target = data.target;        
-        target.changehp(target.data('hp'));
-        var spot = target.data('rebornspot');game.log('reborn',target, spot)
-        game.player.buyCard();
-        $('#'+spot).removeClass('cript');
-        target.reborn(spot).data('rebornspot', null);  
-        var side = 'player'; if(target.hasClass('enemy')) side = 'enemy';
-        game[side].buyCard();
-        target.off('turnstart.wkult');
+        var wk = data.target;        
+        wk.off('turnstart.wkult');
+        var data = wk.data('wk-ult');
+        var spot = data.spot;
+        var skill = data.skill;
+        var duration = data.delay; game.log('reborn',wk, spot, duration);
+        var side = source.data('side');
+        if(duration > 0){
+          duration--;
+          data.duration = duration;
+          wk.data('wk-ult', data);
+        } else {
+          $('#'+spot).removeClass('cript');
+          wk.reborn(spot).data('wk-ult', null);
+          Map.inRange(spot, game.skills.wk.ult.range, function(neighbor){      
+            var card = $('.card', neighbor).not(side); 
+            var slowbuff = wk.addBuff(card, skill, skill.data('duration'));            
+          });
+          game[side].buyCard();
+        }
       }
     }    
   },
@@ -180,7 +197,7 @@ var skills = {
         skill.css({opacity: 0});
         setTimeout(function(){
           this.source.place(this.target).css({opacity: 1});
-          this.skill.appendTo(states.table.playerCemitery);
+          this.skill.discard();
           source.select();
         }.bind({skill: skill, source: source, target: target}), 500);        
       }

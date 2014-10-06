@@ -32,13 +32,15 @@
       
     },
     "ult": {
+      "special": "ult",
       "name": "Reincarnation",
       "type": "Passive",
       "target": "auto",
       "duration": 3,
-      "delay": 1,
+      "range": "Ranged",
+      "delay": 2,
       "cards": 1,
-      "description": "You cannot kill the Wraith King!"
+      "description": "No one can kill the Wraith King!"
     }    
   },
 

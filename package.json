@@ -2,10 +2,18 @@
   "name": "dotacard",
   "version": "0.0.1",
   "author": "rafaelcastrocouto",
-  "repository": "git://github.com/rafaelcastrocouto/dotacard",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rafaelcastrocouto/dotacard"
+  },
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },  
   "engine": "node >= 0.10.x",
   "dependencies": {
     "db": ">= 0.0.x",
     "static": ">= 0.0.x"
-  }
+  },
+  "license": "GPL"
 }
