@@ -1,6 +1,7 @@
 var http = require('http'),
     url = require('url'),
     db = require('db'),
+    //db = {},
     static = require('static'),
     host = process.env.LOCALHOST,
     port = process.env.PORT || 5000,
@@ -29,17 +30,19 @@ http.createServer(function(request, response){
         waiting = query.data;
         send(response, true);
       }
-      else db.set(query.set, query.data, function(data){
-        send(response, data);
-      });      
+      else db.set(query.set, query.data, function(data){send(response, data);});      
+//      else {
+//        db[query.set] = query.data;
+//        send(response, true);     
+//      }
     } else if (query.get) {
       console.log('get: '+ query.get);
       if(query.get == 'server') send(response, '{"status":"online"}');
       else if(query.get == 'waiting') send(response, waiting);
-      else db.get(query.get, function(data){    
-        send(response, data);
-      });
-    } else send(response, {data: 'It works!'});
+//      else send(response, db[query.get] || '');
+      else db.get(query.get, function(data){ send(response, data); });
+    } else send(response, 'It works!');
+    
   } else static.read(response, pathname || 'index.html');
 }).listen(port, host);
 

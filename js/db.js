@@ -6,9 +6,9 @@ var db = function(send, cb){
     data: send, 
     complete: function(receive){
       var data;
-      if(receive.responseText) {
-        data = JSON.parse(receive.responseText);
-        //console.log('XHR:', data);
+      if(receive.responseText){
+        game.log('XHR:', receive.responseText);
+        data = JSON.parse(receive.responseText);        
       }
       if(cb) cb(data || {});
     }
