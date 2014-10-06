@@ -11,9 +11,5 @@
     "start": "node server.js"
   },  
   "engine": "node >= 0.10.x",
-  "dependencies": {
-    "db": ">= 0.0.x",
-    "static": ">= 0.0.x"
-  },
   "license": "GPL"
 }
