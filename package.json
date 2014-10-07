@@ -2,6 +2,7 @@
   "name": "dotacard",
   "version": "0.0.1",
   "author": "rafaelcastrocouto",
+  "description": "Dota card game",
   "repository": {
     "type": "git",
     "url": "https://github.com/rafaelcastrocouto/dotacard"
@@ -10,6 +11,10 @@
   "scripts": {
     "start": "node server.js"
   },  
+  "dependencies": {
+    "db.csv": ">= 0.0.1",
+    "static.simple": ">= 0.0.1"
+  },
   "engine": "node >= 0.10.x",
   "license": "GPL"
 }

@@ -1,11 +1,16 @@
 var http = require('http'),
     url = require('url'),
-    db = require('db'),
-    //db = {},
-    static = require('static'),
+    static = require('static.simple'),
     host = process.env.LOCALHOST,
     port = process.env.PORT || 5000,
-    waiting = '{"id":"none"}';
+    waiting = '{"id":"none"}',
+    currentData = {},
+    db = {
+      get: function(name, cb){cb(currentData[name]||'');},
+      set: function(name, val, cb){currentData[name] = val; cb(true);}
+    };
+
+if(host == 'localhost') db = require('db.csv');
 
 var send = function(response, data){
   response.writeHead(200, {
