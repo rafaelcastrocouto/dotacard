@@ -10,7 +10,7 @@ client.js dependencies: {
 */
 var game = {  
   
-  debug: (location.host == "localhost"), 
+  debug: 0,//(location.host == "localhost"), 
   
   status: 'loading', states: states,  
   

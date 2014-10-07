@@ -106,7 +106,7 @@ input:focus {
   background-image: url("img/bkg/Dota6.69.jpg");
 }
 #states.table {
-  background-image: url("img/bkg/Dota6.70.jpg");
+  background-image: url("img/bkg/Dota6.70.blur.jpg");
 }
 
 /*INTRO*/
@@ -430,11 +430,20 @@ input:focus {
 }
 /*TABLE*/
 
-.table .time {
+
+#table .time {
   position: absolute;
   top: 1px; right: 10px;
   background: rgba(0,0,0,0.3);
   border-radius: 5px;
+}
+
+.camera {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  perspective: 3140px;
+  transform-style: preserve-3d;
 }
 
 .map {
@@ -447,6 +456,7 @@ input:focus {
   background-size: 107% 107%;
   background-image: url("img/bkg/map.png");
   box-shadow: inset 0 0 8px 6px black;
+  transform: rotateX(10deg);
 }
 
 .map td {
@@ -858,7 +868,9 @@ td.cript:after {
   animation: rotate 1s linear infinite;
   cursor: wait;
 }
-
+.loader.hidden {
+  opacity: 0.01;
+}
 /*ANIMATION*/
 
 @keyframes rotate {

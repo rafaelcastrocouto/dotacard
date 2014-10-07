@@ -38,7 +38,7 @@ var states = {
         states[id].builded = true;
       }
     });     
-    game.states.changeTo('intro');
+    setTimeout(function(){ game.states.changeTo('intro'); }, 500);
   }, 
   
   currentstate: 'load',
@@ -84,6 +84,7 @@ var states = {
           onReady: function(video){
             states.intro.videoLoaded = true;
             if(states.currentstate == 'intro') states.intro.playVideo();
+            else states.intro.pauseVideo();
           }
         });  
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
@@ -93,7 +94,6 @@ var states = {
     
     start: function(){
       if(!game.debug){
-        if(this.videoLoaded && game.status != 'playing') this.playVideo();
         this.box.fadeIn(3000);
       } else {
         states.changeTo('login'); 
@@ -102,33 +102,34 @@ var states = {
     
     playVideo: function(){
       if(game.status != 'playing'){
-        game.status = 'playing';
-        game.loader.hide();
+        game.loader.addClass('hidden');
         this.box.delay(6000).fadeOut(3000);
         this.video.delay(3000).fadeIn(3000);
         setTimeout(function(){
-          var player = states.intro.video.data('tubular-player');
-          player.seekTo(0);
-          player.playVideo();
+          if(states.currentstate == 'intro'){
+            var player = states.intro.video.data('tubular-player');
+            player.playVideo();
+          }
         }, 3000);
         game.timeout = setTimeout(function(){
-          states.intro.pauseVideo();     
-          states.changeTo('login');
+          if(states.currentstate == 'intro'){  
+            states.changeTo('login');
+          }
         }, 102600);
         this.el.click(function(){
-          clearTimeout(game.timeout);
-          states.intro.pauseVideo();    
+          clearTimeout(game.timeout);  
           states.changeTo('login');
         });  
       }
     },
     
     pauseVideo: function(){
-      if(game.status != 'paused'){
-        game.status = 'paused';
-        var player = states.intro.video.data('tubular-player');
-        player.pauseVideo();     
-      }
+      var player = states.intro.video.data('tubular-player');
+      player.pauseVideo();     
+    },
+    
+    end: function(){
+      if(!game.debug) this.video.remove();
     }
   },
   
@@ -151,7 +152,7 @@ var states = {
         else {
           game.player.name = name;
           states.login.button.attr( "disabled", true );
-          game.loader.show();
+          game.loader.removeClass('hidden');
           db({'get':'server'}, function(server){
             if(server.status == 'online'){
               game.status = 'logged';
@@ -167,7 +168,7 @@ var states = {
     },
     
     start: function(){
-      game.loader.hide();
+      game.loader.addClass('hidden');
       this.input.focus();
       game.status = 'logging';
       if(game.debug){
@@ -222,7 +223,7 @@ var states = {
     },
     
     start: function(){
-      game.loader.hide();
+      game.loader.addClass('hidden');
       this.text.html('Welcome <b>'+game.player.name+'</b>! ');
       this.public.focus();
       if(game.debug){
@@ -278,7 +279,7 @@ var states = {
       game.tries = 1;        
       if(game.status == 'found'){
         game.message.text('We found a game! Connecting ');
-        game.loader.show();
+        game.loader.removeClass('hidden');
         game.player.type = 'challenger';
         game.currentData.challenger = game.player.name;
         db({'set': game.id, 'data': game.currentData}, function(){
@@ -287,7 +288,7 @@ var states = {
       } 
       if(game.status == 'waiting'){
         game.message.text('Searching for an enemy ');
-        game.loader.show();
+        game.loader.removeClass('hidden');
         game.player.type = 'challenged';
         states.choose.getChallenger();
       }  
@@ -326,7 +327,7 @@ var states = {
 
     battle: function(enemy, challenge){     
       game.status = 'picking';
-      game.loader.hide();
+      game.loader.addClass('hidden');
       this.el.addClass('turn');
       game.enemy.name = enemy; 
       game.enemy.type = challenge; 
@@ -418,7 +419,7 @@ var states = {
 
     getChallengerDeck: function(){ 
       game.message.text('Loading challenger deck');
-      game.loader.show();
+      game.loader.removeClass('hidden');
       db({'get': game.id }, function(found){         
         if(found.challengerDeck){
           game.triesCounter.text('');
@@ -435,7 +436,7 @@ var states = {
 
     getChallengedDeck: function(){
       game.message.text('Loading enemy deck');
-      game.loader.show();
+      game.loader.removeClass('hidden');
       db({'get': game.id }, function(found){         
         if(found.challengedDeck){ 
           game.triesCounter.text('');
@@ -476,7 +477,7 @@ var states = {
     start: function(){      
       if(game.status == 'battle'){
         game.message.text('Muuuuuuuuuuuuu!');
-        game.loader.show(); 
+        game.loader.removeClass('hidden'); 
         
         this.placeTowers(); 
         this.placeHeroes(); 
@@ -494,11 +495,12 @@ var states = {
     },
     
     buildMap: function(){
+      this.camera = $('<div>').appendTo(this.el).addClass('camera');
       this.map = Map.build({
         'width': game.width,
         'height': game.height,
         'class': 'map'
-      }).appendTo(this.el);
+      }).appendTo(this.camera);
     },
     
     createTower: function(side, spot){
@@ -699,7 +701,7 @@ var states = {
     },
     
     turnCount: function(){
-      game.loader.hide();
+      game.loader.addClass('hidden');
       states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight()+' Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
       if(game.status == 'turn') game.message.text('Your turn, you have '+states.table.counter+' seconds');
       if(game.status == 'unturn') game.message.text('Enemy turn ends in '+states.table.counter+' seconds');        
@@ -722,7 +724,7 @@ var states = {
         hero.trigger('playerturnend', {target: hero});
       });
       game.message.text('Uploading your turn '+game.player.turn);
-      game.loader.show();
+      game.loader.removeClass('hidden');
       Map.unhighlight();
       $('.card .damage').remove();
       $('.card .heal').remove();
@@ -734,7 +736,7 @@ var states = {
 
     getMoves: function(){   
       game.message.text('Loading enemy turn '+(game.enemy.turn + 1));
-      game.loader.show();
+      game.loader.removeClass('hidden');
       game.tries = 1;  
       states.table.el.removeClass('unturn');
       clearTimeout(game.timeout);
@@ -917,7 +919,7 @@ var states = {
       game.winner = game.enemy.name;
       states.table.el.addClass('unturn');
       game.message.text('Game Over!');
-      game.loader.hide();
+      game.loader.addClass('hidden');
       game.status = 'over';      
       states.table.showResults();
     },
