@@ -83,11 +83,7 @@ var states = {
           scale: 1.2,
           onReady: function(video){
             states.intro.videoLoaded = true;
-            if(states.currentstate == 'intro' && game.status != 'playing'){              
-              states.intro.playVideo();
-            } else if(states.currentstate != 'intro' && game.status == 'playing'){
-              states.intro.pauseVideo();
-            }
+            if(states.currentstate == 'intro') states.intro.playVideo();
           }
         });  
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
@@ -105,30 +101,34 @@ var states = {
     },
     
     playVideo: function(){
-      game.status = 'playing';
-      game.loader.hide();
-      this.box.delay(6000).fadeOut(3000);
-      this.video.delay(3000).fadeIn(3000);
-      setTimeout(function(){
-        var player = states.intro.video.data('tubular-player');
-        player.seekTo(0);
-        player.playVideo();
-      }, 3000);
-      game.timeout = setTimeout(function(){
-        states.intro.pauseVideo();     
-        states.changeTo('login');
-      }, 102600);
-      this.el.click(function(){
-        clearTimeout(game.timeout);
-        states.intro.pauseVideo();    
-        states.changeTo('login');
-      });      
+      if(game.status != 'playing'){
+        game.status = 'playing';
+        game.loader.hide();
+        this.box.delay(6000).fadeOut(3000);
+        this.video.delay(3000).fadeIn(3000);
+        setTimeout(function(){
+          var player = states.intro.video.data('tubular-player');
+          player.seekTo(0);
+          player.playVideo();
+        }, 3000);
+        game.timeout = setTimeout(function(){
+          states.intro.pauseVideo();     
+          states.changeTo('login');
+        }, 102600);
+        this.el.click(function(){
+          clearTimeout(game.timeout);
+          states.intro.pauseVideo();    
+          states.changeTo('login');
+        });  
+      }
     },
     
     pauseVideo: function(){
-      game.status = 'paused';
-      var player = states.intro.video.data('tubular-player');
-      player.pauseVideo();      
+      if(game.status != 'paused'){
+        game.status = 'paused';
+        var player = states.intro.video.data('tubular-player');
+        player.pauseVideo();     
+      }
     }
   },
   
