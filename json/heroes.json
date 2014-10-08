@@ -19,7 +19,7 @@
     "hp": 66,
     "regen": 2,
     "mana": 3,
-    "damage": 85,
+    "damage": 5,
     "skills": "Wraithfire Blast, Reincarnation",
     "passive": "Mortal Strike, Vampiric Aura",
     "buffs": "Wraithfire Blast Stun, Wraithfire Blast Burn, Vampiric Aura, Reincarnation Slow"
