@@ -549,7 +549,7 @@ var states = {
     
     placeHeroes: function(){ 
       
-      var xxx = 'I1';//'F3';
+      var xxx = 'F3';//'I1';
       
       if(game.player.picks && game.enemy.picks){
         

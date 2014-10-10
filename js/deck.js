@@ -185,28 +185,28 @@ Card.highlightTargets = function(){
       var range = Map.getRange(skill.data('range'));
       
       if(skill.data('target') == 'passive') {        
-        source.addClass('target').on('contextmenu.activate', states.table.passiveActivate);
+        source.addClass('casttarget').on('contextmenu.activate', states.table.passiveActivate);
         
       } else if(skill.data('target') == 'self'){  
-        source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
+        source.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);
         
       } else if (skill.data('target') == 'player'){
         source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){      
           var card = $('.card', neighbor); 
-          if(card.hasClass('player')) card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);         
+          if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
         });        
         
       } else if(skill.data('target') == 'ally'){
         Map.inRange(spot, range, function(neighbor){      
           var card = $('.card', neighbor); 
-          if(card.hasClass('player')) card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);         
+          if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
         });  
         
       } else if(skill.data('target') == 'enemy'){              
         Map.inRange(spot, range, function(neighbor){
           var card = $('.card', neighbor);        
-          if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.cast', states.table.castWithSelected);        
+          if(card.hasClass('enemy')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);        
         });
         
       }else if(skill.data('target') == 'around'){
@@ -221,7 +221,7 @@ Card.highlightTargets = function(){
             card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
           }
         });
-      } else if(skill.data('target') == 'spot'){
+      } else if(skill.data('target') == 'area'){
         source.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){        
           if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
@@ -246,7 +246,8 @@ Card.strokeSkill = function(){
         game.castSource = source;
         var spot = Map.getPosition(source);
         var range = Map.getRange(skill.data('range'));  
-        Map.stroke(spot, range, 'skill');
+        if(skill.data('target') == 'area' || skill.data('target') == 'allaround' || skill.data('target') == 'around') Map.stroke(spot, range, 'skillarea');
+        else Map.stroke(spot, range, 'skillcast');          
       }
     }
   }
@@ -274,7 +275,7 @@ Card.highlightAttack = function(){
     var spot = Map.getPosition(card), range = Map.getRange(card.data('range')); 
     Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
-      if(card.hasClass('enemy')) card.addClass('target').on('contextmenu.attack', states.table.attackWithSelected);        
+      if(card.hasClass('enemy')) card.addClass('attacktarget').on('contextmenu.attack', states.table.attackWithSelected);        
     });
   }
   return card;

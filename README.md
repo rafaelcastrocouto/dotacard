@@ -16,8 +16,24 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
 **Easy 3-step setup guide**
 
-1 - Install [nodejs](http://nodejs.org/)
+ * Linux
 
-2 - Fork or [download](https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip) this repository
+    1 - Install [Nodejs](http://nodejs.org/download/) ([How to?](http://ask.xmodulo.com/install-node-js-linux.html))
 
-3 - Open the "server.bat" file or run the following command in a prompt or terminal: `node server.js`
+    2 - [Fork](https://github.com/rafaelcastrocouto/dotacard/fork) or [download](https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip) this repository
+
+    3 - Run the following command in a terminal: 
+
+    `HOST=localhost PORT=80 node server.js`
+
+ * Windows
+
+    1 - Install [Nodejs](http://nodejs.org/download/)
+
+    2 - [Fork](https://github.com/rafaelcastrocouto/dotacard/fork) or [download](https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip) this repository
+
+    3 - Double click the `server.bat` file...
+
+    ... or press (** ![Windows Key](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows Key")+R **) type `cmd` and press (** Enter **), 
+
+    in the prompt, type `set HOST=localhost& set PORT=80& node server.js` and press (** Enter **)

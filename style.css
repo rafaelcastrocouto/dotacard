@@ -52,9 +52,12 @@ h1 {
 input:focus {
   animation: shade 0.5s;
 }
+@keyframes shade {
+  50% {opacity: 0.5;}
+}
 
 .hidden {
-  display: none; !IMPORTANT
+  display: none;
 }
 
 .container {
@@ -73,6 +76,40 @@ input:focus {
 }
 .box div p {
   display: block;
+}
+
+/*FORK*/
+
+.fork {
+  position: absolute;
+  top: 0; right: 0;
+  opacity: 0.55;
+}
+
+/*LOADER*/
+
+.loader {
+  background-image: url("img/load.png");
+  background-size: contain;
+  width: 17px;
+  height: 17px;
+  display: inline-block;
+  vertical-align: top; 
+  transform-origin: 11px 12px;
+  margin: 2px;
+  border: 2px solid transparent;
+  padding: 1px 2px;  
+  background-repeat: no-repeat;
+  animation: rotate 1s linear infinite;
+  cursor: wait;
+}
+@keyframes rotate {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg);}
+}
+.loader.hidden {
+  display: inline-block;
+  opacity: 0;
 }
 
 /*STATES*/
@@ -206,7 +243,10 @@ input:focus {
 .slot.available {
   animation: innerlight 0.5s infinite;
 }
-
+@keyframes innerlight {
+  0%, 100% {box-shadow: inset 0 0 40px white;}
+  50% {box-shadow: inset 0 0 20px white;}
+}
 .slot:hover {
   background: rgba(255,255,255,0.2);
 }
@@ -214,11 +254,11 @@ input:focus {
 /*CARD*/
 
 .card {
+  position: relative;
   display: inline-block;
   background: #bbb;
   cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
   float: left;
-  position: relative;
   top: 0; left: 0;
   text-align: left;  
   transition: all 0.4s;
@@ -230,6 +270,7 @@ input:focus {
   border-radius: 6px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);  
 }
+
 .card.player {
   cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
   box-shadow: inset 0 0 0 25px rgba(0,185,0,0.5);
@@ -239,24 +280,231 @@ input:focus {
   cursor: url("img/cursor/cursor-red.png"), url("img/cursor/cursor-red.cur"), pointer;
   box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
 }
-.card.enemy.target {
-  animation: enemytarget 0.5s infinite;
+.map .card.selected {
+  outline: 12px solid gold;
+  z-index: 5;
 }
-.card.player.target {
-  animation: playertarget 0.5s infinite;
+.map .card.enemy.attacktarget {
+  outline: 12px solid orangered;
 }
-.card.enemy.targetspot {
-  box-shadow: 0 0 4px 8px yellow, inset 0 0 0 25px rgba(245,0,0,0.5);
+.map .card.source {
+  outline: 12px solid springgreen;
 }
-.card.enemy.targetspot:hover {
-  animation: spotenemytarget 0.5s infinite;
+.map .card.targetspot {
+  outline: 12px solid dodgerblue;
 }
-.card.player.targetspot {
-  box-shadow: 0 0 4px 8px yellow, inset 0 0 0 25px rgba(0,185,0,0.5);
+.map .card.casttarget {
+  outline: 12px solid orange;
 }
-.card.player.targetspot:hover {
-  animation: spotplayertarget 0.5s infinite;
+
+.card.enemy.attacktarget:after, 
+.card.enemy.attacktarget:before,
+.card.enemy.casttarget:after,
+.card.enemy.casttarget:before {
+  z-index: 4;
+  position: absolute;
+  content:""; 
+  display: block;
 }
+.card.enemy.attacktarget:before {
+  width: 50px; height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid orangered;
+  border-bottom: 12px solid orangered;
+  background: transparent;
+  left: 60px; top: 50px; 
+  transform: rotate(45deg) scale(1);  
+}
+.card.enemy.attacktarget:hover:before {  
+  animation: scaleattackbefore 1.5s infinite;
+}
+@keyframes scaleattackbefore {
+  0%, 20%, 80%, 100% { transform: rotate(45deg) scale(1); }
+  50% { transform: translateY(-25px) rotate(45deg) scale(1.5); }
+}
+.card.enemy.attacktarget:after {
+  width: 150px; height: 50px;
+  border: 0px solid transparent;
+  border-top: 12px solid orangered;
+  background: transparent;
+  left: 30px; bottom: 30px; 
+  transform: rotate(0deg) scale(1);
+  transition: all 0.5s;
+  border-radius: 6px;
+}
+.card.enemy.attacktarget:hover:after {  
+  animation: scaleattackafter 1.5s infinite;
+}
+@keyframes scaleattackafter {
+  0%, 100% { 
+    width: 150px;
+    bottom: 30px; left: 30px;  
+    transform: rotate(0deg) scale(1);
+    border-radius: 3px;
+  }
+  20%, 80% { 
+    width: 50px; 
+    bottom: 80px; left: 60px; 
+    border: 20px solid transparent;
+    border-top: 12px solid orangered;
+    border-left: 12px solid orangered;
+    transform: rotate(45deg) scale(1);
+    border-radius: 0;
+  }
+  50% {
+    transform: translateY(25px) rotate(45deg) scale(1.5);
+  }
+}
+
+.card.targetspot:after, 
+.card.targetspot:before {
+  z-index: 4;
+  position: absolute;
+  content:""; 
+  display: block;
+}
+
+.card.targetspot:before {
+  width: 50px; height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid dodgerblue;
+  border-bottom: 12px solid dodgerblue;
+  background: transparent;
+  left: 60px; top: 50px; 
+  transform: rotate(45deg) scale(1);  
+}
+.card.targetspot:hover:before {  
+  animation: scalespotbefore 1.5s infinite;
+}
+@keyframes scalespotbefore {
+  0%, 100% { 
+    left: 60px; top: 50px; 
+    width: 50px; height: 50px;
+    transform: rotate(45deg) scale(1); 
+  }
+  20%, 80% {
+    width: 100px; height: 100px;
+    left: 40px; top: 90px;
+    transform: rotate(45deg);
+    border: 12px solid transparent;
+    border-left: 12px solid dodgerblue;
+    border-top: 12px solid dodgerblue;
+    border-radius: 50%;   
+    transform: rotate(45deg) scale(1); 
+  }
+  50% { transform: rotate(45deg) scale(1.2); }
+}
+.card.targetspot:after {
+  width: 150px; height: 50px;
+  border: 0px solid transparent;
+  border-top: 12px solid dodgerblue;
+  background: transparent;
+  left: 30px; bottom: 30px; 
+  transform: rotate(0deg) scale(1);
+  transition: all 0.5s;
+  border-radius: 6px;
+}
+.card.targetspot:hover:after {  
+  animation: scalespotafter 1.5s infinite;
+}
+@keyframes scalespotafter {
+  0%, 100% { 
+    width: 150px; height: 50px;
+    left: 30px; bottom: 30px; 
+    transform: rotate(0deg) scale(1);
+    border: 12px solid transparent;
+    border-bottom: 12px solid dodgerblue;
+    border-radius: 6px;
+  }
+  20%, 80% { 
+    width: 100px; height: 100px;
+    left: 40px; bottom: 95px;
+    transform: rotate(45deg) scale(1);
+    border: 12px solid transparent;
+    border-right: 12px solid dodgerblue;
+    border-bottom: 12px solid dodgerblue;
+    border-radius: 50%;
+  }
+  50% {
+    transform: rotate(45deg) scale(1.2);
+  }
+}
+
+
+.card.casttarget:after, 
+.card.casttarget:before {
+  z-index: 4;
+  position: absolute;
+  content:""; 
+  display: block;
+}
+
+.card.casttarget:before {
+  width: 50px; height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid orange;
+  border-bottom: 12px solid orange;
+  background: transparent;
+  left: 60px; top: 50px; 
+  transform: rotate(45deg) scale(1);  
+}
+.card.casttarget:hover:before {  
+  animation: scalecastbefore 1.5s infinite;
+}
+@keyframes scalecastbefore {
+  0%, 100% { 
+    left: 60px; top: 50px; 
+    width: 50px; height: 50px;
+    transform: rotate(45deg) scale(1); 
+  }
+  20%, 80% {
+    width: 100px; height: 100px;
+    left: 40px; top: 90px;
+    transform: rotate(45deg);
+    border: 12px solid transparent;
+    border-left: 12px solid orange;
+    border-top: 12px solid orange;
+    border-radius: 50%;   
+    transform: rotate(45deg) scale(1); 
+  }
+  50% { transform: rotate(45deg) scale(1.2); }
+}
+.card.casttarget:after {
+  width: 150px; height: 50px;
+  border: 0px solid transparent;
+  border-top: 12px solid orange;
+  background: transparent;
+  left: 30px; bottom: 30px; 
+  transform: rotate(0deg) scale(1);
+  transition: all 0.5s;
+  border-radius: 6px;
+}
+.card.casttarget:hover:after {  
+  animation: scalecastafter 1.5s infinite;
+}
+@keyframes scalecastafter {
+  0%, 100% { 
+    width: 150px; height: 50px;
+    left: 30px; bottom: 30px; 
+    transform: rotate(0deg) scale(1);
+    border: 12px solid transparent;
+    border-bottom: 12px solid orange;
+    border-radius: 6px;
+  }
+  20%, 80% { 
+    width: 100px; height: 100px;
+    left: 40px; bottom: 95px;
+    transform: rotate(45deg) scale(1);
+    border: 12px solid transparent;
+    border-right: 12px solid orange;
+    border-bottom: 12px solid orange;
+    border-radius: 50%;
+  }
+  50% {
+    transform: rotate(45deg) scale(1.2);
+  }
+}
+
 .card.dead {
   -webkit-filter: grayscale(0.9);
 }
@@ -373,6 +621,10 @@ input:focus {
   animation: slidedown 0.5s;
   transform: scale(0.4);
 }
+@keyframes slidedown {
+  0% {top: -175px;}
+  100% {top: 0;}
+}
 .pickedbox .card:hover { 
   top: -12px;
   transform: scale(0.45);
@@ -383,17 +635,10 @@ input:focus {
   top: -112px;
   left: -21px;
   position: absolute;
-  transform: scale(0.29);
+  transform: scale(0.25);
 }
 .map .card:hover {
   transform: scale(.30);
-}
-.map .card.selected {
-  outline: 7px solid white;
-  z-index: 5;
-}
-.map .card.source {
-  outline: 7px solid springgreen;
 }
 .map .card .damage {
   color: yellow;
@@ -428,6 +673,12 @@ input:focus {
     0 2px 2px white,
     0 -2px 2px white;
 }
+@keyframes slideup {
+  0% {top: 0;opacity: 1;}
+  60% {opacity: 1;}
+  100% {top: -175px;opacity: 0;}
+}
+
 /*TABLE*/
 
 
@@ -442,8 +693,6 @@ input:focus {
   position: absolute;
   top: 0; left: 0;
   width: 100%; height: 100%;
-  perspective: 3140px;
-  transform-style: preserve-3d;
 }
 
 .map {
@@ -456,7 +705,6 @@ input:focus {
   background-size: 107% 107%;
   background-image: url("img/bkg/map.png");
   box-shadow: inset 0 0 8px 6px black;
-  transform: rotateX(10deg);
 }
 
 .map td {
@@ -489,42 +737,104 @@ input:focus {
   cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
 }
 .turn .map td.movearea:after,
-.turn .map td.targetarea:after {
+.turn .map td.movearea:before,
+.turn .map td.targetarea:after,
+.turn .map td.targetarea:before {
+  content: ""; display: block;
   position: absolute;
+}
+  
+.turn .map td.movearea:after {
   width: 36px; height: 3px;
   background: springgreen;
   left: 12px; bottom: 35px;
-  content:""; display: block;
   border-radius: 2px;
 }
-.turn .map td.movearea:before,
-.turn .map td.targetarea:before {
-  position: absolute;
+.turn .map td.movearea:before {
   width: 10px; height: 10px;
   border: 2px solid transparent;
   border-right: 3px solid springgreen;
   border-bottom: 3px solid springgreen;
   background: transparent;
   left: 22px; top: 25px; 
-  content:""; display: block;
   transform: rotate(45deg);
 }
-
-.turn .map td.movearea:hover:before, 
-.turn .map td.targetarea:hover:before {
+.turn .map td.movearea:hover:before {
   animation: moveslide 1s infinite
 }
-
-.turn .map td.targetarea:after {
-  background: yellow;
-}
-.turn .map td.targetarea:before {
-  border-right: 3px solid yellow;
-  border-bottom: 3px solid yellow;
+@keyframes moveslide {
+  0%, 100% { top: 25px; }
+  33% { top: 15px; }
+  66% { top: 30px; }
 }
 
 .turn .map td.targetarea {  
-  cursor: url("img/cursor/cursor-yellow.png"), url("img/cursor/cursor-yellow.cur"), pointer;
+  cursor: url("img/cursor/cursor-blue.png"), url("img/cursor/cursor-blue.cur"), pointer;
+}
+.turn .map td.targetarea:before {
+  width: 10px; height: 10px;
+  border: 2px solid transparent;
+  border-right: 3px solid dodgerblue;
+  border-bottom: 3px solid dodgerblue;
+  background: transparent;
+  left: 22px; top: 25px; 
+  transform: rotate(45deg) scale(1); 
+  transition: all 0.5s;
+}
+.turn .map td.targetarea:hover:before {  
+  animation: scaleareabefore 1.5s infinite;
+}
+@keyframes scaleareabefore {
+  0%, 100% { 
+    left: 22px; top: 25px; 
+    width: 10px; height: 10px;
+    transform: rotate(45deg) scale(1); 
+  }
+  20%, 80% {
+    width: 30px; height: 30px;
+    left: 12px; 
+    border: 3px solid transparent;
+    border-left: 3px solid dodgerblue;
+    border-top: 3px solid dodgerblue;
+    border-radius: 50%;   
+    transform: rotate(45deg) scale(1); 
+  }
+  50% { transform: rotate(45deg) scale(1.2); }
+}
+.turn .map td.targetarea:after {
+  width: 30px; height: 10px;
+  border: 3px solid transparent;
+  border-bottom: 3px solid dodgerblue;
+  background: transparent;
+  left: 12px; bottom: 28px; 
+  transform: rotate(0deg);
+  transition: all 0.5s;
+  border-radius: 3px;
+}
+.turn .map td.targetarea:hover:after {
+  animation: scaleareaafter 1.5s infinite;
+}
+@keyframes scaleareaafter {
+  0%, 100% { 
+    width: 30px; height: 10px;
+    left: 12px; bottom: 28px; 
+    transform: rotate(0deg) scale(1);
+    border: 2px solid transparent;
+    border-bottom: 3px solid dodgerblue;
+    border-radius: 3px;
+  }
+  20%, 80% { 
+    width: 30px; height: 30px;
+    left: 12px; 
+    transform: rotate(45deg) scale(1);
+    border: 3px solid transparent;
+    border-right: 3px solid dodgerblue;
+    border-bottom: 3px solid dodgerblue;
+    border-radius: 50%;
+  }
+  50% {
+    transform: rotate(45deg) scale(1.2);
+  }
 }
 
 .turn .map td.stroke.attack.top { 
@@ -539,18 +849,31 @@ input:focus {
 .turn .map td.stroke.attack.right { 
   border-right: 1px solid red;
 }
-.turn .map td.stroke.skill.top { 
-  border-top: 1px solid yellow;
+.turn .map td.stroke.skillcast.top { 
+  border-top: 1px solid gold;
 }
-.turn .map td.stroke.skill.bottom { 
-  border-bottom: 1px solid yellow;
+.turn .map td.stroke.skillcast.bottom { 
+  border-bottom: 1px solid gold;
 }
-.turn .map td.stroke.skill.left { 
-  border-left: 1px solid yellow;
+.turn .map td.stroke.skillcast.left { 
+  border-left: 1px solid gold;
 }
-.turn .map td.stroke.skill.right { 
-  border-right: 1px solid yellow;
+.turn .map td.stroke.skillcast.right { 
+  border-right: 1px solid gold;
 }
+.turn .map td.stroke.skillarea.top { 
+  border-top: 1px solid dodgerblue;
+}
+.turn .map td.stroke.skillarea.bottom { 
+  border-bottom: 1px solid dodgerblue;
+}
+.turn .map td.stroke.skillarea.left { 
+  border-left: 1px solid dodgerblue;
+}
+.turn .map td.stroke.skillarea.right { 
+  border-right: 1px solid dodgerblue;
+}
+
 td.cript {
   background: rgba(0,0,0,0.2);
 }
@@ -840,81 +1163,4 @@ td.cript:after {
 }
 .card.enemy.towers .img {
   background-image: url("img/towers/tower-enemy.png");
-}
-
-
-/*FORK*/
-
-#fork {
-  position: absolute;
-  top: 0; right: 0;
-  opacity: 0.55;
-}
-
-/*LOADER*/
-
-.loader {
-  background-image: url("img/load.png");
-  background-size: contain;
-  width: 17px;
-  height: 17px;
-  display: inline-block;
-  vertical-align: top; 
-  transform-origin: 11px 12px;
-  margin: 2px;
-  border: 2px solid transparent;
-  padding: 1px 2px;  
-  background-repeat: no-repeat;
-  animation: rotate 1s linear infinite;
-  cursor: wait;
-}
-.loader.hidden {
-  opacity: 0.01;
-}
-/*ANIMATION*/
-
-@keyframes rotate {
-  0% { transform: rotate(0);}
-  100% { transform: rotate(360deg);}
-}
-@keyframes innerlight {
-  0%, 100% {box-shadow: inset 0 0 40px white;}
-  50% {box-shadow: inset 0 0 20px white;}
-}
-@keyframes innergreen {
-  0%, 100% {box-shadow: inset 0 0 40px springgreen;}
-  50% {box-shadow: inset 0 0 20px springgreen;}
-}
-@keyframes moveslide {
-  0%, 100% { top: 25px; }
-  33% { top: 15px; }
-  66% { top: 30px; }
-}
-@keyframes enemytarget {
-  0%, 100% {box-shadow: 0 0 6px 16px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
-  50% {box-shadow: 0 0 4px 2px red, inset 0 0 0 25px rgba(245,0,0,0.5);}
-}
-@keyframes playertarget {
-  0%, 100% {box-shadow: 0 0 6px 16px springgreen, inset 0 0 0 25px rgba(0,185,0,0.5);}
-  50% {box-shadow: 0 0 4px 2px springgreen, inset 0 0 0 25px rgba(0,185,0,0.5);}
-}
-@keyframes spotenemytarget {
-  0%, 100% {box-shadow: 0 0 6px 16px yellow, inset 0 0 0 25px rgba(245,0,0,0.5);}
-  50% {box-shadow: 0 0 4px 2px yellow, inset 0 0 0 25px rgba(245,0,0,0.5);}
-}
-@keyframes spotplayertarget {
-  0%, 100% {box-shadow: 0 0 6px 16px yellow, inset 0 0 0 25px rgba(0,185,0,0.5);}
-  50% {box-shadow: 0 0 4px 2px yellow, inset 0 0 0 25px rgba(0,185,0,0.5);}
-}
-@keyframes shade {
-  50% {opacity: 0.5;}
-}
-@keyframes slidedown {
-  0% {top: -175px;}
-  100% {top: 0;}
-}
-@keyframes slideup {
-  0% {top: 0;opacity: 1;}
-  60% {opacity: 1;}
-  100% {top: -175px;opacity: 0;}
 }

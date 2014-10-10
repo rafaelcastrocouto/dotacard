@@ -1,7 +1,7 @@
 var http = require('http'),
     url = require('url'),
     static = require('static.simple'),
-    host = process.env.LOCALHOST,
+    host = process.env.HOST,
     port = process.env.PORT || 5000,
     waiting = '{"id":"none"}',
     currentData = {},

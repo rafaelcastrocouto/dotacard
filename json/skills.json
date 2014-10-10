@@ -86,7 +86,7 @@
       "special": "ult",
       "name": "Illuminate",
       "type": "Area of effect",
-      "target": "spot",
+      "target": "allaround",
       "range": "Melee", 
       "damage": 5,
       "damageType": "Magical",     
@@ -95,11 +95,11 @@
       "cards": 1,
       "description": "Summon a spirit to channel light to damage enemies in a line"
     },
-    "blind": {
+    "blink": {
       "special": "ult",
       "name": "Blinding Light",
       "type": "Area of effect",
-      "target": "spot",  
+      "target": "area",  
       "range": "Ranged", 
       "cards": 1,
       "description": "Knock back and blind enemies, causing them to miss attacks"
@@ -120,7 +120,7 @@
     "slow": {
       "name": "Crystal Nova",
       "type": "Area of Effect",
-      "target": "spot",
+      "target": "area",
       "range": "Ranged", 
       "radius": 2,
       "duration": 2,
