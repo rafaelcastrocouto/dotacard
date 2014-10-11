@@ -283,7 +283,8 @@ var Map = {
   },
   
   unhighlight: function(){
-    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate').removeClass('attacktarget casttarget targetspot');
+    $('.map').off('mouseenter mouseleave');
+    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate mouseenter mouseleave').removeClass('attacktarget casttarget targetspot');
     $('.map td').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');    
   },
 };

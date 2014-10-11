@@ -679,12 +679,17 @@ var states = {
             var buff = $(this);
             var duration = buff.data('duration') - 1;
             if(duration < 1) hero.removeBuff(buff.data('buffid'));
-            else buff.data('duration', duration);
-          });
-          hero.removeClass('done');
+            else buff.data('duration', duration);          
+          });          
           hero.trigger('turnstart', {target: hero});
-          if(game.status == 'turn') hero.trigger('playerturnstart', {target: hero});
-          else hero.trigger('enemyturnstart', {target: hero});
+          if(game.status == 'turn') {
+            if(hero.data('side') == 'player') hero.removeClass('done');
+            hero.trigger('playerturnstart', {target: hero});
+          }
+          else {
+            if(hero.data('side') == 'enemy') hero.removeClass('done');
+            hero.trigger('enemyturnstart', {target: hero});
+          }
         });
         if(game.status == 'turn'){          
           states.table.selectHand();               
