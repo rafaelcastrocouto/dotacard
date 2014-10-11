@@ -1,16 +1,14 @@
-// Ranges and speed:
-//
-//   0     1       2         3          4          5           6          7           8
-//              Melee / Short range / Ranged / Long Range / 
-//       Slow             Fast                                            ▒          ▒▒▒
-//                                                 ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
-//                           ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
-//         ▒      ▒▒▒       ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
-//   ▓    ▒▓▒     ▒▓▒      ▒▒▓▒▒      ▒▒▓▒▒     ▒▒▒▓▒▒▒     ▒▒▒▓▒▒▒   ▒▒▒▒▓▒▒▒▒   ▒▒▒▒▓▒▒▒▒
-//         ▒      ▒▒▒       ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
-//                           ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
-//                                                 ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
-//                                                                        ▒          ▒▒▒
+//        0     1       2         3          4          5           6          7           8
+// range:            Melee / Short range / Ranged / Long Range  
+// speed:    Slow / Normal /    Fast                                           ▒          ▒▒▒
+//                                                      ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
+//                                ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//              ▒     ▒▒▒        ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//        ▓    ▒▓▒    ▒▓▒       ▒▒▓▒▒      ▒▒▓▒▒     ▒▒▒▓▒▒▒     ▒▒▒▓▒▒▒   ▒▒▒▒▓▒▒▒▒   ▒▒▒▒▓▒▒▒▒
+//              ▒     ▒▒▒        ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//                                ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//                                                      ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
+//                                                                             ▒          ▒▒▒
 
 var Map = {
   
@@ -266,18 +264,18 @@ var Map = {
   
   highlight: function(){
     if(game.selectedCard){
-      if(game.selectedCard.hasClass('heroes')){
-        game.selectedCard.strokeAttack(); 
+      if(game.selectedCard.hasClass('heroes')){        
         if(game.status == 'turn') {
           game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack(); 
         }
-      } else if(game.selectedCard.hasClass('skills')){        
-        game.selectedCard.highlightSource();
-        game.selectedCard.strokeSkill(); 
+        game.selectedCard.strokeAttack(); 
+      } else if(game.selectedCard.hasClass('skills')){      
         if(game.status == 'turn') {
-          game.selectedCard.highlightTargets();
+          game.selectedCard.highlightTargets();          
         }
+        game.selectedCard.highlightSource();  
+        game.selectedCard.strokeSkill();         
       } else if(game.selectedCard.hasClass('towers')){
         game.selectedCard.strokeAttack(); 
       }
@@ -286,7 +284,7 @@ var Map = {
   
   unhighlight: function(){
     $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate').removeClass('attacktarget casttarget targetspot');
-    $('.map td').off('contextmenu.movearea contextmenu.castarea').removeClass('movearea targetarea stroke attack skillcast skillarea top bottom left right');    
+    $('.map td').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');    
   },
 };
 

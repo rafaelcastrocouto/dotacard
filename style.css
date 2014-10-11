@@ -273,22 +273,36 @@ input:focus {
 
 .card.player {
   cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
-  box-shadow: inset 0 0 0 25px rgba(0,185,0,0.5);
+  background: limegreen;
 }
 .card.enemy {
-  background: #666;
   cursor: url("img/cursor/cursor-red.png"), url("img/cursor/cursor-red.cur"), pointer;
-  box-shadow: inset 0 0 0 25px rgba(245,0,0,0.5);
+  background: firebrick;
 }
-.map .card.selected {
-  outline: 12px solid gold;
+.card.skills {
+  cursor: url("img/cursor/cursor-yellow.png"), url("img/cursor/cursor-yellow.cur"), pointer;
+  background: steelblue;
+}
+.map .card.player.selected {
+  outline: 12px solid springgreen;
   z-index: 5;
+}
+.map .card.enemy.selected {
+  outline: 12px solid orangered;
+  z-index: 5;
+}
+.map .card.selected.done {
+  outline: 12px solid #bbb;
+}
+.table .player.skills.hand .card.selected {
+  outline: 6px solid skyblue;
+  transform: scale(0.5);
 }
 .map .card.enemy.attacktarget {
   outline: 12px solid orangered;
 }
 .map .card.source {
-  outline: 12px solid springgreen;
+  outline: 12px solid dodgerblue;
 }
 .map .card.targetspot {
   outline: 12px solid dodgerblue;
@@ -837,29 +851,41 @@ input:focus {
   }
 }
 
-.turn .map td.stroke.attack.top { 
-  border-top: 1px solid red;
-}
-.turn .map td.stroke.attack.bottom { 
-  border-bottom: 1px solid red;
-}
-.turn .map td.stroke.attack.left { 
-  border-left: 1px solid red;
-}
-.turn .map td.stroke.attack.right { 
-  border-right: 1px solid red;
-}
-.turn .map td.stroke.skillcast.top { 
+.map td.stroke.playerattack.top { 
   border-top: 1px solid gold;
 }
-.turn .map td.stroke.skillcast.bottom { 
+.map td.stroke.playerattack.bottom { 
   border-bottom: 1px solid gold;
 }
-.turn .map td.stroke.skillcast.left { 
+.map td.stroke.playerattack.left { 
   border-left: 1px solid gold;
 }
-.turn .map td.stroke.skillcast.right { 
+.map td.stroke.playerattack.right { 
   border-right: 1px solid gold;
+}
+.map td.stroke.enemyattack.top { 
+  border-top: 1px solid orangered;
+}
+.map td.stroke.enemyattack.bottom { 
+  border-bottom: 1px solid orangered;
+}
+.map td.stroke.enemyattack.left { 
+  border-left: 1px solid orangered;
+}
+.map td.stroke.enemyattack.right { 
+  border-right: 1px solid orangered;
+}
+.map td.stroke.skillcast.top { 
+  border-top: 1px solid springgreen;
+}
+.map td.stroke.skillcast.bottom { 
+  border-bottom: 1px solid springgreen;
+}
+.map td.stroke.skillcast.left { 
+  border-left: 1px solid springgreen;
+}
+.map td.stroke.skillcast.right { 
+  border-right: 1px solid springgreen;
 }
 .turn .map td.stroke.skillarea.top { 
   border-top: 1px solid dodgerblue;
@@ -937,10 +963,6 @@ td.cript:after {
 .table .player.skills.hand .card {
   margin-right: -100px;
   z-index: 4;
-}
-.table .player.skills.hand .card.selected {
-  outline: 4px solid white;
-  transform: scale(0.5);
 }
 
 .table .selectedarea {

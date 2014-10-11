@@ -10,12 +10,12 @@ each states
        if have end function will run every time
 
 ////////////////////////////////////////////////////////*/
+
 var states = {
   changeTo: function(state){
     if(state == states.currentstate) return;    
     var oldstate = states[states.currentstate];
     if(oldstate.el) oldstate.el.addClass('hidden'); 
-    game.log(oldstate);
     if(oldstate.end) oldstate.end();    
     var newstate = states[state];
     if(newstate.build && !newstate.builded){      
@@ -270,7 +270,7 @@ var states = {
       });      
     },
     
-    start: function(){ console.log('start',game.currentData);
+    start: function(){ 
       game.currentData = {};
       this.findGame();
     },

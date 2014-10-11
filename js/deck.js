@@ -169,8 +169,11 @@ Card.select = function(){
 $.fn.select = Card.select;
 
 Card.highlightSource = function(){
-  var skill = this, hero = skill.data('hero');
-  if(hero) $('.map .card.player.'+hero).addClass('source');
+  var skill = this, hero = skill.data('hero'), source;
+  if(hero) {
+    source = $('.map .card.player.'+hero).addClass('source');
+    game.castSource = source; 
+  }
   return skill;
 };
 $.fn.highlightSource = Card.highlightSource;
@@ -179,8 +182,7 @@ Card.highlightTargets = function(){
   var skill = this, hero = skill.data('hero');
   if(hero){
     var source = $('.map .card.player.'+hero);
-    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){
-      game.castSource = source;  
+    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){       
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
       
@@ -237,18 +239,28 @@ Card.highlightTargets = function(){
 };
 $.fn.highlightTargets = Card.highlightTargets;
 
-Card.strokeSkill = function(){
-  var skill = this, hero = skill.data('hero');
-  if(hero){
-    var source = $('.map .card.player.'+hero);
-    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){
-      if(skill.data('range')){
-        game.castSource = source;
-        var spot = Map.getPosition(source);
-        var range = Map.getRange(skill.data('range'));  
-        if(skill.data('target') == 'area' || skill.data('target') == 'allaround' || skill.data('target') == 'around') Map.stroke(spot, range, 'skillarea');
-        else Map.stroke(spot, range, 'skillcast');          
-      }
+Card.strokeSkill = function(){console.log('stroke');
+  var skill = this, 
+      hero = skill.data('hero'), 
+      source = $('.map .card.player.'+hero),
+      range = skill.data('range'),
+      spot = Map.getPosition(source);
+  if(hero && range && spot && !source.hasClasses('dead done stunned')){
+    Map.stroke(spot, Map.getRange(range), 'skillcast');    
+    if(skill.data('type') == 'Area of Effect'){
+      console.log('aoe');      
+      game.castspot = spot;  
+      game.castrange = Map.getRange(range);  
+      game.castaoe = Map.getRange(skill.data('aoe'));  
+      $('.map td.targetarea, .map .card.targetspot').hover(function(){     
+        $('.map td').removeClass('skillarea skillcast top right left bottom');
+        var spot = Map.getPosition($(this));      console.log('aoe hover',spot);      
+        Map.stroke(spot, game.castaoe, 'skillarea');
+      });
+      $('.map').hover(function(){
+        $('.map td').removeClass('skillarea skillcast top right left bottom');
+        Map.stroke(game.castspot, game.castrange, 'skillcast');
+      });    
     }
   }
   return skill;
@@ -268,29 +280,6 @@ Card.highlightMove = function(){
   return card;
 };
 $.fn.highlightMove = Card.highlightMove;
-
-Card.highlightAttack = function(){    
-  var card = this;
-  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead stunned')){        
-    var spot = Map.getPosition(card), range = Map.getRange(card.data('range')); 
-    Map.inRange(spot, range, function(neighbor){
-      var card = $('.card', neighbor);        
-      if(card.hasClass('enemy')) card.addClass('attacktarget').on('contextmenu.attack', states.table.attackWithSelected);        
-    });
-  }
-  return card;
-};
-$.fn.highlightAttack = Card.highlightAttack;
-
-Card.strokeAttack = function(){    
-  var card = this;
-  if(card.hasClass('player') && !card.hasClasses('enemy done dead stunned')){        
-    var spot = Map.getPosition(card), range = Map.getRange(card.data('range'));     
-    Map.stroke(spot, range, 'attack');
-  }
-  return card;
-};
-$.fn.strokeAttack = Card.strokeAttack;
 
 Card.move = function(destiny){
   var card = this;
@@ -346,7 +335,7 @@ Card.activate = function(target){
   var skill = this;
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
-  if(typeof target == 'string') target = $('#'+target+' .card');   game.log('active', this,target);                             
+  if(typeof target == 'string') target = $('#'+target+' .card');                           
   if(skillid && hero && target.data('hero') == hero) {    
     skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
@@ -395,7 +384,7 @@ $.fn.addStun = Card.addStun;
 Card.reduceStun = function(stun){
   if(this.hasClass('stunned')){
     if(!stun) stun = 1;
-    var currentstun = parseInt(this.data('stun')); game.log('red',currentstun,this);
+    var currentstun = parseInt(this.data('stun')); 
     if(currentstun < 1) {
       this.trigger('stunend', {target: this}).data('stun', 0).removeClass('stunned').removeBuff('stun');
     } else this.data('stun', currentstun - stun); 
@@ -410,7 +399,31 @@ Card.discard = function(){
   else this.appendTo(states.table.enemySkillsDeck);
 };
 $.fn.discard = Card.discard;
-  
+
+
+Card.strokeAttack = function(){    
+  var card = this;
+  if(!card.hasClasses('done dead stunned')){        
+    var spot = Map.getPosition(card), range = Map.getRange(card.data('range'));     
+    Map.stroke(spot, range, card.data('side')+'attack');
+  }
+  return card;
+};
+$.fn.strokeAttack = Card.strokeAttack;
+
+Card.highlightAttack = function(){    
+  var card = this;
+  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead stunned')){        
+    var spot = Map.getPosition(card), range = Map.getRange(card.data('range')); 
+    Map.inRange(spot, range, function(neighbor){
+      var card = $('.card', neighbor);        
+      if(card.hasClass('enemy')) card.addClass('attacktarget').on('contextmenu.attack', states.table.attackWithSelected);        
+    });
+  }
+  return card;
+};
+$.fn.highlightAttack = Card.highlightAttack;
+
 Card.attack = function(target){ 
   if(typeof target == 'string') target = $('#'+target+' .card');
   var source = this;
@@ -519,7 +532,7 @@ Card.die = function(){
     if(this.hasClass('player')) this.appendTo(states.table.playerSkillsDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemySkillsDeck);
 
-  } else if(this.hasClass('towers')) { game.log('tower die')
+  } else if(this.hasClass('towers')) { 
     if(this.hasClass('player')) states.table.lose();
     else if(this.hasClass('enemy')) states.table.win();
   }

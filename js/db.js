@@ -7,7 +7,7 @@ var db = function(send, cb){
     complete: function(receive){
       var data;
       if(receive.responseText){
-        game.log('XHR:', receive.responseText);
+        //game.log('XHR:', receive.responseText);
         data = JSON.parse(receive.responseText);        
       }
       if(cb) cb(data || {});
