@@ -4,18 +4,19 @@ var skills = {
       cast: function(skill, source, target){
         if(game.status == 'turn') states.table.animateCast(skill, target, states.table.playerCemitery);
         source.damage(skill.data('damage'), target, skill.data('damageType'));
-        var stunbuff = source.addBuff(target, skill, skill.data('stunduration'), 'stun');
-        target.addStun(skill.data('stunduration'));
-        var duration = skill.data('stunduration') + skill.data('dotduration');
+        var stun = skill.data('stunduration') + 1;
+        var dot = skill.data('dotduration');
+        source.addBuff(target, skill, stun, 'stun');
+        target.addStun(stun);        
         target.on('turnstart.wkdot', this.dot).data('wk-dot', {
-          dotduration: skill.data('dotduration'),
-          duration: duration, 
+          dotduration: dot,
+          duration: stun + dot, 
           source: source, 
           skill: skill
         });
       },
-      dot: function(event, data){
-        var target = data.target;
+      dot: function(event, eventdata){
+        var target = eventdata.target;
         var data = target.data('wk-dot');
         var source = data.source;
         var skill = data.skill;
@@ -24,13 +25,11 @@ var skills = {
         if(duration > 0){
           if(duration == dotduration) source.addBuff(target, skill, dotduration, 'dot');
           if(duration <= dotduration) source.damage(skill.data('dot'), target, skill.data('damageType'));            
-          duration--;
-          data.duration = duration;
+          data.duration--;
           target.data('wk-dot', data);
         } else {
           target.off('turnstart.wkdot');
           target.data('wk-dot', null);
-          //target.removeBuff('wk-dot');
         } 
       }
     },
@@ -42,7 +41,7 @@ var skills = {
         team.on('attack', this.attack);     
       },
       attack: function(event, data){ 
-        var source = data.source, target = data.target;        
+        var source = eventdata.source, target = eventdata.target;        
         var damage = source.data('damage');
         var skill = source.data('wk-ls');
         var bonus = skill.data('percentage') / 100;
@@ -54,8 +53,8 @@ var skills = {
         source.addBuff(source, skill);
         source.data('replacedamage', true).on('attack', this.attack).data('wk-crit', skill);
       },
-      attack: function(event, data){
-        var source = data.source, target = data.target;
+      attack: function(event, eventdata){
+        var source = eventdata.source, target = eventdata.target;
         var skill = source.data('wk-crit');
         var damage = source.data('damage');
         var chance = skill.data('chance') / 100;
@@ -69,25 +68,25 @@ var skills = {
       }
     },
     ult: {
-      activate: function(skill, source){
+      activate: function(skill, source){ game.log('wk-ult act');
         source.on('die.wkult', this.die); game.log('ult', skill, source);
       },
-      die: function(event, data){       
-        var target = data.target;        
-        var spot = $('#'+data.spot).addClass('cript'); 
+      die: function(event, eventdata){       
+        var wk = eventdata.target;        
+        var spot = $('#'+eventdata.spot).addClass('cript'); 
         var skill = $('.player.hand .wk-ult');
-        if(target.hasClass('player')) {
+        if(wk.hasClass('player')) {
           states.table.animateCast(skill, spot, states.table.playerCemitery);
         } else skill = $('.enemy.hand .wk-ult');
-        target.off('die.wkult');
-        target.data('wk-ult', {
+        wk.off('die.wkult');
+        wk.data('wk-ult', {
           duration: game.skills.wk.ult.delay, 
           spot: data.spot,
           skill: skill
-        }).on('turnstart.wkult', skills.wk.ult.reborn);  game.log('die',target, spot);
+        }).on('turnstart.wkult', skills.wk.ult.reborn);  game.log('die', wk, spot);
       },
-      reborn: function(event, data){
-        var wk = data.target;        
+      reborn: function(event, eventdata){
+        var wk = eventdata.target;        
         wk.off('turnstart.wkult');
         var data = wk.data('wk-ult');
         var spot = data.spot;
@@ -95,8 +94,7 @@ var skills = {
         var duration = data.delay; game.log('reborn',wk, spot, duration);
         var side = source.data('side');
         if(duration > 0){
-          duration--;
-          data.duration = duration;
+          data.duration-
           wk.data('wk-ult', data);
         } else {
           $('#'+spot).removeClass('cript');

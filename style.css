@@ -1,6 +1,6 @@
-/*@import url("http://fonts.googleapis.com/css?family=Averia+Sans+Libre");
+@import url("http://fonts.googleapis.com/css?family=Averia+Sans+Libre");
 @import url("http://fonts.googleapis.com/css?family=Luckiest+Guy");
-@import url("http://fonts.googleapis.com/css?family=Special+Elite");*/
+@import url("http://fonts.googleapis.com/css?family=Special+Elite");
 
 html, body {
   user-select: none;  
@@ -108,6 +108,7 @@ input:focus {
   100% { transform: rotate(360deg);}
 }
 .loader.hidden {
+  cursor: auto;
   display: inline-block;
   opacity: 0;
 }
@@ -191,7 +192,7 @@ input:focus {
 }
 .pickbox {
   width: 770px;  
-  height: 310px;
+  height: 311px;
   position: absolute;
   float: left;
   margin-bottom: 1em;
@@ -302,9 +303,10 @@ input:focus {
   border: 1px solid #533;
   border-radius: 6px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);  
+  z-index: 1
 }
 .card:hover {
-  z-index: 1;
+  z-index: 2;
 }
 
 .card.player {
@@ -552,6 +554,7 @@ input:focus {
   transform: scale(.30);
 }
 .map .card .damage {
+  z-index: 6;
   color: yellow;
   position: absolute;
   opacity: 0;
@@ -967,7 +970,7 @@ td.cript:after {
 }
 
 .table .resultsbox {
-  z-index: 5;
+  z-index: 7;
   width: 600px;
 }
 .table .result {

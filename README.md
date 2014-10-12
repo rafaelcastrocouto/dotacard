@@ -34,6 +34,6 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
     3 - Double click the `server.bat` file...
 
-    ... or press (** ![Windows Key](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows Key")+R **) type `cmd` and press (** Enter **), 
+    ... or press (![Windows Key](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows Key")**+R **) type `cmd` and press (** Enter **), 
 
     in the prompt, type `set HOST=localhost& set PORT=80& node server.js` and press (** Enter **)

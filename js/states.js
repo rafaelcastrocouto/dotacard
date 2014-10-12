@@ -48,7 +48,6 @@ var states = {
   ////////////////////////////////////////////////////////////////////////////////////////  
     
     end: function(){
-      game.log('Welcome to DotaCard!');
       if(!game.debug){
         window.oncontextmenu = game.nomenu;
         window.onbeforeunload = function(){
@@ -59,7 +58,7 @@ var states = {
     
     reset: function(){
       if(game.debug){
-        game.log('Error', game);
+        console.log('Reset', game);
       } else {
         alert('Connection error, sorry.');
         location.reload(true);
@@ -186,9 +185,7 @@ var states = {
   'menu': {
   ////////////////////////////////////////////////////////////////////////////////////////  
     
-    build: function(){      
-      this.text = $('<p>').appendTo(this.el);
-      this.logout = $('<small>').appendTo(this.text).text('Logout').click(states.load.quit);
+    build: function(){     
       this.menu = $('<div>').appendTo(this.el).addClass('box'); 
       this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
       this.public = $('<button>').appendTo(this.menu).attr({'title': 'Find an adversary online'}).text('Play public match')
@@ -224,7 +221,8 @@ var states = {
     
     start: function(){
       game.loader.addClass('hidden');
-      this.text.html('Welcome <b>'+game.player.name+'</b>! ');
+      game.message.html('Welcome <b>'+game.player.name+'</b>! ');
+      $('<small>').appendTo(game.message).text('Logout').click(states.load.quit);
       this.public.focus();
       if(game.debug){
         this.public.click();
@@ -397,8 +395,7 @@ var states = {
           card = Deck.randomCard($('.pickbox .card'), 'noseed');
           slot.append(card).removeClass('available');
         } else  card = $('.card', slot);
-        var s = parseInt(slot.data('slot'));
-        game.player.picks[s] = card.data('hero');
+        game.player.picks[slot.data('slot')] = card.data('hero');
         if(game.player.picks.length == 5) states.choose.sendDeck();        
       });   
     },
@@ -604,7 +601,7 @@ var states = {
       game.enemy.maxCards = Math.round(game.enemy.mana/2);      
       this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
       this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
-      this.playerUlt = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
+      this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
       this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
       this.playerSkillsDeck = Deck({
         name: 'skills', 
@@ -616,7 +613,7 @@ var states = {
             skill.addClass('player').data('side','player').on('click.select', Card.select);
             if(skill.data('special')) {
               if(skill.data('special') == 'permanent') skill.appendTo(states.table.playerPermanent);
-              if(skill.data('special') == 'ult') skill.appendTo(states.table.playerUlt);
+              if(skill.data('special') == 'ult') skill.appendTo(states.table.playerUlts);
             }        
           });        
         }
@@ -671,31 +668,22 @@ var states = {
         $('.card.dead').each(function(){
           var dead = $(this);
           if(game.time > dead.data('reborn')) dead.reborn();
-        });         
-        $('.card.heroes').each(function(){
-          var hero = $(this);
-          hero.reduceStun();
-          $('.buffs .buff', hero).each(function(){
-            var buff = $(this);
-            var duration = buff.data('duration') - 1;
-            if(duration < 1) hero.removeBuff(buff.data('buffid'));
-            else buff.data('duration', duration);          
-          });          
-          hero.trigger('turnstart', {target: hero});
-          if(game.status == 'turn') {
-            if(hero.data('side') == 'player') hero.removeClass('done');
-            hero.trigger('playerturnstart', {target: hero});
-          }
-          else {
-            if(hero.data('side') == 'enemy') hero.removeClass('done');
-            hero.trigger('enemyturnstart', {target: hero});
-          }
+        });       
+        $('.map .card').each(function(){
+          var card = $(this);          
+          card.trigger('turnstart', {target: card});                  
+          if(game.status == 'turn')  card.trigger('playerturnstart', {target: card});
+          else card.trigger('enemyturnstart', {target: card});
+          card.reduceBuffs();
         });
-        if(game.status == 'turn'){          
+        if(game.turn == 6) $('.card', states.table.playerUlts).appendTo(states.table.playerSkillsDeck);
+        if(game.status == 'turn'){         
+          $('.map .card.player').removeClass('done');
           states.table.selectHand();               
           states.table.towerAutoAttack();        
           Map.highlight(); 
         } else {
+          $('.map .card.enemy').removeClass('done');
           states.table.enemyHand();
         }
         game.time = game.player.turn + game.enemy.turn;  
@@ -954,7 +942,6 @@ var states = {
       .click(function(){  
         states.changeTo('menu');
       });
-      game.log(game);
     },
     
     end: function(){

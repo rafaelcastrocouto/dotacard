@@ -7,9 +7,9 @@
       "range": "Short range",
       "damage": 10,
       "damageType": "Magical",
-      "dotduration": 3,      
+      "dotduration": 2,      
       "dot": 2,
-      "stunduration": 3,
+      "stunduration": 2,
       "cards": 1,
       "description": "7cards Stun and then damage over time an enemy"      
     },
