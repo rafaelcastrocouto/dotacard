@@ -116,11 +116,17 @@ var Card = function(data){
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute);  
   if(data.cards) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
 
-  if(data.hp) {
+  if(data.hp){
     $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
     data.currenthp = data.hp;
     $('<span>').addClass('hp').appendTo(card).text(data.currenthp);   
   }
+  
+  if(data.damage){
+    data.currentdamage = data.damage;
+    $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
+  }
+  
   if(data.range)      $('<p>').appendTo(fieldset).text('Range: '+data.range);
   if(data.type)       $('<p>').appendTo(fieldset).text('Type: '+data.type);
   if(data.cards)      $('<p>').appendTo(fieldset).text('Cards: '+data.cards);
@@ -131,7 +137,7 @@ var Card = function(data){
   if(data.duration)   $('<p>').appendTo(fieldset).text('Duration: '+data.duration);
   if(data.dot)        $('<p>').appendTo(fieldset).text('Damage over time: '+data.dot);
   if(data.regen)      $('<p>').appendTo(fieldset).text('Regen: '+data.regen);
-  if(data.damage)     $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
+  
   if(data.mana)       $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
   //if(data.skills)     $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
   //if(data.passive)    $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
@@ -450,11 +456,10 @@ Card.attack = function(target){
   var source = this;
   var fromSpot = Map.getPosition(source); 
   var toSpot = Map.getPosition(target);  
-  if(source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
-    if(source.data('replacedamage')) source.trigger('attack', {source: source, target: target});
-    else {
-      source.trigger('attack', {source: source, target: target}).damage(source.data('damage'), target, 'Physical');
-    }
+  if(source.data('currentdamage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
+    source.trigger('beforeattack', {source: source, target: target});
+    source.trigger('attack', {source: source, target: target}).damage(source.data('currentdamage'), target, 'Physical');
+    source.trigger('afterattack', {source: source, target: target});
   }
   source.addClass('done');
   return this;
@@ -588,6 +593,7 @@ Card.reborn = function(spot){
     }
   }
   this.place(spot);
+  this.trigger('reborn');
   return this;
 };
 $.fn.reborn = Card.reborn;

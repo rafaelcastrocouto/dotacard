@@ -44,7 +44,7 @@ var skills = {
       attack: function(event, eventdata){ 
         var source = eventdata.source;
         var target = eventdata.target;        
-        var damage = source.data('damage');
+        var damage = source.data('currentdamage');
         var skill = source.data('wk-ls');
         var bonus = skill.data('percentage') / 100;
         source.heal(damage * bonus);
@@ -53,6 +53,7 @@ var skills = {
         var source = eventdata.target; 
         var side = source.data('side');
         var team = $('.card.heroes.'+side);
+        source.on('reborn', skills.wk.lifesteal.reborn);
         team.removeBuff('wk-lifesteal')
       },
       reborn: function(event, eventdata){
@@ -66,24 +67,30 @@ var skills = {
     crit: {
       activate: function(skill, source){
         source.addBuff(source, skill.data('buff'));
-        source.on('attack.wk', this.attack).data({
-          'replacedamage': true, 
-          'wk-crit': skill
-        });        
+        source.on({
+          'beforeattack.wk': this.attack,
+          'afterattack.wk': this.afterattack,
+        }).data('wk-crit', skill);        
       },
       attack: function(event, eventdata){
         var source = eventdata.source;
         var target = eventdata.target;
         var skill = source.data('wk-crit');
-        var damage = source.data('damage');
+        var damage = source.data('currentdamage');
         var chance = skill.data('chance') / 100;
         var bonus = skill.data('percentage') / 100;
         var r = game.random();
         if(r < chance){
           damage *= bonus;
-          source.data('crit', true);          
+          source.data({
+            'crit': true,
+            'currentdamage': damage
+          });
         }
-        source.damage(damage, target, 'Physical');
+      },
+      afterattack: function(event, eventdata){
+        var source = eventdata.source;
+        source.data('currentdamage', source.data('damage'));
       }
     },
     ult: {

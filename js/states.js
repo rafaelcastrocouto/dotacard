@@ -219,8 +219,6 @@ var states = {
       this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
-      
-      if(!game.debug) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
     },
     
     start: function(){
@@ -228,7 +226,8 @@ var states = {
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
       $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(states.load.quit);
       this.public.focus();
-      if(game.debug){
+      if(!game.debug) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
+      else {
         this.public.click();
       }
     },
