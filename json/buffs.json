@@ -1,14 +1,9 @@
 {
   "wk": {
     "stun": {
-      "stun": {
-        "name": "Wraithfire Blast Stun",
-        "description": "Wraithfire Blast stun" 
-      },
-      "dot": {
-        "name": "Wraithfire Blast Burn",
-        "description": "Wraithfire Blast damage over time"  
-      }
+      "name": "Wraithfire Blast",
+      "skill": "dot",
+      "description": "Wraithfire Blast damage over time"  
     },    
     "lifesteal": {
       "name": "Wraithfire Blast Burn",

@@ -1,13 +1,40 @@
-@import url("http://fonts.googleapis.com/css?family=Averia+Sans+Libre");
-@import url("http://fonts.googleapis.com/css?family=Luckiest+Guy");
-@import url("http://fonts.googleapis.com/css?family=Special+Elite");
 
+@import url("http://fonts.googleapis.com/css?family=Freckle+Face");
+@import url("http://fonts.googleapis.com/css?family=Irish+Grover");
+@import url("http://fonts.googleapis.com/css?family=Fontdiner+Swanky");
+
+
+.card legend {
+  color: #533;
+  font-family: "Freckle Face";
+  font-weight: bolder;
+  font-size: 18px;
+}
+.card h1,
+.card p { 
+  font-size: 11px;
+  color: #533;
+  font-family: "Fontdiner Swanky";
+}
+.card p {
+  font-size: 11px;
+  line-height: 14px;
+}
 html, body {
   user-select: none;  
   margin: 0;
   width: 100%; height: 100%;
-  font-family: Calibri, sans-serif;  
-  text-shadow: 0 0 3px #000;
+  font-family: sans-serif;  
+}
+
+body, h1 {   
+  font-family: "Irish Grover";
+  text-shadow: 0 0 2px black, 0 0 4px black, 0 0 6px black;
+}
+
+button {
+  font-family: "Irish Grover";
+  font-size: 16px;
 }
 
 body {
@@ -45,7 +72,6 @@ a:visited {
   color: inherit;
 }
 h1 {
-  font-family: Calibri, sans-serif;
   font-size: 20px;
   margin: 0;
 }
@@ -161,6 +187,10 @@ input:focus {
 
 /*MENU*/
 
+.menu .box {
+  left: 250px;
+}
+
 .menu  button {
   display: block;
   margin: 5px auto;
@@ -171,11 +201,29 @@ input:focus {
   cursor: pointer;
 }
 
+.chat {
+  background: white;
+  position: absolute;
+  right: 10px; top: 10px;
+}
+
 /*TOP MESSAGE*/
 
 .message {
   border-radius: 5px;
   transition: background 0.5s;
+  background: rgba(0,0,0,0.3);
+}
+
+.message b {
+  color: limegreen;
+}
+.message b.enemy {
+  color: orangered;
+}
+
+.logout:hover {
+  color: #ddd;
 }
 
 .turn .message {
@@ -318,7 +366,7 @@ input:focus {
   background: firebrick;
 }
 .card.skills {
-  cursor: url("img/cursor/cursor-yellow.png"), url("img/cursor/cursor-yellow.cur"), pointer;
+  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
   background: steelblue;
 }
 .map .card.player.selected {
@@ -548,7 +596,7 @@ input:focus {
   top: -112px;
   left: -21px;
   position: absolute;
-  transform: scale(0.26);
+  transform: scale(0.27);
 }
 .map .card:hover {
   transform: scale(.30);
@@ -604,10 +652,7 @@ input:focus {
   height: 285px;
   background: #edb;
 }
-.card legend {
-  font-family: 'Luckiest Guy';
-  font-size: 16px;
-  color: #533; 
+.card legend {     
   text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -1px 0 white;
 }
 .card .hp {
@@ -667,17 +712,11 @@ input:focus {
   width: 45px; height: 45px;
 }
 
-.card h1 {
-  font-family: 'Special Elite';
-  font-size: 14px;
-  color: #533;
+.card h1 {   
   text-shadow: 0 1px 0 #fff;
   margin: 5px 0 0;
 }
 .card p { 
-  font-family: 'Special Elite';
-  font-size: 12px;
-  color: #533;
   text-shadow: 0 1px 0 #fff;
   text-align: justify;
   margin: 0;
@@ -1100,9 +1139,6 @@ td.cript:after {
 .wk-dot .img {
   background-image: url("img/skills/skeleton_king_hellfire_blast.png");
 }
-.wk-stun.buff .img {
-   background-image: url("img/skills/stun.png")
-}
 .wk-lifesteal .img {
   background-image: url("img/skills/skeleton_king_vampiric_aura.png");
 }
@@ -1173,4 +1209,19 @@ td.cript:after {
 }
 .card.enemy.towers .img {
   background-image: url("img/towers/tower-enemy.png");
+}
+
+/*BUFFS*/
+
+.stun .img {
+   background-image: url("img/skills/stun.png")
+}
+.silence .img {
+   background-image: url("img/skills/stun.png")
+}
+.magicimmune .img {
+   background-image: url("img/skills/stun.png")
+}
+.ethereal .img {
+   background-image: url("img/skills/stun.png")
 }

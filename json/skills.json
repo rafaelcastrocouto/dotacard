@@ -9,9 +9,9 @@
       "damageType": "Magical",
       "dotduration": 2,      
       "dot": 2,
-      "stunduration": 2,
-      "cards": 1,
-      "description": "7cards Stun and then damage over time an enemy"      
+      "stunduration": 3,
+      "cards": 7,
+      "description": "Stun and then damage over time an enemy"      
     },
     "lifesteal": {
       "name": "Vampiric Aura",      

@@ -38,7 +38,7 @@ var states = {
         states[id].builded = true;
       }
     });     
-    setTimeout(function(){ game.states.changeTo('intro'); }, 500);
+    setTimeout(function(){ game.states.changeTo('intro'); }, 1000);
   }, 
   
   currentstate: 'load',
@@ -80,20 +80,25 @@ var states = {
         this.video = $('<div>').addClass('introvideo').hide().appendTo(this.el).tubular({
           videoId: '-cSFPIwMEq4',
           scale: 1.2,
-          onReady: function(video){
-            states.intro.videoLoaded = true;
-            if(states.currentstate == 'intro') states.intro.playVideo();
-            else states.intro.pauseVideo();
-          }
+          onReady: function(video){ states.intro.videoReady = true; }
         });  
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
         this.text = $('<p>').appendTo(this.box).addClass('intro').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
+        this.el.click(function(){
+          clearTimeout(game.timeout);  
+          states.changeTo('login');
+        }); 
       }
     },
     
     start: function(){
       if(!game.debug){
         this.box.fadeIn(3000);
+        game.timeout = setTimeout(function(){
+          if(states.currentstate == 'intro' && states.intro.videoReady) states.intro.playVideo();
+          else states.changeTo('login');    
+        }, 4000); 
+        
       } else {
         states.changeTo('login'); 
       }
@@ -107,6 +112,7 @@ var states = {
         setTimeout(function(){
           if(states.currentstate == 'intro'){
             var player = states.intro.video.data('tubular-player');
+            console.log(player);
             player.playVideo();
           }
         }, 3000);
@@ -114,11 +120,7 @@ var states = {
           if(states.currentstate == 'intro'){  
             states.changeTo('login');
           }
-        }, 102600);
-        this.el.click(function(){
-          clearTimeout(game.timeout);  
-          states.changeTo('login');
-        });  
+        }, 102600); 
       }
     },
     
@@ -217,12 +219,14 @@ var states = {
       this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
+      
+      if(!game.debug) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
     },
     
     start: function(){
       game.loader.addClass('hidden');
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
-      $('<small>').appendTo(game.message).text('Logout').click(states.load.quit);
+      $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(states.load.quit);
       this.public.focus();
       if(game.debug){
         this.public.click();
@@ -329,7 +333,7 @@ var states = {
       this.el.addClass('turn');
       game.enemy.name = enemy; 
       game.enemy.type = challenge; 
-      game.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b>' + game.enemy.name+'</b>');                
+      game.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
       this.counter.removeClass('hidden');
       //todo: play sound and stuff!         
       this.count = game.debug ? 1 : game.timeToPick;
@@ -669,12 +673,12 @@ var states = {
           var dead = $(this);
           if(game.time > dead.data('reborn')) dead.reborn();
         });       
-        $('.map .card').each(function(){
+        $('.card').each(function(){
           var card = $(this);          
           card.trigger('turnstart', {target: card});                  
           if(game.status == 'turn')  card.trigger('playerturnstart', {target: card});
           else card.trigger('enemyturnstart', {target: card});
-          card.reduceBuffs();
+          card.reduceStun();
         });
         if(game.turn == 6) $('.card', states.table.playerUlts).appendTo(states.table.playerSkillsDeck);
         if(game.status == 'turn'){         

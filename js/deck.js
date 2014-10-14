@@ -78,7 +78,12 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.hero = hero;
         skillData.skill = skill;
         skillData.className = hero+'-'+skill + ' ' + name;
-        if(game.buffs[hero] && game.buffs[hero][skill]) skillData.buff = game.buffs[hero][skill];
+        if(game.buffs[hero] && game.buffs[hero][skill]) {
+          skillData.buff = game.buffs[hero][skill];
+          skillData.buff.hero = hero;
+          skillData.buff.skill = skill;
+          skillData.buff.buff = hero+'-'+skill
+        }
         if(multi){
           for(var k=0; k < skillData[multi]; k++){
             cards.push(Card(skillData).appendTo(deck));
@@ -217,8 +222,8 @@ Card.highlightTargets = function(){
         });
       } else if(skill.data('target') == 'allaround'){
         Map.around(spot, range, function(neighbor){        
-          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
-          else {
+          neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+          if(neighbor.hasClass('block')){
             var card = $('.card', neighbor); 
             card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
           }
@@ -226,8 +231,8 @@ Card.highlightTargets = function(){
       } else if(skill.data('target') == 'area'){
         source.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){        
-          if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
-          else {
+          neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+          if(neighbor.hasClass('block')){
             var card = $('.card', neighbor); 
             card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
           }
@@ -239,7 +244,7 @@ Card.highlightTargets = function(){
 };
 $.fn.highlightTargets = Card.highlightTargets;
 
-Card.strokeSkill = function(){console.log('stroke');
+Card.strokeSkill = function(){
   var skill = this, 
       hero = skill.data('hero'), 
       source = $('.map .card.player.'+hero),
@@ -248,7 +253,6 @@ Card.strokeSkill = function(){console.log('stroke');
   if(hero && range && spot && !source.hasClasses('dead done stunned')){
     Map.stroke(spot, Map.getRange(range), 'skillcast');    
     if(skill.data('type') == 'Area of Effect'){
-      console.log('aoe');      
       game.castspot = spot;  
       game.castrange = Map.getRange(range);  
       game.castaoe = Map.getRange(skill.data('aoe'));  
@@ -256,7 +260,7 @@ Card.strokeSkill = function(){console.log('stroke');
         var td = $(this);
         if(td.hasClass('targetarea')){
           $('.map td').removeClass('skillarea skillcast top right left bottom');
-          var spot = Map.getPosition($(this));      console.log('aoe hover',spot);      
+          var spot = Map.getPosition($(this));      
           Map.stroke(spot, game.castaoe, 'skillarea');
         } else {
           $('.map td').removeClass('skillarea skillcast top right left bottom');
@@ -267,7 +271,7 @@ Card.strokeSkill = function(){console.log('stroke');
         var td = $(this);
         if(td.hasClass('targetspot')){
           $('.map td').removeClass('skillarea skillcast top right left bottom');
-          var spot = Map.getPosition($(this));      console.log('aoe hover',spot);      
+          var spot = Map.getPosition($(this));    
           Map.stroke(spot, game.castaoe, 'skillarea');
         } else {
           $('.map td').removeClass('skillarea skillcast top right left bottom');
@@ -357,24 +361,11 @@ Card.activate = function(target){
 };
 $.fn.activate = Card.activate;
 
-Card.addBuff = function(target, skill, duration, custombuff){ 
-  var source = this;
-  var hero = skill.data('hero');
-  var skillid = skill.data('skill');
-  var buffdata = skill.data('buff');
-  var data = buffdata;
-  var buffid = skillid;
-  if(custombuff) {
-    data = buffdata[custombuff];
-    buffid = custombuff;
-  }  
-  var buff = $('<div>').addClass('buff '+hero+'-'+buffid+' '+buffid).attr({title: data.name +': '+ data.description});
-  buff.data('source', source).data('hero', hero).data('skill', skill).data('skillid', skillid).data('buffid', buffid);
-  if(duration) buff.data('duration', duration);
+Card.addBuff = function(target, data){ 
+  var buff = $('<div>').addClass('buff '+data.buff).attr({title: data.name +': '+ data.description});
   $('<div>').appendTo(buff).addClass('img');
   $('<div>').appendTo(buff).addClass('overlay');
   target.children('.buffs').append(buff);
-  target.data(hero+'-'+(custombuff||skillid)+'-buff', buff);
   return buff;
 };
 $.fn.addBuff = Card.addBuff;
@@ -385,38 +376,44 @@ Card.hasBuff = function(buff){
 };
 $.fn.hasBuff = Card.hasBuff;
 
-Card.removeBuff = function(buff){ 
+Card.removeBuff = function(buffs){ 
   var target = this;
-  target.find('.buffs .'+buff).remove();
-  if(target.hasClass('selected')) target.select();
-};
+  $.each(buffs.split(' '), function(){
+    var buff = this;    
+    target.find('.buffs .'+buff).remove();
+    if(target.hasClass('selected')) target.select();
+  })
+  return this;
+};       
 $.fn.removeBuff = Card.removeBuff;
 
-Card.addStun = function(stun){ 
-  this.addClass('stunned');
-  var currentstun = this.data('stun');
-  if(!currentstun || stun > currentstun) this.data('stun', stun);
+Card.addStun = function(target, stun){ 
+  if(target.hasClass('stunned')){
+    var currentstun = target.data('stun');
+    if(!currentstun || stun > currentstun) target.data('stun', stun);
+  } else {    
+    this.addBuff(target, {
+      name: 'Stun',
+      buff: 'stun',
+      description: 'Unit is stunned and cannot move, attack or cast'
+    });
+    target.addClass('stunned').data('stun', stun);
+  }
   return this;
 };
 $.fn.addStun = Card.addStun;
 
-Card.reduceBuffs = function(){
+Card.reduceStun = function(){
   var hero = this;
   if(hero.hasClass('stunned')){
     var currentstun = parseInt(hero.data('stun')); 
     if(currentstun > 0) hero.data('stun', currentstun - 1); 
     else hero.trigger('stunend', {target: hero}).data('stun', null).removeClass('stunned').removeBuff('stun');
-  }  
-  $('.buffs .buff', hero).each(function(){
-    var buff = $(this);
-    var duration = buff.data('duration');
-    if(duration > 0) buff.data('duration', duration - 1);
-    else hero.removeBuff(buff.data('buffid'));
-  });    
+  }    
   if(hero.hasClass('selected')) hero.select();
   return this;
 };
-$.fn.reduceBuffs = Card.reduceBuffs;
+$.fn.reduceStun = Card.reduceStun;
 
 Card.discard = function(){
   if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);

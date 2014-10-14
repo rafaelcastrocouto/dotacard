@@ -10,7 +10,7 @@ var game = {
       if(game.player.turn > 5) availableSkills.add('.skills.ult.player.deck .card');
       var card = Deck.randomCard(availableSkills);
       card.appendTo(states.table.playerHand);
-      if(card.data('target') == 'auto') { game.log('auto', card);
+      if(card.data('target') == 'auto') {
         var heroid = card.data('hero');        
         var hero = $('.map .player.heroes.'+heroid);
         var toSpot = Map.getPosition(hero);
