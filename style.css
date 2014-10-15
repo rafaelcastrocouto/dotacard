@@ -1,8 +1,8 @@
-/*
+
 @import url("http://fonts.googleapis.com/css?family=Freckle+Face");
 @import url("http://fonts.googleapis.com/css?family=Irish+Grover");
 @import url("http://fonts.googleapis.com/css?family=Fontdiner+Swanky");
-*/
+
 
 .card legend {
   color: #533;
@@ -72,6 +72,7 @@ a:visited {
   color: inherit;
 }
 h1 {
+  padding: 1px 2px;
   font-size: 20px;
   margin: 0;
 }
@@ -666,7 +667,7 @@ input:focus {
   padding: 2px;
   border-radius: 50%;
   text-align: center;
-  font-size: 14px;
+  font-size: 16px;
   border: 1px solid #fff;
 }
 .card.enemy .hp {

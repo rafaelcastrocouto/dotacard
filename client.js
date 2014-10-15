@@ -29,9 +29,10 @@ var game = {
   dayLength: 6, deadLength: 4, //turns   
   map: null, width: 12,  height: 5, //slots  
   nomenu: function(){return false;},
-  seed: 0, random: function(){  //game.log(game.seed);
-    //return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
-    return 0;
+  seed: 0, random: function(){  
+    if(game.debug) return 0;
+    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
+    
   }
 };
 

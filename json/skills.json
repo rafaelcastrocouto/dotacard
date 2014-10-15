@@ -37,7 +37,7 @@
       "type": "Passive",
       "target": "auto",
       "duration": 3,
-      "range": "Ranged",
+      "range": "Melee",
       "delay": 2,
       "cards": 1,
       "description": "No one can kill the Wraith King!"

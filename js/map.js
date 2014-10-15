@@ -2,11 +2,11 @@
 // range:            Melee / Short range / Ranged / Long Range  
 // speed:    Slow / Normal /    Fast                                           ▒          ▒▒▒
 //                                                      ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
-//                                ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
-//              ▒     ▒▒▒        ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
-//        ▓    ▒▓▒    ▒▓▒       ▒▒▓▒▒      ▒▒▓▒▒     ▒▒▒▓▒▒▒     ▒▒▒▓▒▒▒   ▒▒▒▒▓▒▒▒▒   ▒▒▒▒▓▒▒▒▒
-//              ▒     ▒▒▒        ▒▒▒       ▒▒▒▒▒      ▒▒▒▒▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
-//                                ▒         ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//                                ▒         ▒▒▒       ▒▒░▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
+//              ▒     ▒▒▒        ▒░▒       ▒░░░▒      ▒░░░▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//        ▓    ▒▓▒    ▒▓▒       ▒░▓░▒      ▒░▓░▒     ▒░░▓░░▒     ▒▒▒▓▒▒▒   ▒▒▒▒▓▒▒▒▒   ▒▒▒▒▓▒▒▒▒
+//              ▒     ▒▒▒        ▒░▒       ▒░░░▒      ▒░░░▒      ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒    ▒▒▒▒▒▒▒▒▒
+//                                ▒         ▒▒▒       ▒▒░▒▒       ▒▒▒▒▒     ▒▒▒▒▒▒▒     ▒▒▒▒▒▒▒
 //                                                      ▒          ▒▒▒       ▒▒▒▒▒       ▒▒▒▒▒
 //                                                                             ▒          ▒▒▒
 
@@ -169,14 +169,17 @@ var Map = {
   
 
   inRange: function(spot, r, cb){
-    for(var i = 0; i <= r; i++){
-      Map.atRange(spot, i, cb);
-    }
+    Map.atRange(spot, 0, cb);
+    Map.around(spot, r, cb);
   },
   
   around: function(spot, r, cb){
-    for(var i = 1; i <= r; i++){
-      Map.atRange(spot, i, cb);
+    Map.atRange(spot, r, cb);
+    if(r == 3) Map.atRange(spot, 1, cb);
+    if(r == 4) Map.atRange(spot, 2, cb);
+    if(r == 5) {
+      Map.atRange(spot, 1, cb);
+      Map.atRange(spot, 3, cb);
     }
   },
   

@@ -53,6 +53,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
     if(found || !filter){
       herodata.hero = heroid;
       herodata.speed = 2;
+      herodata.currentspeed = 2;
       herodata.kd = true;
       herodata.buffs = true;
       herodata.className = heroid + ' ' +name;
@@ -293,7 +294,7 @@ $.fn.strokeSkill = Card.strokeSkill;
 Card.highlightMove = function(){
   var card = this;
   if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done static dead stunned')){       
-    var speed = card.data('speed') + (card.data('speedBonus') || 0);
+    var speed = card.data('currentspeed');
     if(speed < 1) return; 
     if(speed > 3) speed = 3;
     Map.atMovementRange(card, Math.round(speed), function(neighbor){ 

@@ -112,7 +112,6 @@ var states = {
         setTimeout(function(){
           if(states.currentstate == 'intro'){
             var player = states.intro.video.data('tubular-player');
-            console.log(player);
             player.playVideo();
           }
         }, 3000);
@@ -226,10 +225,9 @@ var states = {
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
       $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(states.load.quit);
       this.public.focus();
-      if(!game.debug) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
-      else {
-        this.public.click();
-      }
+      if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
+      else this.public.click();
+      
     },
     
     end: function(){

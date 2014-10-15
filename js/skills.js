@@ -109,7 +109,6 @@ var skills = {
           duration: skill.data('delay')
         });
         skill.discard();
-        var team = $('.card.heroes.'+side);        
       },
       reborn: function(event, eventdata){
         var wk = eventdata.target;        
@@ -125,11 +124,14 @@ var skills = {
           $('#'+spot).removeClass('cript');
           wk.reborn(spot).data('wk-ult', null);
           Map.inRange(spot, Map.getRange(game.skills.wk.ult.range), function(neighbor){      
-            var card = $('.card', neighbor).not('.'+side); 
-            wk.addBuff(card, skill);  
+            var otherside = 'enemy';
+            if(side == 'enemy') otherside = 'player';
+            var card = $('.card.'+otherside, neighbor).not('.wkultbuff'); 
+            wk.addClass('wkultbuff').addBuff(card, skill.data('buff'));  
             var speed = card.data('speed') - 1;
-            card.data('speed', speed);
+            card.data('currentspeed', speed);
             card.on('turnstart.wkultbuff', skills.wk.ult.removeBuff).data('wk-ult-buff', skill.data('duration'));
+
           });
           game[side].buyCard();
           wk.off('turnstart.wkult');
@@ -142,9 +144,9 @@ var skills = {
           duration--;
           target.data('wk-ult-buff', duration);
         } else {
-          var speed = card.data('speed') + 1;
-          card.data('speed', speed);
-          target.removeBuff('wk-ult');
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.wkultbuff').removeClass('wkultbuff').data('wk-ult-buff', null).removeBuff('wk-ult');
         }
       }
     }    
