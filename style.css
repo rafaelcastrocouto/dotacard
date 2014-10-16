@@ -1,24 +1,25 @@
-
-@import url("http://fonts.googleapis.com/css?family=Freckle+Face");
-@import url("http://fonts.googleapis.com/css?family=Irish+Grover");
 @import url("http://fonts.googleapis.com/css?family=Fontdiner+Swanky");
+@import url("http://fonts.googleapis.com/css?family=Irish+Grover");
 
-
-.card legend {
+.card legend,
+.card h1,
+.card p {
   color: #533;
-  font-family: "Freckle Face";
+}
+.card legend {
+  font-family: "Fontdiner Swanky";
   font-weight: bolder;
-  font-size: 18px;
+  font-size: 13px;
 }
 .card h1,
-.card p { 
-  font-size: 11px;
-  color: #533;
-  font-family: "Fontdiner Swanky";
-}
 .card p {
-  font-size: 11px;
-  line-height: 14px;
+  font-family: "Irish Grover";
+}
+.card h1 { 
+  font-size: 14px;  
+}
+.card p { 
+  font-size: 13px;
 }
 html, body {
   user-select: none;  

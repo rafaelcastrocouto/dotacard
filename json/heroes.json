@@ -72,7 +72,7 @@
     "hp": 42,
     "regen": 1,
     "mana": 3,
-    "damage": 94,
+    "damage": 4,
     "skills": "Blink, Mana Burn, Mana Void",
     "passive": "Mana Break, Spell Shield"
   },
