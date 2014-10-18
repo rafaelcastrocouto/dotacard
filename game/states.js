@@ -3,18 +3,18 @@ states.changeTo('yourState')  -> set current state
        .currentstate -> get current state
        .el -> states div appended to game.container
 
-each states
-       have an element (this.el) appended to states.el
-       if have build function will run once
-       if have start function will run every time
-       if have end function will run every time
+each state: has an element (this.el) appended to states.el
+if (build function) will run only once
+if (start function) will run every time it enters the state
+if (end function) will run every time it leaves the state
 
 ////////////////////////////////////////////////////////*/
 
 var states = {
   changeTo: function(state){
-    if(state == states.currentstate) return;    
-    var oldstate = states[states.currentstate];
+    if(state == states.currentstate) return;   
+    var pre = states.currentstate;
+    var oldstate = states[pre];
     if(oldstate.el) oldstate.el.addClass('hidden'); 
     if(oldstate.end) oldstate.end();    
     var newstate = states[state];
@@ -22,10 +22,10 @@ var states = {
       newstate.build();
       newstate.builded = true;
     }
-    states.el.removeClass(states.currentstate).addClass(state);
+    states.el.removeClass(pre).addClass(state);
     if(newstate.el) newstate.el.removeClass('hidden').append(game.loader, game.message, game.triesCounter);
     states.currentstate = state;
-    if(newstate.start) newstate.start();
+    if(newstate.start) newstate.start(pre);
   },
   
   build: function(){
@@ -49,6 +49,7 @@ var states = {
     
     end: function(){
       if(!game.debug){
+        if(!btoa) alert('Your browser does not support this game')
         window.oncontextmenu = game.nomenu;
         window.onbeforeunload = function(){
           return 'Sure you wanna leave?';
@@ -77,13 +78,32 @@ var states = {
     
     build: function(){        
       if(!game.debug){ 
-        this.video = $('<div>').addClass('introvideo').hide().appendTo(this.el).tubular({
-          videoId: '-cSFPIwMEq4',
-          scale: 1.2,
-          onReady: function(video){ states.intro.videoReady = true; }
-        });  
+        this.video = $('<div>').addClass('video').hide().appendTo(this.el);
+        this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
+        var ratio = 16/9;
+        var width = states.el.width() * 1.1;
+        var height = Math.ceil(width / ratio);
+        window.onYouTubeIframeAPIReady = function(){
+          new YT.Player('introvideo', {          
+            videoId: '-cSFPIwMEq4',
+            width: width,
+            height: height,        
+            playerVars: {
+              controls: 0,
+              showinfo: 0,
+              modestbranding: 1,
+              wmode: 'transparent'
+            },
+            events: {
+              onReady: function(event){
+                states.intro.videoReady = true; 
+                game.youTubePlayer = event.target;
+              }
+            }
+          });
+        }
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
-        this.text = $('<p>').appendTo(this.box).addClass('intro').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
+        this.text = $('<p>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
         this.el.click(function(){
           clearTimeout(game.timeout);  
           states.changeTo('login');
@@ -92,44 +112,39 @@ var states = {
     },
     
     start: function(){
+      game.loader.addClass('loading');
+      game.message.text('Loading');
       if(!game.debug){
         this.box.fadeIn(3000);
         game.timeout = setTimeout(function(){
-          if(states.currentstate == 'intro' && states.intro.videoReady) states.intro.playVideo();
+          game.message.text('');
+          game.loader.css({visibility: 'hidden'});
+          if(states.intro.videoReady) states.intro.playVideo();
           else states.changeTo('login');    
         }, 4000); 
         
-      } else {
+      } else {        
         states.changeTo('login'); 
       }
     },
     
-    playVideo: function(){
-      if(game.status != 'playing'){
-        game.loader.addClass('hidden');
-        this.box.delay(6000).fadeOut(3000);
-        this.video.delay(3000).fadeIn(3000);
-        setTimeout(function(){
-          if(states.currentstate == 'intro'){
-            var player = states.intro.video.data('tubular-player');
-            player.playVideo();
-          }
-        }, 3000);
-        game.timeout = setTimeout(function(){
-          if(states.currentstate == 'intro'){  
-            states.changeTo('login');
-          }
-        }, 102600); 
-      }
-    },
-    
-    pauseVideo: function(){
-      var player = states.intro.video.data('tubular-player');
-      player.pauseVideo();     
+    playVideo: function(){   
+      this.box.delay(6000).fadeOut(3000);
+      this.video.delay(3000).fadeIn(3000);
+      setTimeout(function(){
+        if(states.currentstate == 'intro') game.youTubePlayer.playVideo();
+      }, 3000);
+      game.timeout = setTimeout(function(){
+        if(states.currentstate == 'intro'){  
+          states.changeTo('login');
+        }
+      }, 102600);       
     },
     
     end: function(){
-      if(!game.debug) this.video.remove();
+      if(!game.debug && game.youTubePlayer) {
+        game.youTubePlayer.pauseVideo()
+      }
     }
   },
   
@@ -152,7 +167,7 @@ var states = {
         else {
           game.player.name = name;
           states.login.button.attr( "disabled", true );
-          game.loader.removeClass('hidden');
+          game.loader.css({visibility: 'visible'});
           db({'get':'server'}, function(server){
             if(server.status == 'online'){
               game.status = 'logged';
@@ -168,8 +183,9 @@ var states = {
     },
     
     start: function(){
-      game.loader.addClass('hidden');
+      game.message.text('Welcome to DotaCard');
       this.input.focus();
+      game.loader.css({visibility: 'hidden'});
       game.status = 'logging';
       if(game.debug){
         this.input.val('Bot'+(parseInt(Math.random()*100)));
@@ -216,22 +232,60 @@ var states = {
 
       this.friend = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Search for a friend to play', 'disabled': true }).text('Play with a friend');        
       this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
-      this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations', 'disabled': true }).text('Options'); 
+      this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations'}).text('Options').click(function(){
+        states.changeTo('options');
+      }); 
+      game.loader.css({cursor: 'pointer'}).click(function(){
+        states.changeTo('options');
+      });
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
     },
     
     start: function(){
-      game.loader.addClass('hidden');
+      game.loader.removeClass('loading');
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
       $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(states.load.quit);
       this.public.focus();
       if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
-      else this.public.click();
-      
+      else {
+        this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
+        this.public.click();
+      }
     },
     
     end: function(){
       states.menu.public.attr('disabled', false);
+    }
+  }, 
+  ////////////////////////////////////////////////////////////////////////////////////////
+  'options': {
+  ////////////////////////////////////////////////////////////////////////////////////////  
+    
+    build: function(){     
+      this.menu = $('<div>').appendTo(this.el).addClass('box'); 
+      this.title = $('<h1>').appendTo(this.menu).text('Options');
+      
+      this.resolution = $('<div>').appendTo(this.menu).attr({'title': 'Screen resolution'}).addClass('screenresolution');
+      $('<h2>').appendTo(this.resolution).text('Resolution');
+      $('<label>').text('High').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
+      $('<label>').text('Medium').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
+      $('<label>').text('Low').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
+      
+      this.audio = $('<div>').appendTo(this.menu).attr({'title': 'Audio configuration'}).addClass('audioconfig');
+      $('<h2>').appendTo(this.audio).text('Audio');
+      $('<label>').text('Mute').appendTo(this.audio).append($('<input>').attr({type: 'checkbox', disabled: true}).change(this.changeResolution));
+      
+      this.back = $('<button>').appendTo(this.menu).attr({'title': 'Back'}).text('Back')
+      .click(function(){ states.changeTo(states.el.data('prestate')); });
+    },
+    
+    start: function(oldstate){
+      states.el.data('prestate', oldstate);      
+    },
+    changeResolution: function(){ 
+      var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
+      console.log(resolution);
+      states.el.removeClass('low high').addClass(resolution);
     }
   },
   
@@ -270,6 +324,7 @@ var states = {
     },
     
     start: function(){ 
+      game.loader.addClass('loading');
       game.currentData = {};
       this.findGame();
     },
@@ -278,7 +333,6 @@ var states = {
       game.tries = 1;        
       if(game.status == 'found'){
         game.message.text('We found a game! Connecting ');
-        game.loader.removeClass('hidden');
         game.player.type = 'challenger';
         game.currentData.challenger = game.player.name;
         db({'set': game.id, 'data': game.currentData}, function(){
@@ -287,7 +341,6 @@ var states = {
       } 
       if(game.status == 'waiting'){
         game.message.text('Searching for an enemy ');
-        game.loader.removeClass('hidden');
         game.player.type = 'challenged';
         states.choose.getChallenger();
       }  
@@ -326,7 +379,7 @@ var states = {
 
     battle: function(enemy, challenge){     
       game.status = 'picking';
-      game.loader.addClass('hidden');
+      game.loader.removeClass('loading');
       this.el.addClass('turn');
       game.enemy.name = enemy; 
       game.enemy.type = challenge; 
@@ -417,7 +470,7 @@ var states = {
 
     getChallengerDeck: function(){ 
       game.message.text('Loading challenger deck');
-      game.loader.removeClass('hidden');
+      game.loader.addClass('loading');
       db({'get': game.id }, function(found){         
         if(found.challengerDeck){
           game.triesCounter.text('');
@@ -434,7 +487,7 @@ var states = {
 
     getChallengedDeck: function(){
       game.message.text('Loading enemy deck');
-      game.loader.removeClass('hidden');
+      game.loader.addClass('loading');
       db({'get': game.id }, function(found){         
         if(found.challengedDeck){ 
           game.triesCounter.text('');
@@ -473,23 +526,22 @@ var states = {
     },
     
     start: function(){      
-      if(game.status == 'battle'){
-        game.message.text('Muuuuuuuuuuuuu!');
-        game.loader.removeClass('hidden'); 
-        
-        this.placeTowers(); 
-        this.placeHeroes(); 
-        this.buildSkills(); 
-        this.buildTurns(); 
-        
-        game.currentData = {};
-        game.player.kills = 0;
-        game.enemy.kills = 0;
-        
-        //todo: build storage.state
-        
-        game.timeout = setTimeout(states.table.beginTurn, 1000);
-      }
+      game.message.text('Muuuuuuuuuuuuu!');
+      game.loader.addClass('loading'); 
+
+      this.placeTowers(); 
+      this.placeHeroes(); 
+      this.buildSkills(); 
+      this.buildTurns(); 
+
+      game.currentData = {};
+      game.player.kills = 0;
+      game.enemy.kills = 0;
+
+      //todo: build storage.state
+
+      game.timeout = setTimeout(states.table.beginTurn, 1000);
+
     },
     
     buildMap: function(){
@@ -688,14 +740,14 @@ var states = {
           states.table.enemyHand();
         }
         game.time = game.player.turn + game.enemy.turn;  
-        states.table.counter = game.timeToPlay;
+        states.table.counter = (game.debug) ? 5 : game.timeToPlay;
         clearTimeout(game.timeout);
         game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
     
     turnCount: function(){
-      game.loader.addClass('hidden');
+      game.loader.removeClass('loading');
       states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight()+' Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
       if(game.status == 'turn') game.message.text('Your turn, you have '+states.table.counter+' seconds');
       if(game.status == 'unturn') game.message.text('Enemy turn ends in '+states.table.counter+' seconds');        
@@ -718,7 +770,7 @@ var states = {
         hero.trigger('playerturnend', {target: hero});
       });
       game.message.text('Uploading your turn '+game.player.turn);
-      game.loader.removeClass('hidden');
+      game.loader.addClass('loading');
       Map.unhighlight();
       $('.card .damage').remove();
       $('.card .heal').remove();
@@ -730,7 +782,7 @@ var states = {
 
     getMoves: function(){   
       game.message.text('Loading enemy turn '+(game.enemy.turn + 1));
-      game.loader.removeClass('hidden');
+      game.loader.addClass('loading');
       game.tries = 1;  
       states.table.el.removeClass('unturn');
       clearTimeout(game.timeout);
@@ -877,8 +929,8 @@ var states = {
         }        
       }      
       $('.card.heroes').each(function(){
-          var hero = $(this);
-          hero.trigger('enemyturnend', {target: hero});
+        var hero = $(this);
+        hero.trigger('enemyturnend', {target: hero});
       });         
       clearTimeout(game.timeout);
       game.timeout = setTimeout(function(){
@@ -913,7 +965,7 @@ var states = {
       game.winner = game.enemy.name;
       states.table.el.addClass('unturn');
       game.message.text('Game Over!');
-      game.loader.addClass('hidden');
+      game.loader.removeClass('loading');
       game.status = 'over';      
       states.table.showResults();
     },

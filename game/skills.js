@@ -123,11 +123,11 @@ var skills = {
         } else {
           $('#'+spot).removeClass('cript');
           wk.reborn(spot).data('wk-ult', null);
-          Map.inRange(spot, Map.getRange(game.skills.wk.ult.range), function(neighbor){      
+          Map.inRange(spot, Map.getRange(skill.data('aoe')), function(neighbor){      
             var otherside = 'enemy';
             if(side == 'enemy') otherside = 'player';
-            var card = $('.card.'+otherside, neighbor).not('.wkultbuff'); 
-            wk.addClass('wkultbuff').addBuff(card, skill.data('buff'));  
+            var card = $('.card.'+otherside, neighbor); 
+            wk.addBuff(card, skill.data('buff'));  
             var speed = card.data('speed') - 1;
             card.data('currentspeed', speed);
             card.on('turnstart.wkultbuff', skills.wk.ult.removeBuff).data('wk-ult-buff', skill.data('duration'));
@@ -146,7 +146,7 @@ var skills = {
         } else {
           var speed = target.data('currentspeed') + 1;
           target.data('currentspeed', speed);
-          target.off('turnstart.wkultbuff').removeClass('wkultbuff').data('wk-ult-buff', null).removeBuff('wk-ult');
+          target.off('turnstart.wkultbuff').data('wk-ult-buff', null).removeBuff('wk-ult');
         }
       }
     }    
@@ -198,12 +198,38 @@ var skills = {
   cm: {
     slow: {
       cast: function(skill, source, target){
+        var spot = Map.getPosition(target);
+        var side = source.data('side');
         states.table.animateCast(skill, source, states.table.playerCemitery);
+        Map.inRange(spot, Map.getRange(skill.data('aoe')), function(neighbor){      
+          var otherside = 'enemy';
+          if(side == 'enemy') otherside = 'player';
+          var card = $('.card.'+otherside, neighbor); 
+          source.addBuff(card, skill.data('buff'));  
+          source.damage(card, skill.data('damage'), skill.data('damageType'));  
+          var speed = card.data('speed') - 1;
+          card.data('currentspeed', speed);
+          card.on('turnstart.cmslowbuff', skills.cm.slow.removeBuff).data('cm-slow-buff', skill.data('duration'));
+        });
       },
-      end: function(){}
+      removeBuff: function(event, eventdata){
+        var target = eventdata.target; 
+        var duration = target.data('cm-slow');
+        if(duration > 0) {
+          duration--;
+          target.data('cm-slow-buff', duration);
+        } else {
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.cmslowbuff').data('cm-slow-buff', null).removeBuff('cm-slow');
+        }
+      }
     },
     aura: {
-      activate: function(skill, source){},
+      activate: function(skill, source){
+        var side = source.data('side');
+        game[side].cardsPerTurn++;
+      },
       buy: function(){}
     },
     freeze: {

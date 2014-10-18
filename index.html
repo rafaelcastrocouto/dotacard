@@ -4,28 +4,30 @@
     <title>DotaCard</title>
     <meta name="Author" content="rafaelcastrocouto"/>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
-    <meta http-equiv="content-script-type" content="text/javascript"/>    
+    <meta http-equiv="content-script-type" content="text/javascript"/>
     <meta http-equiv="content-style-type" content="text/css"/>
-    <link href="style.css" rel="stylesheet" type="text/css"/> 
     <link href="favicon.ico" rel="icon" type="image/vnd.microsoft.icon"/>
     <link href="favicon.png" rel="icon" type="image/png"/>
+    <link href="styles/normalize.css" rel="stylesheet" type="text/css"/>
+    <link href="styles/game.css" rel="stylesheet" type="text/css"/>
   </head>
-  <body> 
-    <noscript>Sorry but it is necessary to 
-      <a href="http://www.enable-javascript.com/" target="_blank">enable Javascript</a>
+  <body>
+    <noscript>DotaCard requires 
+      <a href="http://www.enable-javascript.com/" target="_blank">Javascript</a>
     </noscript>
     <img class="hidden" src="img/banner.jpg" />
-    <script type="text/javascript" src="lib/prefixfree.min.js"></script>
-    <script type="text/javascript" src="lib/jquery.js"></script>    
-    <script type="text/javascript" src="lib/youtube.iframe.api.js"></script>    
-    <script type="text/javascript" src="lib/jquery.tubular.1.0.js"></script>     
-    <script type="text/javascript" src="js/db.js"></script>
-    <script type="text/javascript" src="js/map.js"></script>
-    <script type="text/javascript" src="js/deck.js"></script>     
-    <script type="text/javascript" src="js/skills.js"></script>  
-    <script type="text/javascript" src="js/states.js"></script>  
-    <script type="text/javascript" src="client.js"></script>    
-    <a href="https://github.com/rafaelcastrocouto/dotacard" target="_blank"><img class="fork" src="img/fork.png" /></a>    
-    <script type="text/javascript" src="lib/google.analytics.js"></script>
+    <a href="https://github.com/rafaelcastrocouto/dotacard" target="_blank">
+      <img class="fork" src="img/fork.png" />
+    </a>
+    <script type="text/javascript" src="browser_modules/jquery.min.js"></script>
+    <script type="text/javascript" src="browser_modules/youtube.iframe.min.js"></script>
+    <script type="text/javascript" src="browser_modules/prefixfree.min.js"></script>
+    <script type="text/javascript" src="game/db.js"></script>
+    <script type="text/javascript" src="game/map.js"></script>
+    <script type="text/javascript" src="game/deck.js"></script>
+    <script type="text/javascript" src="game/skills.js"></script>
+    <script type="text/javascript" src="game/states.js"></script>
+    <script type="text/javascript" src="client.js"></script>
+    <script type="text/javascript" src="browser_modules/google.analytics.min.js" async></script>
   </body>
 </html>

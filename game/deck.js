@@ -33,7 +33,7 @@ Deck.loadDeck = function(name, cb){
 
 Deck.createCards = function(deck, name, cb, filter, multi){   
   if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
-  if(name == 'skills') {
+  if(name == 'skills'){
     Deck.loadDeck('buffs', function(){
       Deck.createSkillsCards(deck, name, cb, filter, multi);
     });
@@ -79,7 +79,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.hero = hero;
         skillData.skill = skill;
         skillData.className = hero+'-'+skill + ' ' + name;
-        if(game.buffs[hero] && game.buffs[hero][skill]) {
+        if(game.buffs[hero] && game.buffs[hero][skill]){
           skillData.buff = game.buffs[hero][skill];
           skillData.buff.hero = hero;
           skillData.buff.skill = skill;
@@ -158,7 +158,7 @@ var Card = function(data){
   return card;
 };
 
-Card.place = function(target) {
+Card.place = function(target){
   if(typeof target == 'string') target = $('#'+target);
   this.closest('td.block').removeClass('block').addClass('free');
   this.appendTo(target.removeClass('free').addClass('block'));
@@ -182,7 +182,7 @@ $.fn.select = Card.select;
 
 Card.highlightSource = function(){
   var skill = this, hero = skill.data('hero'), source;
-  if(hero) {
+  if(hero){
     source = $('.map .card.player.'+hero).addClass('source');
     game.castSource = source; 
   }
@@ -198,7 +198,7 @@ Card.highlightTargets = function(){
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
       
-      if(skill.data('target') == 'passive') {        
+      if(skill.data('target') == 'passive'){        
         source.addClass('casttarget').on('contextmenu.activate', states.table.passiveActivate);
         
       } else if(skill.data('target') == 'self'){  
@@ -269,7 +269,7 @@ Card.strokeSkill = function(){
           $('.map td').removeClass('skillarea skillcast top right left bottom');
           var spot = Map.getPosition($(this));      
           Map.stroke(spot, game.castaoe, 'skillarea');
-        } else {
+        } else{
           $('.map td').removeClass('skillarea skillcast top right left bottom');
           Map.stroke(game.castspot, game.castrange, 'skillcast');          
         }
@@ -280,7 +280,7 @@ Card.strokeSkill = function(){
           $('.map td').removeClass('skillarea skillcast top right left bottom');
           var spot = Map.getPosition($(this));    
           Map.stroke(spot, game.castaoe, 'skillarea');
-        } else {
+        } else{
           $('.map td').removeClass('skillarea skillcast top right left bottom');
           Map.stroke(game.castspot, game.castrange, 'skillcast');   
         }
@@ -316,7 +316,7 @@ Card.move = function(destiny){
     destiny.removeClass('free').addClass('block');    
     var t = card.offset(), d = destiny.offset();
     if(!destiny.data('detour')) card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
-    else {
+    else{
       var x = destiny.data('detour').offset();
       card.css({top: x.top - t.top - 112, left: x.left - t.left - 22});
       setTimeout(function(){
@@ -325,7 +325,7 @@ Card.move = function(destiny){
     }    
     if(card.data('movementBonus')) card.data('movementBonus', false);
     else card.addClass('done');   
-    card.trigger('move', {card: card, target: toSpot});
+    card.trigger('move',{card: card, target: toSpot});
     setTimeout(function(){          
       $(this.card).css({top: '', left: ''}).appendTo(this.destiny);     
       $('.map td').data('detour', false);
@@ -340,13 +340,13 @@ Card.cast = function(skill, target){
   var source = this;  
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
-  if(skillid && hero && source.data('hero') == hero) {
-    if(typeof target == 'string') {
+  if(skillid && hero && source.data('hero') == hero){
+    if(typeof target == 'string'){
       var t = game.skills[hero][skillid].target;
       if(t == 'spot' || t == 'around' || t == 'allaround') target = $('#'+target);
       else target = $('#'+target+' .card');
     }
-    source.trigger('cast', {skill: skill, source: source, target: target});
+    source.trigger('cast',{skill: skill, source: source, target: target});
     skills[hero][skillid].cast(skill, source, target);    
     Map.unhighlight();
     this.addClass('done');
@@ -360,7 +360,7 @@ Card.activate = function(target){
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
   if(typeof target == 'string') target = $('#'+target+' .card');                           
-  if(skillid && hero && target.data('hero') == hero) {    
+  if(skillid && hero && target.data('hero') == hero){    
     skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
   }
@@ -398,8 +398,8 @@ Card.addStun = function(target, stun){
   if(target.hasClass('stunned')){
     var currentstun = target.data('stun');
     if(!currentstun || stun > currentstun) target.data('stun', stun);
-  } else {    
-    this.addBuff(target, {
+  } else{    
+    this.addBuff(target,{
       name: 'Stun',
       buff: 'stun',
       description: 'Unit is stunned and cannot move, attack or cast'
@@ -415,7 +415,7 @@ Card.reduceStun = function(){
   if(hero.hasClass('stunned')){
     var currentstun = parseInt(hero.data('stun')); 
     if(currentstun > 0) hero.data('stun', currentstun - 1); 
-    else hero.trigger('stunend', {target: hero}).data('stun', null).removeClass('stunned').removeBuff('stun');
+    else hero.trigger('stunend',{target: hero}).data('stun', null).removeClass('stunned').removeBuff('stun');
   }    
   if(hero.hasClass('selected')) hero.select();
   return this;
@@ -424,7 +424,10 @@ $.fn.reduceStun = Card.reduceStun;
 
 Card.discard = function(){
   if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);
-  else this.appendTo(states.table.enemySkillsDeck);
+  else{
+    this.appendTo(states.table.enemySkillsDeck);
+    game.enemy.hand--;
+  }
 };
 $.fn.discard = Card.discard;
 
@@ -458,9 +461,9 @@ Card.attack = function(target){
   var fromSpot = Map.getPosition(source); 
   var toSpot = Map.getPosition(target);  
   if(source.data('currentdamage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){
-    source.trigger('beforeattack', {source: source, target: target});
-    source.trigger('attack', {source: source, target: target}).damage(source.data('currentdamage'), target, 'Physical');
-    source.trigger('afterattack', {source: source, target: target});
+    source.trigger('beforeattack',{source: source, target: target});
+    source.trigger('attack',{source: source, target: target}).damage(source.data('currentdamage'), target, 'Physical');
+    source.trigger('afterattack',{source: source, target: target});
   }
   source.addClass('done');
   return this;
@@ -475,9 +478,9 @@ Card.damage = function(damage, target, type){
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;
   target.changehp(hp);  
-  if(hp < 1) {
+  if(hp < 1){
     var spot = Map.getPosition(target);    
-    setTimeout(function(){ target.trigger('die', {source: this, target: target, spot: spot}).die(); }, 2000);
+    setTimeout(function(){ target.trigger('die',{source: this, target: target, spot: spot}).die(); }, 2000);
     if(source.hasClass('heroes') && target.hasClass('heroes')){
       game[source.data('side')].kills += 1;
       var kills = source.data('kills') + 1;
@@ -493,10 +496,10 @@ Card.damage = function(damage, target, type){
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
     damageFx.text(currentDamage + damage);
-  } else {
+  } else{
     damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
   }
-  if(source.data('crit')) {
+  if(source.data('crit')){
     source.data('crit', false);
     damageFx.addClass('critical');
   }
@@ -514,7 +517,7 @@ Card.heal = function(healhp){
   if(hp > maxhp){
     healhp = maxhp - currenthp;
     target.changehp(maxhp);
-  } else {
+  } else{
     target.changehp(hp);
   }  
   if(healhp > 0){
@@ -522,7 +525,7 @@ Card.heal = function(healhp){
     if(healFx.length){
       var currentHeal = parseInt(healFx.text());
       healFx.text(currentHeal + healhp);
-    } else {
+    } else{
       healFx = $('<span>').addClass('heal').text(healhp).appendTo(target);    
     }
   }
@@ -559,7 +562,7 @@ Card.die = function(){
     if(this.hasClass('player')) this.appendTo(states.table.playerSkillsDeck);
     else if(this.hasClass('enemy')) this.appendTo(states.table.enemySkillsDeck);
 
-  } else if(this.hasClass('towers')) { 
+  } else if(this.hasClass('towers')){ 
     if(this.hasClass('player')) states.table.lose();
     else if(this.hasClass('enemy')) states.table.win();
   }
@@ -579,15 +582,15 @@ Card.reborn = function(spot){
     if(this.hasClass('player')){
       x = 0; y = 3;
       spot = Map.toId(x,y);
-      while($('#'+spot).hasClass('block')) {
+      while($('#'+spot).hasClass('block')){
         x++;
         spot = Map.toId(x,y);
       }    
     }
-    else if(this.hasClass('enemy')) {
+    else if(this.hasClass('enemy')){
       x = 11; y = 1;
       spot = Map.toId(x,y);
-      while($('#'+spot).hasClass('block')) {
+      while($('#'+spot).hasClass('block')){
         x--;
         spot = Map.toId(x,y);
       }

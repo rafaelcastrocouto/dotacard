@@ -8,7 +8,6 @@
 }
 .card legend {
   font-family: "Fontdiner Swanky";
-  font-weight: bolder;
   font-size: 13px;
 }
 .card h1,
@@ -28,7 +27,7 @@ html, body {
   font-family: sans-serif;  
 }
 
-body, h1 {   
+body, h1, h2 {   
   font-family: "Irish Grover";
   text-shadow: 0 0 2px black, 0 0 4px black, 0 0 6px black;
 }
@@ -36,11 +35,13 @@ body, h1 {
 button {
   font-family: "Irish Grover";
   font-size: 16px;
+  color: #333;
 }
 
 body {
   display: table;
   background-attachment: fixed;
+  background-color: #4e5a66;
   background: -webkit-radial-gradient(center top, farthest-side, #4e5a66, #343b43 40%, #22272c 95%, #22272c), #22272c;
   color: white;
   background-size: 800px 200px;
@@ -74,8 +75,23 @@ a:visited {
 }
 h1 {
   padding: 1px 2px;
-  font-size: 20px;
+  font-size: 22px;
   margin: 0;
+  font-weight: normal;
+}
+h2 {
+  padding: 1px 2px;
+  font-size: 19px;
+  margin: 0;
+  font-weight: normal;
+}
+input {
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 17px;
+  color: #555;
+}
+input[disabled], button[disabled] {  
+  color: #aaa;
 }
 input:focus {
   animation: shade 0.5s;
@@ -83,7 +99,18 @@ input:focus {
 @keyframes shade {
   50% {opacity: 0.5;}
 }
-
+label {
+  display: block; 
+  padding: 1px 2px;
+  margin: 2px;
+  text-align: left;
+}
+label input {
+  float: left;
+}
+img {
+  border: 0;
+}
 .hidden {
   display: none;
 }
@@ -117,7 +144,7 @@ input:focus {
 /*LOADER*/
 
 .loader {
-  background-image: url("img/load.png");
+  background-image: url("../img/load.png");
   background-size: contain;
   width: 17px;
   height: 17px;
@@ -127,18 +154,14 @@ input:focus {
   margin: 2px;
   border: 2px solid transparent;
   padding: 1px 2px;  
-  background-repeat: no-repeat;
+  background-repeat: no-repeat; 
+}
+.loader.loading {
   animation: rotate 1s linear infinite;
-  cursor: wait;
 }
 @keyframes rotate {
   0% { transform: rotate(0);}
   100% { transform: rotate(360deg);}
-}
-.loader.hidden {
-  cursor: auto;
-  display: inline-block;
-  opacity: 0;
 }
 
 /*STATES*/
@@ -155,36 +178,77 @@ input:focus {
   border-radius: 4px;
   box-shadow: 0 0 6px black;  
 }
+#states.low {
+  transform: scale(0.75);
+}
+#states.high {
+  transform: scale(1.25);
+}
 #states > div {
   width: 100%; height: 100%;
   position: relative;
 }
 #states.intro {
-  background-image: url("img/bkg/Dota6.49.jpg");
+  background-image: url("../img/bkg/Dota6.49.jpg");
 }
 #states.login {
-  background-image: url("img/bkg/Dota6.55.jpg");
+  background-image: url("../img/bkg/Dota6.55.jpg");
 }
 #states.menu {
-  background-image: url("img/bkg/Dota6.63.jpg");
+  background-image: url("../img/bkg/Dota6.63.jpg");
+}
+#states.options {
+  background-image: url("../img/bkg/Dota6.70.jpg");
 }
 #states.choose {
-  background-image: url("img/bkg/Dota6.69.jpg");
+  background-image: url("../img/bkg/Dota6.69.jpg");
 }
 #states.table {
-  background-image: url("img/bkg/Dota6.70.blur.jpg");
+  background-image: url("../img/bkg/Dota6.70.blur.jpg");
 }
 
 /*INTRO*/
 
-.intro {
+.introheader {
   padding: 10px;
   font-size: 38px;
 }
-.intro a {
+.introheader a {
   text-decoration: none;
   font: monospace;
   font-size: 33%;
+}
+
+.intro .video {
+  pointer-events: none;
+}
+
+/*TOP MESSAGE*/
+
+.message {
+  border-radius: 5px;
+  transition: background 0.5s;
+  background: rgba(0,0,0,0.3);
+}
+
+.message b {
+  color: limegreen;
+}
+.message b.enemy {
+  color: orangered;
+}
+.logout {
+  cursor: pointer;
+}
+.logout:hover {
+  color: #ddd;
+}
+
+.turn .message {
+  background: rgba(0,150,0,0.6);
+}
+.unturn .message {
+  background: rgba(150,0,0,0.6);
 }
 
 /*MENU*/
@@ -204,35 +268,23 @@ input:focus {
 }
 
 .chat {
-  background: white;
+  background: rgb(227,239,250);
   position: absolute;
   right: 10px; top: 10px;
+  width: 450px; height: 570px;
+  opacity: 0.8;
+  border: 1px solid rgb(195,210,224);
+  border-radius: 4px;
+  padding: 4px;
+  
 }
 
-/*TOP MESSAGE*/
 
-.message {
-  border-radius: 5px;
-  transition: background 0.5s;
-  background: rgba(0,0,0,0.3);
-}
+/*OPTIONS*/
 
-.message b {
-  color: limegreen;
-}
-.message b.enemy {
-  color: orangered;
-}
-
-.logout:hover {
-  color: #ddd;
-}
-
-.turn .message {
-  background: rgba(0,150,0,0.6);
-}
-.unturn .message {
-  background: rgba(150,0,0,0.6);
+.options .box div {
+  float: left;
+  padding: 5px 15px;
 }
 
 /*CHOOSE*/
@@ -341,7 +393,7 @@ input:focus {
   position: relative;
   display: inline-block;
   background: #bbb;
-  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   float: left;
   top: 0; left: 0;
   text-align: left;  
@@ -360,15 +412,15 @@ input:focus {
 }
 
 .card.player {
-  cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
+  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
   background: limegreen;
 }
 .card.enemy {
-  cursor: url("img/cursor/cursor-red.png"), url("img/cursor/cursor-red.cur"), pointer;
+  cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer;
   background: firebrick;
 }
 .card.skills {
-  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   background: steelblue;
 }
 .map .card.player.selected {
@@ -741,14 +793,14 @@ input:focus {
 }
 
 .map {
-  cursor: url("img/cursor/cursor.png"), url("img/cursor/cursor.cur"), pointer;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   position: absolute;
   top: 30px; left: 10px;  
   border-spacing: 1px;
   z-index: 1;
   background-position: 0 0;
   background-size: 107% 107%;
-  background-image: url("img/bkg/map.png");
+  background-image: url("../img/bkg/map.png");
   box-shadow: inset 0 0 8px 6px black;
 }
 
@@ -779,7 +831,7 @@ input:focus {
 }
 
 .turn .map td.movearea {  
-  cursor: url("img/cursor/cursor-green.png"), url("img/cursor/cursor-green.cur"), pointer;
+  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
 }
 .turn .map td.movearea:after,
 .turn .map td.movearea:before,
@@ -814,7 +866,7 @@ input:focus {
 }
 
 .turn .map td.targetarea {  
-  cursor: url("img/cursor/cursor-blue.png"), url("img/cursor/cursor-blue.cur"), pointer;
+  cursor: url("../img/cursor/cursor-blue.png"), url("../img/cursor/cursor-blue.cur"), pointer;
 }
 .turn .map td.targetarea:before {
   width: 10px; height: 10px;
@@ -1050,19 +1102,19 @@ td.cript:after {
   background: #b43;
 }
 .pud .portrait .img {
-  background-image: url("img/heroes/pudge_full.png");
+  background-image: url("../img/heroes/pudge_full.png");
 }
 .pud-hook .img {
-  background-image: url("img/skills/pudge_meat_hook.png");
+  background-image: url("../img/skills/pudge_meat_hook.png");
 }
 .pud-rot .img {
-  background-image: url("img/skills/pudge_rot.png");
+  background-image: url("../img/skills/pudge_rot.png");
 }
 .pud-passive .img {
-  background-image: url("img/skills/pudge_flesh_heap.png");
+  background-image: url("../img/skills/pudge_flesh_heap.png");
 }
 .pud-ult .img {
-  background-image: url("img/skills/pudge_dismember.png");
+  background-image: url("../img/skills/pudge_dismember.png");
 }
 
 
@@ -1070,19 +1122,19 @@ td.cript:after {
   background: #145;
 }
 .nyx .portrait .img {
-  background-image: url("img/heroes/nyx_assassin_full.png");
+  background-image: url("../img/heroes/nyx_assassin_full.png");
 }
 .nyx-stun .img {
-  background-image: url("img/skills/nyx_assassin_impale.png");
+  background-image: url("../img/skills/nyx_assassin_impale.png");
 }
 .nyx-burn .img {
-  background-image: url("img/skills/nyx_assassin_mana_burn.png");
+  background-image: url("../img/skills/nyx_assassin_mana_burn.png");
 }
 .nyx-spike .img {
-  background-image: url("img/skills/nyx_assassin_spiked_carapace.png");
+  background-image: url("../img/skills/nyx_assassin_spiked_carapace.png");
 }
 .nyx-ult .img {
-  background-image: url("img/skills/nyx_assassin_vendetta.png");
+  background-image: url("../img/skills/nyx_assassin_vendetta.png");
 }
 
 
@@ -1090,19 +1142,19 @@ td.cript:after {
   background: #674f80;
 }
 .am .portrait .img {
-  background-image: url("img/heroes/antimage_full.png");
+  background-image: url("../img/heroes/antimage_full.png");
 }
 .am-burn .img {
-  background-image: url("img/skills/antimage_mana_break.png");
+  background-image: url("../img/skills/antimage_mana_break.png");
 }
 .am-blink .img {
-  background-image: url("img/skills/antimage_blink.png");
+  background-image: url("../img/skills/antimage_blink.png");
 }
 .am-passive .img {
-  background-image: url("img/skills/antimage_spell_shield.png");
+  background-image: url("../img/skills/antimage_spell_shield.png");
 }
 .am-ult .img {
-  background-image: url("img/skills/antimage_mana_void.png");
+  background-image: url("../img/skills/antimage_mana_void.png");
 }
 
 
@@ -1110,45 +1162,45 @@ td.cript:after {
   background: #62a64e;
 }
 .ld .portrait .img {
-  background-image: url("img/heroes/lone_druid_full.png");
+  background-image: url("../img/heroes/lone_druid_full.png");
 }
 .ld-summon .img {
-  background-image: url("img/skills/lone_druid_spirit_bear.png");
+  background-image: url("../img/skills/lone_druid_spirit_bear.png");
 }
 .ld-rabid .img {
-  background-image: url("img/skills/lone_druid_rabid.png");
+  background-image: url("../img/skills/lone_druid_rabid.png");
 }
 .ld-passive .img {
-  background-image: url("img/skills/lone_druid_synergy.png");
+  background-image: url("../img/skills/lone_druid_synergy.png");
 }
 .ld-cry .img {
-  background-image: url("img/skills/lone_druid_true_form_battle_cry.png");
+  background-image: url("../img/skills/lone_druid_true_form_battle_cry.png");
 }
 .ld-ult .img {
-  background-image: url("img/skills/lone_druid_true_form.png");
+  background-image: url("../img/skills/lone_druid_true_form.png");
 }
 .ld-transform .img {
-  background-image: url("img/skills/lone_druid_true_form_druid.png");
+  background-image: url("../img/skills/lone_druid_true_form_druid.png");
 }
 
 .wk {
   background: #483;
 }
 .wk .portrait .img {
-  background-image: url("img/heroes/skeleton_king_full.png");
+  background-image: url("../img/heroes/skeleton_king_full.png");
 }
 .wk-stun .img,
 .wk-dot .img {
-  background-image: url("img/skills/skeleton_king_hellfire_blast.png");
+  background-image: url("../img/skills/skeleton_king_hellfire_blast.png");
 }
 .wk-lifesteal .img {
-  background-image: url("img/skills/skeleton_king_vampiric_aura.png");
+  background-image: url("../img/skills/skeleton_king_vampiric_aura.png");
 }
 .wk-crit .img {
-  background-image: url("img/skills/skeleton_king_mortal_strike.png");
+  background-image: url("../img/skills/skeleton_king_mortal_strike.png");
 }
 .wk-ult .img {
-  background-image: url("img/skills/skeleton_king_reincarnation.png");
+  background-image: url("../img/skills/skeleton_king_reincarnation.png");
 }
 
 
@@ -1156,31 +1208,31 @@ td.cript:after {
   background: #fd8;
 }
 .kotl .portrait .img {
-  background-image: url("img/heroes/keeper_of_the_light_full.png");
+  background-image: url("../img/heroes/keeper_of_the_light_full.png");
 }
 .ktol-illuminate .img {
-  background-image: url("img/skills/keeper_of_the_light_illuminate.png");
+  background-image: url("../img/skills/keeper_of_the_light_illuminate.png");
 }
 .ktol-illuminate-end .img {
-  background-image: url("img/skills/keeper_of_the_light_illuminate_end.png");
+  background-image: url("../img/skills/keeper_of_the_light_illuminate_end.png");
 }
 .ktol-leak .img {
-  background-image: url("img/skills/keeper_of_the_light_mana_leak.png");
+  background-image: url("../img/skills/keeper_of_the_light_mana_leak.png");
 }
 .ktol-mana .img {
-  background-image: url("img/skills/keeper_of_the_light_chakra_magic.png");
+  background-image: url("../img/skills/keeper_of_the_light_chakra_magic.png");
 }
 .ktol-ult .img {
-  background-image: url("img/skills/keeper_of_the_light_spirit_form.png");
+  background-image: url("../img/skills/keeper_of_the_light_spirit_form.png");
 }
 .ktol-illuminate-ult .img {
-  background-image: url("img/skills/keeper_of_the_light_spirit_form_illuminate.png");
+  background-image: url("../img/skills/keeper_of_the_light_spirit_form_illuminate.png");
 }
 .ktol-blind .img {
-  background-image: url("img/skills/keeper_of_the_light_blinding_light.png");
+  background-image: url("../img/skills/keeper_of_the_light_blinding_light.png");
 }
 .ktol-recall .img {
-  background-image: url("img/skills/keeper_of_the_light_recall.png");
+  background-image: url("../img/skills/keeper_of_the_light_recall.png");
 }
 
 
@@ -1188,42 +1240,42 @@ td.cript:after {
   background: #78c;
 }
 .cm .portrait .img {
-  background-image: url("img/heroes/crystal_maiden_full.png");
+  background-image: url("../img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {
-  background-image: url("img/skills/crystal_maiden_crystal_nova.png")
+  background-image: url("../img/skills/crystal_maiden_crystal_nova.png")
 }
 .cm-aura .img {
-  background-image: url("img/skills/crystal_maiden_brilliance_aura.png")
+  background-image: url("../img/skills/crystal_maiden_brilliance_aura.png")
 }
 .cm-freeze .img {
-  background-image: url("img/skills/crystal_maiden_frostbite.png")
+  background-image: url("../img/skills/crystal_maiden_frostbite.png")
 }
 .cm-ult .img {
-  background-image: url("img/skills/crystal_maiden_freezing_field.png")
+  background-image: url("../img/skills/crystal_maiden_freezing_field.png")
 }
 
 
 /*TOWERS*/
 
 .card.player.towers .img {
-  background-image: url("img/towers/tower-player.png");
+  background-image: url("../img/towers/tower-player.png");
 }
 .card.enemy.towers .img {
-  background-image: url("img/towers/tower-enemy.png");
+  background-image: url("../img/towers/tower-enemy.png");
 }
 
 /*BUFFS*/
 
 .stun .img {
-   background-image: url("img/skills/stun.png")
+   background-image: url("../img/skills/stun.png")
 }
 .silence .img {
-   background-image: url("img/skills/stun.png")
+   background-image: url("../img/skills/stun.png")
 }
 .magicimmune .img {
-   background-image: url("img/skills/stun.png")
+   background-image: url("../img/skills/stun.png")
 }
 .ethereal .img {
-   background-image: url("img/skills/stun.png")
+   background-image: url("../img/skills/stun.png")
 }
