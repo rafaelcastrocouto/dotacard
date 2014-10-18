@@ -795,7 +795,8 @@ img {
 .map {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   position: absolute;
-  top: 30px; left: 10px;  
+  top: 30px; left: 10px;    
+  border-collapse: separate;
   border-spacing: 1px;
   z-index: 1;
   background-position: 0 0;
@@ -807,10 +808,8 @@ img {
 .map td {
   box-sizing: border-box;
   background: rgba(150,150,150,0.1);
-  border: 1px solid transparent;
   width: 60px; height: 90px;
   position: relative;
-  border-top: 1px solid transparent;
 }
 .map td:hover {
   background: rgba(150,150,150,0.2);
@@ -970,16 +969,16 @@ img {
 .map td.stroke.skillcast.right { 
   border-right: 1px solid springgreen;
 }
-.turn .map td.stroke.skillarea.top { 
+.map td.stroke.skillarea.top { 
   border-top: 1px solid dodgerblue;
 }
-.turn .map td.stroke.skillarea.bottom { 
+.map td.stroke.skillarea.bottom { 
   border-bottom: 1px solid dodgerblue;
 }
-.turn .map td.stroke.skillarea.left { 
+.map td.stroke.skillarea.left { 
   border-left: 1px solid dodgerblue;
 }
-.turn .map td.stroke.skillarea.right { 
+.map td.stroke.skillarea.right { 
   border-right: 1px solid dodgerblue;
 }
 

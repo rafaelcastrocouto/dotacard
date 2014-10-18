@@ -127,11 +127,12 @@ var skills = {
             var otherside = 'enemy';
             if(side == 'enemy') otherside = 'player';
             var card = $('.card.'+otherside, neighbor); 
-            wk.addBuff(card, skill.data('buff'));  
-            var speed = card.data('speed') - 1;
-            card.data('currentspeed', speed);
-            card.on('turnstart.wkultbuff', skills.wk.ult.removeBuff).data('wk-ult-buff', skill.data('duration'));
-
+            if(card){
+              wk.addBuff(card, skill.data('buff'));  
+              var speed = card.data('speed') - 1;
+              card.data('currentspeed', speed);
+              card.on('turnstart.wkultbuff', skills.wk.ult.removeBuff).data('wk-ult-buff', skill.data('duration'));
+            }
           });
           game[side].buyCard();
           wk.off('turnstart.wkult');
@@ -205,11 +206,13 @@ var skills = {
           var otherside = 'enemy';
           if(side == 'enemy') otherside = 'player';
           var card = $('.card.'+otherside, neighbor); 
-          source.addBuff(card, skill.data('buff'));  
-          source.damage(card, skill.data('damage'), skill.data('damageType'));  
-          var speed = card.data('speed') - 1;
-          card.data('currentspeed', speed);
-          card.on('turnstart.cmslowbuff', skills.cm.slow.removeBuff).data('cm-slow-buff', skill.data('duration'));
+          if(card){
+            source.addBuff(card, skill.data('buff'));  
+            source.damage(card, skill.data('damage'), skill.data('damageType'));  
+            var speed = card.data('speed') - 1;
+            card.data('currentspeed', speed);
+            card.on('turnstart.cmslowbuff', skills.cm.slow.removeBuff).data('cm-slow-buff', skill.data('duration'));
+          }
         });
       },
       removeBuff: function(event, eventdata){
