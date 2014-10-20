@@ -663,7 +663,7 @@ img {
   top: 0;  
   right: 0;
   font-size: 180px;
-  animation: slideup 6s linear;
+  animation: slideup 2s linear;
   text-shadow: 2px 0 2px red,
     -2px 0 2px red,
     0 2px 2px red,
@@ -683,7 +683,7 @@ img {
   top: 0;  
   left: 0;
   font-size: 180px;
-  animation: slideup 6s linear;
+  animation: slideup 2s linear;
   text-shadow: 2px 0 2px white,
     -2px 0 2px white,
     0 2px 2px white,
@@ -691,8 +691,8 @@ img {
 }
 @keyframes slideup {
   0% {top: 0;opacity: 1;}
-  60% {opacity: 1;}
-  100% {top: -175px;opacity: 0;}
+  80% {opacity: 1;}
+  100% {top: -100px;opacity: 0;}
 }
 
 .card.dead {
@@ -751,7 +751,7 @@ img {
 }
 
 .card .buffs {
-  bottom: 50px;
+  bottom: 42px;
   left: 5px;
 }
 
@@ -763,7 +763,7 @@ img {
 
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
-  width: 45px; height: 45px;
+  width: 36px; height: 36px;
 }
 
 .card h1 {   

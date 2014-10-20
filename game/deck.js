@@ -194,40 +194,40 @@ Card.highlightTargets = function(){
   var skill = this, hero = skill.data('hero');
   if(hero){
     var source = $('.map .card.player.'+hero);
-    if(source.hasClass('heroes') && !source.hasClasses('dead done stunned')){       
+    if(source.hasClass('heroes')){       
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
       
       if(skill.data('target') == 'passive'){        
         source.addClass('casttarget').on('contextmenu.activate', states.table.passiveActivate);
         
-      } else if(skill.data('target') == 'self'){  
+      } else if(skill.data('target') == 'self' && !source.hasClasses('dead done stunned')){  
         source.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);
         
-      } else if (skill.data('target') == 'player'){
+      } else if (skill.data('target') == 'player' && !source.hasClasses('dead done stunned')){
         source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){      
           var card = $('.card', neighbor); 
           if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
         });        
         
-      } else if(skill.data('target') == 'ally'){
+      } else if(skill.data('target') == 'ally' && !source.hasClasses('dead done stunned')){
         Map.inRange(spot, range, function(neighbor){      
           var card = $('.card', neighbor); 
           if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
         });  
         
-      } else if(skill.data('target') == 'enemy'){              
+      } else if(skill.data('target') == 'enemy' && !source.hasClasses('dead done stunned')){              
         Map.inRange(spot, range, function(neighbor){
           var card = $('.card', neighbor);        
           if(card.hasClass('enemy')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);        
         });
         
-      }else if(skill.data('target') == 'around'){
+      } else if(skill.data('target') == 'around' && !source.hasClasses('dead done stunned')){
         Map.around(spot, range, function(neighbor){        
           if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
         });
-      } else if(skill.data('target') == 'allaround'){
+      } else if(skill.data('target') == 'allaround' && !source.hasClasses('dead done stunned')){
         Map.around(spot, range, function(neighbor){        
           neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
           if(neighbor.hasClass('block')){
@@ -235,7 +235,7 @@ Card.highlightTargets = function(){
             card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
           }
         });
-      } else if(skill.data('target') == 'area'){
+      } else if(skill.data('target') == 'area' && !source.hasClasses('dead done stunned')){
         source.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
         Map.inRange(spot, range, function(neighbor){        
           neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
@@ -343,13 +343,15 @@ Card.cast = function(skill, target){
   if(skillid && hero && source.data('hero') == hero){
     if(typeof target == 'string'){
       var t = game.skills[hero][skillid].target;
-      if(t == 'spot' || t == 'around' || t == 'allaround') target = $('#'+target);
+      if(t == 'area' || t == 'around' || t == 'allaround') target = $('#'+target);
       else target = $('#'+target+' .card');
     }
-    source.trigger('cast',{skill: skill, source: source, target: target});
-    skills[hero][skillid].cast(skill, source, target);    
-    Map.unhighlight();
-    this.addClass('done');
+    if(target.length){
+      source.trigger('cast',{skill: skill, source: source, target: target});
+      skills[hero][skillid].cast(skill, source, target);    
+      Map.unhighlight();
+      this.addClass('done');
+    }
   }
   return this;
 };
@@ -423,6 +425,7 @@ Card.reduceStun = function(){
 $.fn.reduceStun = Card.reduceStun;
 
 Card.discard = function(){
+  this.trigger('discard');
   if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);
   else{
     this.appendTo(states.table.enemySkillsDeck);
@@ -470,7 +473,7 @@ Card.attack = function(target){
 };
 $.fn.attack = Card.attack;
 
-Card.damage = function(damage, target, type){ 
+Card.damage = function(damage, target, type){
   if(damage < 1) return this;
   else damage = Math.round(damage);
   var source = this;
@@ -495,7 +498,7 @@ Card.damage = function(damage, target, type){
   var damageFx = target.children('span.damage'); 
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
-    damageFx.text(currentDamage + damage);
+    damageFx.text(currentDamage + damage).appendTo(target);
   } else{
     damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
   }

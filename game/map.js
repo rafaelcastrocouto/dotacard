@@ -48,6 +48,7 @@ var Map = {
   },
   
   getPosition: function(el){
+    if(el.hasClass('stop')) return el.attr('id');
     return el.closest('td').attr('id');
   },
   

@@ -122,7 +122,7 @@
       "target": "area",
       "range": "Ranged",
       "aoe": "Melee",
-      "duration": 2,
+      "duration": 5,
       "damage": 12,
       "damageType": "Magical",      
       "cards": 4,

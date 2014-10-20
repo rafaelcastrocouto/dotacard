@@ -169,10 +169,7 @@ var states = {
           states.login.button.attr( "disabled", true );
           game.loader.css({visibility: 'visible'});
           db({'get':'server'}, function(server){
-            if(server.status == 'online'){
-              game.status = 'logged';
-              states.changeTo('menu');
-            }
+            if(server.status == 'online') states.changeTo('menu');
             else states.load.reset();
           });            
         } 
@@ -186,7 +183,6 @@ var states = {
       game.message.text('Welcome to DotaCard');
       this.input.focus();
       game.loader.css({visibility: 'hidden'});
-      game.status = 'logging';
       if(game.debug){
         this.input.val('Bot'+(parseInt(Math.random()*100)));
         this.button.click();
@@ -205,29 +201,9 @@ var states = {
     build: function(){     
       this.menu = $('<div>').appendTo(this.el).addClass('box'); 
       this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
-      this.public = $('<button>').appendTo(this.menu).attr({'title': 'Find an adversary online'}).text('Play public match')
-      .click(function(){        
-        states.menu.public.attr( "disabled", true );
-        db({'get':'waiting'}, function(waiting){          
-          if(waiting.id == 'none'){
-            game.seed = new Date().valueOf();
-            game.id = btoa(game.seed);
-            var myGame = {id: game.id};
-            db({'set': 'waiting', 'data': myGame}, function(){ 
-              game.status = 'waiting';
-              states.changeTo('choose');
-            });
-            
-          } else {             
-            game.id = waiting.id;     
-            game.seed = parseInt(atob(game.id));
-            game.status = 'found';
-            var clearWait = {id: 'none'};            
-            db({'set': 'waiting', 'data': clearWait}, function(){               
-              states.changeTo('choose');
-            });              
-          }
-        });
+      this.public = $('<button>').appendTo(this.menu).attr({'title': 'Find an adversary online'}).text('Play public match').click(function(){    
+        game.mode = 'public';
+        states.changeTo('choose');
       });
 
       this.friend = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Search for a friend to play', 'disabled': true }).text('Play with a friend');        
@@ -251,10 +227,6 @@ var states = {
         this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
         this.public.click();
       }
-    },
-    
-    end: function(){
-      states.menu.public.attr('disabled', false);
     }
   }, 
   ////////////////////////////////////////////////////////////////////////////////////////
@@ -284,7 +256,6 @@ var states = {
     },
     changeResolution: function(){ 
       var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
-      console.log(resolution);
       states.el.removeClass('low high').addClass(resolution);
     }
   },
@@ -326,56 +297,68 @@ var states = {
     start: function(){ 
       game.loader.addClass('loading');
       game.currentData = {};
-      this.findGame();
-    },
-
-    findGame: function(){   
-      game.tries = 1;        
-      if(game.status == 'found'){
-        game.message.text('We found a game! Connecting ');
-        game.player.type = 'challenger';
-        game.currentData.challenger = game.player.name;
-        db({'set': game.id, 'data': game.currentData}, function(){
-          states.choose.getChallenged();
-        });        
-      } 
-      if(game.status == 'waiting'){
-        game.message.text('Searching for an enemy ');
-        game.player.type = 'challenged';
-        states.choose.getChallenger();
-      }  
+      if(game.mode == 'public') this.checkPublic();
     },
     
-    getChallenged: function(){
-      db({'get': game.id }, function(found){         
-        if(found.challenged){
-          game.triesCounter.text('');
-          game.currentData = found;  
-          states.choose.battle(found.challenged, 'challenged');
-        } else {
-          game.triesCounter.text('('+(game.tries++)+')');  
-          if(game.tries > game.connectionLimit) states.load.reset();
-          else game.timeout = setTimeout(states.choose.getChallenged, 1000);
+    checkPublic: function(){
+      db({'get':'waiting'}, function(waiting){         
+        if(waiting.id == 'none'){
+          game.seed = new Date().valueOf();
+          game.id = btoa(game.seed);
+          db({'set': 'waiting', 'data': {id: game.id}}, function(){ 
+            game.player.type = 'challenged';
+            states.choose.searchGame();            
+          });
+        } else {             
+          game.id = waiting.id;     
+          game.seed = parseInt(atob(game.id));
+          var clearWait = {id: 'none'};            
+          db({'set': 'waiting', 'data': clearWait}, function(){    
+            game.player.type = 'challenger';
+            states.choose.foundGame();
+          });              
         }
-      });
+      });   
     },
 
-    getChallenger: function(){
+    searchGame: function(){   
+      game.currentData.challenged = game.player.name;
+      db({'set': game.id, 'data': game.currentData}, function(){
+        game.message.text('Waiting for an enemy');        
+        game.tries = 1;   
+        states.choose.keepSearching();
+      }); 
+    },    
+    
+    keepSearching: function(){
       db({'get': game.id }, function(found){
         if(found.challenger){
           game.triesCounter.text('');
           game.currentData = found;
-          game.currentData.challenged = game.player.name;
-          db({'set': game.id, 'data': game.currentData}, function(){
-            states.choose.battle(found.challenger, 'challenger');
-          });          
+          states.choose.battle(found.challenger, 'challenger');         
         } else {
           game.triesCounter.text('('+(game.tries++)+')');                
           if(game.tries > game.waitLimit) states.load.reset(); //todo: sugest bot match         
-          else game.timeout = setTimeout(states.choose.getChallenger, 1000);
+          else game.timeout = setTimeout(states.choose.keepSearching, 1000);
         }
       });
     },
+
+    
+    foundGame: function(){       
+      game.message.text('We found a game! Connecting');
+      db({'get': game.id }, function(found){     
+        if(found.challenged){
+          game.triesCounter.text('');
+          game.currentData = found;  
+          game.currentData.challenger = game.player.name;
+          db({'set': game.id, 'data': game.currentData}, function(){
+            states.choose.battle(found.challenged, 'challenged');
+          });  
+        } else states.load.reset();
+      });
+    },  
+
 
     battle: function(enemy, challenge){     
       game.status = 'picking';
@@ -437,7 +420,7 @@ var states = {
     fillDeck: function(){
       if(game.debug){
         if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
-        else game.player.picks = ['am','cm','pud','ld','kotl'];
+        else game.player.picks = ['cm','am','pud','ld','kotl'];
         states.choose.sendDeck();        
         return;
       }
