@@ -1,63 +1,45 @@
-@import url("http://fonts.googleapis.com/css?family=Fontdiner+Swanky");
+/*FONT*/
+
 @import url("http://fonts.googleapis.com/css?family=Irish+Grover");
 
-.card legend,
-.card h1,
-.card p {
-  color: #533;
-}
-.card legend {
-  font-family: "Fontdiner Swanky";
-  font-size: 13px;
-}
-.card h1,
-.card p {
+.box h1, .box h2 {
   font-family: "Irish Grover";
 }
-.card h1 { 
-  font-size: 14px;  
+
+/*TAGS*/ 
+
+body, p, input, button {
+  font-family: 'open sans', Arial, sans-serif;
 }
-.card p { 
-  font-size: 13px;
+
+noscript {  
+  margin: 16px auto;
+  width: 80%;
+  display: block;
 }
+
 html, body {
   user-select: none;  
   margin: 0;
   width: 100%; height: 100%;
-  font-family: sans-serif;  
-}
-
-body, h1, h2 {   
-  font-family: "Irish Grover";
-  text-shadow: 0 0 2px black, 0 0 4px black, 0 0 6px black;
-}
-
-button {
-  font-family: "Irish Grover";
-  font-size: 16px;
-  color: #333;
 }
 
 body {
   display: table;
   background-attachment: fixed;
-  background-color: #4e5a66;
-  background: -webkit-radial-gradient(center top, farthest-side, #4e5a66, #343b43 40%, #22272c 95%, #22272c), #22272c;
+  background-color: #22272c;
+  background: -webkit-radial-gradient(center top, farthest-side, #6e7a66, #343b43 70%, #22272c 95%, #22272c), #22272c;
   color: white;
   background-size: 800px 200px;
   background-position: center -50px;
   background-repeat: no-repeat;
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
 }
-button {
-  cursor: pointer;
-  padding: 3px 10px;
-}
 
 p {
   word-spacing: -1px;
-  font-size: 17px;
-  line-height: 17px;
+  font-size: 16px;
+  line-height: 16px;
   margin: 2px;
   border: 2px solid transparent;
   padding: 1px 2px;
@@ -85,13 +67,14 @@ h2 {
   margin: 0;
   font-weight: normal;
 }
-input {
-  font-family: 'Courier New', Courier, monospace;
-  font-size: 17px;
-  color: #555;
-}
-input[disabled], button[disabled] {  
-  color: #aaa;
+input {  
+  border-radius: 3px;
+  font-size: 16px;
+  color: #4d4843;
+  font-weight: bold;
+  outline: 0;
+  border: 0;
+  padding: 5px;
 }
 input:focus {
   animation: shade 0.5s;
@@ -107,12 +90,19 @@ label {
 }
 label input {
   float: left;
+  margin: 5px;
 }
 img {
   border: 0;
 }
 .hidden {
   display: none;
+}
+
+/*CLASS*/
+
+.banner {
+  width: 100%
 }
 
 .container {
@@ -126,8 +116,8 @@ img {
   transform: translate(-50%, -50%);  
   padding: 50px 100px;
   text-align: center;
-  border-radius: 4px;
-  background: rgba(0,0,0,0.9);
+  border-radius: 5px;
+  background: rgba(0,0,0,0.4);
 }
 .box div p {
   display: block;
@@ -139,24 +129,25 @@ img {
   position: absolute;
   top: 0; right: 0;
   opacity: 0.55;
+  z-index: 10;
 }
 
 /*LOADER*/
 
 .loader {
-  background-image: url("../img/load.png");
-  background-size: contain;
-  width: 17px;
-  height: 17px;
+  width: 15px;
+  height: 15px;
   display: inline-block;
   vertical-align: top; 
-  transform-origin: 11px 12px;
-  margin: 2px;
-  border: 2px solid transparent;
-  padding: 1px 2px;  
-  background-repeat: no-repeat; 
+  margin: 4px 0px 0 6px;
+  padding: 0;
+  border: 3px solid transparent;
+  border-bottom: 3px solid white;
+  border-radius: 50%; 
+  visibility: hidden;
 }
 .loader.loading {
+  visibility: visible;
   animation: rotate 1s linear infinite;
 }
 @keyframes rotate {
@@ -172,11 +163,12 @@ img {
   height: 600px;  
   background-color: #222;  
   background-size: cover;
-  background-position: 50% 100%;
   position: relative;  
   overflow: hidden;
   border-radius: 4px;
   box-shadow: 0 0 6px black;  
+  background-image: url("../img/bkg/polygon-light.jpg");
+  transition: background 1s;
 }
 #states.low {
   transform: scale(0.75);
@@ -188,24 +180,12 @@ img {
   width: 100%; height: 100%;
   position: relative;
 }
-#states.intro {
-  background-image: url("../img/bkg/Dota6.49.jpg");
-}
-#states.login {
-  background-image: url("../img/bkg/Dota6.55.jpg");
-}
-#states.menu {
-  background-image: url("../img/bkg/Dota6.63.jpg");
-}
-#states.options {
-  background-image: url("../img/bkg/Dota6.70.jpg");
-}
+
+#states.table, 
 #states.choose {
-  background-image: url("../img/bkg/Dota6.69.jpg");
+  background-image: url("../img/bkg/polygon-dark.jpg");
 }
-#states.table {
-  background-image: url("../img/bkg/Dota6.70.blur.jpg");
-}
+
 
 /*INTRO*/
 
@@ -223,12 +203,52 @@ img {
   pointer-events: none;
 }
 
-/*TOP MESSAGE*/
+/*LOGIN*/
+
+.login .box {
+  width: 300px;
+}
+
+button {
+  font-size: 16px;
+  color: #4d4843;
+  cursor: pointer;
+  padding: 8px 16px;
+  border: 0;
+  border-radius: 4px;
+  margin: 6px;
+  outline: 0;
+  background: #cfcfc0;
+  color: white;
+  text-shadow: 0 -1px darkgray;
+  box-shadow: 0 4px 0 #9b9c89;
+  opacity: 0.9;
+  position: relative;
+  top: -3px;
+  transition: all 0.2s;
+}
+button:hover {
+  background: lightgray;
+}
+button:active {
+  top: -1px;
+  box-shadow: 0 1px 0 #9b9c89;
+}
+button[disabled] {  
+  background: darkgray;
+  color: gray;
+  text-shadow: none;
+  box-shadow: 0 4px 0 gray;
+}
+button[disabled]:hover {  
+  background: darkgray;
+}
+
+/*MESSAGE*/
 
 .message {
   border-radius: 5px;
   transition: background 0.5s;
-  background: rgba(0,0,0,0.3);
 }
 
 .message b {
@@ -256,17 +276,14 @@ img {
 .menu .box {
   left: 250px;
 }
-
 .menu  button {
   display: block;
-  margin: 5px auto;
+  margin: 12px auto;
   width: 200px;
 }
-
 .menu small {
   cursor: pointer;
 }
-
 .chat {
   background: rgb(227,239,250);
   position: absolute;
@@ -276,9 +293,8 @@ img {
   border: 1px solid rgb(195,210,224);
   border-radius: 4px;
   padding: 4px;
-  
+  color: #4d4843;
 }
-
 
 /*OPTIONS*/
 
@@ -289,22 +305,44 @@ img {
 
 /*CHOOSE*/
 
+.deck {
+  transition: all 0.4s;
+}
+
+.deck .card {
+  float: left;
+}
+
 .choose .counter {
   width: 100%;
 }
+
 .pickbox {
   width: 770px;  
-  height: 311px;
+  height: 300px;
   position: absolute;
-  float: left;
-  margin-bottom: 1em;
   top: 35px;
   left: 100px;
   overflow: hidden;
-  padding: 5px 0;
+  padding: 10px 0;
   text-align: center;
   border-radius: 4px;
-  background: rgba(0,0,0,0.85);
+  background: rgba(0,0,0,0.4);
+}
+
+.pickbox .deck {
+  position: relative;  
+  margin-left: 275px;
+}
+
+.pickbox .card {  
+  margin: 0 -50px;
+  transform: scale(0.4);     
+}
+
+.pickbox .card.active {
+  margin: 0 10px;
+  transform: scale(1);
 }
 
 .pickedbox {
@@ -317,21 +355,7 @@ img {
   padding: 5px;
   text-align: center;
   border-radius: 4px;
-  background: rgba(0,0,0,0.85);
-  box-shadow: 0 0 20px rgba(255,255,255,0.5);
-}
-.prepickbox {
-  width: 205px;
-  height: 170px;
-  position: absolute;
-  top: 360px;
-  left: 655px;
-  overflow: hidden;
-  padding: 15px 5px;
-  text-align: center;
-  border-radius: 4px;
-  background: rgba(0,0,0,0.85);
-  box-shadow: 0 0 20px rgba(255,255,255,0.5);  
+  background: rgba(0,0,0,0.4);
 }
 
 .slot {
@@ -354,25 +378,8 @@ img {
   background: rgba(255,255,255,0.2);
 }
 
-
-.choose .card .hp,
-.choose .card .kd {
-  display: none;
-}
-.pickbox .card {
-  transform: scale(0.4); 
-}
-.pickbox .card:hover {
-  transform: scale(0.5);  
-}
-.pickbox .card.active {
-  margin: 0 5px;
-  transform: scale(1);
-}
-.pickbox .card.active:hover {
-  box-shadow: 0 0 20px 5px rgba(255,255,255,0.5);
-}
 .pickedbox .card {
+  margin: 0 -50px;
   margin-top: -80px;  
   animation: slidedown 0.5s;
   transform: scale(0.4);
@@ -382,33 +389,122 @@ img {
   100% {top: 0;}
 }
 .pickedbox .card:hover { 
-  top: -12px;
+  top: -10px;
   transform: scale(0.45);
 }
 
+.prepickbox {
+  width: 205px;
+  height: 170px;
+  position: absolute;
+  top: 360px;
+  left: 655px;
+  overflow: hidden;
+  padding: 15px 5px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+}
+
+.choose .card .hp,
+.choose .card .kd,
+.choode .card .damage,
+.choode .card .heal,
+.choose .card .buffs {
+  display: none;
+}
 
 /*CARD*/
 
 .card {
   position: relative;
   display: inline-block;
-  background: #bbb;
+  background: blue;
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
-  float: left;
-  top: 0; left: 0;
   text-align: left;  
   transition: all 0.4s;
-  transform: scale(0.4); 
-  margin: 0 -56px;
-  padding: 5px;
+  padding: 0;
   width: 200px; height: 300px;
-  border: 1px solid #533;
-  border-radius: 6px;
+  border-radius: 8px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);  
-  z-index: 1
+  z-index: 1;
+  color: gray;
 }
 .card:hover {
   z-index: 2;
+  box-shadow: 0 0 15px 5px rgba(255,255,255,0.5);
+}
+
+.card legend {     
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin: 2px 0 0 10px;
+}
+.card .hp {
+  height: 18px;
+  position: absolute;
+  right: 10px;
+  width: 18px;
+  display: block;
+  top: 1px;
+  background: #080;
+  padding: 2px;
+  border-radius: 50%;
+  text-align: center;
+  font-size: 16px;
+  border: 1px solid #fff;
+}
+.card.enemy .hp {
+  background: #ed3;
+  border: 1px solid #c00;
+}
+.card fieldset {
+  border-radius: 4px;
+  padding: 3px;
+  margin: 0 5px;
+  height: 268px;
+  background: #f7fae3;
+  border: 0;
+}
+
+.card .img {
+  display: block;
+  border-radius: 3px;
+  background-size: cover;
+  background-position: 50% 50%;
+}
+.card .overlay {
+  box-shadow: 0 0 12px #000 inset;
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+}
+
+.card .portrait {
+  position: relative;
+}
+
+.card .portrait .img,
+.card .portrait .overlay {
+  height: 112px;
+}
+.card .portrait .overlay {
+  width: 100%;
+}
+
+.card h1 {   
+  margin: 1px 0 0;
+  font-size: 11px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+.card p { 
+  text-align: justify;
+  margin: 0;
+  border: 0;
+  font-size: 13px;
+  
 }
 
 .card.player {
@@ -423,40 +519,44 @@ img {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   background: steelblue;
 }
-.map .card.player.selected {
+
+.card.player.heroes.selected,
+.card.player.towers.selected {
   box-shadow: 0 0 12px 12px springgreen;
   z-index: 5;
 }
-.map .card.enemy.selected {
+.card.enemy.heroes.selected,
+.card.enemy.towers.selected {
   box-shadow: 0 0 12px 12px red;
   z-index: 5;
 }
-.table .player.skills.hand .card.selected {
+.card.skills.selected {
   box-shadow: 0 0 6px 6px skyblue;
-  transform: scale(0.5);
 }
-.map .card.enemy.attacktarget {
+.card.heroes.dead.selected {
+  box-shadow: 0 0 6px 6px gray;
+}
+.card.enemy.attacktarget {
   box-shadow: 0 0 12px 12px orangered;
 }
-.map .card.source {
+.card.source {
   box-shadow: 0 0 12px 12px skyblue;
 }
-.map .card.targetspot,
-.map .card.casttarget{
+.card.targetspot,
+.card.casttarget{
   box-shadow: 0 0 12px 12px dodgerblue;
 }
-.table .map .card.player.done {
+.card.player.done {
   background: silver;
-  box-shadow: 0 0 12px 12px silver;
 }
-.table .map .card.enemy.done {
-  animation: enemydone 2.5s;
+.card.player.done.selected {  
+  box-shadow: 0 0 12px 12px gray;
 }
-@keyframes enemydone {
-  0%, 100% { box-shadow: none; }
-  1%, 80% { box-shadow: 0 0 12px 12px gold; }
-  99% { box-shadow: 0 0 0 0 gold; }  
+.card.enemy.heroes.done, 
+.card.enemy.heroes.done.selected {
+  box-shadow: 0 0 12px 12px gold;
 }
+
 .card.enemy.attacktarget:after, 
 .card.enemy.attacktarget:before {
   z-index: 4;
@@ -502,7 +602,7 @@ img {
   }
   20%, 80% { 
     width: 50px; 
-    bottom: 80px; left: 60px; 
+    bottom: 70px; left: 60px; 
     border: 20px solid transparent;
     border-top: 12px solid orangered;
     border-left: 12px solid orangered;
@@ -575,7 +675,7 @@ img {
   }
   20%, 80% { 
     width: 100px; height: 100px;
-    left: 40px; bottom: 95px;
+    left: 40px; bottom: 86px;
     transform: rotate(45deg) scale(1);
     border: 12px solid transparent;
     border-right: 12px solid dodgerblue;
@@ -586,7 +686,6 @@ img {
     transform: rotate(45deg) scale(1.2);
   }
 }
-
 
 .card.casttarget:after, 
 .card.casttarget:before {
@@ -633,7 +732,7 @@ img {
   }
   20%, 80% { 
     width: 50px; 
-    bottom: 80px; left: 60px; 
+    bottom: 70px; left: 60px; 
     border: 20px solid transparent;
     border-top: 12px solid dodgerblue;
     border-left: 12px solid dodgerblue;
@@ -644,18 +743,7 @@ img {
     transform: translateY(25px) rotate(45deg) scale(1.5);
   }
 }
-
-.map .card {
-  z-index: 3;
-  top: -112px;
-  left: -21px;
-  position: absolute;
-  transform: scale(0.27);
-}
-.map .card:hover {
-  transform: scale(.30);
-}
-.map .card .damage {
+.card .damage {
   z-index: 6;
   color: yellow;
   position: absolute;
@@ -669,14 +757,14 @@ img {
     0 2px 2px red,
     0 -2px 2px red;
 }
-.map .card .damage.critical {
+.card .damage.critical {
   color: red;
   text-shadow: 2px 0 2px yellow,
     -2px 0 2px yellow,
     0 2px 2px yellow,
     0 -2px 2px yellow;
 }
-.map .card .heal {
+.card .heal {
   color: springgreen;
   position: absolute;
   opacity: 0;
@@ -694,87 +782,22 @@ img {
   80% {opacity: 1;}
   100% {top: -100px;opacity: 0;}
 }
-
 .card.dead {
   -webkit-filter: grayscale(0.9);
 }
-
-.card fieldset {
-  border: 1px solid #fff;
-  padding: 5px;
-  margin: 0;
-  height: 285px;
-  background: #edb;
-}
-.card legend {     
-  text-shadow: 1px 0 0 white, -1px 0 0 white, 0 1px 0 white, 0 -1px 0 white;
-}
-.card .hp {
-  height: 18px;
-  position: absolute;
-  right: 10px;
-  width: 18px;
-  display: block;
-  top: 1px;
-  background: #080;
-  padding: 2px;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 16px;
-  border: 1px solid #fff;
-}
-.card.enemy .hp {
-  background: #ed3;
-  border: 1px solid #c00;
-}
-
-.card .portrait,
 .card .buffs {
   position: relative;
+  bottom: 40px;
+  left: 10px;
 }
-
-.card .img {
-  display: block;
-  border-radius: 5px;
-  background-size: cover;
-  background-position: 50% 50%;
-}
-.card .overlay {
-  box-shadow: 0 0 12px #000 inset;
-  border-radius: 5px;
-  position: absolute;
-  top: 0;
-}
-.card .portrait .img ,
-.card .portrait .overlay {
-  width: 185px; height: 104px;
-}
-
-.card .buffs {
-  bottom: 42px;
-  left: 5px;
-}
-
 .card .buffs .buff {
   float: left;
   margin-right: 5px;
   position: relative;
 }
-
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
   width: 36px; height: 36px;
-}
-
-.card h1 {   
-  text-shadow: 0 1px 0 #fff;
-  margin: 5px 0 0;
-}
-.card p { 
-  text-shadow: 0 1px 0 #fff;
-  text-align: justify;
-  margin: 0;
-  border: 0;
 }
 
 /*TABLE*/
@@ -785,6 +808,63 @@ img {
   background: rgba(0,0,0,0.3);
   border-radius: 5px;
 }
+
+.table .deck {
+  position: absolute;
+  height: 200px;  
+}
+.table .deck .card {
+  transform: scale(0.4);
+  margin-right: -140px;
+}
+.table .deck .card:hover {
+  transform: scale(0.6);
+}
+.table .deck .card.selected {
+  transform: scale(0.5);
+}
+
+.table .player.heroes.deck {
+  width: 160px;
+  bottom: 0;
+  left: -45px;
+}
+.table .player.heroes.deck .card {
+  margin-right: -170px;
+}
+.table .player.skills.ult.deck {
+  bottom: 0;
+  left: 160px;
+  width: 350px;
+}
+.table .player.skills.permanent.deck {
+  bottom: 0;
+  left: 160px;
+  width: 160px;
+}
+.table .player.skills.hand {
+  bottom: 0;
+  right: 90px;
+  width: 600px;
+}
+
+.table .selectedarea {
+  position: absolute;
+  top: 40px;
+  right: 15px;
+}
+.table .selectedarea .card {
+  transform: scale(1);
+  z-index: 5; 
+}
+.table .selectedarea .card:hover {
+  transform: scale(1.9) translate(-50px, 55px); 
+}
+.table .selectedarea .card .damage {
+  display: none;
+}
+
+/*MAP*/
 
 .camera {
   position: absolute;
@@ -805,11 +885,19 @@ img {
   box-shadow: inset 0 0 8px 6px black;
 }
 
+.map .card {
+  z-index: 3;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.29);  
+  position: absolute;
+}
+
 .map td {
   box-sizing: border-box;
   background: rgba(150,150,150,0.1);
   width: 60px; height: 90px;
   position: relative;
+  border: 1px solid transparent;
 }
 .map td:hover {
   background: rgba(150,150,150,0.2);
@@ -864,9 +952,6 @@ img {
   66% { top: 30px; }
 }
 
-.turn .map td.targetarea {  
-  cursor: url("../img/cursor/cursor-blue.png"), url("../img/cursor/cursor-blue.cur"), pointer;
-}
 .turn .map td.targetarea:before {
   width: 10px; height: 10px;
   border: 2px solid transparent;
@@ -933,6 +1018,8 @@ img {
   }
 }
 
+/*STROKES*/
+
 .map td.stroke.playerattack.top { 
   border-top: 1px solid gold;
 }
@@ -982,10 +1069,10 @@ img {
   border-right: 1px solid dodgerblue;
 }
 
-td.cript {
+.map td.cript {
   background: rgba(0,0,0,0.2);
 }
-td.cript:after {
+.map td.cript:after {
   content: "†";
   position: absolute;
   top: 50%;
@@ -995,71 +1082,7 @@ td.cript:after {
   color: rgba(255,255,255,0.4);
 }
 
-.deck {
-   transition: all 0.4s;
-}
-
-.pickbox .deck {
-  position: relative;  
-  margin-left: 35%;
-}
-
-.table .deck {
-  position: absolute;
-  height: 200px;  
-}
-.table .deck .card {
-  transform: scale(0.4);
-}
-.table .deck .card:hover {
-  transform: scale(0.45);
-}
-.table .deck .card {
-  margin-right: -140px;
-}
-
-.table .player.heroes.deck {
-  width: 160px;
-  bottom: 0;
-  left: 4px;
-}
-
-.table .player.skills.ult.deck {
-  bottom: 0;
-  left: 160px;
-  width: 160px;
-}
-.table .player.skills.permanent.deck {
-  bottom: 0;
-  left: 160px;
-  width: 160px;
-}
-
-.table .player.skills.hand {
-  bottom: 0;
-  right: 10px;
-  width: 620px;
-}
-.table .player.skills.hand .card {
-  margin-right: -100px;
-  z-index: 4;
-}
-
-.table .selectedarea {
-  position: absolute;
-  top: 40px;
-  right: 65px;
-}
-.table .selectedarea .card {
-  transform: scale(1);
-  z-index: 5; 
-}
-.table .selectedarea .card:hover {
-  transform: scale(1.9) translate(-50px,55px); 
-}
-.table .selectedarea .card .damage {
-  display: none;
-}
+/*RESULTS*/
 
 .table .resultsbox {
   z-index: 7;
@@ -1204,7 +1227,7 @@ td.cript:after {
 
 
 .kotl {
-  background: #fd8;
+  background: #E5BC53;
 }
 .kotl .portrait .img {
   background-image: url("../img/heroes/keeper_of_the_light_full.png");
@@ -1236,7 +1259,7 @@ td.cript:after {
 
 
 .cm {
-  background: #78c;
+  background: #54a0e3;
 }
 .cm .portrait .img {
   background-image: url("../img/heroes/crystal_maiden_full.png");

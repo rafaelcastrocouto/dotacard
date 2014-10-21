@@ -107,8 +107,9 @@ Deck.randomCard = function(cards, noseed){
 
 var Card = function(data){ 
   var card = $('<div>').addClass('card '+ data.className);   
+  
+  $('<legend>').appendTo(card).text(data.name);
   var fieldset = $('<fieldset>').appendTo(card); 
-  $('<legend>').appendTo(fieldset).text(data.name);
 
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
   $('<div>').appendTo(portrait).addClass('img');
@@ -144,7 +145,7 @@ var Card = function(data){
   //if(data.passive)    $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   //if(data.permanent)  $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   //if(data.temporary)  $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
-  if(data.description)$('<p>').appendTo(fieldset).text(data.description);
+  //if(data.description)$('<p>').appendTo(fieldset).text(data.description);
 
   if(data.kd){
     data.kills = 0;
@@ -315,12 +316,13 @@ Card.move = function(destiny){
     card.closest('.spot').removeClass('block').addClass('free');      
     destiny.removeClass('free').addClass('block');    
     var t = card.offset(), d = destiny.offset();
-    if(!destiny.data('detour')) card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
+    var w =  destiny.width()/2 + 1, h = destiny.height()/2 + 1;
+    if(!destiny.data('detour')) card.css({top: d.top - t.top + h, left: d.left - t.left + w});
     else{
       var x = destiny.data('detour').offset();
-      card.css({top: x.top - t.top - 112, left: x.left - t.left - 22});
+      card.css({top: x.top - t.top + h, left: x.left - t.left + w});
       setTimeout(function(){
-        card.css({top: d.top - t.top - 112, left: d.left - t.left - 22});
+        card.css({top: d.top - t.top + h, left: d.left - t.left + w});
       }.bind({ card: card, destiny: destiny }), 250);
     }    
     if(card.data('movementBonus')) card.data('movementBonus', false);
@@ -547,7 +549,7 @@ Card.changehp = function(hp){
 $.fn.changehp = Card.changehp;
 
 Card.die = function(){
-  this.addClass('dead').removeClass('target');
+  this.addClass('dead').removeClass('target done');
   this.changehp(0);  
   var spot = Map.getPosition(this);
   var td = $('#'+spot);

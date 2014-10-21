@@ -1,4 +1,5 @@
-/*
+/*///////////////////////////////////////////////////////
+
 states.changeTo('yourState')  -> set current state
        .currentstate -> get current state
        .el -> states div appended to game.container
@@ -27,26 +28,67 @@ var states = {
     states.currentstate = state;
     if(newstate.start) newstate.start(pre);
   },
-  
+
+  preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
+
   build: function(){
+    console.log(states.load.preloadImages());
     states.el = $('<div>').attr('id','states').appendTo(game.container);
-    $.each(states, function(id){
-      if(id == 'load' || id == 'el' || id == 'changeTo' || id == 'build' || id == 'currentstate') return;
-      states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
-      if(states[id].build) {
-        states[id].build();
-        states[id].builded = true;
+    $.each(states, function(id){      
+      if(states.preBuild.indexOf(id) >= 0){
+        states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
+        if(states[id].build) {
+          states[id].build();
+          states[id].builded = true;
+        }
       }
     });     
-    setTimeout(function(){ game.states.changeTo('intro'); }, 1000);
+    setTimeout(function(){ 
+      game.states.changeTo('intro'); 
+    }, 1000);
   }, 
-  
+
   currentstate: 'load',
 
   ////////////////////////////////////////////////////////////////////////////////////////
   'load': {
   ////////////////////////////////////////////////////////////////////////////////////////  
-    
+
+    preloadImages: function(){
+      var allImgs = [];//new array for all the image urls  
+      var k = 0; //iterator for adding images
+      var sheets = document.styleSheets;//array of stylesheets
+      for(var i = 0; i<sheets .length; i++){//loop through each stylesheet
+        var cssPile = '';//create large string of all css rules in sheet
+        var csshref = (sheets[i].href) ? sheets[i].href : 'window.location.href';
+        var baseURLarr = csshref.split('/');//split href at / to make array
+        baseURLarr.pop();//remove file path from baseURL array
+        var baseURL = baseURLarr.join('/');//create base url for the images in this sheet (css file's dir)
+        if(baseURL!="") baseURL+='/'; //tack on a / if needed
+        if(document.styleSheets[i].cssRules){//w3
+          var thisSheetRules = document.styleSheets[i].cssRules; //w3
+          for(var j = 0; j<thisSheetRules.length; j++){
+            cssPile+= thisSheetRules[j].cssText;
+          }
+        }
+        else {
+          cssPile+= document.styleSheets[i].cssText;
+        }
+        //parse cssPile for image urls and load them into the DOM
+        var imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);//reg ex to get a string of between a "(" and a ".filename"
+        if(imgUrls != null && imgUrls.length>0 && imgUrls != ''){//loop array
+          var arr = jQuery.makeArray(imgUrls);//create array from regex obj        
+          jQuery(arr).each(function(){
+            allImgs[k] = new Image(); //new img obj
+            allImgs[k].src = (this[0] == '/' || this.match('http://')) ? this : baseURL + this;     //set src either absolute or rel to css dir
+            k++;
+          });
+        }
+      }//loop
+      return allImgs;
+    },
+
+
     end: function(){
       if(!game.debug){
         if(!btoa) alert('Your browser does not support this game')
@@ -56,7 +98,7 @@ var states = {
         };
       }
     },
-    
+
     reset: function(){
       if(game.debug){
         console.log('Reset', game);
@@ -65,18 +107,18 @@ var states = {
         location.reload(true);
       }
     },
-    
+
     quit: function(){
       var sure = confirm('Sure you wanna leave?');
       if(sure) location.reload(true);
     }
   },
-  
+
   ////////////////////////////////////////////////////////////////////////////////////////
   'intro': {   
-  ////////////////////////////////////////////////////////////////////////////////////////  
-    
-    build: function(){        
+    ////////////////////////////////////////////////////////////////////////////////////////  
+
+    build: function(){         
       if(!game.debug){ 
         this.video = $('<div>').addClass('video').hide().appendTo(this.el);
         this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
@@ -110,7 +152,7 @@ var states = {
         }); 
       }
     },
-    
+
     start: function(){
       game.loader.addClass('loading');
       game.message.text('Loading');
@@ -118,16 +160,16 @@ var states = {
         this.box.fadeIn(3000);
         game.timeout = setTimeout(function(){
           game.message.text('');
-          game.loader.css({visibility: 'hidden'});
+          game.loader.removeClass('loading');
           if(states.intro.videoReady) states.intro.playVideo();
           else states.changeTo('login');    
         }, 4000); 
-        
+
       } else {        
         states.changeTo('login'); 
       }
     },
-    
+
     playVideo: function(){   
       this.box.delay(6000).fadeOut(3000);
       this.video.delay(3000).fadeIn(3000);
@@ -140,18 +182,18 @@ var states = {
         }
       }, 102600);       
     },
-    
+
     end: function(){
       if(!game.debug && game.youTubePlayer) {
         game.youTubePlayer.pauseVideo()
       }
     }
   },
-  
+
   ////////////////////////////////////////////////////////////////////////////////////////
   'login': {  
-  ////////////////////////////////////////////////////////////////////////////////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     build: function(){       
       this.menu = $('<div>').appendTo(this.el).addClass('box');
       this.title = $('<h1>').appendTo(this.menu).text('Choose a name');
@@ -167,7 +209,7 @@ var states = {
         else {
           game.player.name = name;
           states.login.button.attr( "disabled", true );
-          game.loader.css({visibility: 'visible'});
+          game.loader.addClass('loading');
           db({'get':'server'}, function(server){
             if(server.status == 'online') states.changeTo('menu');
             else states.load.reset();
@@ -178,26 +220,26 @@ var states = {
       this.logwith = $('<p>').appendTo(this.text).html('Login with: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Facebook, Google</a>');
       this.lang = $('<p>').appendTo(this.text).html('Language: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Translate</a>');
     },
-    
+
     start: function(){
-      game.message.text('Welcome to DotaCard');
+      game.message.text('');
       this.input.focus();
-      game.loader.css({visibility: 'hidden'});
+      game.loader.removeClass('loading');
       if(game.debug){
         this.input.val('Bot'+(parseInt(Math.random()*100)));
-        this.button.click();
+        //this.button.click();
       }
     },
-    
+
     end: function(){
       this.button.attr( "disabled", false );
     },
   },
-  
+
   ////////////////////////////////////////////////////////////////////////////////////////
   'menu': {
-  ////////////////////////////////////////////////////////////////////////////////////////  
-    
+    ////////////////////////////////////////////////////////////////////////////////////////  
+
     build: function(){     
       this.menu = $('<div>').appendTo(this.el).addClass('box'); 
       this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
@@ -211,46 +253,45 @@ var states = {
       this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations'}).text('Options').click(function(){
         states.changeTo('options');
       }); 
-      game.loader.css({cursor: 'pointer'}).click(function(){
-        states.changeTo('options');
-      });
       this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
     },
-    
+
     start: function(){
       game.loader.removeClass('loading');
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
-      $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(states.load.quit);
+      $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(function(){
+        states.changeTo('login');
+      });
       this.public.focus();
       if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
       else {
         this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-        this.public.click();
+        //this.public.click();
       }
     }
   }, 
   ////////////////////////////////////////////////////////////////////////////////////////
   'options': {
-  ////////////////////////////////////////////////////////////////////////////////////////  
-    
+    ////////////////////////////////////////////////////////////////////////////////////////  
+
     build: function(){     
       this.menu = $('<div>').appendTo(this.el).addClass('box'); 
       this.title = $('<h1>').appendTo(this.menu).text('Options');
-      
+
       this.resolution = $('<div>').appendTo(this.menu).attr({'title': 'Screen resolution'}).addClass('screenresolution');
       $('<h2>').appendTo(this.resolution).text('Resolution');
       $('<label>').text('High').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
       $('<label>').text('Medium').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
       $('<label>').text('Low').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
-      
+
       this.audio = $('<div>').appendTo(this.menu).attr({'title': 'Audio configuration'}).addClass('audioconfig');
       $('<h2>').appendTo(this.audio).text('Audio');
       $('<label>').text('Mute').appendTo(this.audio).append($('<input>').attr({type: 'checkbox', disabled: true}).change(this.changeResolution));
-      
+
       this.back = $('<button>').appendTo(this.menu).attr({'title': 'Back'}).text('Back')
       .click(function(){ states.changeTo(states.el.data('prestate')); });
     },
-    
+
     start: function(oldstate){
       states.el.data('prestate', oldstate);      
     },
@@ -259,20 +300,20 @@ var states = {
       states.el.removeClass('low high').addClass(resolution);
     }
   },
-  
+
   ////////////////////////////////////////////////////////////////////////////////////////
   'choose': {   
-  ////////////////////////////////////////////////////////////////////////////////////////  
-    
+    ////////////////////////////////////////////////////////////////////////////////////////  
+
     build: function(){    
-      this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox');
+      this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', 'Choose your heroes');
       this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').addClass('hidden').on('contextmenu', game.nomenu);
       for(var slot = 0; slot < 5; slot++){
         $('<div>').appendTo(this.pickedbox).attr({title: 'Click here to pick'}).data('slot', slot).addClass('slot available');
       }
       this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html('My Decks<br>Comming soon...').addClass('hidden');
       this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').addClass('hidden');
-      
+
       this.pickDeck = Deck({
         name: 'heroes', 
         cb: function(pickDeck){
@@ -293,13 +334,13 @@ var states = {
         }
       });      
     },
-    
+
     start: function(){ 
       game.loader.addClass('loading');
       game.currentData = {};
       if(game.mode == 'public') this.checkPublic();
     },
-    
+
     checkPublic: function(){
       db({'get':'waiting'}, function(waiting){         
         if(waiting.id == 'none'){
@@ -329,7 +370,7 @@ var states = {
         states.choose.keepSearching();
       }); 
     },    
-    
+
     keepSearching: function(){
       db({'get': game.id }, function(found){
         if(found.challenger){
@@ -344,7 +385,7 @@ var states = {
       });
     },
 
-    
+
     foundGame: function(){       
       game.message.text('We found a game! Connecting');
       db({'get': game.id }, function(found){     
@@ -380,9 +421,8 @@ var states = {
       this.prepickbox.removeClass('hidden');
       $('.slot').on('click.pick contextmenu.pick', states.choose.pick);
     },
-    
-    disablePick: function(){
-      game.status = 'battle';
+
+    disablePick: function(){      
       $('.slot').off('click.pick contextmenu.pick', states.choose.pick);
     },
 
@@ -409,23 +449,23 @@ var states = {
 
     pickCount: function(){ 
       states.choose.counter.text('Pick your deck, game starts in: '+(states.choose.count--));      
-      if(states.choose.count < 0) {   
-        states.choose.disablePick();
+      if(states.choose.count < 0) {
         states.choose.counter.text('Get Ready!');  
+        states.choose.disablePick();        
         states.choose.fillDeck();   
       }
       else setTimeout(states.choose.pickCount, 1000);
     },
-    
+
     fillDeck: function(){
+      game.player.picks = [];
+      $('.pickbox .card.active').removeClass('active');
       if(game.debug){
         if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
         else game.player.picks = ['cm','am','pud','ld','kotl'];
         states.choose.sendDeck();        
         return;
-      }
-      game.player.picks = [];
-      $('.pickbox .card.active').removeClass('active');
+      }      
       $('.slot').each(function(){
         var slot = $(this), card;
         if(slot.hasClass('available')){
@@ -500,14 +540,14 @@ var states = {
 
   ////////////////////////////////////////////////////////////////////////////////////////
   'table': {
-  ////////////////////////////////////////////////////////////////////////////////////////
-    
+    ////////////////////////////////////////////////////////////////////////////////////////
+
     build: function(){      
       this.time =  $('<p>').appendTo(this.el).addClass('time').text('Time: 0:00 Day Turns: 0/0 (0)');
       this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea');
       this.buildMap();        
     },
-    
+
     start: function(){      
       game.message.text('Muuuuuuuuuuuuu!');
       game.loader.addClass('loading'); 
@@ -517,16 +557,12 @@ var states = {
       this.buildSkills(); 
       this.buildTurns(); 
 
-      game.currentData = {};
-      game.player.kills = 0;
-      game.enemy.kills = 0;
-
       //todo: build storage.state
 
-      game.timeout = setTimeout(states.table.beginTurn, 1000);
+      game.timeout = setTimeout(states.table.firstTurn, 1000);
 
     },
-    
+
     buildMap: function(){
       this.camera = $('<div>').appendTo(this.el).addClass('camera');
       this.map = Map.build({
@@ -535,7 +571,7 @@ var states = {
         'class': 'map'
       }).appendTo(this.camera);
     },
-    
+
     createTower: function(side, spot){
       var tower = Card({
         className: 'towers static '+side,
@@ -548,20 +584,20 @@ var states = {
       });        
       tower.on('click.select', Card.select).place(spot);
       Map.around(spot, Map.getRange('Ranged'), function(td){
-         td.addClass(side+'area');
+        td.addClass(side+'area');
       }, true);
       return tower;
     },
-    
+
     placeTowers: function(){      
       game.player.tower = states.table.createTower('player', 'C5');
       game.enemy.tower = states.table.createTower('enemy', 'J1');    
     },
-    
+
     towerAutoAttack : function(){
       var lowestHp = {
-          notfound: true,
-          data: function(c){
+        notfound: true,
+        data: function(c){
           if(c == 'currenthp') return Infinity;
           else return false;
         }
@@ -579,13 +615,13 @@ var states = {
         game.currentData.moves.push('A:'+fromSpot+':'+toSpot); 
       }
     },
-    
+
     placeHeroes: function(){ 
-      
+
       var xxx = 'F3';//'I1';
-      
+
       if(game.player.picks && game.enemy.picks){
-        
+
         game.player.mana = 0;      
         this.playerHeroesDeck = Deck({
           name: 'heroes', 
@@ -597,16 +633,16 @@ var states = {
               var p = game.player.picks.indexOf(card.data('hero'));
               card.addClass('player').data('side','player').on('click.select', Card.select);
               card.place(Map.toId(x + p,y));
-              
+
               if(game.debug){
                 if(p==0) card.place(xxx);
               }
-              
+
               game.player.mana += card.data('mana');
             });
           }
         });  
-      
+
         game.enemy.mana = 0;
         this.enemyHeroesDeck = Deck({
           name: 'heroes', 
@@ -618,18 +654,18 @@ var states = {
               var p = game.enemy.picks.indexOf(card.data('hero'));
               card.addClass('enemy').data('side','enemy').on('click.select', Card.select);          
               card.place(Map.toId(x - p,y));  
-              
+
               if(game.debug){
                 if(p==0) card.place(Map.mirrorPosition(xxx));
               }              
-              
+
               game.enemy.mana += card.data('mana');
             });
           }
         }); 
       }
     },
-    
+
     buildSkills: function(){      
       game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);      
       game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);      
@@ -666,14 +702,14 @@ var states = {
         }
       });
     },
-    
+
     selectHand: function(){      
       for(var i=0; i<game.player.cardsPerTurn; i++){
         if(states.table.playerHand.children().length < game.player.maxCards) 
           game.player.buyCard();
       }      
     },    
-    
+
     enemyHand: function(){
       for(var i=0; i<game.enemy.cardsPerTurn; i++){
         if(game.enemy.hand < game.enemy.maxCards){
@@ -682,7 +718,7 @@ var states = {
         }
       }      
     },
-    
+
     buildTurns: function(){
       game.time = 0;      
       game.player.turn = 0;
@@ -692,6 +728,14 @@ var states = {
       if(game.player.type == 'challenger') game.status = 'unturn';         
     },
     
+    firstTurn: function(){
+      game.currentData = {};
+      game.player.kills = 0;
+      game.enemy.kills = 0;
+      game.player.tower.select();
+      states.table.beginTurn();
+    },
+
     beginTurn: function(){      
       //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand
       if(game.status != 'over') {    
@@ -728,7 +772,7 @@ var states = {
         game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
-    
+
     turnCount: function(){
       game.loader.removeClass('loading');
       states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight()+' Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
@@ -746,7 +790,7 @@ var states = {
         game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
-    
+
     sendMoves: function(){
       $('.card.heroes').each(function(){
         var hero = $(this);
@@ -796,7 +840,7 @@ var states = {
         }
       });
     },
-    
+
     hours: function(){
       var hours = game.time % game.dayLength;
       var perCentHours = hours / game.dayLength;
@@ -809,13 +853,13 @@ var states = {
       var stringMin = (intMin < 10) ? '0'+intMin : intMin;
       return intHours+':'+stringMin;      
     },
-    
+
     dayNight: function(){
       var hours = game.time % game.dayLength;
       if(hours < (game.dayLength/2) ) return 'Day';
       else return 'Night';
     },
-    
+
     moveSelected: function(){
       var spot = $(this), card = game.selectedCard;
       if(game.selectedCard.hasClass('skills') && game.selectedCard.data('hero')) card = $('.map .card.player.'+game.selectedCard.data('hero'));
@@ -857,7 +901,7 @@ var states = {
         }.bind({ card: skill, destiny: states.table.playerCemitery }), 500);        
       }
     },
-    
+
     castWithSelected: function(){
       var target = $(this), skill = game.selectedCard, source = game.castSource;
       var fromSpot = Map.getPosition(source);
@@ -877,7 +921,7 @@ var states = {
         var move = moves[m].split(':');
         var fromSpot = Map.mirrorPosition(move[1]), toSpot = Map.mirrorPosition(move[2]);
         var source, target, hero, skillid, skill;
-        
+
         if(move[0] == 'M'){   
           target = $('#'+fromSpot+' .card');
           if(toSpot && !target.hasClass('done') && target.hasClass('enemy') && target.move) target.move(toSpot);
@@ -919,12 +963,13 @@ var states = {
       game.timeout = setTimeout(function(){
         if(game.status != 'over'){
           game.status = 'turn';
+          $('.card.enemy.heroes').removeClass('done');
           states.table.beginTurn();
           if(game.selectedCard) game.selectedCard.select()
-        }
+            }
       }, 2000);
     },
-    
+
     animateCast: function(skill, target, destiny){
       if(typeof target == 'string') target = $('#'+target);
       var t = skill.offset(), d = target.offset();
@@ -934,7 +979,7 @@ var states = {
         if(skill.hasClass('selected') && game.castSource) game.castSource.select();
       }.bind({ card: skill, destiny: destiny }), 500);
     },
-    
+
     win: function(){
       game.winner = game.player.name;
       states.table.el.addClass('turn');
@@ -943,7 +988,7 @@ var states = {
       game.status = 'over';      
       states.table.showResults();
     },    
-    
+
     lose: function(){      
       game.winner = game.enemy.name;
       states.table.el.addClass('unturn');
@@ -979,13 +1024,13 @@ var states = {
         states.changeTo('menu');
       });
     },
-    
+
     end: function(){
       $('#table .card').remove();
       $('#table .deck').remove();
       this.resultsbox.remove();
     }
-  
+
   } 
   //table end
 };
