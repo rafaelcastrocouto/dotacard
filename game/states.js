@@ -32,7 +32,7 @@ var states = {
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
 
   build: function(){
-    console.log(states.load.preloadImages());
+    states.load.preloadImages();
     states.el = $('<div>').attr('id','states').appendTo(game.container);
     $.each(states, function(id){      
       if(states.preBuild.indexOf(id) >= 0){
@@ -145,7 +145,7 @@ var states = {
           });
         }
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
-        this.text = $('<p>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
+        this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
         this.el.click(function(){
           clearTimeout(game.timeout);  
           states.changeTo('login');

@@ -1,27 +1,32 @@
 /*FONT*/
 
-@import url("http://fonts.googleapis.com/css?family=Irish+Grover");
+@import url("http://fonts.googleapis.com/css?family=Open+Sans");
+@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");
 
-.box h1, .box h2 {
-  font-family: "Irish Grover";
-}
 
 /*TAGS*/ 
 
-body, p, input, button {
-  font-family: 'open sans', Arial, sans-serif;
+html, body {
+  user-select: none;  
+  margin: 0;
+  width: 100%; height: 100%;
+}
+
+body, p, button, noscript {
+  font-family: "Open Sans", "open sans", "Arial", sans-serif;
+}
+
+h1, h2 {
+  font-family: "Julius Sans One";  
+  padding: 1px 2px;
+  margin: 0;
+  font-weight: normal;
 }
 
 noscript {  
   margin: 16px auto;
   width: 80%;
   display: block;
-}
-
-html, body {
-  user-select: none;  
-  margin: 0;
-  width: 100%; height: 100%;
 }
 
 body {
@@ -56,22 +61,17 @@ a:visited {
   color: inherit;
 }
 h1 {
-  padding: 1px 2px;
   font-size: 22px;
-  margin: 0;
-  font-weight: normal;
 }
 h2 {
-  padding: 1px 2px;
   font-size: 19px;
-  margin: 0;
-  font-weight: normal;
+
 }
 input {  
   border-radius: 3px;
+  font-family: monospace;
   font-size: 16px;
   color: #4d4843;
-  font-weight: bold;
   outline: 0;
   border: 0;
   padding: 5px;
@@ -102,7 +102,7 @@ img {
 /*CLASS*/
 
 .banner {
-  width: 100%
+  width: 100%;
 }
 
 .container {
@@ -210,15 +210,15 @@ img {
 }
 
 button {
+  font-family: "Julius Sans One";
   font-size: 16px;
-  color: #4d4843;
   cursor: pointer;
   padding: 8px 16px;
   border: 0;
   border-radius: 4px;
   margin: 6px;
   outline: 0;
-  background: #cfcfc0;
+  background: #bfbfb0;
   color: white;
   text-shadow: 0 -1px darkgray;
   box-shadow: 0 4px 0 #9b9c89;
@@ -494,6 +494,7 @@ button[disabled]:hover {
 }
 
 .card h1 {   
+  font-family: "Open Sans", "open sans", "Arial", sans-serif;
   margin: 1px 0 0;
   font-size: 11px;
   text-transform: uppercase;
