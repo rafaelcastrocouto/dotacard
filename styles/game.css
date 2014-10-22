@@ -70,6 +70,8 @@ h2 {
 input {  
   border-radius: 3px;
   font-family: monospace;
+  letter-spacing: -1px;
+  word-spacing: -1px;
   font-size: 16px;
   color: #4d4843;
   outline: 0;
@@ -215,7 +217,7 @@ button {
   cursor: pointer;
   padding: 8px 16px;
   border: 0;
-  border-radius: 4px;
+  border-radius: 3px;
   margin: 6px;
   outline: 0;
   background: #bfbfb0;
@@ -332,17 +334,18 @@ button[disabled]:hover {
 
 .pickbox .deck {
   position: relative;  
-  margin-left: 275px;
+  left: -50%;
+  height: 300px;
 }
 
 .pickbox .card {  
   margin: 0 -50px;
-  transform: scale(0.4);     
+  transform: translate(-50%, -50%) scale(0.4);     
 }
 
 .pickbox .card.active {
   margin: 0 10px;
-  transform: scale(1);
+  transform: translate(-50%, -50%) scale(1);
 }
 
 .pickedbox {
@@ -382,7 +385,7 @@ button[disabled]:hover {
   margin: 0 -50px;
   margin-top: -80px;  
   animation: slidedown 0.5s;
-  transform: scale(0.4);
+  transform: translate(-50%, -50%) scale(0.4);
 }
 @keyframes slidedown {
   0% {top: -175px;}
@@ -390,7 +393,7 @@ button[disabled]:hover {
 }
 .pickedbox .card:hover { 
   top: -10px;
-  transform: scale(0.45);
+  transform: translate(-50%, -50%) scale(0.45);
 }
 
 .prepickbox {
@@ -418,6 +421,7 @@ button[disabled]:hover {
 
 .card {
   position: relative;
+  top: 50%; left: 50%;
   display: inline-block;
   background: blue;
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
@@ -812,57 +816,74 @@ button[disabled]:hover {
 
 .table .deck {
   position: absolute;
-  height: 200px;  
+  height: 120px; 
+  bottom: -10px;
+  z-index: 6;
 }
-.table .deck .card {
-  transform: scale(0.4);
-  margin-right: -140px;
+
+.table .deck .card {  
+  transform: translate(-50%, -50%) scale(0.4);
+  margin-right: -180px;
+  left: 40px;
 }
 .table .deck .card:hover {
-  transform: scale(0.6);
+  transform: translate(-50%, -50%) scale(0.45);
 }
 .table .deck .card.selected {
-  transform: scale(0.5);
+  transform: translate(-50%, -50%) scale(0.5);
 }
 
 .table .player.heroes.deck {
   width: 160px;
-  bottom: 0;
-  left: -45px;
-}
-.table .player.heroes.deck .card {
-  margin-right: -170px;
+  left: 10px;
 }
 .table .player.skills.ult.deck {
-  bottom: 0;
   left: 160px;
   width: 350px;
 }
 .table .player.skills.permanent.deck {
-  bottom: 0;
-  left: 160px;
+  left: 175px;
   width: 160px;
 }
 .table .player.skills.hand {
-  bottom: 0;
-  right: 90px;
-  width: 600px;
+  right: 10px;
+  width: 620px;
 }
-
+.table .player.skills.hand .card {
+  margin-right: -140px;
+}
 .table .selectedarea {
+  width: 200px;
+  height: 300px;
   position: absolute;
   top: 40px;
   right: 15px;
 }
 .table .selectedarea .card {
-  transform: scale(1);
-  z-index: 5; 
+  transform: translate(-50%, -50%) scale(1);   
 }
 .table .selectedarea .card:hover {
-  transform: scale(1.9) translate(-50px, 55px); 
+  transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px); 
 }
 .table .selectedarea .card .damage {
   display: none;
+}
+
+.table .deck.skills.enemy { 
+  z-index: 6;
+  top: 40px;
+  left: 0px;
+  opacity: 1;
+  transition: all 4s;
+}
+.table .deck.skills.enemy.slide {  
+  z-index: 6;
+  left: 200px;
+  opacity: 0;
+} 
+.table .deck.skills.enemy .card {  
+  z-index: 6;
+  margin-right: -100px;
 }
 
 /*MAP*/
@@ -892,7 +913,9 @@ button[disabled]:hover {
   transform: translate(-50%, -50%) scale(0.29);  
   position: absolute;
 }
-
+.map .card:hover {
+  transform: translate(-50%, -50%) scale(0.3); 
+}
 .map td {
   box-sizing: border-box;
   background: rgba(150,150,150,0.1);

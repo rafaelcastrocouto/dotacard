@@ -192,12 +192,16 @@ var states = {
 
   ////////////////////////////////////////////////////////////////////////////////////////
   'login': {  
-    ////////////////////////////////////////////////////////////////////////////////////////
+  ////////////////////////////////////////////////////////////////////////////////////////
 
     build: function(){       
       this.menu = $('<div>').appendTo(this.el).addClass('box');
       this.title = $('<h1>').appendTo(this.menu).text('Choose a name');
-      this.input = $('<input>').appendTo(this.menu).attr({ 'placeholder': 'Type any name here', 'type': 'text'})
+      this.input = $('<input>').appendTo(this.menu).attr({ 
+        placeholder: 'Type any name here', 
+        type: 'text',
+        maxlength: 24
+      })
       .keydown(function(e){
         if(e.which == 13) states.login.button.click();
       });    
@@ -326,11 +330,11 @@ var states = {
               if(!clickedCard.hasClass('picked')){
                 $('.card.active').removeClass('active');
                 clickedCard.addClass('active');
-                states.choose.pickDeck.css('left', clickedCard.index() * states.choose.size * -1);
+                states.choose.pickDeck.css('margin-left', clickedCard.index() * clickedCard.width()/2 * -1);
               }
             });
           });
-          pickDeck.width((states.choose.size + 100) * pickDeck.children().length);
+          pickDeck.width(100 + $('.card').width() * pickDeck.children().length);
         }
       });      
     },
@@ -440,7 +444,7 @@ var states = {
           $('.pickbox .card.active').removeClass('active');
           var cardInPlace = $('.pickbox .deck').children()[card.data('place')];
           $(cardInPlace).before(card);
-          states.choose.pickDeck.css('left', card.index() * states.choose.size * -1);
+          states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
           slot.addClass('available');
         }
       }
@@ -479,7 +483,7 @@ var states = {
 
     sendDeck: function(){     
       this.el.removeClass('turn'); 
-      states.choose.pickDeck.css('left', 0);
+      states.choose.pickDeck.css('margin-left', 0);
       clearTimeout(states.choose.timeout);
       states.choose.tries = 1;
       if(game.player.type == 'challenged'){
@@ -695,9 +699,9 @@ var states = {
         name: 'skills', 
         filter: game.enemy.picks, 
         cb: function(deck){        
-          deck.addClass('enemy hand cemitery permanent').hide().appendTo(states.table.el);
+          deck.addClass('enemy hand cemitery permanent').appendTo(states.table.el);
           $.each(deck.data('cards'), function(i, skill){   
-            skill.addClass('enemy').data('side','enemy');        
+            skill.hide().addClass('enemy').data('side','enemy');        
           });        
         }
       });
@@ -916,6 +920,7 @@ var states = {
 
     executeEnemyMoves: function(){
       game.message.text('Your enemy moved. Get ready!');
+      states.table.enemySkillsDeck.addClass('slide');
       var moves = game.currentData.moves.split('|');      
       for(var m = 0; m < moves.length; m++){
         var move = moves[m].split(':');
@@ -935,7 +940,7 @@ var states = {
           hero = move[4];   
           source = $('#'+fromSpot+' .card');
           target = $('#'+toSpot);          
-          skill = $('.enemy.skills .'+hero+'-'+skillid);
+          skill = $('.enemy.skills .'+hero+'-'+skillid).show();
           if(skill.data('target') == 'enemy' || skill.data('target') == 'player' || skill.data('target') == 'self')
             target = $('#'+toSpot+' .card');
           if(skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast){
@@ -948,7 +953,7 @@ var states = {
           skillid = move[2]; 
           hero = move[3];
           target = $('#'+toSpot+' .card');
-          skill = $('.enemy.skills .'+hero+'-'+skillid);
+          skill = $('.enemy.skills .'+hero+'-'+skillid).show();
           if(skills[hero][skillid].activate && skill && target.hasClass('enemy') && skill.activate){
             skill.activate(target);
             game.enemy.hand--;
@@ -963,7 +968,9 @@ var states = {
       game.timeout = setTimeout(function(){
         if(game.status != 'over'){
           game.status = 'turn';
+          states.table.enemySkillsDeck.removeClass('slide');
           $('.card.enemy.heroes').removeClass('done');
+          $('.enemy.skills .card').hide();
           states.table.beginTurn();
           if(game.selectedCard) game.selectedCard.select()
             }
@@ -973,7 +980,7 @@ var states = {
     animateCast: function(skill, target, destiny){
       if(typeof target == 'string') target = $('#'+target);
       var t = skill.offset(), d = target.offset();
-      skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
+      skill.css({top: d.top - t.top, left: d.left - t.left, transform: 'tranlate(-50%, -50%) scale(0.3)'});
       setTimeout(function(){          
         $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
         if(skill.hasClass('selected') && game.castSource) game.castSource.select();
