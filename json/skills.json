@@ -4,7 +4,7 @@
       "name": "Wraithfire Blast",
       "type": "Target Enemy Unit",
       "target": "enemy",
-      "range": "Short range",
+      "range": "Short",
       "damage": 10,
       "damageType": "Magical",
       "dotduration": 2,      
@@ -188,7 +188,7 @@
       "name": "Mana Void",
       "type": "Area of Effect",
       "target": "enemy",
-      "range": "Short range", 
+      "range": "Short", 
       "damageType": "Magical",       
       "cards": 1,
       "description": "Damages area around an enemy for every card player could have times 5"

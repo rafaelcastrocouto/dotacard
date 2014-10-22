@@ -231,7 +231,7 @@ var states = {
       game.loader.removeClass('loading');
       if(game.debug){
         this.input.val('Bot'+(parseInt(Math.random()*100)));
-        //this.button.click();
+        this.button.click();
       }
     },
 
@@ -270,7 +270,7 @@ var states = {
       if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
       else {
         this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-        //this.public.click();
+        this.public.click();
       }
     }
   }, 
@@ -747,7 +747,7 @@ var states = {
         states.table.el.addClass(game.status);
         if(game.status == 'turn') game.message.text('Your turn now!');
         if(game.status == 'unturn') game.message.text('Enemy turn now!');        
-        $('.card .damage').remove();
+        $('.card .damaged').remove();
         $('.card .heal').remove();
         $('.card.dead').each(function(){
           var dead = $(this);
@@ -803,7 +803,7 @@ var states = {
       game.message.text('Uploading your turn '+game.player.turn);
       game.loader.addClass('loading');
       Map.unhighlight();
-      $('.card .damage').remove();
+      $('.card .damaged').remove();
       $('.card .heal').remove();
       game.status = 'unturn';
       states.table.el.removeClass('turn');    
@@ -980,7 +980,8 @@ var states = {
     animateCast: function(skill, target, destiny){
       if(typeof target == 'string') target = $('#'+target);
       var t = skill.offset(), d = target.offset();
-      skill.css({top: d.top - t.top, left: d.left - t.left, transform: 'tranlate(-50%, -50%) scale(0.3)'});
+      var w =  destiny.width()/2 + 1, h = destiny.height()/2 + 1;
+      skill.css({top: d.top - t.top + h, left: d.left - t.left + w, transform: 'tranlate(-50%, -50%) scale(0.3)'});
       setTimeout(function(){          
         $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
         if(skill.hasClass('selected') && game.castSource) game.castSource.select();

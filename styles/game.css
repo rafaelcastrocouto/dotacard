@@ -409,9 +409,8 @@ button[disabled]:hover {
   background: rgba(0,0,0,0.4);
 }
 
-.choose .card .hp,
 .choose .card .kd,
-.choode .card .damage,
+.choode .card .damaged,
 .choode .card .heal,
 .choose .card .buffs {
   display: none;
@@ -432,7 +431,7 @@ button[disabled]:hover {
   border-radius: 8px;
   box-shadow: 0 0 20px rgba(255,255,255,0.5);  
   z-index: 1;
-  color: gray;
+  color: #4d4843;
 }
 .card:hover {
   z-index: 2;
@@ -443,31 +442,14 @@ button[disabled]:hover {
   color: white;
   font-size: 14px;
   text-transform: uppercase;
-  margin: 2px 0 0 10px;
+  margin: 5px 0 0 10px;
 }
-.card .hp {
-  height: 18px;
-  position: absolute;
-  right: 10px;
-  width: 18px;
-  display: block;
-  top: 1px;
-  background: #080;
-  padding: 2px;
-  border-radius: 50%;
-  text-align: center;
-  font-size: 16px;
-  border: 1px solid #fff;
-}
-.card.enemy .hp {
-  background: #ed3;
-  border: 1px solid #c00;
-}
+
 .card fieldset {
   border-radius: 4px;
   padding: 3px;
   margin: 0 5px;
-  height: 268px;
+  height: 265px;
   background: #f7fae3;
   border: 0;
 }
@@ -479,7 +461,7 @@ button[disabled]:hover {
   background-position: 50% 50%;
 }
 .card .overlay {
-  box-shadow: 0 0 12px #000 inset;
+  box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
   border-radius: 3px;
   position: absolute;
   top: 0;
@@ -499,17 +481,49 @@ button[disabled]:hover {
 
 .card h1 {   
   font-family: "Open Sans", "open sans", "Arial", sans-serif;
-  margin: 1px 0 0;
-  font-size: 11px;
-  text-transform: uppercase;
+  margin: 4px 0 6px;
+  font-size: 12px;
   font-weight: bold;
+  float: left;
 }
+.card .current {
+  margin: 1px;
+  position: absolute;
+  right: 5px;
+}
+.card .current p {
+  margin: 1px;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+.card .current span {
+  text-align: center;
+  display: inline-block;
+  border-radius: 50%;
+  width: 19px;
+  height: 18px;
+  padding-top: 2px;
+  padding-left: 1px;
+}
+.card .current .hp span {
+  background: #ceeb71;
+}
+.card .current .damage span {
+  background: #ed8c8c; 
+  color: white;
+}
+
+.card .desc {
+  clear: left;
+}
+
 .card p { 
   text-align: justify;
   margin: 0;
   border: 0;
   font-size: 13px;
-  
+  display: block;
 }
 
 .card.player {
@@ -527,39 +541,39 @@ button[disabled]:hover {
 
 .card.player.heroes.selected,
 .card.player.towers.selected {
-  box-shadow: 0 0 12px 12px springgreen;
+  box-shadow: 0 0 0 12px springgreen;
   z-index: 5;
 }
 .card.enemy.heroes.selected,
 .card.enemy.towers.selected {
-  box-shadow: 0 0 12px 12px red;
+  box-shadow: 0 0 0 12px red;
   z-index: 5;
 }
 .card.skills.selected {
-  box-shadow: 0 0 6px 6px skyblue;
+  box-shadow: 0 0 0 6px skyblue;
 }
 .card.heroes.dead.selected {
-  box-shadow: 0 0 6px 6px gray;
+  box-shadow: 0 0 0 6px gray;
 }
 .card.enemy.attacktarget {
-  box-shadow: 0 0 12px 12px orangered;
+  box-shadow: 0 0 0 12px orangered;
 }
 .card.source {
-  box-shadow: 0 0 12px 12px skyblue;
+  box-shadow: 0 0 0 12px skyblue;
 }
 .card.targetspot,
 .card.casttarget{
-  box-shadow: 0 0 12px 12px dodgerblue;
+  box-shadow: 0 0 0 12px dodgerblue;
 }
 .card.player.done {
   background: silver;
 }
 .card.player.done.selected {  
-  box-shadow: 0 0 12px 12px gray;
+  box-shadow: 0 0 0 12px gray;
 }
 .card.enemy.heroes.done, 
 .card.enemy.heroes.done.selected {
-  box-shadow: 0 0 12px 12px gold;
+  box-shadow: 0 0 0 12px gold;
 }
 
 .card.enemy.attacktarget:after, 
@@ -748,7 +762,7 @@ button[disabled]:hover {
     transform: translateY(25px) rotate(45deg) scale(1.5);
   }
 }
-.card .damage {
+.card .damaged {
   z-index: 6;
   color: yellow;
   position: absolute;
@@ -762,7 +776,7 @@ button[disabled]:hover {
     0 2px 2px red,
     0 -2px 2px red;
 }
-.card .damage.critical {
+.card .damaged.critical {
   color: red;
   text-shadow: 2px 0 2px yellow,
     -2px 0 2px yellow,
@@ -860,12 +874,13 @@ button[disabled]:hover {
   right: 15px;
 }
 .table .selectedarea .card {
+  z-index: 7;
   transform: translate(-50%, -50%) scale(1);   
 }
 .table .selectedarea .card:hover {
   transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px); 
 }
-.table .selectedarea .card .damage {
+.table .selectedarea .card .damaged {
   display: none;
 }
 

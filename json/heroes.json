@@ -74,7 +74,7 @@
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
-    "range": "Short range",
+    "range": "Short",
     "hp": 51,
     "mana": 2,
     "damage": 4,

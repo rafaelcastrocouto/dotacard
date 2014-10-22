@@ -109,53 +109,59 @@ var Card = function(data){
   var card = $('<div>').addClass('card '+ data.className);   
   
   $('<legend>').appendTo(card).text(data.name);
+  
   var fieldset = $('<fieldset>').appendTo(card); 
-
+  
   var portrait = $('<div>').addClass('portrait').appendTo(fieldset);
   $('<div>').appendTo(portrait).addClass('img');
   $('<div>').appendTo(portrait).addClass('overlay');
-
+  
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute);  
-  if(data.cards) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
+  else if(data.cards) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
+  
+  var current = $('<div>').addClass('current').appendTo(fieldset);
+  var desc = $('<div>').addClass('desc').appendTo(fieldset);
 
   if(data.hp){
-    $('<p>').appendTo(fieldset).text('HP: '+ data.hp);
-    data.currenthp = data.hp;
-    $('<span>').addClass('hp').appendTo(card).text(data.currenthp);   
-  }
-  
-  if(data.damage){
+    $('<p>').addClass('hp').appendTo(desc).text('Hit points: '+ data.hp);
+    data.currenthp = data.hp;        
+    $('<p>').addClass('hp').appendTo(current).html('HP <span>'+ data.currenthp +'</span>');   
+  }  
+  if(data.damage){    
+    $('<p>').addClass('damage').appendTo(desc).text('Damage: '+ data.damage);
     data.currentdamage = data.damage;
-    $('<p>').appendTo(fieldset).text('Damage: '+ data.damage);
+    $('<p>').addClass('damage').appendTo(current).html('DMG <span>'+ data.currentdamage +'</span>');
   }
+
+  if(data.range)      $('<p>').appendTo(desc).text('Range: '+data.range);
+  if(data.mana)       $('<p>').appendTo(desc).text('Mana: ' + data.mana);
   
-  if(data.range)      $('<p>').appendTo(fieldset).text('Range: '+data.range);
-  if(data.type)       $('<p>').appendTo(fieldset).text('Type: '+data.type);
-  if(data.cards)      $('<p>').appendTo(fieldset).text('Cards: '+data.cards);
-  if(data.chance)     $('<p>').appendTo(fieldset).text('Chance: '+data.chance+'%');
-  if(data.percentage) $('<p>').appendTo(fieldset).text('Bonus: '+data.percentage+'%');
-  if(data.delay)      $('<p>').appendTo(fieldset).text('Delay: '+data.delay);
-  if(data.damageType) $('<p>').appendTo(fieldset).text('Damage Type: '+data.damageType);
-  if(data.duration)   $('<p>').appendTo(fieldset).text('Duration: '+data.duration);
-  if(data.dot)        $('<p>').appendTo(fieldset).text('Damage over time: '+data.dot);
-  if(data.regen)      $('<p>').appendTo(fieldset).text('Regen: '+data.regen);
+  if(data.type)       $('<p>').appendTo(desc).text('Type: '+data.type);
+  if(data.cards)      $('<p>').appendTo(desc).text('Cards: '+data.cards);
+  if(data.chance)     $('<p>').appendTo(desc).text('Chance: '+data.chance+'%');
+  if(data.percentage) $('<p>').appendTo(desc).text('Bonus: '+data.percentage+'%');
+  if(data.delay)      $('<p>').appendTo(desc).text('Delay: '+data.delay);
+  if(data.damageType) $('<p>').appendTo(desc).text('Damage Type: '+data.damageType);
+  if(data.duration)   $('<p>').appendTo(desc).text('Duration: '+data.duration);
+  if(data.dot)        $('<p>').appendTo(desc).text('Damage over time: '+data.dot);
   
-  if(data.mana)       $('<p>').appendTo(fieldset).text('Mana: ' + data.mana);
+  
   //if(data.skills)     $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
   //if(data.passive)    $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   //if(data.permanent)  $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   //if(data.temporary)  $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
   //if(data.description)$('<p>').appendTo(fieldset).text(data.description);
-
+  
   if(data.kd){
     data.kills = 0;
     data.deaths = 0;
-    $('<p>').addClass('kd').appendTo(fieldset).html('KD: <span class="kills">0</span>/<span class="deaths">0</span>');
+    $('<p>').addClass('kd').appendTo(desc).html('Kills/Deaths: <span class="kills">0</span>/<span class="deaths">0</span>');
   }
   
-  if(data.buffs) $('<div>').addClass('buffs').appendTo(card);
+  if(data.buffs) $('<div>').addClass('buffs').appendTo(fieldset);
 
   $.each(data, function(item, value){card.data(item, value);});
+  
   return card;
 };
 
@@ -497,12 +503,12 @@ Card.damage = function(damage, target, type){
       source.find('.deaths').text(deaths);
     }
   }
-  var damageFx = target.children('span.damage'); 
+  var damageFx = target.children('.damaged'); 
   if(damageFx.length){
     var currentDamage = parseInt(damageFx.text());
     damageFx.text(currentDamage + damage).appendTo(target);
   } else{
-    damageFx = $('<span>').addClass('damage').text(damage).appendTo(target);    
+    damageFx = $('<span>').addClass('damaged').text(damage).appendTo(target);    
   }
   if(source.data('crit')){
     source.data('crit', false);
@@ -526,7 +532,7 @@ Card.heal = function(healhp){
     target.changehp(hp);
   }  
   if(healhp > 0){
-    var healFx = target.children('span.heal'); 
+    var healFx = target.children('.heal'); 
     if(healFx.length){
       var currentHeal = parseInt(healFx.text());
       healFx.text(currentHeal + healhp);
@@ -541,7 +547,7 @@ $.fn.heal = Card.heal;
 
 Card.changehp = function(hp){
   if(hp < 1) hp = 0;
-  this.children('span.hp').text(hp);
+  this.children('.current .hp span').text(hp);
   this.data('currenthp', hp);    
   if(this.hasClass('selected')) this.select();
   return this;
