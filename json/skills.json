@@ -3,7 +3,7 @@
     "stun": {
       "name": "Wraithfire Blast",
       "type": "Target Enemy Unit",
-      "target": "enemy",
+      "target": "Enemy",
       "range": "Short",
       "damage": 10,
       "damageType": "Magical",
@@ -16,7 +16,7 @@
     "lifesteal": {
       "name": "Vampiric Aura",      
       "type": "Aura",
-      "target": "passive",
+      "target": "Passive",
       "percentage": 30,      
       "cards": 1,
       "description": "Drain the life of enemy on every attack"  
@@ -24,7 +24,7 @@
     "crit": {
       "name": "Mortal Strike",
       "type": "Passive",
-      "target": "passive",      
+      "target": "Passive",      
       "chance": 15,
       "percentage": 300,      
       "cards": 1,
@@ -32,10 +32,9 @@
       
     },
     "ult": {
-      "special": "ult",
       "name": "Reincarnation",
       "type": "Passive",
-      "target": "auto",
+      "target": "Autocast",
       "duration": 3,
       "aoe": "Melee",
       "delay": 2,
@@ -44,13 +43,12 @@
     }    
   },
 
-  "ktol": {
+  "kotl": {
     "illuminate": {
       "name": "Illuminate",
       "channel": true,
       "type": "Area of effect",
-      "target": "allaround",
-      "target": "allaround",
+      "target": "Spot",
       "damage": 5,
       "damageType": "Magical",     
       "length": 6,           
@@ -61,8 +59,8 @@
     "leak": {
       "name": "Mana Leak",
       "type": "Target Enemy Unit",
-      "target": "enemy",      
-      "range": "Long range",
+      "target": "Enemy",      
+      "range": "Long",
       "duration": 4,
       "cards": 4,
       "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
@@ -78,15 +76,15 @@
     "ult": {
       "name": "Spirit Form",
       "type": "Transform",
-      "target": "self",
+      "target": "Self",
       "cards": 4,
       "description": "Ezalor becomes one with the light!" 
     },
-    "illuminateult": {
+    "illuminate-ult": {
       "special": "ult",
       "name": "Illuminate",
       "type": "Area of effect",
-      "target": "allaround",
+      "target": "Spot",
       "damage": 5,
       "damageType": "Magical",     
       "length": 6,           
@@ -94,11 +92,11 @@
       "cards": 1,
       "description": "Summon a spirit to channel light to damage enemies in a line"
     },
-    "blink": {
+    "blind": {
       "special": "ult",
       "name": "Blinding Light",
       "type": "Area of effect",
-      "target": "area",  
+      "target": "Area",
       "range": "Ranged", 
       "cards": 1,
       "description": "Knock back and blind enemies, causing them to miss attacks"
@@ -107,7 +105,7 @@
       "special": "ult",
       "name": "Recall",
       "type": "Target Friend Unit",
-      "target": "ally",
+      "target": "Ally",
       "range": "Global", 
       "delay": 1,
       "cards": 1,
@@ -119,10 +117,10 @@
     "slow": {
       "name": "Crystal Nova",
       "type": "Area of Effect",
-      "target": "area",
+      "target": "Area",
       "range": "Ranged",
       "aoe": "Melee",
-      "duration": 5,
+      "duration": 3,
       "damage": 12,
       "damageType": "Magical",      
       "cards": 4,
@@ -131,14 +129,14 @@
     "aura": {
       "name": "Arcane Aura",
       "type": "Aura",
-      "target": "passive",
+      "target": "Passive",
       "cards": 1,
       "description": "Give an extra bonus skill card per turn"    
     },
     "freeze": {
       "name": "Frostbite",
       "type": "Target Enemy Unit",     
-      "target": "enemy",
+      "target": "Enemy",
       "range": "Ranged",
       "duration": 3,
       "dot": 3,
@@ -148,12 +146,12 @@
     },
     "ult": {
       "name": "Freezing Field",
-      "channel": true,
+      "channel": 5,
       "type": "Area of Effect",
-      "target": "self",
-      "range": "Long range",
-      "duration": 5,
-      "dot": 8,
+      "target": "Self",
+      "range": "Long",
+      "duration": 2,
+      "damage": 8,
       "damageType": "Magical",       
       "cards": 1,
       "description": "Rylai channels icy explosions around her!"    
@@ -164,14 +162,14 @@
     "burn": {
       "name": "Mana Break",
       "type": "Passive",
-      "target": "passive",
+      "target": "Passive",
       "cards": 1,
       "description": "Everytime Antimage attacks enemy player loses a card of the attaked hero"
     },
     "passive": {
       "name": "Spell Shield",
       "type": "Passive",
-      "target": "passive",      
+      "target": "Passive",      
       "percentage": 50,
       "cards": 1,
       "description": "Reduces magic damage"    
@@ -179,15 +177,15 @@
     "blink": {
       "name": "Blink",
       "type": "Target spot",     
-      "target": "around",
-      "range": "Long range",
+      "target": "Spot",
+      "range": "Long",
       "cards": 11,
       "description": "Teleport Anti Mage to the target spot" 
     },
     "ult": {
       "name": "Mana Void",
       "type": "Area of Effect",
-      "target": "enemy",
+      "target": "Enemy",
       "range": "Short", 
       "damageType": "Magical",       
       "cards": 1,
@@ -195,12 +193,11 @@
     }    
   },
 
-
   "pud": {
     "hook": {
       "name": "Meat Hook",
       "type": "Target spot",
-      "target": "around",
+      "target": "Spot",
       "length": 5,
       "width": 1,
       "damage": 18,
@@ -209,10 +206,10 @@
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
     "rot": {
-      "special": "permanent",
+      "special": "Permanent",
       "name": "Rot",
       "type": "Toggle",
-      "target": "self",   
+      "target": "Self",   
       "range": "Melee",
       "dot": 5,
       "damageType": "Magical",  
@@ -222,7 +219,7 @@
     "passive": {
       "name": "Flesh Heap",
       "type": "Passive",     
-      "target": "passive",     
+      "target": "Passive",     
       "percentage": 12,
       "hpBonus": 3,
       "regenBonus": 1,
@@ -234,7 +231,7 @@
       "name": "Dismember",
       "channel": true,
       "type": "Target Enemy Unit",
-      "target": "enemy",        
+      "target": "Enemy",        
       "range": "Melee",
       "dot": 6,
       "damageType": "Magical", 
@@ -248,7 +245,7 @@
     "stun": {
       "name": "Impale",
       "type": "Area of Effect",
-      "target": "allaround",  
+      "target": "Spot",  
       "length": 4,
       "width": 1,
       "cards": 4,
@@ -257,7 +254,7 @@
     "burn": {
       "name": "Mana Burn",
       "type": "Target Enemy Unit",
-      "target": "enemy",      
+      "target": "Enemy",      
       "range": "Ranged",
       "multiplier": 4,
       "damageType": "Magical",   
@@ -267,7 +264,7 @@
     "spike": {
       "name": "Spiked Carapace",
       "type": "Active",     
-      "target": "self",      
+      "target": "Self",      
       "duration": 2,
       "damageType": "Pure",
       "cards": 5,
@@ -276,7 +273,7 @@
     "ult": {
       "name": "Vendetta",
       "type": "Active",
-      "target": "self",
+      "target": "Self",
       "duratioin": 8,
       "damage": 20,
       "damageType": "Physical",
@@ -289,7 +286,7 @@
     "summon": {
       "name": "Spirit Bear",
       "type": "Summon",
-      "target": "around",
+      "target": "Spot",
       "range": "Melee",
       "cards": 2,
       "description": "Summons a powerful Spirit Bear companion"
@@ -297,7 +294,7 @@
     "rabid": {
       "name": "Rabid",
       "type": "Active",
-      "target": "self",      
+      "target": "Self",      
       "percentage": 40,   
       "duration": 3,
       "cards": 5,
@@ -306,7 +303,7 @@
     "passive": {
       "name": "Synergy",
       "type": "Passive",     
-      "target": "passive",
+      "target": "Passive",
       "cards": 1,
       "bearBonus": 2,
       "rabidBonus": 3,      
@@ -316,7 +313,7 @@
     "ult": {
       "name": "True Form",
       "type": "Active",
-      "target": "self",
+      "target": "Self",
       "damage": 20,
       "damageType": "Physical",
       "cards": 4,
@@ -327,7 +324,7 @@
       "special": "ult",
       "name": "Battle Cry",
       "type": "Active",
-      "target": "self",
+      "target": "Self",
       "duratioin": 2,
       "damage": 3,
       "cards": 1, 
@@ -337,7 +334,7 @@
       "special": "ult",
       "name": "Druid Form",
       "type": "Active",
-      "target": "self",
+      "target": "Self",
       "duratioin": 8,
       "damage": 20,
       "damageType": "Physical",

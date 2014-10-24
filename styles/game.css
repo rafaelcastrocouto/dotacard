@@ -2,7 +2,7 @@
 
 @import url("http://fonts.googleapis.com/css?family=Open+Sans");
 @import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");
-
+@import url("http://fonts.googleapis.com/css?family=Sansita+One");
 
 /*TAGS*/ 
 
@@ -27,16 +27,21 @@ noscript {
   margin: 16px auto;
   width: 80%;
   display: block;
+  text-align: center;
+}
+
+noscript p {
+  display: block;
+  margin: 1em;
 }
 
 body {
   display: table;
   background-attachment: fixed;
   background-color: #22272c;
-  background: -webkit-radial-gradient(center top, farthest-side, #6e7a66, #343b43 70%, #22272c 95%, #22272c), #22272c;
+  background: radial-gradient(ellipse farthest-corner at center top, #6e7a66 0%, #343b43 30%, #22272c 60%, #22272c 100%), #22272c;
   color: white;
-  background-size: 800px 200px;
-  background-position: center -50px;
+  background-size: 100% 20%;
   background-repeat: no-repeat;
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
 }
@@ -97,19 +102,44 @@ label input {
 img {
   border: 0;
 }
-.hidden {
-  display: none;
-}
 
 /*CLASS*/
-
-.banner {
-  width: 100%;
-}
 
 .container {
   display: table-cell;
   vertical-align: middle;
+}
+
+.unsupported, noscript , #states {
+  margin: 0 auto;
+  width: 970px;
+  height: 600px;  
+  background-color: #eee;  
+  background-size: cover;
+  position: relative;  
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 0 6px black;  
+  background-image: url("../img/bkg/polygon-light.jpg");  
+}
+
+.unsupported {
+  text-align: center;
+  display: none;
+}
+
+.unsupported p {
+  display: block;
+  margin: 1em;
+}
+
+.banner {
+  border-radius: 5px;
+  width: 80%;
+}
+
+.hidden {
+  display: none;
 }
 
 .box {
@@ -124,8 +154,6 @@ img {
 .box div p {
   display: block;
 }
-
-/*FORK*/
 
 .fork {
   position: absolute;
@@ -160,16 +188,6 @@ img {
 /*STATES*/
 
 #states {
-  margin: 0 auto;
-  width: 970px;
-  height: 600px;  
-  background-color: #222;  
-  background-size: cover;
-  position: relative;  
-  overflow: hidden;
-  border-radius: 4px;
-  box-shadow: 0 0 6px black;  
-  background-image: url("../img/bkg/polygon-light.jpg");
   transition: background 1s;
 }
 #states.low {
@@ -382,17 +400,15 @@ button[disabled]:hover {
 }
 
 .pickedbox .card {
-  margin: 0 -50px;
-  margin-top: -80px;  
   animation: slidedown 0.5s;
   transform: translate(-50%, -50%) scale(0.4);
 }
 @keyframes slidedown {
-  0% {top: -175px;}
-  100% {top: 0;}
+  0% {top: 0%;}
+  100% {top: 50%;}
 }
 .pickedbox .card:hover { 
-  top: -10px;
+  top: 40%;
   transform: translate(-50%, -50%) scale(0.45);
 }
 
@@ -481,7 +497,7 @@ button[disabled]:hover {
 
 .card h1 {   
   font-family: "Open Sans", "open sans", "Arial", sans-serif;
-  margin: 4px 0 6px;
+  margin: 4px 0 0;
   font-size: 12px;
   font-weight: bold;
   float: left;
@@ -528,25 +544,25 @@ button[disabled]:hover {
 
 .card.player {
   cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
-  background: limegreen;
+  background: #74c47b;
 }
 .card.enemy {
   cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer;
-  background: firebrick;
+  background: #c23636;
 }
 .card.skills {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
-  background: steelblue;
+  background: #54a0e3;
 }
 
 .card.player.heroes.selected,
 .card.player.towers.selected {
-  box-shadow: 0 0 0 12px springgreen;
+  box-shadow: 0 0 0 10px springgreen;
   z-index: 5;
 }
 .card.enemy.heroes.selected,
 .card.enemy.towers.selected {
-  box-shadow: 0 0 0 12px red;
+  box-shadow: 0 0 0 10px red;
   z-index: 5;
 }
 .card.skills.selected {
@@ -556,24 +572,24 @@ button[disabled]:hover {
   box-shadow: 0 0 0 6px gray;
 }
 .card.enemy.attacktarget {
-  box-shadow: 0 0 0 12px orangered;
+  box-shadow: 0 0 0 10px orangered;
 }
 .card.source {
-  box-shadow: 0 0 0 12px skyblue;
+  box-shadow: 0 0 0 10px skyblue;
 }
 .card.targetspot,
 .card.casttarget{
-  box-shadow: 0 0 0 12px dodgerblue;
+  box-shadow: 0 0 0 10px dodgerblue;
 }
 .card.player.done {
   background: silver;
 }
 .card.player.done.selected {  
-  box-shadow: 0 0 0 12px gray;
+  box-shadow: 0 0 0 10px gray;
 }
 .card.enemy.heroes.done, 
 .card.enemy.heroes.done.selected {
-  box-shadow: 0 0 0 12px gold;
+  box-shadow: 0 0 0 10px gold;
 }
 
 .card.enemy.attacktarget:after, 
@@ -763,27 +779,25 @@ button[disabled]:hover {
   }
 }
 .card .damaged {
+  font-family: "Sansita One";
   z-index: 6;
-  color: yellow;
+  color: gold;
   position: absolute;
   opacity: 0;
   top: 0;  
   right: 0;
-  font-size: 180px;
+  font-size: 120px;
   animation: slideup 2s linear;
-  text-shadow: 2px 0 2px red,
-    -2px 0 2px red,
-    0 2px 2px red,
-    0 -2px 2px red;
+  text-shadow: 3px 0 1px white,
+    -3px 0 1px white,
+    0 3px 1px white,
+    0 -3px 2px white;
 }
 .card .damaged.critical {
-  color: red;
-  text-shadow: 2px 0 2px yellow,
-    -2px 0 2px yellow,
-    0 2px 2px yellow,
-    0 -2px 2px yellow;
+  color: orangered;
 }
 .card .heal {
+  font-family: "Sansita One";
   color: springgreen;
   position: absolute;
   opacity: 0;
@@ -791,10 +805,6 @@ button[disabled]:hover {
   left: 0;
   font-size: 180px;
   animation: slideup 2s linear;
-  text-shadow: 2px 0 2px white,
-    -2px 0 2px white,
-    0 2px 2px white,
-    0 -2px 2px white;
 }
 @keyframes slideup {
   0% {top: 0;opacity: 1;}
@@ -802,12 +812,17 @@ button[disabled]:hover {
   100% {top: -100px;opacity: 0;}
 }
 .card.dead {
+  background: silver;
   -webkit-filter: grayscale(0.9);
+  filter: grayscale(0.9);
+}
+.card.dead .damaged {
+  display: none;
 }
 .card .buffs {
-  position: relative;
-  bottom: 40px;
-  left: 10px;
+  position: absolute;
+  bottom: 8px;
+  left: 8px;
 }
 .card .buffs .buff {
   float: left;
@@ -816,6 +831,7 @@ button[disabled]:hover {
 }
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
+  box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
   width: 36px; height: 36px;
 }
 
@@ -931,12 +947,17 @@ button[disabled]:hover {
 .map .card:hover {
   transform: translate(-50%, -50%) scale(0.3); 
 }
+.map .card.channeling {
+  transform: translate(-50%, -50%) scale(0.29) rotate(5deg); 
+}
+
 .map td {
   box-sizing: border-box;
   background: rgba(150,150,150,0.1);
   width: 60px; height: 90px;
   position: relative;
   border: 1px solid transparent;
+  border-radius: 3px;
 }
 .map td:hover {
   background: rgba(150,150,150,0.2);
@@ -1245,7 +1266,7 @@ button[disabled]:hover {
 }
 
 .wk {
-  background: #483;
+  background: #6db090;
 }
 .wk .portrait .img {
   background-image: url("../img/heroes/skeleton_king_full.png");
@@ -1271,28 +1292,28 @@ button[disabled]:hover {
 .kotl .portrait .img {
   background-image: url("../img/heroes/keeper_of_the_light_full.png");
 }
-.ktol-illuminate .img {
+.kotl-illuminate .img {
   background-image: url("../img/skills/keeper_of_the_light_illuminate.png");
 }
-.ktol-illuminate-end .img {
+.kotl-illuminate-end .img {
   background-image: url("../img/skills/keeper_of_the_light_illuminate_end.png");
 }
-.ktol-leak .img {
+.kotl-leak .img {
   background-image: url("../img/skills/keeper_of_the_light_mana_leak.png");
 }
-.ktol-mana .img {
+.kotl-mana .img {
   background-image: url("../img/skills/keeper_of_the_light_chakra_magic.png");
 }
-.ktol-ult .img {
+.kotl-ult .img {
   background-image: url("../img/skills/keeper_of_the_light_spirit_form.png");
 }
-.ktol-illuminate-ult .img {
+.kotl-illuminate-ult .img {
   background-image: url("../img/skills/keeper_of_the_light_spirit_form_illuminate.png");
 }
-.ktol-blind .img {
+.kotl-blind .img {
   background-image: url("../img/skills/keeper_of_the_light_blinding_light.png");
 }
-.ktol-recall .img {
+.kotl-recall .img {
   background-image: url("../img/skills/keeper_of_the_light_recall.png");
 }
 
