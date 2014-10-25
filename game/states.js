@@ -12,28 +12,15 @@ if (end function) will run every time it leaves the state
 ////////////////////////////////////////////////////////*/
 
 var states = {
-  changeTo: function(state){
-    if(state == states.currentstate) return;   
-    var pre = states.currentstate;
-    var oldstate = states[pre];
-    if(oldstate.el) oldstate.el.addClass('hidden'); 
-    if(oldstate.end) oldstate.end();    
-    var newstate = states[state];
-    if(newstate.build && !newstate.builded){      
-      newstate.build();
-      newstate.builded = true;
-    }
-    states.el.removeClass(pre).addClass(state);
-    if(newstate.el) newstate.el.removeClass('hidden').append(game.loader, game.message, game.triesCounter);
-    states.currentstate = state;
-    if(newstate.start) newstate.start(pre);
-  },
+  
+  currentstate: 'load',
 
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
 
   build: function(){
     states.load.preloadImages();
     states.el = $('<div>').attr('id','states').appendTo(game.container);
+    states.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
     $.each(states, function(id){      
       if(states.preBuild.indexOf(id) >= 0){
         states[id].el = $('<div>').attr('id',id).appendTo(states.el).addClass('hidden');
@@ -48,7 +35,27 @@ var states = {
     }, 1000);
   }, 
 
-  currentstate: 'load',
+  changeTo: function(state){
+    if(state == states.currentstate) return;   
+    var pre = states.currentstate;
+    var oldstate = states[pre];
+    if(oldstate.el) oldstate.el.addClass('hidden'); 
+    if(oldstate.end) oldstate.end();    
+    var newstate = states[state];
+    if(newstate.build && !newstate.builded){      
+      newstate.build();
+      newstate.builded = true;
+    }
+    states.el.removeClass(pre).addClass(state);
+    if(newstate.el) newstate.el.removeClass('hidden').append(states.topbar);
+    states.currentstate = state;
+    states.backstate = pre;
+    if(newstate.start) newstate.start();
+  },
+  
+  backState: function(){
+    this.changeTo(this.backstate);
+  },
 
   ////////////////////////////////////////////////////////////////////////////////////////
   'load': {
@@ -70,17 +77,14 @@ var states = {
           for(var j = 0; j<thisSheetRules.length; j++){
             cssPile+= thisSheetRules[j].cssText;
           }
-        }
-        else {
-          cssPile+= document.styleSheets[i].cssText;
-        }
+        } else cssPile+= document.styleSheets[i].cssText;
         //parse cssPile for image urls and load them into the DOM
         var imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);//reg ex to get a string of between a "(" and a ".filename"
         if(imgUrls != null && imgUrls.length>0 && imgUrls != ''){//loop array
-          var arr = jQuery.makeArray(imgUrls);//create array from regex obj        
-          jQuery(arr).each(function(){
+          var arr = $.makeArray(imgUrls);//create array from regex obj        
+          $.each(arr, function(){
             allImgs[k] = new Image(); //new img obj
-            allImgs[k].src = (this[0] == '/' || this.match('http://')) ? this : baseURL + this;     //set src either absolute or rel to css dir
+            allImgs[k].src = (this[0] == '/' || this.match('http://')) ? this : baseURL + this;//set src either absolute or rel to css dir
             k++;
           });
         }
@@ -105,11 +109,6 @@ var states = {
         alert('Connection error, sorry.');
         location.reload(true);
       }
-    },
-
-    quit: function(){
-      var sure = confirm('Sure you wanna leave?');
-      if(sure) location.reload(true);
     }
   },
 
@@ -179,7 +178,7 @@ var states = {
         if(states.currentstate == 'intro'){  
           states.changeTo('login');
         }
-      }, 102600);       
+      }, 104000);       
     },
 
     end: function(){
@@ -292,12 +291,9 @@ var states = {
       $('<label>').text('Mute').appendTo(this.audio).append($('<input>').attr({type: 'checkbox', disabled: true}).change(this.changeResolution));
 
       this.back = $('<button>').appendTo(this.menu).attr({'title': 'Back'}).text('Back')
-      .click(function(){ states.changeTo(states.el.data('prestate')); });
+      .click(function(){ states.backState(); });
     },
 
-    start: function(oldstate){
-      states.el.data('prestate', oldstate);      
-    },
     changeResolution: function(){ 
       var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
       states.el.removeClass('low high').addClass(resolution);
@@ -382,13 +378,12 @@ var states = {
           game.currentData = found;
           states.choose.battle(found.challenger, 'challenger');         
         } else {
-          game.triesCounter.text('('+(game.tries++)+')');                
+          game.triesCounter.text(game.tries++);                
           if(game.tries > game.waitLimit) states.load.reset(); //todo: sugest bot match         
           else game.timeout = setTimeout(states.choose.keepSearching, 1000);
         }
       });
     },
-
 
     foundGame: function(){       
       game.message.text('We found a game! Connecting');
@@ -403,7 +398,6 @@ var states = {
         } else states.load.reset();
       });
     },  
-
 
     battle: function(enemy, challenge){     
       game.status = 'picking';
@@ -516,7 +510,7 @@ var states = {
           game.enemy.picks = game.currentData.challengerDeck.split('|');
           states.changeTo('table');          
         } else {
-          game.triesCounter.text('('+(game.tries++)+')');
+          game.triesCounter.text(game.tries++);
           if(game.tries > game.connectionLimit) states.load.reset();
           else game.timeout = setTimeout(states.choose.getChallengerDeck, 1000);
         }
@@ -536,7 +530,7 @@ var states = {
             states.changeTo('table');
           });              
         } else {
-          game.triesCounter.text('('+(game.tries++)+')');
+          game.triesCounter.text(game.tries++);
           if(game.tries > game.connectionLimit) states.load.reset();
           else game.timeout = setTimeout(states.choose.getChallengedDeck, 1000);
         }      
@@ -558,7 +552,8 @@ var states = {
     ////////////////////////////////////////////////////////////////////////////////////////
 
     build: function(){      
-      this.time =  $('<p>').appendTo(this.el).addClass('time').text('Time: 0:00 Day Turns: 0/0 (0)');
+      this.time =  $('<p>').appendTo(states.topbar).addClass('time').text('Time: 0:00 Day').hide();
+      this.turns =  $('<p>').appendTo(states.topbar).addClass('turns').text('Turns: 0/0 (0)').hide();
       this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea');
       this.buildMap();        
     },
@@ -566,7 +561,8 @@ var states = {
     start: function(){      
       game.message.text('Muuuuuuuuuuuuu!');
       game.loader.addClass('loading'); 
-
+      this.time.show();
+      this.turns.show();
       this.placeTowers(); 
       this.placeHeroes(); 
       this.buildSkills(); 
@@ -578,13 +574,21 @@ var states = {
 
     },
 
+    end: function(){
+      $('#table .card').remove();
+      $('#table .deck').remove();
+      this.resultsbox.remove();
+      this.time.hide();
+      this.turnCount.hide();
+    },
+
     buildMap: function(){
       this.camera = $('<div>').appendTo(this.el).addClass('camera');
       this.map = Map.build({
         'width': game.width,
         'height': game.height,
         'class': 'map'
-      }).appendTo(this.camera);
+      }).appendTo(this.camera).click(states.unselect);
     },
 
     createTower: function(side, spot){
@@ -755,7 +759,7 @@ var states = {
       if(game.player.type == 'challenger') game.status = 'unturn';         
     },
     
-    firstTurn: function(){
+    firstTurn: function(){ 
       game.currentData = {};
       game.player.kills = 0;
       game.enemy.kills = 0;
@@ -769,7 +773,7 @@ var states = {
         game.currentData.moves = []; 
         states.table.el.addClass(game.status);
         if(game.status == 'turn') game.message.text('Your turn now!');
-        if(game.status == 'unturn') game.message.text('Enemy turn now!');        
+        if(game.status == 'unturn') game.message.text('Enemy turn now!');       
         $('.card .damaged').remove();
         $('.card .heal').remove();
         $('.card.dead').each(function(){
@@ -779,7 +783,7 @@ var states = {
         $('.card.heroes').each(function(){
           var hero = $(this);
           if(hero.data('channeling')) hero.trigger('channel', {target: hero});
-        });
+        });console.log('bt2');
         $('.card').each(function(){          
           var card = $(this);          
           card.trigger('turnstart', {target: card});                  
@@ -800,13 +804,14 @@ var states = {
         game.time = game.player.turn + game.enemy.turn;  
         states.table.counter = (game.debug) ? 5 : game.timeToPlay;
         clearTimeout(game.timeout);
-        game.timeout = setTimeout(states.table.turnCount, 1000);
+        game.timeout = setTimeout(states.table.turnCount, 1000);console.log('bt');
       }
     },
 
-    turnCount: function(){
+    turnCount: function(){ console.log('tc');
       game.loader.removeClass('loading');
-      states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight()+' Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
+      states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight());     
+      states.table.turns.text('Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
       if(game.status == 'turn') game.message.text('Your turn, you have '+states.table.counter+' seconds');
       if(game.status == 'unturn') game.message.text('Enemy turn ends in '+states.table.counter+' seconds');     
       if(states.table.counter-- < 1){
@@ -865,11 +870,17 @@ var states = {
           game.enemy.turn++;
           states.table.executeEnemyMoves();            
         } else {
-          game.triesCounter.text('('+(game.tries++)+')');
+          game.triesCounter.text(game.tries++);
           if(game.tries > game.connectionLimit) states.load.reset();
           else game.timeout = setTimeout(states.table.getData, 1000);
         }
       });
+    },
+    
+    unselect: function(){
+      Map.unhighlight();      
+      game.selectedCard = null;
+      states.table.selectedArea.empty();
     },
 
     hours: function(){
@@ -1058,15 +1069,7 @@ var states = {
       .click(function(){  
         states.changeTo('menu');
       });
-    },
-
-    end: function(){
-      $('#table .card').remove();
-      $('#table .deck').remove();
-      this.resultsbox.remove();
     }
 
-  } 
-  //table end
+  } //table end
 };
-// states end /////////////////////////////////////////////////////////

@@ -72,35 +72,11 @@ h2 {
   font-size: 19px;
 
 }
-input {  
-  border-radius: 3px;
-  font-family: monospace;
-  letter-spacing: -1px;
-  word-spacing: -1px;
-  font-size: 16px;
-  color: #4d4843;
-  outline: 0;
-  border: 0;
-  padding: 5px;
-}
-input:focus {
-  animation: shade 0.5s;
-}
-@keyframes shade {
-  50% {opacity: 0.5;}
-}
-label {
-  display: block; 
-  padding: 1px 2px;
-  margin: 2px;
-  text-align: left;
-}
-label input {
-  float: left;
-  margin: 5px;
-}
 img {
   border: 0;
+}
+small {
+  font-size: 60%;
 }
 
 /*CLASS*/
@@ -114,7 +90,7 @@ img {
   margin: 0 auto;
   width: 970px;
   height: 600px;  
-  background-color: #eee;  
+  background-color: #c2beb2;  
   background-size: cover;
   position: relative;  
   overflow: hidden;
@@ -162,29 +138,6 @@ img {
   z-index: 10;
 }
 
-/*LOADER*/
-
-.loader {
-  width: 15px;
-  height: 15px;
-  display: inline-block;
-  vertical-align: top; 
-  margin: 4px 0px 0 6px;
-  padding: 0;
-  border: 3px solid transparent;
-  border-bottom: 3px solid white;
-  border-radius: 50%; 
-  visibility: hidden;
-}
-.loader.loading {
-  visibility: visible;
-  animation: rotate 1s linear infinite;
-}
-@keyframes rotate {
-  0% { transform: rotate(0);}
-  100% { transform: rotate(360deg);}
-}
-
 /*STATES*/
 
 #states {
@@ -206,6 +159,73 @@ img {
   background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
+/*TOPBAR*/
+
+.topbar {
+  position: relative;
+}
+
+.choose .topbar,
+.table .topbar {
+  background: rgba(0,0,0,0.4);
+}
+
+.loader {
+  width: 16px;
+  height: 16px;
+  display: inline-block;
+  vertical-align: top; 
+  margin: 4px;
+  padding: 0;
+  border: 3px solid transparent;
+  border-bottom: 3px solid white;
+  border-radius: 50%; 
+  visibility: hidden;
+}
+.loader.loading {
+  visibility: visible;
+  animation: rotate 1s linear infinite;
+}
+@keyframes rotate {
+  0% { transform: rotate(0);}
+  100% { transform: rotate(360deg);}
+}
+.triescounter {
+  position: absolute;
+  left: 9px;
+  top: 9px;
+  width: 12px;
+  text-align: center;
+}
+
+/*
+.message {
+  transition: background 0.5s;
+}
+.turn .message {
+  background: rgba(0,150,0,0.6);
+}
+.unturn .message {
+  background: rgba(150,0,0,0.6);
+}
+*/
+
+.logout {
+  cursor: pointer;
+}
+.logout:hover {
+  color: #ddd;
+}
+
+.time {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.turns {
+  float: right;
+}
 
 /*INTRO*/
 
@@ -228,7 +248,23 @@ img {
 .login .box {
   width: 300px;
 }
-
+input {  
+  border-radius: 3px;
+  font-family: monospace;
+  letter-spacing: -1px;
+  word-spacing: -1px;
+  font-size: 16px;
+  color: #4d4843;
+  outline: 0;
+  border: 0;
+  padding: 5px;
+}
+input:focus {
+  animation: shade 0.5s;
+}
+@keyframes shade {
+  50% {opacity: 0.5;}
+}
 button {
   font-family: "Julius Sans One";
   font-size: 16px;
@@ -264,32 +300,6 @@ button[disabled]:hover {
   background: darkgray;
 }
 
-/*MESSAGE*/
-
-.message {
-  border-radius: 5px;
-  transition: background 0.5s;
-}
-
-.message b {
-  color: limegreen;
-}
-.message b.enemy {
-  color: orangered;
-}
-.logout {
-  cursor: pointer;
-}
-.logout:hover {
-  color: #ddd;
-}
-
-.turn .message {
-  background: rgba(0,150,0,0.6);
-}
-.unturn .message {
-  background: rgba(150,0,0,0.6);
-}
 
 /*MENU*/
 
@@ -300,9 +310,6 @@ button[disabled]:hover {
   display: block;
   margin: 12px auto;
   width: 200px;
-}
-.menu small {
-  cursor: pointer;
 }
 .chat {
   background: rgb(227,239,250);
@@ -323,6 +330,17 @@ button[disabled]:hover {
   padding: 5px 15px;
 }
 
+label {
+  display: block; 
+  padding: 1px 2px;
+  margin: 2px;
+  text-align: left;
+}
+label input {
+  float: left;
+  margin: 5px;
+}
+
 /*CHOOSE*/
 
 .deck {
@@ -338,11 +356,12 @@ button[disabled]:hover {
 }
 
 .pickbox {
-  width: 770px;  
+  width: 760px;  
   height: 300px;
   position: absolute;
   top: 35px;
-  left: 100px;
+  left: 50%;
+  transform: translateX(-50%);
   overflow: hidden;
   padding: 10px 0;
   text-align: center;
@@ -371,9 +390,9 @@ button[disabled]:hover {
   height: 190px;
   position: absolute;
   top: 360px;
-  left: 100px;
+  left: 105px;
   overflow: hidden;
-  padding: 5px;
+  padding: 2px;
   text-align: center;
   border-radius: 4px;
   background: rgba(0,0,0,0.4);
@@ -413,13 +432,12 @@ button[disabled]:hover {
 }
 
 .prepickbox {
-  width: 205px;
-  height: 170px;
+  width: 206px;
+  height: 190px;
   position: absolute;
   top: 360px;
   left: 655px;
-  overflow: hidden;
-  padding: 15px 5px;
+  padding: 2px;
   text-align: center;
   border-radius: 4px;
   background: rgba(0,0,0,0.4);
@@ -562,7 +580,7 @@ button[disabled]:hover {
 }
 .card.enemy.heroes.selected,
 .card.enemy.towers.selected {
-  box-shadow: 0 0 0 10px red;
+  box-shadow: 0 0 0 10px orangered;
   z-index: 5;
 }
 .card.skills.selected {
@@ -572,7 +590,7 @@ button[disabled]:hover {
   box-shadow: 0 0 0 6px gray;
 }
 .card.enemy.attacktarget {
-  box-shadow: 0 0 0 10px orangered;
+  box-shadow: 0 0 0 10px red;
 }
 .card.source {
   box-shadow: 0 0 0 10px skyblue;
@@ -584,11 +602,11 @@ button[disabled]:hover {
 .card.player.done {
   background: silver;
 }
-.card.player.done.selected {  
+.map .card.player.done.selected {  
   box-shadow: 0 0 0 10px gray;
 }
-.card.enemy.heroes.done, 
-.card.enemy.heroes.done.selected {
+.map .card.enemy.heroes.done, 
+.map .card.enemy.heroes.done.selected {
   box-shadow: 0 0 0 10px gold;
 }
 
@@ -837,17 +855,10 @@ button[disabled]:hover {
 
 /*TABLE*/
 
-#table .time {
-  position: absolute;
-  top: 1px; right: 10px;
-  background: rgba(0,0,0,0.3);
-  border-radius: 5px;
-}
-
 .table .deck {
   position: absolute;
   height: 120px; 
-  bottom: -10px;
+  bottom: -16px;
   z-index: 6;
 }
 
@@ -886,12 +897,12 @@ button[disabled]:hover {
   width: 200px;
   height: 300px;
   position: absolute;
-  top: 40px;
+  top: 50px;
   right: 15px;
 }
 .table .selectedarea .card {
   z-index: 7;
-  transform: translate(-50%, -50%) scale(1);   
+  transform: translate(-50%, -50%) scale(1.1);   
 }
 .table .selectedarea .card:hover {
   transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px); 
@@ -921,14 +932,11 @@ button[disabled]:hover {
 
 .camera {
   position: absolute;
-  top: 0; left: 0;
-  width: 100%; height: 100%;
+  top: 35px; left: 5px;    
 }
 
 .map {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
-  position: absolute;
-  top: 30px; left: 10px;    
   border-collapse: separate;
   border-spacing: 1px;
   z-index: 1;
@@ -953,14 +961,14 @@ button[disabled]:hover {
 
 .map td {
   box-sizing: border-box;
-  background: rgba(150,150,150,0.1);
+  background: rgba(255,255,255,0.05);
   width: 60px; height: 90px;
   position: relative;
   border: 1px solid transparent;
   border-radius: 3px;
 }
 .map td:hover {
-  background: rgba(150,150,150,0.2);
+  background: rgba(255,255,255,0.08);
 }
 
 .map td.playerarea {
@@ -1353,11 +1361,11 @@ button[disabled]:hover {
    background-image: url("../img/skills/stun.png")
 }
 .silence .img {
-   background-image: url("../img/skills/stun.png")
+   background-image: url("../img/skills/silence.jpg")
 }
 .magicimmune .img {
-   background-image: url("../img/skills/stun.png")
+   background-image: url("../img/skills/magicimmune.gif")
 }
 .ethereal .img {
-   background-image: url("../img/skills/stun.png")
+   background-image: url("../img/skills/ethereal.png")
 }
