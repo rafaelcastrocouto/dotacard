@@ -162,7 +162,10 @@ small {
 /*TOPBAR*/
 
 .topbar {
-  position: relative;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
 }
 
 .choose .topbar,
@@ -239,8 +242,19 @@ small {
   font-size: 33%;
 }
 
-.intro .video {
+#introvideo {
   pointer-events: none;
+  left: 50%;
+  position: absolute;
+  transform: translateX(-50%);
+  filter: saturate(1.75);
+  -webkit-filter: saturate(1.75);
+}
+
+.skipvideo {
+  width: 100%; height: 100%;
+  position: absolute;
+  top: 0; left: 0;
 }
 
 /*LOGIN*/
@@ -404,18 +418,18 @@ label input {
   width: 100px;
   height: 150px;
   margin: 4px;  
-  box-shadow: inset 0 0 10px rgba(255,255,255,0.7);
+  box-shadow: inset 0 0 40px rgba(255,255,255,0.1);
 }
 
 .slot.available {
   animation: innerlight 0.5s infinite;
 }
 @keyframes innerlight {
-  0%, 100% {box-shadow: inset 0 0 40px white;}
-  50% {box-shadow: inset 0 0 20px white;}
+  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.2);}
+  50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
 }
 .slot:hover {
-  background: rgba(255,255,255,0.2);
+  background: rgba(255,255,255,0.1);
 }
 
 .pickedbox .card {
@@ -427,7 +441,7 @@ label input {
   100% {top: 50%;}
 }
 .pickedbox .card:hover { 
-  top: 40%;
+  top: 45%;
   transform: translate(-50%, -50%) scale(0.45);
 }
 

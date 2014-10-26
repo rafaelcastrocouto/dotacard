@@ -120,6 +120,11 @@ var states = {
       if(!game.debug){ 
         this.video = $('<div>').addClass('video').hide().appendTo(this.el);
         this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
+        this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.video)
+        .click(function(){
+          clearTimeout(game.timeout);  
+          states.changeTo('login');
+        }).contextmenu(game.nomenu);
         var ratio = 16/9;
         var width = states.el.width() * 1.1;
         var height = Math.ceil(width / ratio);
@@ -144,10 +149,6 @@ var states = {
         }
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
         this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
-        this.el.click(function(){
-          clearTimeout(game.timeout);  
-          states.changeTo('login');
-        }); 
       }
     },
 
@@ -178,7 +179,7 @@ var states = {
         if(states.currentstate == 'intro'){  
           states.changeTo('login');
         }
-      }, 104000);       
+      }, 105400);       
     },
 
     end: function(){
@@ -204,7 +205,10 @@ var states = {
         if(e.which == 13) states.login.button.click();
       });    
       var c = 'Choose a name and click to play';
-      this.button = $('<button>').appendTo(this.menu).attr({'placeholder': c, 'title': c}).text('Play')
+      this.button = $('<button>').appendTo(this.menu).attr({
+        placeholder: c, 
+        title: c
+      }).text('Play')
       .click(function(){        
         var name = states.login.input.val();        
         if(!name) states.login.input.focus();
@@ -308,7 +312,7 @@ var states = {
       this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', 'Choose your heroes');
       this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').addClass('hidden').on('contextmenu', game.nomenu);
       for(var slot = 0; slot < 5; slot++){
-        $('<div>').appendTo(this.pickedbox).attr({title: 'Click here to pick'}).data('slot', slot).addClass('slot available');
+        $('<div>').appendTo(this.pickedbox).attr({title: 'Right click here to pick'}).data('slot', slot).addClass('slot available');
       }
       this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html('My Decks<br>Comming soon...').addClass('hidden');
       this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').addClass('hidden');
@@ -319,15 +323,7 @@ var states = {
           pickDeck.addClass('pickdeck').appendTo(states.choose.pickbox);
           states.choose.size = 100;
           $.each(pickDeck.data('cards'), function(id, card){
-            card.data('place', card.index());  
-            card.on('click.active', function(){
-              var clickedCard = $(this);
-              if(!clickedCard.hasClass('picked')){
-                $('.card.active').removeClass('active');
-                clickedCard.addClass('active');
-                states.choose.pickDeck.css('margin-left', clickedCard.index() * clickedCard.width()/2 * -1);
-              }
-            });
+            card.on('click.active', states.choose.active);
           });
           pickDeck.width(100 + $('.card').width() * pickDeck.children().length);
           pickDeck.children().first().click();
@@ -341,6 +337,13 @@ var states = {
       if(game.mode == 'public') this.checkPublic();
     },
 
+    active: function(){
+      var card = $(this);
+      $('.card.active').removeClass('active');
+      card.addClass('active');
+      states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
+    },
+    
     checkPublic: function(){
       db({'get':'waiting'}, function(waiting){         
         if(waiting.id == 'none'){
@@ -417,41 +420,37 @@ var states = {
     enablePick: function(){
       this.pickedbox.removeClass('hidden');
       this.prepickbox.removeClass('hidden');
-      $('.slot').on('click.pick contextmenu.pick', states.choose.pick);
+      $('.slot').on('contextmenu.pick', states.choose.pick);
     },
 
     disablePick: function(){      
-      $('.slot').off('click.pick contextmenu.pick', states.choose.pick);
+      $('.slot').off('contextmenu.pick', states.choose.pick);
     },
 
     pick: function(){
-      var slot = $(this);
+      var slot = $(this).closest('.slot');
+      var pick = $('.pickbox .card.active');
+      var card;
       if(slot.hasClass('available')){
-        var pick = $('.pickbox .card.active');
-        if(pick.length){
-          slot.removeClass('available');
-          pick.removeClass('active').appendTo(slot);
-          if($('.slot.available').length == 0) {
-            game.player.mana = 0;
-            $('.slot .card').each(function(){
-              var card = $(this);
-              game.player.mana += card.data('mana');
-            });
-            game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
-            states.choose.counter.text('Game starts in: '+(states.choose.count--)+' Cards per turn: '+ game.player.cardsPerTurn); 
-          }
-        }
+        slot.removeClass('available');
+        if(pick.next().length) card = pick.next();
+        else card = pick.prev();
       } else {        
-        var card = slot.children('.card').addClass('active');
-        if(card.length){
-          $('.pickbox .card.active').removeClass('active');
-          var cardInPlace = $('.pickbox .deck').children()[card.data('place')] || $('.pickbox .deck').children().first();
-          $(cardInPlace).before(card);
-          states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
-          slot.addClass('available');
-          states.choose.counter.text('Pick your deck, game starts in: '+(states.choose.count--));
-        }
+        var card = slot.children('.card');
+        card.on('click.active', states.choose.active).insertBefore(pick);             
       }
+      card.addClass('active');
+      states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);    
+      pick.removeClass('active').appendTo(slot).off('click.active');
+      if($('.slot.available').length == 0){
+        game.player.mana = 0;
+        $('.slot .card').each(function(){
+          var card = $(this);
+          game.player.mana += card.data('mana');
+        });
+        game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
+        states.choose.counter.text('Game starts in: '+(states.choose.count--)+' Cards per turn: '+ game.player.cardsPerTurn); 
+      } else states.choose.counter.text('Pick your deck, game starts in: '+(states.choose.count--));
       return false;
     },
 
@@ -588,7 +587,7 @@ var states = {
         'width': game.width,
         'height': game.height,
         'class': 'map'
-      }).appendTo(this.camera).click(states.unselect);
+      }).appendTo(this.camera).click(Card.unselect);
     },
 
     createTower: function(side, spot){
@@ -875,12 +874,6 @@ var states = {
           else game.timeout = setTimeout(states.table.getData, 1000);
         }
       });
-    },
-    
-    unselect: function(){
-      Map.unhighlight();      
-      game.selectedCard = null;
-      states.table.selectedArea.empty();
     },
 
     hours: function(){

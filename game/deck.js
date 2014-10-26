@@ -177,15 +177,20 @@ Card.select = function(){
   var card = $(this);      
   $('.card.selected').removeClass('selected');      
   $('.card.source').removeClass('source');
-  Map.unhighlight();      
-  game.selectedCard = card;
+  Card.unselect();     
   Map.highlight();
-  states.table.selectedArea.empty();      
-  var zoom = card.clone().appendTo(states.table.selectedArea).addClass('zoom');
+  game.selectedCard = card;      
+  card.clone().appendTo(states.table.selectedArea).addClass('zoom');
   card.addClass('selected');
   return card;
 };
 $.fn.select = Card.select;
+
+Card.unselect = function(){
+  Map.unhighlight();      
+  game.selectedCard = null;
+  states.table.selectedArea.empty();
+};
 
 Card.highlightSource = function(){
   var skill = this, hero = skill.data('hero'), source;
