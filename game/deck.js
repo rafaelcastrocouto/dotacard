@@ -173,7 +173,7 @@ Card.place = function(target){
 };
 $.fn.place = Card.place;
 
-Card.select = function(){
+Card.select = function(event){
   var card = $(this);      
   $('.card.selected').removeClass('selected');      
   $('.card.source').removeClass('source');
@@ -182,6 +182,7 @@ Card.select = function(){
   game.selectedCard = card;      
   card.clone().appendTo(states.table.selectedArea).addClass('zoom');
   card.addClass('selected');
+  if(event && event.stopPropagation) event.stopPropagation()
   return card;
 };
 $.fn.select = Card.select;
@@ -191,6 +192,7 @@ Card.unselect = function(){
   game.selectedCard = null;
   states.table.selectedArea.empty();
 };
+$.fn.unselect = Card.unselect;
 
 Card.highlightSource = function(){
   var skill = this, hero = skill.data('hero'), source;

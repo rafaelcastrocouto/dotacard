@@ -47,6 +47,7 @@ body {
 }
 
 p {
+  cursor: default;
   word-spacing: -1px;
   font-size: 16px;
   line-height: 16px;
@@ -67,15 +68,18 @@ a:visited {
 }
 h1 {
   font-size: 22px;
+  cursor: default;
 }
 h2 {
   font-size: 19px;
+  cursor: default;
 
 }
 img {
   border: 0;
 }
 small {
+  cursor: default;
   font-size: 60%;
 }
 
@@ -290,7 +294,7 @@ button {
   outline: 0;
   background: #bfbfb0;
   color: white;
-  text-shadow: 0 -1px darkgray;
+  text-shadow: 0 1px 0 #9b9c89;
   box-shadow: 0 4px 0 #9b9c89;
   opacity: 0.9;
   position: relative;
@@ -528,6 +532,7 @@ label input {
 }
 
 .card h1 {   
+  cursor: inherit;
   font-family: "Open Sans", "open sans", "Arial", sans-serif;
   margin: 4px 0 0;
   font-size: 12px;
@@ -567,6 +572,7 @@ label input {
 }
 
 .card p { 
+  cursor: inherit;
   text-align: justify;
   margin: 0;
   border: 0;
@@ -956,7 +962,7 @@ label input {
   z-index: 1;
   background-position: 0 0;
   background-size: 107% 107%;
-  background-image: url("../img/bkg/map.png");
+  background-image: url("../img/bkg/map_vectorized.png");
   box-shadow: inset 0 0 8px 6px black;
 }
 
@@ -1295,16 +1301,16 @@ label input {
 }
 .wk-stun .img,
 .wk-dot .img {
-  background-image: url("../img/skills/skeleton_king_hellfire_blast.png");
+  background-image: url("../img/skills.vec/skeleton_king_hellfire_blast.png");
 }
 .wk-lifesteal .img {
-  background-image: url("../img/skills/skeleton_king_vampiric_aura.png");
+  background-image: url("../img/skills.vec/skeleton_king_vampiric_aura.png");
 }
 .wk-crit .img {
-  background-image: url("../img/skills/skeleton_king_mortal_strike.png");
+  background-image: url("../img/skills.vec/skeleton_king_mortal_strike.png");
 }
 .wk-ult .img {
-  background-image: url("../img/skills/skeleton_king_reincarnation.png");
+  background-image: url("../img/skills.vec/skeleton_king_reincarnation.png");
 }
 
 
@@ -1347,32 +1353,32 @@ label input {
   background-image: url("../img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {
-  background-image: url("../img/skills/crystal_maiden_crystal_nova.png")
+  background-image: url("../img/skills.vec/crystal_maiden_crystal_nova.png")
 }
 .cm-aura .img {
-  background-image: url("../img/skills/crystal_maiden_brilliance_aura.png")
+  background-image: url("../img/skills.vec/crystal_maiden_brilliance_aura.png")
 }
 .cm-freeze .img {
-  background-image: url("../img/skills/crystal_maiden_frostbite.png")
+  background-image: url("../img/skills.vec/crystal_maiden_frostbite.png")
 }
 .cm-ult .img {
-  background-image: url("../img/skills/crystal_maiden_freezing_field.png")
+  background-image: url("../img/skills.vec/crystal_maiden_freezing_field.png")
 }
 
 
 /*TOWERS*/
 
 .card.player.towers .img {
-  background-image: url("../img/towers/tower-player.png");
+  background-image: url("../img/towers/tower-player.vec.png");
 }
 .card.enemy.towers .img {
-  background-image: url("../img/towers/tower-enemy.png");
+  background-image: url("../img/towers/tower-enemy.vec.png");
 }
 
 /*BUFFS*/
 
 .stun .img {
-   background-image: url("../img/skills/stun.png")
+   background-image: url("../img/skills.vec/stun.png")
 }
 .silence .img {
    background-image: url("../img/skills/silence.jpg")

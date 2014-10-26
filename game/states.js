@@ -782,7 +782,7 @@ var states = {
         $('.card.heroes').each(function(){
           var hero = $(this);
           if(hero.data('channeling')) hero.trigger('channel', {target: hero});
-        });console.log('bt2');
+        });
         $('.card').each(function(){          
           var card = $(this);          
           card.trigger('turnstart', {target: card});                  
@@ -803,11 +803,11 @@ var states = {
         game.time = game.player.turn + game.enemy.turn;  
         states.table.counter = (game.debug) ? 5 : game.timeToPlay;
         clearTimeout(game.timeout);
-        game.timeout = setTimeout(states.table.turnCount, 1000);console.log('bt');
+        game.timeout = setTimeout(states.table.turnCount, 1000);
       }
     },
 
-    turnCount: function(){ console.log('tc');
+    turnCount: function(){
       game.loader.removeClass('loading');
       states.table.time.text('Time: '+states.table.hours()+' '+states.table.dayNight());     
       states.table.turns.text('Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
