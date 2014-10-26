@@ -563,6 +563,7 @@ var states = {
       this.time.show();
       this.turns.show();
       this.placeTowers(); 
+      this.placeTrees(); 
       this.placeHeroes(); 
       this.buildSkills(); 
       this.buildTurns(); 
@@ -634,6 +635,26 @@ var states = {
       }
     },
 
+    placeTrees: function(){       
+      $('#A1').addClass('camp');
+      $('#L5').addClass('camp');
+      this.unitsDeck = Deck({
+        name: 'units', 
+        filter: ['forest'], 
+        cb: function(deck){
+          deck.addClass('units cemitery').hide().appendTo(states.table.el);        
+          game.tree = deck.data('cards')[0];  
+          game.tree.addClass('tree'); 
+          game.tree.clone().place('A2').on('click.select', Card.select);
+          game.tree.clone().place('A3').on('click.select', Card.select);
+          game.tree.clone().place('B3').on('click.select', Card.select);
+          game.tree.clone().place('L3').on('click.select', Card.select);
+          game.tree.clone().place('L4').on('click.select', Card.select);
+          game.tree.clone().place('K4').on('click.select', Card.select);
+        }
+      }); 
+    },
+    
     placeHeroes: function(){ 
 
       var xxx = 'F3';//'I1';

@@ -606,6 +606,9 @@ label input {
 .card.skills.selected {
   box-shadow: 0 0 0 6px skyblue;
 }
+.card.tree.selected {
+  box-shadow: 0 0 0 10px palegreen;
+}
 .card.heroes.dead.selected {
   box-shadow: 0 0 0 6px gray;
 }
@@ -960,8 +963,7 @@ label input {
   border-collapse: separate;
   border-spacing: 1px;
   z-index: 1;
-  background-position: 0 0;
-  background-size: 107% 107%;
+  background-size: 100%;
   background-image: url("../img/bkg/map_vectorized.png");
   box-shadow: inset 0 0 8px 6px black;
 }
@@ -995,14 +997,21 @@ label input {
   background: rgba(100,255,100,0.2);
 }
 .map td.playerarea:hover {
-  background: rgba(100,255,100,0.25);
+  background: rgba(100,255,100,0.3);
 }
 
 .map td.enemyarea {
   background: rgba(255,100,100,0.2);
 }
 .map td.enemyarea:hover {
-  background: rgba(255,100,100,0.25);
+  background: rgba(255,100,100,0.3);
+}
+
+.map td.camp {
+  background: rgba(255,255,100,0.15);
+}
+.map td.camp:hover {
+  background: rgba(255,255,100,0.25);
 }
 
 .turn .map td.movearea {  
@@ -1353,16 +1362,16 @@ label input {
   background-image: url("../img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {
-  background-image: url("../img/skills.vec/crystal_maiden_crystal_nova.png")
+  background-image: url("../img/skills.vec/crystal_maiden_crystal_nova.png");
 }
 .cm-aura .img {
-  background-image: url("../img/skills.vec/crystal_maiden_brilliance_aura.png")
+  background-image: url("../img/skills.vec/crystal_maiden_brilliance_aura.png");
 }
 .cm-freeze .img {
-  background-image: url("../img/skills.vec/crystal_maiden_frostbite.png")
+  background-image: url("../img/skills.vec/crystal_maiden_frostbite.png");
 }
 .cm-ult .img {
-  background-image: url("../img/skills.vec/crystal_maiden_freezing_field.png")
+  background-image: url("../img/skills.vec/crystal_maiden_freezing_field.png");
 }
 
 
@@ -1373,6 +1382,16 @@ label input {
 }
 .card.enemy.towers .img {
   background-image: url("../img/towers/tower-enemy.vec.png");
+}
+
+/*UNITS*/
+
+.tree {
+  background: forestgreen;
+}
+
+.tree .img {
+  background-image: url("../img/units/tree.png");
 }
 
 /*BUFFS*/

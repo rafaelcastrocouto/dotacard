@@ -10,7 +10,11 @@
       "permanent": "Return"
     }
   },
-  "forest":{    
+  "forest":{  
+    "tree": {
+      "name": "Tree",
+      "attribute": "Forest tree"
+    },
     "cent": {
       "name": "Centaur",
       "attackType": "Melee",

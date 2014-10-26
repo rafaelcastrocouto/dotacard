@@ -38,6 +38,7 @@ Deck.createCards = function(deck, name, cb, filter, multi){
       Deck.createSkillsCards(deck, name, cb, filter, multi);
     });
   }
+  if(name == 'units') Deck.createUnitsCards(deck, name, cb, filter);
 };
 
 Deck.createHeroesCards = function(deck, name, cb, filter){   
@@ -93,6 +94,28 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         
       });
     }    
+  });
+  deck.data('cards', cards);
+  if(cb) cb(deck);     
+};
+
+
+Deck.createUnitsCards = function(deck, name, cb, filter){   
+  var deckData = game[name];
+  var cards = [];
+  $.each(deckData, function(groupid, groupdata){
+    var found = false;
+    if(filter){      
+      $.each(filter, function(i, pick){
+        if(pick == groupid) found = true;
+      });
+    }
+    if(found || !filter){
+      $.each(groupdata, function(heroid, herodata){        
+        herodata.className = heroid + ' ' +name;
+        cards.push(Card(herodata).appendTo(deck));
+      });       
+    }
   });
   deck.data('cards', cards);
   if(cb) cb(deck);     
