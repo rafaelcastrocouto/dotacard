@@ -1,4 +1,103 @@
 var skills = {
+  
+  ktol: {
+    illuminate: {      
+      cast: function(skill, source, target){},
+      release: function(){}
+    },
+    illuminateult: {
+      cast: function(skill, source, target){},
+      release: function(){}
+    },
+    leak: {
+      cast: function(skill, source, target){
+      },
+      movement: function(){},
+      end: function(){}
+    },
+    mana: {
+      cast: function(skill, source, target){
+      },
+    },
+    ult: {
+      cast: function(skill, source){
+      },
+      end: function(){}
+    },
+    blind: {
+      cast: function(skill, source, target){
+      },
+      hit: function(){},
+      end: function(){}
+    },
+    recall: {
+      cast: function(skill, source, target){},
+      damage: function(){},
+      end: function(){}
+    }
+  },
+  
+  pud: {
+    hook: {
+      cast: function(skill, source, target){}
+    },
+    rot: {
+      cast: function(skill, source){}
+    },
+    passive: {
+      activate: function(skill, source){},
+      damage: function(){},
+      die: function(){}
+    },
+    ult: {
+      cast: function(skill, source, target){},
+      dot: function(){},
+      end: function(){}
+    }    
+  },
+
+  nyx: {
+    stun: {
+      cast: function(skill, source, target){},
+      end: function(){}
+    },
+    burn: {
+      cast: function(skill, source, target){},
+      damage: function(){} 
+    },
+    spike: {
+      cast: function(skill, source){},
+      damage: function(){}
+    },
+    ult: {
+      cast: function(skill, source){},
+      damage: function(){}
+    }    
+  },
+
+  ld: {
+    summon: {
+      cast: function(skill, source, target){}
+    },
+    rabid: {
+      cast: function(skill, source){},
+      end: function(){}
+    },
+    passive: {
+      activate: function(skill, source){}
+    },
+    ult: {
+      cast: function(skill, source){}  
+    },
+    cry: {
+      cast: function(skill, source){},
+      end: function(){}
+    },
+    transform: {
+      cast: function(skill, source){}      
+    }
+  },  
+  
   wk: {
     stun: {
       cast: function(skill, source, target){           
@@ -37,16 +136,17 @@ var skills = {
       activate: function(skill, source){
         var side = source.data('side');
         var team = $('.card.heroes.'+side);
-        team.on('attack.wk', this.attack).data('wk-ls', skill);
+        team.on('attack.wk-lifesteal', this.attack);
+        team.data('wk-lifesteal', skill);
         source.addBuff(team, skill.data('buff'));
-        source.on('die.wk-ls', this.die);
-        source.on('reborn.wk-ls', this.reborn);
+        source.on('die.wk-lifesteal', this.die);
+        source.on('reborn.wk-lifesteal', this.reborn);
       },
       attack: function(event, eventdata){ 
         var source = eventdata.source;
         var target = eventdata.target;        
         var damage = source.data('currentdamage');
-        var skill = source.data('wk-ls');
+        var skill = source.data('wk-lifesteal');
         var bonus = skill.data('percentage') / 100;
         source.heal(damage * bonus);
       },
@@ -54,14 +154,18 @@ var skills = {
         var source = eventdata.target; 
         var side = source.data('side');
         var team = $('.card.heroes.'+side);        
-        team.removeBuff('wk-lifesteal')
+        team.removeBuff('wk-lifesteal');
+        team.off('attack.wk-lifesteal');
+        team.data('wk-lifesteal', null);
       },
       reborn: function(event, eventdata){
         var source = eventdata.target; 
-        var skill = source.data('wk-ls');
+        var skill = source.data('wk-lifesteal');
         var side = source.data('side');
         var team = $('.card.heroes.'+side);
         source.addBuff(team, skill.data('buff'));
+        team.on('attack.wk-lifesteal', this.attack);
+        team.data('wk-lifesteal', skill);
       }
     },
     crit: {
@@ -110,7 +214,8 @@ var skills = {
           spot: spot,
           duration: skill.data('delay')
         });
-        skill.discard();
+        if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);
+        else this.appendTo(states.table.enemySkillsDeck);
       },
       resurrect: function(event, eventdata){
         var wk = eventdata.target;
@@ -160,45 +265,6 @@ var skills = {
       }
     }    
   },
-  
-
-  ktol: {
-    illuminate: {      
-      cast: function(skill, source, target){},
-      release: function(){}
-    },
-    illuminateult: {
-      cast: function(skill, source, target){},
-      release: function(){}
-    },
-    leak: {
-      cast: function(skill, source, target){
-      },
-      movement: function(){},
-      end: function(){}
-    },
-    mana: {
-      cast: function(skill, source, target){
-      },
-    },
-    ult: {
-      cast: function(skill, source){
-      },
-      end: function(){}
-    },
-    blind: {
-      cast: function(skill, source, target){
-      },
-      hit: function(){},
-      end: function(){}
-    },
-    recall: {
-      cast: function(skill, source, target){},
-      damage: function(){},
-      end: function(){}
-    }
-  },
-  
 
   cm: {
     slow: {
@@ -326,9 +392,6 @@ var skills = {
           target.data('currentspeed', speed);
           target.off('turnstart.cm-ult-buff').data('cm-ult-buff', null).removeBuff('cm-ult');
         }
-      },
-      end: function(){
-        
       }
     }    
   },
@@ -336,90 +399,71 @@ var skills = {
 
   am: {
     burn: {
-      activate: function(skill, source){},
-      damage: function(){}
+      activate: function(skill, source){
+        source.on('attack.wk', this.attack).data('am-burn', skill);
+        source.addBuff(source, skill.data('buff'));
+        source.on('die.am-burn', this.die);
+        source.on('reborn.am-burn', this.reborn);
+      },
+      attack: function(event, eventdata){ 
+        var source = eventdata.source;
+        var target = eventdata.target;
+        var hero = target.data('hero');
+        var side = source.data('side');
+        console.log(side, hero);
+        if(side == 'enemy' && hero){
+          var cards = states.table.playerHand.children('.'+hero);
+          if(cards.length > 0){
+            var card = Deck.randomCard(cards, 'noseed');
+            card.discard();
+          }
+        }
+      },
+      die: function(event, eventdata){       
+        var source = eventdata.target;      
+        source.removeBuff('am-burn');
+        source.off('attack.am-burn').data('am-burn', null);
+      },
+      reborn: function(event, eventdata){
+        var source = eventdata.target; 
+        var skill = source.data('am-burn');
+        source.addBuff(source, skill.data('buff'));
+        source.on('attack.am-burn', this.attack).data('am-burn', skill);
+      }
     },
     passive: {
-      activate: function(skill, source){},
-      damage: function(){}
+      activate: function(skill, source){
+        source.data('resistance', skill.data('percentage') / 100);
+      }
     },
     blink: {
       cast: function(skill, source, target){
         source.css({opacity: 0});
-        skill.css({opacity: 0});
+        if(game.status == 'turn') skill.css({opacity: 0});
         setTimeout(function(){
+          if(this.skill.hasClass('player')) this.skill.appendTo(states.table.playerCemitery);
+          else this.skill.appendTo(states.table.enemySkillsDeck);
           this.source.place(this.target).css({opacity: 1});
-          this.skill.discard();
-          source.select();
+          this.source.select();
         }.bind({skill: skill, source: source, target: target}), 500);        
       }
     },
     ult: {
-      cast: function(skill, source, target){}
+      cast: function(skill, source, target){
+        var spot = Map.getPosition(target); 
+        if(game.status == 'turn') states.table.animateCast(skill, spot, states.table.playerCemitery);
+        var side = source.data('side');        
+        var otherside = (side == 'enemy') ? 'player': 'enemy';
+        var damage = game.enemy.maxCards - game.enemy.hand;
+        damage *= skill.data('multiplier');
+        Map.inRange(spot, Map.getRange(skill.data('aoe')), function(neighbor){      
+          var card = neighbor.find('.card.'+otherside); 
+          if(card.length){
+            source.damage(damage, card, skill.data('damageType'));
+          }
+        });
+      }
     }    
-  },
-
-
-  pud: {
-    hook: {
-      cast: function(skill, source, target){}
-    },
-    rot: {
-      cast: function(skill, source){}
-    },
-    passive: {
-      activate: function(skill, source){},
-      damage: function(){},
-      die: function(){}
-    },
-    ult: {
-      cast: function(skill, source, target){},
-      dot: function(){},
-      end: function(){}
-    }    
-  },
-
-
-  nyx: {
-    stun: {
-      cast: function(skill, source, target){},
-      end: function(){}
-    },
-    burn: {
-      cast: function(skill, source, target){},
-      damage: function(){} 
-    },
-    spike: {
-      cast: function(skill, source){},
-      damage: function(){}
-    },
-    ult: {
-      cast: function(skill, source){},
-      damage: function(){}
-    }    
-  },
-
-  ld: {
-    summon: {
-      cast: function(skill, source, target){}
-    },
-    rabid: {
-      cast: function(skill, source){},
-      end: function(){}
-    },
-    passive: {
-      activate: function(skill, source){}
-    },
-    ult: {
-      cast: function(skill, source){}  
-    },
-    cry: {
-      cast: function(skill, source){},
-      end: function(){}
-    },
-    transform: {
-      cast: function(skill, source){}      
-    }
   }
 
 };

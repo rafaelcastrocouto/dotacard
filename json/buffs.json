@@ -1,8 +1,15 @@
 {
+  
+  "am": {
+    "burn": {
+      "name": "Mana Break",
+      "description": "Enemy must discard a skill of the attacked hero"
+    }    
+  },
+  
   "wk": {
     "stun": {
       "name": "Wraithfire Blast",
-      "skill": "dot",
       "description": "Wraithfire Blast damage over time"  
     },    
     "lifesteal": {

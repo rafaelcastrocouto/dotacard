@@ -1,4 +1,41 @@
 {
+  "am": {
+    "burn": {
+      "name": "Mana Break",
+      "type": "Passive",
+      "target": "Passive",
+      "cards": 1,
+      "description": "Everytime Antimage attacks enemy player loses a skill card of the attaked hero"
+    },
+    "passive": {
+      "name": "Spell Shield",
+      "type": "Passive",
+      "target": "Passive",      
+      "percentage": 66,
+      "cards": 1,
+      "description": "Reduces all magic damage to a third of the damage"    
+    },
+    "blink": {
+      "name": "Blink",
+      "type": "Target spot",     
+      "target": "Spot",
+      "range": "Long",
+      "cards": 11,
+      "description": "Teleport Anti Mage to the target spot" 
+    },
+    "ult": {
+      "name": "Mana Void",
+      "type": "Area of Effect",
+      "target": "Enemy",
+      "range": "Short", 
+      "aoe": "Ranged", 
+      "damageType": "Magical",       
+      "cards": 1,
+      "multiplier": 2,
+      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand"
+    }    
+  },
+  
   "wk": {
     "stun": {
       "name": "Wraithfire Blast",
@@ -34,7 +71,7 @@
     "ult": {
       "name": "Reincarnation",
       "type": "Passive",
-      "target": "Autocast",
+      "target": "Autoactivate",
       "duration": 3,
       "aoe": "Melee",
       "delay": 2,
@@ -151,45 +188,10 @@
       "target": "Self",
       "range": "Long",
       "duration": 2,
-      "damage": 8,
+      "damage": 7,
       "damageType": "Magical",       
       "cards": 1,
       "description": "Rylai channels icy explosions around her!"    
-    }    
-  },
-
-  "am": {
-    "burn": {
-      "name": "Mana Break",
-      "type": "Passive",
-      "target": "Passive",
-      "cards": 1,
-      "description": "Everytime Antimage attacks enemy player loses a card of the attaked hero"
-    },
-    "passive": {
-      "name": "Spell Shield",
-      "type": "Passive",
-      "target": "Passive",      
-      "percentage": 50,
-      "cards": 1,
-      "description": "Reduces magic damage"    
-    },
-    "blink": {
-      "name": "Blink",
-      "type": "Target spot",     
-      "target": "Spot",
-      "range": "Long",
-      "cards": 11,
-      "description": "Teleport Anti Mage to the target spot" 
-    },
-    "ult": {
-      "name": "Mana Void",
-      "type": "Area of Effect",
-      "target": "Enemy",
-      "range": "Short", 
-      "damageType": "Magical",       
-      "cards": 1,
-      "description": "Damages area around an enemy for every card player could have times 5"
     }    
   },
 

@@ -470,7 +470,7 @@ var states = {
       $('.pickbox .card.active').removeClass('active');
       if(game.debug){
         if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
-        else game.player.picks = ['cm','am','pud','ld','kotl'];
+        else game.player.picks = ['am','cm','pud','ld','kotl'];
         states.choose.sendDeck();        
         return;
       }      
@@ -702,10 +702,13 @@ var states = {
     },
 
     buildSkills: function(){        
+      //10 to 14 = 2 cards; 15 to 20 = 3 cards
       game.player.maxCards = Math.round(game.player.mana/2);  
       game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10)
+      
       game.enemy.maxCards = Math.round(game.enemy.mana/2); 
-      game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);      
+      game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);   
+      
       this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
       this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
       this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
@@ -741,7 +744,7 @@ var states = {
         var availableSkills = $('.skills.available.player.deck .card');        
         var card = Deck.randomCard(availableSkills);
         card.appendTo(states.table.playerHand);
-        if(card.data('target') == 'Auto') {
+        if(card.data('target') == 'Autoactivate') {
           var heroid = card.data('hero');        
           var hero = $('.map .player.heroes.'+heroid);
           var toSpot = Map.getPosition(hero);
@@ -750,7 +753,10 @@ var states = {
         }
       };
       
-      game.enemy.buyCard = function(){ game.random(); }
+      game.enemy.buyCard = function(){ 
+        game.enemy.hand++;
+        game.random(); 
+      }
       
     },
 
@@ -764,8 +770,7 @@ var states = {
     enemyHand: function(){
       for(var i=0; i<game.enemy.cardsPerTurn; i++){
         if(game.enemy.hand < game.enemy.maxCards){
-          game.enemy.buyCard();
-          game.enemy.hand++;
+          game.enemy.buyCard();          
         }
       }      
     },
@@ -950,7 +955,7 @@ var states = {
         game.currentData.moves.push('P:'+toSpot+':'+skillid+':'+hero); 
         skill.activate(target);
         var t = skill.offset(), d = target.offset();
-        skill.css({top: d.top - t.top - 22, left: d.left - t.left - 22, transform: 'scale(0.3)'});
+        skill.css({top: d.top - t.top + 30, left: d.left - t.left + 20, transform: 'translate(-50%, -50%) scale(0.3)'});
         setTimeout(function(){          
           $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);
           target.select();
@@ -1032,8 +1037,7 @@ var states = {
     animateCast: function(skill, target, destiny){
       if(typeof target == 'string') target = $('#'+target);
       var t = skill.offset(), d = target.offset();
-      var w =  destiny.width()/2 + 1, h = destiny.height()/2 + 1;
-      skill.css({top: d.top - t.top + h, left: d.left - t.left + w, transform: 'tranlate(-50%, -50%) scale(0.3)'});
+      skill.css({top: d.top - t.top + 30, left: d.left - t.left + 20, transform: 'translate(-50%, -50%) scale(0.3)'});
       setTimeout(function(){          
         $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
         if(skill.hasClass('selected') && game.castSource) game.castSource.select();

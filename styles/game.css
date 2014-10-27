@@ -534,7 +534,7 @@ label input {
 .card h1 {   
   cursor: inherit;
   font-family: "Open Sans", "open sans", "Arial", sans-serif;
-  margin: 4px 0 0;
+  margin: 4px 0 2px;
   font-size: 12px;
   font-weight: bold;
   float: left;
@@ -576,7 +576,8 @@ label input {
   text-align: justify;
   margin: 0;
   border: 0;
-  font-size: 13px;
+  font-size: 11px;
+  line-height: 13px;
   display: block;
 }
 
@@ -987,7 +988,6 @@ label input {
   width: 60px; height: 90px;
   position: relative;
   border: 1px solid transparent;
-  border-radius: 3px;
 }
 .map td:hover {
   background: rgba(255,255,255,0.08);
@@ -1220,7 +1220,7 @@ label input {
 .pud {
   background: #b43;
 }
-.pud .portrait .img {
+.pud.heroes .portrait .img {
   background-image: url("../img/heroes/pudge_full.png");
 }
 .pud-hook .img {
@@ -1240,7 +1240,7 @@ label input {
 .nyx {
   background: #145;
 }
-.nyx .portrait .img {
+.nyx.heroes .portrait .img {
   background-image: url("../img/heroes/nyx_assassin_full.png");
 }
 .nyx-stun .img {
@@ -1260,27 +1260,27 @@ label input {
 .am {
   background: #674f80;
 }
-.am .portrait .img {
+.am.heroes .portrait .img {
   background-image: url("../img/heroes/antimage_full.png");
 }
 .am-burn .img {
-  background-image: url("../img/skills/antimage_mana_break.png");
+  background-image: url("../img/skills.vec/antimage_mana_break.png");
 }
 .am-blink .img {
-  background-image: url("../img/skills/antimage_blink.png");
+  background-image: url("../img/skills.vec/antimage_blink.png");
 }
 .am-passive .img {
-  background-image: url("../img/skills/antimage_spell_shield.png");
+  background-image: url("../img/skills.vec/antimage_spell_shield.png");
 }
 .am-ult .img {
-  background-image: url("../img/skills/antimage_mana_void.png");
+  background-image: url("../img/skills.vec/antimage_mana_void.png");
 }
 
 
 .ld {
   background: #62a64e;
 }
-.ld .portrait .img {
+.ld.heroes .portrait .img {
   background-image: url("../img/heroes/lone_druid_full.png");
 }
 .ld-summon .img {
@@ -1305,7 +1305,7 @@ label input {
 .wk {
   background: #6db090;
 }
-.wk .portrait .img {
+.wk.heroes .portrait .img {
   background-image: url("../img/heroes/skeleton_king_full.png");
 }
 .wk-stun .img,
@@ -1326,7 +1326,7 @@ label input {
 .kotl {
   background: #E5BC53;
 }
-.kotl .portrait .img {
+.kotl.heroes .portrait .img {
   background-image: url("../img/heroes/keeper_of_the_light_full.png");
 }
 .kotl-illuminate .img {
@@ -1358,7 +1358,7 @@ label input {
 .cm {
   background: #54a0e3;
 }
-.cm .portrait .img {
+.cm.heroes .portrait .img {
   background-image: url("../img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {

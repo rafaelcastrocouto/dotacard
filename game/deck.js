@@ -70,7 +70,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
   var cards = [];
   $.each(deckData, function(hero, heroSkillsData){ 
     var found = false;
-    if(filter){      
+    if(filter){
       $.each(filter, function(i, pick){
         if(pick == hero) found = true;
       });
@@ -79,7 +79,7 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
       $.each(heroSkillsData, function(skill, skillData){ 
         skillData.hero = hero;
         skillData.skill = skill;
-        skillData.className = hero+'-'+skill + ' ' + name;
+        skillData.className = [hero+'-'+skill, name, hero].join(' ');
         if(game.buffs[hero] && game.buffs[hero][skill]){
           skillData.buff = game.buffs[hero][skill];
           skillData.buff.hero = hero;
@@ -150,14 +150,19 @@ var Card = function(data){
     data.currenthp = data.hp;        
     $('<p>').addClass('hp').appendTo(current).html('HP <span>'+ data.currenthp +'</span>');   
   }  
+  if(data.mana) $('<p>').appendTo(desc).text('Mana: ' + data.mana);
+  
+  var range = '';
   if(data.damage){    
-    $('<p>').addClass('damage').appendTo(desc).text('Damage: '+ data.damage);
+    if(data.range) range = ' ('+data.range+')';
+    $('<p>').addClass('damage').appendTo(desc).text('Damage: '+ data.damage + range);
     data.currentdamage = data.damage;
     $('<p>').addClass('damage').appendTo(current).html('DMG <span>'+ data.currentdamage +'</span>');
   }
-
-  if(data.range)      $('<p>').appendTo(desc).text('Range: '+data.range);
-  if(data.mana)       $('<p>').appendTo(desc).text('Mana: ' + data.mana);
+  if(data.range && !range) $('<p>').appendTo(desc).text('Range: '+data.range);
+  
+  if(data.armor) $('<p>').appendTo(desc).text('Armor: '+data.armor+'%');
+  if(data.resistance) $('<p>').appendTo(desc).text('Magic Resistance: '+data.resistance+'%');
   
   if(data.type)       $('<p>').appendTo(desc).text('Type: '+data.type);
   if(data.cards)      $('<p>').appendTo(desc).text('Cards: '+data.cards);
@@ -167,6 +172,7 @@ var Card = function(data){
   if(data.damageType) $('<p>').appendTo(desc).text('Damage Type: '+data.damageType);
   if(data.duration)   $('<p>').appendTo(desc).text('Duration: '+data.duration);
   if(data.dot)        $('<p>').appendTo(desc).text('Damage over time: '+data.dot);
+  if(data.multiplier) $('<p>').appendTo(desc).text('Multiplier: '+data.multiplier);
   
   
   //if(data.skills)     $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
@@ -200,9 +206,9 @@ Card.select = function(event){
   var card = $(this);      
   $('.card.selected').removeClass('selected');      
   $('.card.source').removeClass('source');
-  Card.unselect();     
+  Card.unselect();    
+  game.selectedCard = card; 
   Map.highlight();
-  game.selectedCard = card;      
   card.clone().appendTo(states.table.selectedArea).addClass('zoom');
   card.addClass('selected');
   if(event && event.stopPropagation) event.stopPropagation()
@@ -394,7 +400,7 @@ Card.cast = function(skill, target){
       source.trigger('cast',{skill: skill, source: source, target: target});
       skills[hero][skillid].cast(skill, source, target);    
       var channelduration = skill.data('channel');
-      if(channelduration) {
+      if(channelduration){
         source.data('channeling', channelduration).addClass('channeling');
         source.on('turnstart.channel', function(event, eventdata){
           var channeler = eventdata.target;
@@ -409,6 +415,7 @@ Card.cast = function(skill, target){
         });
       }
       Map.unhighlight();
+      if(source.hasClass('enemy')) game.enemy.hand--;
       this.addClass('done');
     }
   }
@@ -424,6 +431,7 @@ Card.activate = function(target){
   if(skillid && hero && target.data('hero') == hero){    
     skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
+    if(source.hasClass('enemy')) game.enemy.hand--;
   }
   return this;
 };
@@ -540,6 +548,10 @@ Card.damage = function(damage, target, type){
   else damage = Math.round(damage);
   var source = this;
   if(!type) type = 'Physical';
+  var resistance = target.data('resistance');
+  if(type == 'Magical' && resistance) damage = Math.round(damage * resistance);
+  var armor = target.data('armor');
+  if(type == 'Physical' && armor) damage = Math.round(damage * armor);
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;
   target.changehp(hp);  
