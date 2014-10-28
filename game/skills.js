@@ -78,7 +78,10 @@ var skills = {
   ld: {
     summon: {
       cast: function(skill, source, target){
-        
+        var side = source.data('side');
+        var bear = $('.'+side+'.card.ld.bear');
+        bear.data('currenthp', bear.data('hp'));
+        bear.place(target);
       }
     },
     rabid: {

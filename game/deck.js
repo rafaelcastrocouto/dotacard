@@ -57,7 +57,7 @@ Deck.createHeroesCards = function(deck, name, cb, filter){
       herodata.currentspeed = 2;
       herodata.kd = true;
       herodata.buffs = true;
-      herodata.className = heroid + ' ' +name;
+      herodata.className = [heroid, name].join(' ');
       cards.push(Card(herodata).appendTo(deck));
     }
   });
@@ -111,9 +111,13 @@ Deck.createUnitsCards = function(deck, name, cb, filter){
       });
     }
     if(found || !filter){
-      $.each(groupdata, function(heroid, herodata){        
-        herodata.className = heroid + ' ' +name;
-        cards.push(Card(herodata).appendTo(deck));
+      $.each(groupdata, function(unitid, unitdata){        
+        unitdata.className = [unitid, name, groupid].join(' ');
+        unitdata.hero = groupid;
+        unitdata.speed = 2;
+        unitdata.currentspeed = 2;
+        unitdata.buffs = true;
+        cards.push(Card(unitdata).appendTo(deck));
       });       
     }
   });
@@ -140,7 +144,7 @@ var Card = function(data){
   $('<div>').appendTo(portrait).addClass('overlay');
   
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute);  
-  else if(data.cards) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
+  else $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
   
   var current = $('<div>').addClass('current').appendTo(fieldset);
   var desc = $('<div>').addClass('desc').appendTo(fieldset);
@@ -340,7 +344,7 @@ $.fn.strokeSkill = Card.strokeSkill;
 
 Card.highlightMove = function(){
   var card = this;
-  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done static dead stunned frozen')){       
+  if(card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done static dead stunned frozen')){       
     var speed = card.data('currentspeed');
     if(speed < 1) return; 
     if(speed > 3) speed = 3;

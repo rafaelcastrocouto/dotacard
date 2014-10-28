@@ -268,7 +268,7 @@ var Map = {
   
   highlight: function(){
     if(game.selectedCard){
-      if(game.selectedCard.hasClass('heroes')){        
+      if(game.selectedCard.hasClasses('heroes units')){        
         if(game.status == 'turn') {
           game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack(); 

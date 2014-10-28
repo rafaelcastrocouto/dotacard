@@ -554,10 +554,10 @@ label input {
   text-align: center;
   display: inline-block;
   border-radius: 50%;
-  width: 19px;
-  height: 18px;
+  width: 23px;
+  height: 19px;  
+  padding: 0;
   padding-top: 2px;
-  padding-left: 1px;
 }
 .card .current .hp span {
   background: #ceeb71;
@@ -1283,7 +1283,8 @@ label input {
 .ld.heroes .portrait .img {
   background-image: url("../img/heroes/lone_druid_full.png");
 }
-.ld-summon .img {
+.ld-summon .img,
+.ld.bear .img {
   background-image: url("../img/skills/lone_druid_spirit_bear.png");
 }
 .ld-rabid .img {

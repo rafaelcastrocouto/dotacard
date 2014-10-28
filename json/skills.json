@@ -1,4 +1,66 @@
 {
+  "ld": {
+    "summon": {
+      "name": "Spirit Bear",
+      "type": "Summon",
+      "target": "Spot",
+      "range": "Melee",
+      "hp": 135,
+      "damage": 2,      
+      "cards": 2,
+      "description": "Summons a powerful Spirit Bear companion"
+    },
+    "rabid": {
+      "name": "Rabid",
+      "type": "Active",
+      "target": "Self",      
+      "percentage": 40,   
+      "duration": 3,
+      "cards": 5,
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear by a percentage"    
+    },
+    "passive": {
+      "name": "Synergy",
+      "type": "Passive",     
+      "target": "Passive",
+      "cards": 1,
+      "bearBonus": 2,
+      "rabidBonus": 3,      
+      "hpBonus": 20,      
+      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
+    },
+    "ult": {
+      "name": "True Form",
+      "type": "Active",
+      "target": "Self",
+      "damage": 20,
+      "damageType": "Physical",
+      "cards": 4,
+      "hpBonus": 20,
+      "description": "Lone Druid morphs himself into a raging bear"       
+    },
+    "cry": {
+      "special": "ult",
+      "name": "Battle Cry",
+      "type": "Active",
+      "target": "Self",
+      "duratioin": 2,
+      "damage": 3,
+      "cards": 1, 
+      "description": "Increases the attack of Syllabear and the Spirit Bear"       
+    },
+    "transform": {
+      "special": "ult",
+      "name": "Druid Form",
+      "type": "Active",
+      "target": "Self",
+      "duratioin": 8,
+      "damage": 20,
+      "damageType": "Physical",
+      "cards": 1, 
+      "description": "Syllabear morphs himself back into a druid"       
+    }
+  },
   "am": {
     "burn": {
       "name": "Mana Break",
@@ -282,66 +344,5 @@
       "cards": 1, 
       "description": "Nyx Assassin becomes invisible and gains bonus on next attack"       
     }    
-  },
-
-  "ld": {
-    "summon": {
-      "name": "Spirit Bear",
-      "type": "Summon",
-      "target": "Spot",
-      "range": "Melee",
-      "cards": 2,
-      "description": "Summons a powerful Spirit Bear companion"
-    },
-    "rabid": {
-      "name": "Rabid",
-      "type": "Active",
-      "target": "Self",      
-      "percentage": 40,   
-      "duration": 3,
-      "cards": 5,
-      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear by a percentage"    
-    },
-    "passive": {
-      "name": "Synergy",
-      "type": "Passive",     
-      "target": "Passive",
-      "cards": 1,
-      "bearBonus": 2,
-      "rabidBonus": 3,      
-      "hpBonus": 20,      
-      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
-    },
-    "ult": {
-      "name": "True Form",
-      "type": "Active",
-      "target": "Self",
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 4,
-      "hpBonus": 20,
-      "description": "Lone Druid morphs himself into a raging bear"       
-    },
-    "cry": {
-      "special": "ult",
-      "name": "Battle Cry",
-      "type": "Active",
-      "target": "Self",
-      "duratioin": 2,
-      "damage": 3,
-      "cards": 1, 
-      "description": "Increases the attack of Syllabear and the Spirit Bear"       
-    },
-    "transform": {
-      "special": "ult",
-      "name": "Druid Form",
-      "type": "Active",
-      "target": "Self",
-      "duratioin": 8,
-      "damage": 20,
-      "damageType": "Physical",
-      "cards": 1, 
-      "description": "Syllabear morphs himself back into a druid"       
-    }
   }
 }

@@ -3,9 +3,9 @@
     "bear":{
       "name": "Spirit Bear",
       "hp": 135,
-      "regen": 4,
       "damage": 2,
-      "attackType": "Melee",
+      "type": "Summon",
+      "range": "Melee",
       "passive": "Entangling Claws, Demolish",
       "permanent": "Return"
     }
@@ -13,7 +13,7 @@
   "forest":{  
     "cent": {
       "name": "Centaur",
-      "attackType": "Melee",
+      "range": "Melee",
       "hp": 135,
       "regen": 2,
       "mana": 3,
@@ -24,7 +24,7 @@
     
     "golem": {
       "name": "Golem",
-      "attackType": "Melee",
+      "range": "Melee",
       "hp": 135,
       "regen": 1,
       "damage": 5,

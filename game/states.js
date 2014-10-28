@@ -483,7 +483,7 @@ var states = {
       $('.pickbox .card.active').removeClass('active');
       if(game.debug){
         if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
-        else game.player.picks = ['am','cm','pud','ld','kotl'];
+        else game.player.picks = ['ld','cm','pud','am','kotl'];
         states.choose.sendDeck();        
         return;
       }      
@@ -652,7 +652,7 @@ var states = {
     
     createTree: function(spot){
       var tree = Card({
-        className: 'tree static',
+        className: 'tree static neutral',
         name: 'Tower',        
         attribute: 'Forest Tree'
       }); 
@@ -682,7 +682,7 @@ var states = {
             var x = 0, y = 3;
             $.each(deck.data('cards'), function(i, card){   
               var p = game.player.picks.indexOf(card.data('hero'));
-              card.addClass('player').data('side','player').on('click.select', Card.select);
+              card.addClass('player hero').data('side','player').on('click.select', Card.select);
               card.place(Map.toId(x + p,y));
               game.player.mana += card.data('mana');
               if(game.debug){
@@ -702,7 +702,7 @@ var states = {
             var x = 11, y = 1;
             $.each(deck.data('cards'), function(i, card){   
               var p = game.enemy.picks.indexOf(card.data('hero'));
-              card.addClass('enemy').data('side','enemy').on('click.select', Card.select);          
+              card.addClass('enemy hero').data('side','enemy').on('click.select', Card.select);          
               card.place(Map.toId(x - p,y));  
               game.enemy.mana += card.data('mana');
               if(game.debug){
@@ -723,6 +723,9 @@ var states = {
         filter: ['forest'], 
         cb: function(deck){
           deck.addClass('neutral units cemitery').hide().appendTo(states.table.el);
+          $.each(deck.data('cards'), function(i, card){   
+            card.addClass('neutral unit').data('side','neutral').on('click.select', Card.select);    
+          });
         }
       });       
       this.playerUnitsDeck = Deck({
@@ -730,6 +733,9 @@ var states = {
         filter: game.player.picks, 
         cb: function(deck){
           deck.addClass('player units cemitery').hide().appendTo(states.table.el);
+          $.each(deck.data('cards'), function(i, card){   
+            card.addClass('player unit').data('side','player').on('click.select', Card.select);    
+          });
         }
       });       
       this.enemyUnitsDeck = Deck({
@@ -737,6 +743,9 @@ var states = {
         filter: game.enemy.picks, 
         cb: function(deck){
           deck.addClass('enemy units cemitery').hide().appendTo(states.table.el);
+          $.each(deck.data('cards'), function(i, card){   
+            card.addClass('enemy unit').data('side','enemy').on('click.select', Card.select);    
+          });
         }
       }); 
     },    
@@ -760,7 +769,7 @@ var states = {
         cb: function(deck){        
           deck.addClass('player available').hide().appendTo(states.table.el);
           $.each(deck.data('cards'), function(i, skill){   
-            skill.addClass('player').data('side','player').on('click.select', Card.select);
+            skill.addClass('player skill').data('side','player').on('click.select', Card.select);
             if(skill.data('special')) {              
               if(skill.data('special') == 'Permanent') skill.appendTo(states.table.playerPermanent);              
             } else if(skill.data('skill') == 'ult') skill.appendTo(states.table.playerUlts);       
@@ -774,7 +783,7 @@ var states = {
         cb: function(deck){        
           deck.addClass('enemy hand cemitery permanent').appendTo(states.table.el);
           $.each(deck.data('cards'), function(i, skill){   
-            skill.hide().addClass('enemy').data('side','enemy');        
+            skill.hide().addClass('enemy skill').data('side','enemy');        
           });        
         }
       });
@@ -838,7 +847,7 @@ var states = {
         game.currentData.moves = []; 
         states.table.el.addClass(game.status);
         if(game.status == 'turn') game.message.text('Your turn now!');
-        if(game.status == 'unturn') game.message.text('Enemy turn now!');       
+        if(game.status == 'unturn') game.message.text('Enemy turn now');       
         $('.card .damaged').remove();
         $('.card .heal').remove();
         $('.card.dead').each(function(){
