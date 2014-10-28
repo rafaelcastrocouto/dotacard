@@ -1,3 +1,4 @@
+/* by rafælcastrocouto */
 var http = require('http'),
     url = require('url'),
     static = require('static.simple'),

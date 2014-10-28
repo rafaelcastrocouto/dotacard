@@ -195,7 +195,7 @@ var Card = function(data){
 };
 
 Card.place = function(target){
-  if(typeof target == 'string') target = $('#'+target);
+  if(!target.removeClass) target = $('#'+target);
   this.closest('td.block').removeClass('block').addClass('free');
   this.appendTo(target.removeClass('free').addClass('block'));
   return this;

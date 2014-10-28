@@ -3,6 +3,7 @@ var game = {
   start: function(){
     if(window.JSON && 
        window.btoa && window.atob &&
+       window.AudioContext && window.XMLHttpRequest &&
        Modernizr.backgroundsize && 
        Modernizr.boxshadow && 
        Modernizr.cssanimations &&
@@ -12,7 +13,7 @@ var game = {
        Modernizr.opacity &&
        Modernizr.rgba ) 
       game.states.build();
-    else  $('.unsupported').show();
+    else $('.unsupported').show();
   },
   debug: (location.host == "localhost"), 
   status: 'loading', states: states,  
@@ -27,6 +28,7 @@ var game = {
   dayLength: 10, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots  
   nomenu: function(){return false;},
+  audioctx: new AudioContext(), sounds: {}, audio: audio,
   seed: 0, random: function(){  
     if(game.debug) return 0;
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));

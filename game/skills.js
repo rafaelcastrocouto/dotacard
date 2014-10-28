@@ -77,7 +77,9 @@ var skills = {
 
   ld: {
     summon: {
-      cast: function(skill, source, target){}
+      cast: function(skill, source, target){
+        
+      }
     },
     rabid: {
       cast: function(skill, source){},

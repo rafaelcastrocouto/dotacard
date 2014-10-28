@@ -18,7 +18,8 @@ var states = {
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
 
   build: function(){
-    states.load.preloadImages();
+    states.load.preLoadImages();
+    states.load.preLoadAudio();
     states.el = $('<div>').attr('id','states').appendTo(game.container);
     states.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
     $.each(states, function(id){      
@@ -61,7 +62,7 @@ var states = {
   'load': {
   ////////////////////////////////////////////////////////////////////////////////////////  
 
-    preloadImages: function(){
+    preLoadImages: function(){
       var allImgs = [];//new array for all the image urls  
       var k = 0; //iterator for adding images
       var sheets = document.styleSheets;//array of stylesheets
@@ -91,7 +92,10 @@ var states = {
       }//loop
       return allImgs;
     },
-
+    
+    preLoadAudio: function(){
+      game.audio('horn');
+    },
 
     end: function(){
       if(!game.debug){
@@ -264,6 +268,7 @@ var states = {
 
     start: function(){
       game.loader.removeClass('loading');
+      game.triesCounter.text('');
       game.message.html('Welcome <b>'+game.player.name+'</b>! ');
       $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(function(){
         states.changeTo('login');
@@ -382,7 +387,15 @@ var states = {
           states.choose.battle(found.challenger, 'challenger');         
         } else {
           game.triesCounter.text(game.tries++);                
-          if(game.tries > game.waitLimit) states.load.reset(); //todo: sugest bot match         
+          if(game.tries > game.waitLimit) {
+            game.message.text('Sorry but we could not find an opponent');
+            var clearWait = {id: 'none'};            
+            db({'set': 'waiting', 'data': clearWait}, function(){    
+              setTimeout(function(){                
+                states.changeTo('menu'); //todo: sugest bot match 
+              }, 2000); 
+            });
+          }
           else game.timeout = setTimeout(states.choose.keepSearching, 1000);
         }
       });
@@ -558,13 +571,15 @@ var states = {
     },
 
     start: function(){      
-      game.message.text('Muuuuuuuuuuuuu!');
+      game.message.text('The battle begins');
+      game.sounds.horn.start();
       game.loader.addClass('loading'); 
       this.time.show();
       this.turns.show();
       this.placeTowers(); 
       this.placeTrees(); 
       this.placeHeroes(); 
+      this.buildUnits(); 
       this.buildSkills(); 
       this.buildTurns(); 
 
@@ -634,25 +649,23 @@ var states = {
         game.currentData.moves.push('A:'+fromSpot+':'+toSpot); 
       }
     },
+    
+    createTree: function(spot){
+      var tree = Card({
+        className: 'tree static',
+        name: 'Tower',        
+        attribute: 'Forest Tree'
+      }); 
+      tree.on('click.select', Card.select).place(spot);
+      return tree;
+    },
 
     placeTrees: function(){       
-      $('#A1').addClass('camp');
-      $('#L5').addClass('camp');
-      this.unitsDeck = Deck({
-        name: 'units', 
-        filter: ['forest'], 
-        cb: function(deck){
-          deck.addClass('units cemitery').hide().appendTo(states.table.el);        
-          game.tree = deck.data('cards')[0];  
-          game.tree.addClass('tree'); 
-          game.tree.clone().place('A2').on('click.select', Card.select);
-          game.tree.clone().place('A3').on('click.select', Card.select);
-          game.tree.clone().place('B3').on('click.select', Card.select);
-          game.tree.clone().place('L3').on('click.select', Card.select);
-          game.tree.clone().place('L4').on('click.select', Card.select);
-          game.tree.clone().place('K4').on('click.select', Card.select);
-        }
-      }); 
+      var treeSpots = 'A2 A3 B3';
+      $.each(treeSpots.split(' '),function(){
+        states.table.createTree(this);
+        states.table.createTree(Map.mirrorPosition(this));
+      });
     },
     
     placeHeroes: function(){ 
@@ -700,6 +713,33 @@ var states = {
         }); 
       }
     },
+    
+    
+    buildUnits: function(){       
+      $('#A1').addClass('camp');
+      $('#L5').addClass('camp');
+      this.neutralUnitsDeck = Deck({
+        name: 'units', 
+        filter: ['forest'], 
+        cb: function(deck){
+          deck.addClass('neutral units cemitery').hide().appendTo(states.table.el);
+        }
+      });       
+      this.playerUnitsDeck = Deck({
+        name: 'units', 
+        filter: game.player.picks, 
+        cb: function(deck){
+          deck.addClass('player units cemitery').hide().appendTo(states.table.el);
+        }
+      });       
+      this.enemyUnitsDeck = Deck({
+        name: 'units', 
+        filter: game.enemy.picks, 
+        cb: function(deck){
+          deck.addClass('enemy units cemitery').hide().appendTo(states.table.el);
+        }
+      }); 
+    },    
 
     buildSkills: function(){        
       //10 to 14 = 2 cards; 15 to 20 = 3 cards
