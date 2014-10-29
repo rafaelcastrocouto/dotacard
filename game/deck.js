@@ -1,4 +1,4 @@
-//Damage = lvl15 damage * 0.05
+//Damage = lvl15 damage * 0.1
 //HP = lvl15 hp * 0.05
 //Regen = Card HP * 0.03
 //Mana = lvl15 mana * 0.005
@@ -144,7 +144,8 @@ var Card = function(data){
   $('<div>').appendTo(portrait).addClass('overlay');
   
   if(data.attribute) $('<h1>').appendTo(fieldset).text(data.attribute);  
-  else $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
+  else if(game.heroes[data.hero]) $('<h1>').appendTo(fieldset).text(game.heroes[data.hero].name);  
+  else $('<h1>').appendTo(fieldset).text(data.hero); 
   
   var current = $('<div>').addClass('current').appendTo(fieldset);
   var desc = $('<div>').addClass('desc').appendTo(fieldset);
@@ -519,7 +520,7 @@ $.fn.strokeAttack = Card.strokeAttack;
 
 Card.highlightAttack = function(){    
   var card = this;
-  if(card.hasAllClasses('player heroes') && !card.hasClasses('enemy done dead stunned frozen')){        
+  if(card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned frozen')){        
     var spot = Map.getPosition(card), range = Map.getRange(card.data('range')); 
     Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
@@ -552,9 +553,9 @@ Card.damage = function(damage, target, type){
   else damage = Math.round(damage);
   var source = this;
   if(!type) type = 'Physical';
-  var resistance = target.data('resistance');
+  var resistance = 1 - (target.data('resistance') / 100);
   if(type == 'Magical' && resistance) damage = Math.round(damage * resistance);
-  var armor = target.data('armor');
+  var armor = 1 - (target.data('armor') / 100);
   if(type == 'Physical' && armor) damage = Math.round(damage * armor);
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;

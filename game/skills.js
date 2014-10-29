@@ -81,7 +81,7 @@ var skills = {
         var side = source.data('side');
         var bear = $('.'+side+'.card.ld.bear');
         bear.data('currenthp', bear.data('hp'));
-        bear.place(target);
+        bear.place(target).select();
       }
     },
     rabid: {

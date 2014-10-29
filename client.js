@@ -29,6 +29,7 @@ var game = {
   map: null, width: 12,  height: 5, //slots  
   nomenu: function(){return false;},
   audioctx: new AudioContext(), sounds: {}, audio: audio,
+  scrollspeed: 0.4,
   seed: 0, random: function(){  
     if(game.debug) return 0;
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));

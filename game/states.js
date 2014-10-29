@@ -598,12 +598,33 @@ var states = {
     },
 
     buildMap: function(){
-      this.camera = $('<div>').appendTo(this.el).addClass('camera');
+      game.scroll = 4;
+      this.camera = $('<div>').appendTo(this.el).addClass('camera')
+      .mousemove(function(event){  
+        if(event.clientX < 210) game.scrolling = -1;
+        else if(event.clientX > 840) game.scrolling = 1;
+        else game.scrolling = 0;
+        console.log('move',event.clientX, game.scroll, game.scrolling);
+      }).hover(function(){
+        game.scrolling = 0;
+        console.log('hover',game.scroll, game.scrolling);
+      });      
       this.map = Map.build({
         'width': game.width,
         'height': game.height,
         'class': 'map'
       }).appendTo(this.camera).click(Card.unselect);
+      setInterval(states.table.scroll, 20);
+    },
+    
+    scroll: function(){ 
+      if(game.scrolling){
+        game.scroll += (game.scrollspeed * game.scrolling);
+        if(game.scroll < 4) game.scroll = 4;
+        if(game.scroll > 26) game.scroll = 26;
+        states.table.map.css({transform: 'scale(1.2) translate(-'+game.scroll+'%, -21%) rotateX(45deg)'});
+      }
+      //console.log('scroll',game.scroll, game.scrolling);                
     },
 
     createTower: function(side, spot){
@@ -613,7 +634,7 @@ var states = {
         name: 'Tower',        
         attribute: 'Building',
         range: 'Ranged',
-        damage: 7,
+        damage: 15,
         hp: 80
       });        
       tower.on('click.select', Card.select).place(spot);

@@ -3,7 +3,9 @@
     "bear":{
       "name": "Spirit Bear",
       "hp": 135,
-      "damage": 2,
+      "damage": 3,
+      "armor": 20,
+      "resistance": 25,      
       "type": "Summon",
       "range": "Melee",
       "passive": "Entangling Claws, Demolish",

@@ -8,6 +8,8 @@
       "hp": 135,
       "damage": 2,      
       "cards": 2,
+      "armor": 20,
+      "resistance": 25,      
       "description": "Summons a powerful Spirit Bear companion"
     },
     "rabid": {
@@ -17,15 +19,15 @@
       "percentage": 40,   
       "duration": 3,
       "cards": 5,
-      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear by a percentage"    
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    
     },
     "passive": {
       "name": "Synergy",
       "type": "Passive",     
       "target": "Passive",
       "cards": 1,
-      "bearBonus": 2,
-      "rabidBonus": 3,      
+      "bearBonus": 4,
+      "rabidBonus": 4,      
       "hpBonus": 20,      
       "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
     },
@@ -34,7 +36,7 @@
       "type": "Active",
       "target": "Self",
       "damage": 20,
-      "damageType": "Physical",
+      "armor": 50,
       "cards": 4,
       "hpBonus": 20,
       "description": "Lone Druid morphs himself into a raging bear"       
@@ -44,7 +46,8 @@
       "name": "Battle Cry",
       "type": "Active",
       "target": "Self",
-      "duratioin": 2,
+      "duratioin": 4,
+      "armor": 40,
       "damage": 3,
       "cards": 1, 
       "description": "Increases the attack of Syllabear and the Spirit Bear"       
@@ -54,9 +57,6 @@
       "name": "Druid Form",
       "type": "Active",
       "target": "Self",
-      "duratioin": 8,
-      "damage": 20,
-      "damageType": "Physical",
       "cards": 1, 
       "description": "Syllabear morphs himself back into a druid"       
     }
