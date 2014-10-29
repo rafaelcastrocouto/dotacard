@@ -606,6 +606,7 @@ label input {
 }
 .card.skills.selected {
   box-shadow: 0 0 0 6px skyblue;
+  z-index: 6;
 }
 .card.tree.selected {
   box-shadow: 0 0 0 10px palegreen;
@@ -883,7 +884,7 @@ label input {
 .table .deck {
   position: absolute;
   height: 120px; 
-  bottom: -16px;
+  bottom: -10px;
   z-index: 6;
 }
 
@@ -892,11 +893,9 @@ label input {
   margin-right: -180px;
   left: 40px;
 }
-.table .deck .card:hover {
-  transform: translate(-50%, -50%) scale(0.45);
-}
+.table .deck .card:hover,
 .table .deck .card.selected {
-  transform: translate(-50%, -50%) scale(0.5);
+  transform: translate(-50%, -55%) scale(0.5);
 }
 
 .table .player.heroes.deck {
@@ -956,11 +955,12 @@ label input {
 /*MAP*/
 
 .camera {
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   position: absolute;
   top: 35px; left: 5px;    
   width: 733px; height: 456px;
   background: #666;
-  perspective: 1000px;
+  perspective: 1600px;
   overflow: hidden;
 }
 
@@ -975,31 +975,30 @@ label input {
 }
 
 .map {
-  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   border-collapse: separate;
-  border-spacing: 1px;
+  border-spacing: 2px;
   z-index: 1;
   background-size: 100%;
   background-position: 50%;
   background-image: url("../img/bkg/map_vectorized.png");
-  transform: scale(1.2) translate(-4%, -21%) rotateX(45deg);
+  transform: scale(1.2) translate(-4%, -26%) rotateX(30deg);
   transform-style: preserve-3d;
   padding: 200px;
-  width: 1133px; height: 856px;
+  width: 1144px; height: 860px;
 }
 
 .map .card {
   position: absolute;
   z-index: 3;
   top: 50%; left: 50%;
-  transform: translate3d(-50%, -50%, 0) scale3d(0.29, 0.29, 0.29) rotateX(0deg);
+  transform: translate3d(-50%, -50%, 1px) scale3d(0.29, 0.29, 0.29) rotateX(0deg);
 }
 .map .card:hover {
-  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-45deg);
+  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-30deg);
 }
 
 .map .card.selected {
-  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-45deg);
+  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-30deg);
 }
 
 .map td {
@@ -1007,7 +1006,8 @@ label input {
   background: rgba(255,255,255,0.05);
   width: 60px; height: 90px;
   position: relative;
-  border: 1px solid transparent;
+  border: 2px solid transparent;
+  border-radius: 2px;
 }
 .map td:hover {
   background: rgba(255,255,255,0.08);
@@ -1138,52 +1138,52 @@ label input {
 /*STROKES*/
 
 .map td.stroke.playerattack.top { 
-  border-top: 1px solid gold;
+  border-top: 2px solid gold;
 }
 .map td.stroke.playerattack.bottom { 
-  border-bottom: 1px solid gold;
+  border-bottom: 2px solid gold;
 }
 .map td.stroke.playerattack.left { 
-  border-left: 1px solid gold;
+  border-left: 2px solid gold;
 }
 .map td.stroke.playerattack.right { 
-  border-right: 1px solid gold;
+  border-right: 2px solid gold;
 }
 .map td.stroke.enemyattack.top { 
-  border-top: 1px solid orangered;
+  border-top: 2px solid orangered;
 }
 .map td.stroke.enemyattack.bottom { 
-  border-bottom: 1px solid orangered;
+  border-bottom: 2px solid orangered;
 }
 .map td.stroke.enemyattack.left { 
-  border-left: 1px solid orangered;
+  border-left: 2px solid orangered;
 }
 .map td.stroke.enemyattack.right { 
-  border-right: 1px solid orangered;
+  border-right: 2px solid orangered;
 }
 .map td.stroke.skillcast.top { 
-  border-top: 1px solid springgreen;
+  border-top: 2px solid springgreen;
 }
 .map td.stroke.skillcast.bottom { 
-  border-bottom: 1px solid springgreen;
+  border-bottom: 2px solid springgreen;
 }
 .map td.stroke.skillcast.left { 
-  border-left: 1px solid springgreen;
+  border-left: 2px solid springgreen;
 }
 .map td.stroke.skillcast.right { 
-  border-right: 1px solid springgreen;
+  border-right: 2px solid springgreen;
 }
 .map td.stroke.skillarea.top { 
-  border-top: 1px solid dodgerblue;
+  border-top: 2px solid dodgerblue;
 }
 .map td.stroke.skillarea.bottom { 
-  border-bottom: 1px solid dodgerblue;
+  border-bottom: 2px solid dodgerblue;
 }
 .map td.stroke.skillarea.left { 
-  border-left: 1px solid dodgerblue;
+  border-left: 2px solid dodgerblue;
 }
 .map td.stroke.skillarea.right { 
-  border-right: 1px solid dodgerblue;
+  border-right: 2px solid dodgerblue;
 }
 
 .map td.cript {

@@ -598,17 +598,24 @@ var states = {
     },
 
     buildMap: function(){
-      game.scroll = 4;
+      game.scrollX = 4;
+      game.scrollY = 26;
       this.camera = $('<div>').appendTo(this.el).addClass('camera')
-      .mousemove(function(event){  
-        if(event.clientX < 210) game.scrolling = -1;
-        else if(event.clientX > 840) game.scrolling = 1;
-        else game.scrolling = 0;
-        console.log('move',event.clientX, game.scroll, game.scrolling);
+      .mousemove(function(event){
+        var offset = states.table.camera.offset();
+        var x = event.clientX - offset.left;        
+        if(x < 40) game.scrollingX = -1;
+        else if(x > 680) game.scrollingX = 1;
+        else game.scrollingX = 0;        
+        var y = event.clientY - offset.top;console.log(x,y);
+        if(y < 40) game.scrollingY = -1;
+        else if(y > 430) game.scrollingY = 1;
+        else game.scrollingY = 0;     
       }).hover(function(){
-        game.scrolling = 0;
-        console.log('hover',game.scroll, game.scrolling);
+        game.scrollingX = 0;
+        game.scrollingY = 0;
       });      
+      
       this.map = Map.build({
         'width': game.width,
         'height': game.height,
@@ -618,13 +625,13 @@ var states = {
     },
     
     scroll: function(){ 
-      if(game.scrolling){
-        game.scroll += (game.scrollspeed * game.scrolling);
-        if(game.scroll < 4) game.scroll = 4;
-        if(game.scroll > 26) game.scroll = 26;
-        states.table.map.css({transform: 'scale(1.2) translate(-'+game.scroll+'%, -21%) rotateX(45deg)'});
-      }
-      //console.log('scroll',game.scroll, game.scrolling);                
+      if(game.scrollingX || game.scrollingY){
+        game.scrollX += (game.scrollspeed * game.scrollingX);
+        game.scrollY += (game.scrollspeed * game.scrollingY);
+        if(game.scrollX < 4) game.scrollX = 4; if(game.scrollX > 26) game.scrollX = 26;        
+        if(game.scrollY < 16) game.scrollY = 16; if(game.scrollY > 26) game.scrollY = 26;
+        states.table.map.css({transform: 'scale(1.2) translate(-'+game.scrollX+'%, -'+game.scrollY+'%) rotateX(30deg)'});
+      }                
     },
 
     createTower: function(side, spot){
