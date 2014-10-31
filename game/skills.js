@@ -94,7 +94,7 @@ var skills = {
         var source = eventdata.source;
         var target = eventdata.target;        
         var damage = source.data('currentdamage') * 0.4;
-        if(target.hasClass('tower'))
+        if(target.hasClass('tower')) source.damage(damage, target, 'Physical');
       },
       entangle: function(skill, source, target){
         

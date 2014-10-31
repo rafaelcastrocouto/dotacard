@@ -283,17 +283,17 @@ Card.highlightTargets = function(){
             neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
             if(neighbor.hasClass('block')){
               var card = $('.card', neighbor); 
-              card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
+              card.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
             }
           });
           
         } else if(skill.data('target') == 'Area'){
-          source.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
+          source.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
           Map.inRange(spot, range, function(neighbor){        
             neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
             if(neighbor.hasClass('block')){
               var card = $('.card', neighbor); 
-              card.addClass('targetspot').on('contextmenu.cast', states.table.castWithSelected);
+              card.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
             }
           });
         }
@@ -316,7 +316,7 @@ Card.strokeSkill = function(){
       game.castspot = spot;  
       game.castrange = Map.getRange(range);  
       game.castaoe = Map.getRange(skill.data('aoe'));  
-      $('.map .spot').hover(function(){   
+      $('.map .spot, .map .card').hover(function(){   
         var spot = $(this);
         if(spot.hasClass('targetarea')){
           $('.map .spot').removeClass('skillarea skillcast top right left bottom');
@@ -325,17 +325,6 @@ Card.strokeSkill = function(){
         } else{
           $('.map .spot').removeClass('skillarea skillcast top right left bottom');
           Map.stroke(game.castspot, game.castrange, 'skillcast');          
-        }
-      });      
-      $('.map .card').hover(function(){     
-        var spot = $(this);
-        if(spot.hasClass('targetspot')){
-          $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-          var pos = Map.getPosition($(this));    
-          Map.stroke(pos, game.castaoe, 'skillarea');
-        } else{
-          $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-          Map.stroke(game.castspot, game.castrange, 'skillcast');   
         }
       });
     }
@@ -369,15 +358,13 @@ Card.move = function(destiny){
     card.closest('.spot').removeClass('block').addClass('free');      
     destiny.removeClass('free').addClass('block');    
     var t = card.offset(), d = destiny.offset();
-    var w =  destiny.width()/2 + 1, h = destiny.height()/2 + 1;
-    if(!destiny.data('detour')) card.css({top: d.top - t.top + h, left: d.left - t.left + w});
-    else{
-      var x = destiny.data('detour').offset();
-      card.css({top: x.top - t.top + h, left: x.left - t.left + w});
+    if(!destiny.data('detour')) card.animateMove(destiny);
+    else {
+      card.animateMove(destiny.data('detour'));
       setTimeout(function(){
-        card.css({top: d.top - t.top + h, left: d.left - t.left + w});
+        card.animateMove(destiny);
       }.bind({ card: card, destiny: destiny }), 250);
-    }    
+    }
     if(card.data('movementBonus')) card.data('movementBonus', false);
     else card.addClass('done');   
     card.trigger('move',{card: card, target: toSpot});
@@ -390,6 +377,15 @@ Card.move = function(destiny){
   return card;
 };
 $.fn.move = Card.move;
+
+Card.animateMove = function(destiny){
+  var t = this.offset(), d = destiny.offset();
+  this.css({
+    top:  'calc(50% + '+(d.top - t.top)+'px)', 
+    left: 'calc(50% + '+(d.left - t.left)+'px)'
+  });  
+  debugger
+}
 
 Card.cast = function(skill, target){  
   var source = this;  

@@ -598,8 +598,8 @@ var states = {
     },
 
     buildMap: function(){
-      game.scrollX = 4;
-      game.scrollY = 26;
+      game.scrollX = 40;
+      //game.scrollY = 50;
       this.camera = $('<div>').appendTo(this.el).addClass('camera')
       .mousemove(function(event){
         var offset = states.table.camera.offset();
@@ -607,30 +607,31 @@ var states = {
         if(x < 40) game.scrollingX = -1;
         else if(x > 680) game.scrollingX = 1;
         else game.scrollingX = 0;        
-        var y = event.clientY - offset.top;
-        if(y < 40) game.scrollingY = -1;
-        else if(y > 430) game.scrollingY = 1;
-        else game.scrollingY = 0;     
+        //var y = event.clientY - offset.top;
+        //if(y < 40) game.scrollingY = -1;
+        //else if(y > 430) game.scrollingY = 1;
+        //else game.scrollingY = 0;     
       }).hover(function(){
         game.scrollingX = 0;
-        game.scrollingY = 0;
+        //game.scrollingY = 0;
       });      
       
       this.map = Map.build({
         'width': game.width,
         'height': game.height,
         'class': 'map'
-      }).appendTo(this.camera).click(Card.unselect);
-      setInterval(states.table.scroll, 20);
-    },
+      }).appendTo(this.camera);
+      
+      setInterval(states.table.scroll, 16);      
+    },   
     
     scroll: function(){ 
       if(game.scrollingX || game.scrollingY){
         game.scrollX += (game.scrollspeed * game.scrollingX);
-        game.scrollY += (game.scrollspeed * game.scrollingY);
-        if(game.scrollX < 4) game.scrollX = 4; if(game.scrollX > 26) game.scrollX = 26;        
-        if(game.scrollY < 16) game.scrollY = 16; if(game.scrollY > 26) game.scrollY = 26;
-        states.table.map.css({transform: 'scale(1.2) translate(-'+game.scrollX+'%, -'+game.scrollY+'%) rotateX(30deg)'});
+        //game.scrollY += (game.scrollspeed * game.scrollingY);
+        if(game.scrollX < 40) game.scrollX = 40; if(game.scrollX > 43) game.scrollX = 43;        
+        //if(game.scrollY < 49) game.scrollY = 49; if(game.scrollY > 52) game.scrollY = 52;
+        states.table.map.css({transform: 'rotateX(30deg) translate(-'+game.scrollX+'%, -50.4%)  scale3d(0.46,0.46,0.46)'});
       }                
     },
 
@@ -865,7 +866,13 @@ var states = {
       game.currentData = {};
       game.player.kills = 0;
       game.enemy.kills = 0;
+      
+      $('body').click(function(event){
+        var target = $(event.target)
+        if(!target.closest('.selected').length && !target.closest('.selectedarea').length) Card.unselect();
+      });
       game.player.tower.select();
+      
       states.table.beginTurn();
     },
 

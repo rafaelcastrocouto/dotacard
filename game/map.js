@@ -286,7 +286,7 @@ var Map = {
   },
   
   unhighlight: function(){
-    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate mouseenter mouseleave').removeClass('attacktarget casttarget targetspot');
+    $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate mouseenter mouseleave').removeClass('attacktarget casttarget targetarea');
     $('.map .spot').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');    
   }
   
