@@ -15,12 +15,12 @@ var Map = {
   letters: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split(''),
   
   build: function(opt){
-    game.map = [], table = $('<table>').attr({'class':'map'});
+    game.map = [], table = $('<div>').attr({'class':'map'});
     for(var h = 0; h < opt.height; h++){
       game.map[h] = [];
-      var tr = $('<tr>').appendTo(table);
+      var tr = $('<div>').addClass('row').appendTo(table);
       for(var w = 0; w < opt.width; w++){
-        game.map[h][w] = $('<td>').attr({'id': Map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu',game.nomenu);         
+        game.map[h][w] = $('<div>').attr({'id': Map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu',game.nomenu);         
       }
     }
     return table;
@@ -43,13 +43,13 @@ var Map = {
     }
   },
     
-  getTd: function(w,h){
+  getSpot: function(w,h){
     if(game.map[h] && game.map[h][w]) return game.map[h][w];
   },
   
   getPosition: function(el){
-    if(el.hasClass('stop')) return el.attr('id');
-    return el.closest('td').attr('id');
+    if(el.hasClass('spot')) return el.attr('id');
+    return el.closest('.spot').attr('id');
   },
   
   mirrorPosition: function(spot){
@@ -63,12 +63,12 @@ var Map = {
   atRange: function(spot, range, cb, filter){
     if(range < 0 || range > Map.rangeArray.length) return;
     var fil = function(x, y){
-      var td = Map.getTd(x, y);
-      if(td){
+      var spot = Map.getSpot(x, y);
+      if(spot){
         if(filter) {
-          if(!td.hasClasses(filter)) cb(td);
+          if(!spot.hasClasses(filter)) cb(spot);
         }
-        else cb(td);
+        else cb(spot);
       }
     };
     var w = Map.getX(spot), h = Map.getY(spot); 
@@ -110,12 +110,12 @@ var Map = {
     if(range < 0 || range > Map.rangeArray.length) return;
     var spot = Map.getPosition(card);  
     var fil = function(x, y){
-      var td = Map.getTd(x, y);
-      if(td){
+      var spot = Map.getSpot(x, y);
+      if(spot){
         if(filter) {
-          if(!td.hasClasses(filter)) cb(td);
+          if(!spot.hasClasses(filter)) cb(spot);
         }
-        else cb(td);
+        else cb(spot);
       }
     };
     var w = Map.getX(spot), h = Map.getY(spot); 
@@ -145,20 +145,20 @@ var Map = {
           {a: w+2, b: h, c: w+1, d: h, e: w+1, f: h+1, g: w+1, h: h-1}
         ];
         for(var i=0; i<a.length; i++){
-          var o = a[i], m = Map.getTd(o.a, o.b);
-          var td = Map.getTd(o.c,o.d);
-          if(td && td.hasClass('free')){
+          var o = a[i], m = Map.getSpot(o.a, o.b);
+          var spot = Map.getSpot(o.c,o.d);
+          if(spot && spot.hasClass('free')){
             if(m) m.data('detour', false);
             fil(o.a, o.b);
           } else {
-            td = Map.getTd(o.e,o.f);
-            if(td && td.hasClass('free')){
-              if(m) m.data('detour', td);
+            spot = Map.getSpot(o.e,o.f);
+            if(spot && spot.hasClass('free')){
+              if(m) m.data('detour', spot);
               fil(o.a, o.b);
             } else {
-              td = Map.getTd(o.g,o.h);              
-              if(td && td.hasClass('free')){
-                if(m) m.data('detour', td);
+              spot = Map.getSpot(o.g,o.h);              
+              if(spot && spot.hasClass('free')){
+                if(m) m.data('detour', spot);
                 fil(o.a, o.b);
               }
             }
@@ -185,12 +185,12 @@ var Map = {
   
   stroke: function(spot, range, cl, filter){
     var fil = function(x, y, border){
-      var td = Map.getTd(x, y);
-      if(td){
+      var spot = Map.getSpot(x, y);
+      if(spot){
         if(filter) {
-          if(!td.hasClasses(filter)) td.addClass(cl+' stroke '+border);
+          if(!spot.hasClasses(filter)) spot.addClass(cl+' stroke '+border);
         }
-        else td.addClass(cl+' stroke '+border);
+        else spot.addClass(cl+' stroke '+border);
       }
     };
     var w = Map.letters.indexOf(spot[0]), h = parseInt(spot[1]) - 1; 
@@ -267,19 +267,19 @@ var Map = {
   
   highlight: function(){
     if(game.selectedCard){
-      if(game.selectedCard.hasClasses('heroes units')){        
+      if(game.selectedCard.hasClasses('hero unit')){        
         if(game.status == 'turn') {
           game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack(); 
         }
         game.selectedCard.strokeAttack(); 
-      } else if(game.selectedCard.hasClass('skills')){      
+      } else if(game.selectedCard.hasClass('skill')){      
         if(game.status == 'turn') {
           game.selectedCard.highlightTargets();          
         }
         game.selectedCard.highlightSource();  
         game.selectedCard.strokeSkill();         
-      } else if(game.selectedCard.hasClass('towers')){
+      } else if(game.selectedCard.hasClass('tower')){
         game.selectedCard.strokeAttack(); 
       }
     }
@@ -287,7 +287,7 @@ var Map = {
   
   unhighlight: function(){
     $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.activate mouseenter mouseleave').removeClass('attacktarget casttarget targetspot');
-    $('.map td').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');    
+    $('.map .spot').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');    
   }
   
 };

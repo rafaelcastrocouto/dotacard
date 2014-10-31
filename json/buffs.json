@@ -3,14 +3,19 @@
   "am": {
     "burn": {
       "name": "Mana Break",
-      "description": "Enemy must discard a skill of the attacked hero"
-    }    
+      "description": "Enemy must discard a skill of the attacked hero"      
+    },
+    "passive": {
+      "name": "Spell Shield",
+      "description": "Reduces all magic damage by half"      
+    }
   },
   
   "wk": {
     "stun": {
       "name": "Wraithfire Blast",
-      "description": "Wraithfire Blast damage over time"  
+      "description": "Wraithfire Blast damage over time",
+      "purgeable": true
     },    
     "lifesteal": {
       "name": "Wraithfire Blast Burn",
@@ -22,21 +27,22 @@
     },
     "ult": {
       "name": "Reincarnation Slow",
-      "description": "Witness the Wraith King return!"
+      "description": "Witness the Wraith King return!",
+      "purgeable": true
     }    
   },
 
   "ktol": {
     "leak": {
       "name": "Mana Leaking",
-      "description": "Cursed, this card will cause a skill card loss on every move and will get stuned if there are no more cards of that hero"
+      "description": "Cursed, this card will cause a skill card loss on every move and will get stuned if there are no more cards of that hero",
+      "purgeable": true
+
     },
     "blind": {
       "name": "Blinding Light",
-      "type": "Area of effect",
-      "target": "spot",  
-      "cards": 1,
-      "description": "Knock back and blind enemies, causing them to miss attacks"
+      "description": "Knock back and blind enemies, causing them to miss attacks",
+      "purgeable": true
     },
     "recall": {
       "name": "Recalling",
@@ -47,15 +53,18 @@
   "cm": {
     "slow": {
       "name": "Crystal Nova Slow",
-      "description": "Slowed by a burst of damaging frost"
+      "description": "Slowed by a burst of damaging frost",
+      "purgeable": true
     },
     "freeze": {
       "name": "Frostbitten",
-      "description": "Encased in ice, prohibited to move and attack and receiving damage over time"    
+      "description": "Encased in ice, prohibited to move and attack and receiving damage over time",
+      "purgeable": true
     },
     "ult": {
       "name": "Freezing Field",
-      "description": "Slowed by icy explosions"    
+      "description": "Slowed by icy explosions",
+      "purgeable": true
     }    
   },
 
@@ -82,9 +91,15 @@
   },
 
   "ld": {
-    "rabid": {
-      "name": "Rabid",
-      "description": "Increased attack and movement speed of Syllabear and the Spirit Bear"    
+    "demolish": {
+      "name": "Demolish",
+      "description": "Increases the power of the Spirit Bear, causing it to deal more damage to buildings and have additional spell resistance",
+      "purgeable": true
+    },
+    "entangle": {
+      "name": "Entangling Claws",
+      "description": "Attacks have a chance to cause roots to burst from the ground, immobilizing the attacked enemy unit, and dealing damage per second.",
+      "purgeable": true
     },
     "ult": {
       "name": "True Form",
@@ -92,7 +107,8 @@
     },
     "cry": {
       "name": "Battle Cry",
-      "description": "Increased attack of Syllabear and the Spirit Bear"       
+      "description": "Increased attack of Syllabear and the Spirit Bear",
+      "purgeable": true
     }
   }
 

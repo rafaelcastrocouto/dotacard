@@ -720,7 +720,6 @@ label input {
   20%, 80% {
     width: 100px; height: 100px;
     left: 40px; top: 90px;
-    transform: rotate(45deg);
     border: 12px solid transparent;
     border-left: 12px solid dodgerblue;
     border-top: 12px solid dodgerblue;
@@ -975,8 +974,6 @@ label input {
 }
 
 .map {
-  border-collapse: separate;
-  border-spacing: 2px;
   z-index: 1;
   background-size: 100%;
   background-position: 50%;
@@ -984,74 +981,80 @@ label input {
   transform: scale(1.2) translate(-4%, -26%) rotateX(30deg);
   transform-style: preserve-3d;
   padding: 200px;
-  width: 1144px; height: 860px;
+  width: 100%; height: 100%;
+}
+
+.map .row {
+  height: 90px;
+}
+
+.map .spot {
+  transform-style: preserve-3d;
+  transform: translateZ(2px);
+  box-sizing: border-box;
+  width: 60px; height: 90px;
+  position: relative;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 2px;
+  display: inline-block;
+}
+.map .spot:hover {
+  background: rgba(255,255,255,0.08);
 }
 
 .map .card {
   position: absolute;
   z-index: 3;
   top: 50%; left: 50%;
-  transform: translate3d(-50%, -50%, 1px) scale3d(0.29, 0.29, 0.29) rotateX(0deg);
+  transform: translate3d(-50%, -50%, 0) scale3d(0.29, 0.29, 0.29) rotateX(0deg);
 }
 .map .card:hover {
-  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-30deg);
+  transform: translate3d(-50%, -50%, 0) scale3d(0.29, 0.29, 0.29) rotateX(0deg);
 }
 
 .map .card.selected {
-  transform: translate3d(-50%, -50%, 25px) scale3d(0.29, 0.29, 0.29) rotateX(-30deg);
+  transform: translate3d(-50%, -50%, 20px) scale3d(0.29, 0.29, 0.29) rotateX(-30deg);
 }
 
-.map td {
-  box-sizing: border-box;
-  background: rgba(255,255,255,0.05);
-  width: 60px; height: 90px;
-  position: relative;
-  border: 2px solid transparent;
-  border-radius: 2px;
-}
-.map td:hover {
-  background: rgba(255,255,255,0.08);
-}
-
-.map td.playerarea {
+.map .spot.playerarea {
   background: rgba(100,255,100,0.2);
 }
-.map td.playerarea:hover {
+.map .spot.playerarea:hover {
   background: rgba(100,255,100,0.3);
 }
 
-.map td.enemyarea {
+.map .spot.enemyarea {
   background: rgba(255,100,100,0.2);
 }
-.map td.enemyarea:hover {
+.map .spot.enemyarea:hover {
   background: rgba(255,100,100,0.3);
 }
 
-.map td.camp {
+.map .spot.camp {
   background: rgba(255,255,100,0.15);
 }
-.map td.camp:hover {
+.map .spot.camp:hover {
   background: rgba(255,255,100,0.25);
 }
 
-.turn .map td.movearea {  
+.turn .map .spot.movearea {  
   cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
 }
-.turn .map td.movearea:after,
-.turn .map td.movearea:before,
-.turn .map td.targetarea:after,
-.turn .map td.targetarea:before {
+.turn .map .spot.movearea:after,
+.turn .map .spot.movearea:before,
+.turn .map .spot.targetarea:after,
+.turn .map .spot.targetarea:before {
   content: ""; display: block;
   position: absolute;
 }
   
-.turn .map td.movearea:after {
+.turn .map .spot.movearea:after {
   width: 36px; height: 3px;
   background: springgreen;
   left: 12px; bottom: 35px;
   border-radius: 2px;
 }
-.turn .map td.movearea:before {
+.turn .map .spot.movearea:before {
   width: 10px; height: 10px;
   border: 2px solid transparent;
   border-right: 3px solid springgreen;
@@ -1060,7 +1063,7 @@ label input {
   left: 22px; top: 25px; 
   transform: rotate(45deg);
 }
-.turn .map td.movearea:hover:before {
+.turn .map .spot.movearea:hover:before {
   animation: moveslide 1s infinite
 }
 @keyframes moveslide {
@@ -1069,7 +1072,7 @@ label input {
   66% { top: 30px; }
 }
 
-.turn .map td.targetarea:before {
+.turn .map .spot.targetarea:before {
   width: 10px; height: 10px;
   border: 2px solid transparent;
   border-right: 3px solid dodgerblue;
@@ -1079,7 +1082,7 @@ label input {
   transform: rotate(45deg) scale(1); 
   transition: all 0.5s;
 }
-.turn .map td.targetarea:hover:before {  
+.turn .map .spot.targetarea:hover:before {  
   animation: scaleareabefore 1.5s infinite;
 }
 @keyframes scaleareabefore {
@@ -1099,7 +1102,7 @@ label input {
   }
   50% { transform: rotate(45deg) scale(1.2); }
 }
-.turn .map td.targetarea:after {
+.turn .map .spot.targetarea:after {
   width: 30px; height: 10px;
   border: 3px solid transparent;
   border-bottom: 3px solid dodgerblue;
@@ -1109,7 +1112,7 @@ label input {
   transition: all 0.5s;
   border-radius: 3px;
 }
-.turn .map td.targetarea:hover:after {
+.turn .map .spot.targetarea:hover:after {
   animation: scaleareaafter 1.5s infinite;
 }
 @keyframes scaleareaafter {
@@ -1137,59 +1140,59 @@ label input {
 
 /*STROKES*/
 
-.map td.stroke.playerattack.top { 
+.map .spot.stroke.playerattack.top { 
   border-top: 2px solid gold;
 }
-.map td.stroke.playerattack.bottom { 
+.map .spot.stroke.playerattack.bottom { 
   border-bottom: 2px solid gold;
 }
-.map td.stroke.playerattack.left { 
+.map .spot.stroke.playerattack.left { 
   border-left: 2px solid gold;
 }
-.map td.stroke.playerattack.right { 
+.map .spot.stroke.playerattack.right { 
   border-right: 2px solid gold;
 }
-.map td.stroke.enemyattack.top { 
+.map .spot.stroke.enemyattack.top { 
   border-top: 2px solid orangered;
 }
-.map td.stroke.enemyattack.bottom { 
+.map .spot.stroke.enemyattack.bottom { 
   border-bottom: 2px solid orangered;
 }
-.map td.stroke.enemyattack.left { 
+.map .spot.stroke.enemyattack.left { 
   border-left: 2px solid orangered;
 }
-.map td.stroke.enemyattack.right { 
+.map .spot.stroke.enemyattack.right { 
   border-right: 2px solid orangered;
 }
-.map td.stroke.skillcast.top { 
+.map .spot.stroke.skillcast.top { 
   border-top: 2px solid springgreen;
 }
-.map td.stroke.skillcast.bottom { 
+.map .spot.stroke.skillcast.bottom { 
   border-bottom: 2px solid springgreen;
 }
-.map td.stroke.skillcast.left { 
+.map .spot.stroke.skillcast.left { 
   border-left: 2px solid springgreen;
 }
-.map td.stroke.skillcast.right { 
+.map .spot.stroke.skillcast.right { 
   border-right: 2px solid springgreen;
 }
-.map td.stroke.skillarea.top { 
+.map .spot.stroke.skillarea.top { 
   border-top: 2px solid dodgerblue;
 }
-.map td.stroke.skillarea.bottom { 
+.map .spot.stroke.skillarea.bottom { 
   border-bottom: 2px solid dodgerblue;
 }
-.map td.stroke.skillarea.left { 
+.map .spot.stroke.skillarea.left { 
   border-left: 2px solid dodgerblue;
 }
-.map td.stroke.skillarea.right { 
+.map .spot.stroke.skillarea.right { 
   border-right: 2px solid dodgerblue;
 }
 
-.map td.cript {
+.map .spot.cript {
   background: rgba(0,0,0,0.2);
 }
-.map td.cript:after {
+.map .spot.cript:after {
   content: "†";
   position: absolute;
   top: 50%;

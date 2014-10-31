@@ -607,7 +607,7 @@ var states = {
         if(x < 40) game.scrollingX = -1;
         else if(x > 680) game.scrollingX = 1;
         else game.scrollingX = 0;        
-        var y = event.clientY - offset.top;console.log(x,y);
+        var y = event.clientY - offset.top;
         if(y < 40) game.scrollingY = -1;
         else if(y > 430) game.scrollingY = 1;
         else game.scrollingY = 0;     
@@ -634,9 +634,9 @@ var states = {
       }                
     },
 
-    createTower: function(side, spot){
+    createTower: function(side, pos){
       var tower = Card({
-        className: 'towers static '+side,
+        className: 'tower towers static '+side,
         side: side,
         name: 'Tower',        
         attribute: 'Building',
@@ -644,9 +644,9 @@ var states = {
         damage: 15,
         hp: 80
       });        
-      tower.on('click.select', Card.select).place(spot);
-      Map.around(spot, Map.getRange('Ranged'), function(td){
-        td.addClass(side+'area');
+      tower.on('click.select', Card.select).place(pos);
+      Map.around(pos, Map.getRange('Ranged'), function(spot){
+        spot.addClass(side+'area');
       }, true);
       return tower;
     },
@@ -1000,7 +1000,7 @@ var states = {
 
     moveSelected: function(){
       var spot = $(this), card = game.selectedCard;
-      if(game.selectedCard.hasClass('skills') && game.selectedCard.data('hero')) card = $('.map .card.player.'+game.selectedCard.data('hero'));
+      if(game.selectedCard.hasClass('skill') && game.selectedCard.data('hero')) card = $('.map .card.player.'+game.selectedCard.data('hero'));
       var fromSpot = Map.getPosition(card);  
       var toSpot = Map.getPosition(spot);
       if(game.status == 'turn' && spot.hasClass('free') && (fromSpot != toSpot) && !card.hasClass('done')){
