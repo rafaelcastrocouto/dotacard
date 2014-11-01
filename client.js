@@ -3,7 +3,8 @@ var game = {
   start: function(){
     if(window.JSON && 
        window.btoa && window.atob &&
-       window.AudioContext && window.XMLHttpRequest &&
+       window.AudioContext && 
+       window.XMLHttpRequest &&
        Modernizr.backgroundsize && 
        Modernizr.boxshadow && 
        Modernizr.cssanimations &&
@@ -11,8 +12,7 @@ var game = {
        Modernizr.csstransitions &&
        Modernizr.generatedcontent &&
        Modernizr.opacity &&
-       Modernizr.rgba ) 
-      game.states.build();
+       Modernizr.rgba ) game.states.build();
     else $('.unsupported').show();
   },
   debug: (location.host == "localhost"), 

@@ -277,7 +277,7 @@ var states = {
       if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
       else {
         this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-        this.public.click();
+        //this.public.click();
       }
     }
   }, 
@@ -297,10 +297,15 @@ var states = {
 
       this.audio = $('<div>').appendTo(this.menu).attr({'title': 'Audio configuration'}).addClass('audioconfig');
       $('<h2>').appendTo(this.audio).text('Audio');
-      $('<label>').text('Mute').appendTo(this.audio).append($('<input>').attr({type: 'checkbox', disabled: true}).change(this.changeResolution));
-
+      $('<label>').text('Mute').appendTo(this.audio).append($('<input>').attr({type: 'checkbox', name: 'mute'}).change(this.mute));
+      
       this.back = $('<button>').appendTo(this.menu).attr({'title': 'Back'}).text('Back')
       .click(function(){ states.backState(); });
+    },
+    
+    mute: function(){
+      if($('input[name=mute]:checked', '.audioconfig').val()) game.mute.gain.value = 0;
+      else game.mute.gain.value = 1;
     },
 
     changeResolution: function(){ 
