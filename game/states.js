@@ -152,7 +152,7 @@ var states = {
           });
         }
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
-        this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="http://scriptogr.am/rafaelcastrocouto">beta</a>');
+        this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha 0.058</a>');
       }
     },
 

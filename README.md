@@ -1,9 +1,11 @@
 #DotaCard
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rafaelcastrocouto/dotacard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**[Play the beta now][1]**
+**[Play the apha build now][1]**
 
-[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/banner.jpg)][1]
+*Please report any [issue](https://github.com/rafaelcastrocouto/dotacard/issues)*
+
+[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/banner.png)][1]
 
   [1]: http://dotacard.herokuapp.com/
 

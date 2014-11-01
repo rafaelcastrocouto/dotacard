@@ -236,13 +236,16 @@ small {
 
 /*INTRO*/
 
+.intro .box {
+  width: 324px;
+}
+
 .introheader {
   padding: 10px;
   font-size: 38px;
 }
 .introheader a {
   text-decoration: none;
-  font: monospace;
   font-size: 33%;
 }
 
