@@ -214,7 +214,7 @@ Card.select = function(event){
   Card.unselect();    
   game.selectedCard = card; 
   Map.highlight();
-  card.clone().appendTo(states.table.selectedArea).addClass('zoom');
+  card.clone().appendTo(game.states.table.selectedArea).addClass('zoom');
   card.addClass('selected');
   if(event && event.stopPropagation) event.stopPropagation()
   return card;
@@ -225,7 +225,7 @@ Card.unselect = function(){
   Map.unhighlight();      
   if(game.selectedCard) game.selectedCard.removeClass('selected');
   game.selectedCard = null;
-  states.table.selectedArea.empty();
+  game.states.table.selectedArea.empty();
 };
 $.fn.unselect = Card.unselect;
 
@@ -247,53 +247,53 @@ Card.highlightTargets = function(){
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
       
-      if(skill.data('target') == 'Passive') source.addClass('casttarget').on('contextmenu.activate', states.table.passiveActivate);
+      if(skill.data('target') == 'Passive') source.addClass('casttarget').on('contextmenu.activate', game.states.table.passiveActivate);
         
       else if(!source.hasClasses('dead done stunned frozen')){
         
         if(skill.data('target') == 'Self'){  
-          source.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);
+          source.addClass('casttarget').on('contextmenu.cast', game.states.table.castWithSelected);
 
         } else if (skill.data('target') == 'Player'){
-          source.addClass('target').on('contextmenu.cast', states.table.castWithSelected);
+          source.addClass('target').on('contextmenu.cast', game.states.table.castWithSelected);
           Map.inRange(spot, range, function(neighbor){      
             var card = $('.card', neighbor); 
-            if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
+            if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', game.states.table.castWithSelected);         
           });        
 
         } else if(skill.data('target') == 'Ally'){
           Map.inRange(spot, range, function(neighbor){      
             var card = $('.card', neighbor); 
-            if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);         
+            if(card.hasClass('player')) card.addClass('casttarget').on('contextmenu.cast', game.states.table.castWithSelected);         
           });  
 
         } else if(skill.data('target') == 'Enemy'){              
           Map.inRange(spot, range, function(neighbor){
             var card = $('.card', neighbor);        
-            if(card.hasClass('enemy')) card.addClass('casttarget').on('contextmenu.cast', states.table.castWithSelected);        
+            if(card.hasClass('enemy')) card.addClass('casttarget').on('contextmenu.cast', game.states.table.castWithSelected);        
           });
 
         } else if(skill.data('target') == 'Spot'){
           Map.around(spot, range, function(neighbor){        
-            if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+            if(!neighbor.hasClass('block')) neighbor.addClass('targetarea').on('contextmenu.castarea', game.states.table.castWithSelected);
           });
           
         } else if(skill.data('target') == 'Around'){
           Map.around(spot, range, function(neighbor){        
-            neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+            neighbor.addClass('targetarea').on('contextmenu.castarea', game.states.table.castWithSelected);
             if(neighbor.hasClass('block')){
               var card = $('.card', neighbor); 
-              card.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
+              card.addClass('targetarea').on('contextmenu.cast', game.states.table.castWithSelected);
             }
           });
           
         } else if(skill.data('target') == 'Area'){
-          source.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
+          source.addClass('targetarea').on('contextmenu.cast', game.states.table.castWithSelected);
           Map.inRange(spot, range, function(neighbor){        
-            neighbor.addClass('targetarea').on('contextmenu.castarea', states.table.castWithSelected);
+            neighbor.addClass('targetarea').on('contextmenu.castarea', game.states.table.castWithSelected);
             if(neighbor.hasClass('block')){
               var card = $('.card', neighbor); 
-              card.addClass('targetarea').on('contextmenu.cast', states.table.castWithSelected);
+              card.addClass('targetarea').on('contextmenu.cast', game.states.table.castWithSelected);
             }
           });
         }
@@ -340,7 +340,7 @@ Card.highlightMove = function(){
     if(speed < 1) return; 
     if(speed > 3) speed = 3;
     Map.atMovementRange(card, Math.round(speed), function(neighbor){ 
-      if(!neighbor.hasClass('block')) neighbor.addClass('movearea').on('contextmenu.movearea', states.table.moveSelected);
+      if(!neighbor.hasClass('block')) neighbor.addClass('movearea').on('contextmenu.movearea', game.states.table.moveSelected);
     });    
   }
   return card;
@@ -362,14 +362,14 @@ Card.move = function(destiny){
     else {
       card.animateMove(destiny.data('detour'));
       setTimeout(function(){
-        card.animateMove(destiny);
+        this.card.animateMove(this.destiny);
       }.bind({ card: card, destiny: destiny }), 250);
     }
     if(card.data('movementBonus')) card.data('movementBonus', false);
     else card.addClass('done');   
     card.trigger('move',{card: card, target: toSpot});
     setTimeout(function(){          
-      $(this.card).css({top: '', left: ''}).appendTo(this.destiny);     
+      $(this.card).css({transform: ''}).appendTo(this.destiny);     
       $('.map .spot').data('detour', false);
       Map.highlight();   
     }.bind({ card: card, destiny: destiny }), 500);  
@@ -379,13 +379,15 @@ Card.move = function(destiny){
 $.fn.move = Card.move;
 
 Card.animateMove = function(destiny){
-  var t = this.offset(), d = destiny.offset();
-  this.css({
-    top:  'calc(50% + '+(d.top - t.top)+'px)', 
-    left: 'calc(50% + '+(d.left - t.left)+'px)'
+  var from = Map.getPosition(this), to = Map.getPosition(destiny);
+  var fx = Map.getX(from), fy = Map.getY(from);
+  var tx = Map.getX(to), ty = Map.getY(to);
+  var dx = (tx - fx) * 100, dy = (ty - fy) * 100;
+  this.css({ 
+    transform: 'translate3d('+(dx - 50)+'%, '+(dy - 50)+'%, 100px) rotateX(-30deg)'
   });  
-  debugger
-}
+};
+$.fn.animateMove = Card.animateMove;
 
 Card.cast = function(skill, target){  
   var source = this;  
@@ -496,9 +498,9 @@ $.fn.reduceStun = Card.reduceStun;
 
 Card.discard = function(){
   this.trigger('discard');
-  if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);
+  if(this.hasClass('player')) this.appendTo(game.states.table.playerCemitery);
   else{
-    this.appendTo(states.table.enemySkillsDeck);
+    this.appendTo(game.states.table.enemySkillsDeck);
     game.enemy.hand--;
   }
 };
@@ -521,7 +523,7 @@ Card.highlightAttack = function(){
     var spot = Map.getPosition(card), range = Map.getRange(card.data('range')); 
     Map.inRange(spot, range, function(neighbor){
       var card = $('.card', neighbor);        
-      if(card.hasClass('enemy')) card.addClass('attacktarget').on('contextmenu.attack', states.table.attackWithSelected);        
+      if(card.hasClass('enemy')) card.addClass('attacktarget').on('contextmenu.attack', game.states.table.attackWithSelected);        
     });
   }
   return card;
@@ -634,12 +636,12 @@ Card.die = function(){
     this.data('deaths', deaths);
     this.find('.deaths').text(deaths);
     this.data('reborn', game.time + game.deadLength);
-    if(this.hasClass('player')) this.appendTo(states.table.playerHeroesDeck);
-    else if(this.hasClass('enemy')) this.appendTo(states.table.enemyHeroesDeck);
+    if(this.hasClass('player')) this.appendTo(game.states.table.playerHeroesDeck);
+    else if(this.hasClass('enemy')) this.appendTo(game.states.table.enemyHeroesDeck);
 
   } else if(this.hasClass('tower')){ 
-    if(this.hasClass('player')) states.table.lose();
-    else if(this.hasClass('enemy')) states.table.win();
+    if(this.hasClass('player')) game.states.table.lose();
+    else if(this.hasClass('enemy')) game.states.table.win();
   }
   else this.remove();
   return this;

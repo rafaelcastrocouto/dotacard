@@ -212,6 +212,7 @@ var skills = {
         var bonus = skill.data('percentage') / 100;
         var r = game.random();
         if(r < chance){
+          game.sounds.crit.start();
           damage *= bonus;
           source.data({
             'crit': true,

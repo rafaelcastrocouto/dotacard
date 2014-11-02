@@ -90,7 +90,9 @@ small {
   vertical-align: middle;
 }
 
-.unsupported, noscript , #states {
+.unsupported, 
+noscript ,
+#states {
   margin: 0 auto;
   width: 970px;
   height: 600px;  
@@ -131,6 +133,7 @@ small {
   border-radius: 5px;
   background: rgba(0,0,0,0.4);
 }
+
 .box div p {
   display: block;
 }
@@ -145,7 +148,7 @@ small {
 /*STATES*/
 
 #states {
-  transition: background 1s;
+  transition: background 0.4s linear;
 }
 #states.low {
   transform: scale(0.75);
@@ -159,7 +162,8 @@ small {
 }
 
 #states.table, 
-#states.choose {
+#states.choose,
+#states.options {
   background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
@@ -170,6 +174,10 @@ small {
   top: 0;
   left: 0;
   width: 100%;
+}
+
+.topbar p {
+  margin: 4px;
 }
 
 .choose .topbar,
@@ -205,17 +213,9 @@ small {
   text-align: center;
 }
 
-/*
-.message {
-  transition: background 0.5s;
-}
 .turn .message {
-  background: rgba(0,150,0,0.6);
+  text-shadow: 0 0 6px white;
 }
-.unturn .message {
-  background: rgba(150,0,0,0.6);
-}
-*/
 
 .logout {
   cursor: pointer;
@@ -226,12 +226,21 @@ small {
 
 .time {
   position: absolute;
-  left: 50%;
+  top: 0; left: 50%;
   transform: translateX(-50%);
 }
 
 .turns {
-  float: right;
+  position: absolute;
+  top: 0; right: 30px;
+}
+
+.opt {
+  cursor: pointer;
+  height: 20px;
+  position: absolute;
+  top: 0; right: 5px;
+  margin: 5px;  
 }
 
 /*INTRO*/
@@ -346,9 +355,20 @@ button[disabled]:hover {
 
 /*OPTIONS*/
 
-.options .box div {
-  float: left;
+.options .box {
+  width: 365px;
+}
+
+.audioconfig,
+.screenresolution {
+  display: inline-block;
   padding: 5px 15px;
+  vertical-align: top;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
 }
 
 label {
@@ -360,6 +380,28 @@ label {
 label input {
   float: left;
   margin: 5px;
+}
+
+.volume {
+  cursor: pointer;
+  position: relative;
+  width: 0; height: 0;
+  border: 0 solid transparent;
+  border-top: 20px solid transparent;
+  border-right: 50px solid rgba(255,255,255,0.2);
+  display: inline-block;
+  margin: 0px 6px;
+}
+
+.volumecontrol {
+  position: absolute;
+  top: -20px; left: 0;
+  width: 0; height: 0;
+  border: 0 solid transparent;
+  border-top: 20px solid transparent;
+  border-right: 50px solid rgba(255,255,255,0.8);
+  transform-origin: 0 100%;
+  transform: scale(1);
 }
 
 /*CHOOSE*/
@@ -796,17 +838,16 @@ label input {
 
 .map {
   z-index: 1;
-  background-size: 100%;
-  background-position: 50%;
+  background-size: contain;
   background-image: url("../img/bkg/map_vectorized.png");
   transform: rotateX(30deg) translate(-40%, -50.4%) scale3d(0.46,0.46,0.46);
   transform-style: preserve-3d;
   padding: 1000px;
-  width: 2332px; height: 1560px;
+  width: 2544px; height: 1560px;
 }
 
 .map .row {
-  width: 2332px; height: 312px; 
+  width: 2544px; height: 312px; 
 }
 
 .map .spot {
