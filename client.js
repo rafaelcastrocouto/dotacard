@@ -1,26 +1,29 @@
 /* by rafælcastrocouto */
 var game = { 
   vs: 0.059,
-  debug: (location.host == "localhost"),   
-  id: null, currentData: {}, 
-  currentstate: 'load',
-  status: 'loading',
-  mode: '',
+  debug: 0,//(location.host == "localhost"),   
+  id: null, currentData: {}, currentstate: 'load', 
+  status: 'loading', mode: '',
   scrollspeed: 0.4,
   skills: null, heroes: null, buffs: null, //json
   player: {}, enemy: {},   
+  
   container: $('.container').first(), 
   loader: $('<span>').addClass('loader'), 
   message: $('<p>').addClass('message'), 
-  triesCounter: $('<small>').addClass('triescounter'), tries: 0,  
+  triesCounter: $('<small>').addClass('triescounter'), tries: 0, 
+  
   timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds    
   dayLength: 10, deadLength: 10, //turns   
-  map: null, width: 12,  height: 5, //slots  
-  nomenu: function(){return false;},  
+  map: null, width: 12,  height: 5, //slots   
+  
   seed: 0, random: function(){  
     if(game.debug) return 0;
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
   },  
+  
+  nomenu: function(){return false;}, 
+  
   start: function(){
     if(window.JSON && 
        window.btoa && window.atob &&
@@ -36,10 +39,11 @@ var game = {
        Modernizr.rgba ) game.states.build();
     else $('.unsupported').show();
   },
+  
   build: function(){
     game.loader.addClass('loading'); 
     game.message.text('The battle begins');
-    game.sounds.horn.start();
+    game.audio('horn');
     game.states.table.placeTowers(); 
     game.states.table.placeTrees(); 
     game.states.table.placeHeroes(); 
@@ -50,18 +54,57 @@ var game = {
     game.builded = true;
     game.timeout = setTimeout(game.states.table.firstTurn, 1000);
   },  
-/*///////////////////////////////////////////////////////
+  
+  db: function(send, cb){
+    if(send.data) send.data = JSON.stringify(send.data);
+    $.ajax({
+      type: "GET", 
+      url:  'http://localhost/db',//game.debug ? 'http://localhost/db' : 'http://dotacard.herokuapp.com/db', 
+      data: send, 
+      complete: function(receive){
+        var data;
+        if(receive.responseText) data = JSON.parse(receive.responseText); 
+        if(cb) cb(data || {});
+      }
+    });
+  },
+  
+  audioctx: new AudioContext(), 
+  audioBuffers: {},
+  loadAudio: function(name){
+    if(!game.mute) game.createMuteGain();
+    var ajax = new XMLHttpRequest(); 
+    ajax.open("GET", '/audio/'+name+'.mp3', true); 
+    ajax.responseType = "arraybuffer"; 
+    ajax.onload = function(){ 
+      game.audioctx.decodeAudioData(ajax.response, function(buffer){ 
+        game.audioBuffers[name] = buffer;
+      }); 
+    }; 
+    ajax.send();   
+  },
+  audio: function(name){ 
+    var sound = game.audioctx.createBufferSource();
+    sound.buffer = game.audioBuffers[name];
+    sound.connect(game.mute);
+    sound.start();
+  },
+  createMuteGain: function(){
+    game.mute = game.audioctx.createGain();
+    game.mute.connect(game.audioctx.destination);
+  },  
+  /*///////////////////////////////////////////////////////
 
-states.changeTo('yourState')  -> set current state
-       .currentstate -> get current state
-       .el -> states div appended to game.container
+  states.changeTo('yourState')  -> set current state
+         .currentstate -> get current state
+         .el -> states div appended to game.container
 
-each state: has an element (this.el) appended to states.el
-if (build function) will run only once
-if (start function) will run every time it enters the state
-if (end function) will run every time it leaves the state
+  each state: has an element (this.el) appended to states.el
+  if (build function) will run only once
+  if (start function) will run every time it enters the state
+  if (end function) will run every time it leaves the state
 
-////////////////////////////////////////////////////////*/  
+  ////////////////////////////////////////////////////////*/  
   currentstate: 'load',
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
   states: {    
@@ -140,16 +183,17 @@ if (end function) will run every time it leaves the state
         }//loop
         return allImgs;
       },
-
       preLoadAudio: function(){
-        var pre = [
-          'matchready',
-          'horn',
+        var sounds = [
+          'activate',
           'crit',
-          'towerprojectile'
+          'horn',
+          'battle',
+          'pick',         
+          'tower'
         ];
-        for(var i=0; i < pre.length; i++){ console.log(pre[i])
-          game.audio(pre[i]);
+        for(var i=0; i < sounds.length; i++){
+          game.loadAudio(sounds[i]);
         }
       },
 
@@ -180,7 +224,7 @@ if (end function) will run every time it leaves the state
         if(!game.debug){ 
           this.video = $('<div>').addClass('video').hide().appendTo(this.el);
           this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
-          this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.video).click(function(){
+          this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.el).click(function(){
             clearTimeout(game.timeout);  
             game.states.changeTo('login');
           }).contextmenu(game.nomenu);
@@ -199,8 +243,7 @@ if (end function) will run every time it leaves the state
                 wmode: 'transparent'
               },
               events: {
-                onReady: function(event){
-                  game.states.intro.videoReady = true; 
+                onReady: function(event){ 
                   game.youTubePlayer = event.target;
                 }
               }
@@ -216,35 +259,33 @@ if (end function) will run every time it leaves the state
         game.message.text('Loading');
         if(!game.debug){
           this.box.fadeIn(3000);
-          game.timeout = setTimeout(function(){
-            game.message.text('');
-            game.loader.removeClass('loading');
-            if(game.states.intro.videoReady) game.states.intro.playVideo();
-            else game.states.changeTo('login');    
-          }, 4000); 
+          setTimeout(function(){
+            if(game.currentstate == 'intro'){
+              game.message.text('');
+              game.loader.removeClass('loading');
+              if(game.youTubePlayer) game.states.intro.play();
+              else game.states.changeTo('login');
+            }
+          }, 5000); 
 
         } else {        
           game.states.changeTo('login'); 
         }
       },
 
-      playVideo: function(){   
+      play: function(){   
         this.box.delay(6000).fadeOut(3000);
         this.video.delay(3000).fadeIn(3000);
         setTimeout(function(){
-          if(game.states.currentstate == 'intro') game.youTubePlayer.playVideo();
+          if(game.currentstate == 'intro') game.youTubePlayer.playVideo();
         }, 3000);
-        game.timeout = setTimeout(function(){
-          if(game.states.currentstate == 'intro'){  
-            game.states.changeTo('login');
-          }
+        setTimeout(function(){
+          if(game.currentstate == 'intro') game.states.changeTo('login');          
         }, 105400);       
       },
 
       end: function(){
-        if(!game.debug && game.youTubePlayer) {
-          game.youTubePlayer.pauseVideo()
-        }
+        if(game.youTubePlayer) game.youTubePlayer.pauseVideo();
       }
     },
 
@@ -517,7 +558,7 @@ if (end function) will run every time it leaves the state
         game.enemy.type = challenge; 
         game.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
         this.counter.removeClass('hidden');
-        game.sounds.matchready.start();
+        game.audio('battle');
         this.count = game.debug ? 1 : game.timeToPick;
         this.enablePick();
         clearTimeout(game.timeout);
@@ -538,14 +579,15 @@ if (end function) will run every time it leaves the state
         var slot = $(this).closest('.slot');
         var pick = $('.pickbox .card.active');
         var card;
-        if(slot.hasClass('available')){
+        if(slot.hasClass('available')){          
           slot.removeClass('available');
           if(pick.next().length) card = pick.next();
           else card = pick.prev();
-        } else {        
+        } else {
           var card = slot.children('.card');
           card.on('click.active', game.states.choose.active).insertBefore(pick);             
         }
+        game.audio('pick');
         card.addClass('active');
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);    
         pick.removeClass('active').appendTo(slot).off('click.active');
@@ -556,14 +598,15 @@ if (end function) will run every time it leaves the state
             game.player.mana += card.data('mana');
           });
           game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
-          game.states.choose.counter.text('Game starts in: '+(game.states.choose.count--)+' Cards per turn: '+ game.player.cardsPerTurn); 
-        } else states.choose.counter.text('Pick your deck, game starts in: '+(game.states.choose.count--));
+          game.states.choose.counter.text('Game starts in: '+(game.states.choose.count)+' Cards per turn: '+ game.player.cardsPerTurn); 
+        } else game.states.choose.counter.text('Pick your deck, game starts in: '+(game.states.choose.count));
         return false;
       },
 
       pickCount: function(){ 
-        if($('.slot.available').length != 0) this.counter.text('Pick your deck, game starts in: '+(this.count--)); 
-        else this.counter.text('Game starts in: '+(this.count--)+' Cards per turn: '+ game.player.cardsPerTurn); 
+        this.count--;
+        if($('.slot.available').length != 0) this.counter.text('Pick your deck, game starts in: '+(this.count)); 
+        else this.counter.text('Game starts in: '+(this.count)+' Cards per turn: '+ game.player.cardsPerTurn); 
         if(this.count < 0) {
           this.counter.text('Get Ready!');  
           this.disablePick();        
@@ -752,7 +795,7 @@ if (end function) will run every time it leaves the state
           }
         });  
         if(!lowestHp.notfound) {
-          game.sounds.towerprojectile.start();  
+          game.audio('tower');  
           game.player.tower.attack(lowestHp);
           var fromSpot = Map.getPosition(game.player.tower);
           var toSpot = Map.getPosition(lowestHp);
@@ -1117,6 +1160,7 @@ if (end function) will run every time it leaves the state
         var skillid = skill.data('skill');
         var toSpot = Map.getPosition(target);  
         if(hero && skillid && game.status == 'turn'){ 
+          game.audio('activate');
           game.currentData.moves.push('P:'+toSpot+':'+skillid+':'+hero); 
           skill.activate(target);
           var t = skill.offset(), d = target.offset();
@@ -1260,41 +1304,6 @@ if (end function) will run every time it leaves the state
 
     } //states.table end
     
-  }, //states end
-  
-  db: function(send, cb){
-    if(send.data) send.data = JSON.stringify(send.data);
-    $.ajax({
-      type: "GET", 
-      url: game.debug ? 'http://localhost/db' : 'http://dotacard.herokuapp.com/db', 
-      data: send, 
-      complete: function(receive){
-        var data;
-        if(receive.responseText) data = JSON.parse(receive.responseText); 
-        if(cb) cb(data || {});
-      }
-    });
-  },
-  
-  audioctx: new AudioContext(), sounds: {}, 
-  audio: function(name){
-    if(!game.mute) game.createMuteGain();
-    var ajax = new XMLHttpRequest(); 
-    ajax.open("GET", '/audio/'+name+'.mp3', true); 
-    ajax.responseType = "arraybuffer"; 
-    ajax.onload = function(){ 
-      game.audioctx.decodeAudioData(ajax.response, function(buffer){ 
-        game.sounds[name] = game.audioctx.createBufferSource();
-        game.sounds[name].buffer = buffer;
-        game.sounds[name].connect(game.mute);
-      }); 
-    }; 
-    ajax.send();   
-  },
-  createMuteGain: function(){
-    game.mute = game.audioctx.createGain();
-    game.mute.connect(game.audioctx.destination);
-  }
+  } //states end
 };
 $(game.start);
-

@@ -263,8 +263,8 @@ noscript ,
   left: 50%;
   position: absolute;
   transform: translateX(-50%);
-  filter: saturate(1.75);
-  -webkit-filter: saturate(1.75);
+  filter: contrast(1.2);
+  -webkit-filter: contrast(1.2);
 }
 
 .skipvideo {

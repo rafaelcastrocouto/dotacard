@@ -97,8 +97,14 @@ var skills = {
         if(target.hasClass('tower')) source.damage(damage, target, 'Physical');
       },
       entangle: function(skill, source, target){
-        
-      }  
+        var source = eventdata.source;
+        var target = eventdata.target;        
+        var chance = skill.data('chance') / 100;
+        var dot = skill.data('dot');
+        var r = game.random();
+        if(r < chance){
+          //todo
+        }  
     },
     rabid: {
       cast: function(skill, source){},
