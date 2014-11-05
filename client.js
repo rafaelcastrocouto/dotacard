@@ -1,7 +1,7 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.059,
-  debug: 0,//(location.host == "localhost"),   
+  vs: 0.060,
+  debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
   scrollspeed: 0.4,
@@ -36,15 +36,21 @@ var game = {
        Modernizr.csstransitions &&
        Modernizr.generatedcontent &&
        Modernizr.opacity &&
-       Modernizr.rgba ) game.states.build();
+       Modernizr.rgba ) game.load();
     else $('.unsupported').show();
+  },
+  
+  load: function(){
+    game.states.load.images();
+    game.states.load.audio();
+    game.states.load.language();
   },
   
   build: function(){
     game.loader.addClass('loading'); 
-    game.message.text('The battle begins');
+    game.message.text(game.language.battle);
     game.audio('horn');
-    game.states.table.placeTowers(); 
+    game.states.table.placeTowers();
     game.states.table.placeTrees(); 
     game.states.table.placeHeroes(); 
     game.states.table.buildUnits(); 
@@ -55,11 +61,23 @@ var game = {
     game.timeout = setTimeout(game.states.table.firstTurn, 1000);
   },  
   
+  loadJSON: function(name, cb){
+    $.ajax({
+      type: "GET", 
+      url: 'json/'+name+'.json',
+      complete: function(response){
+        var data = JSON.parse(response.responseText);
+        game[name] = data;
+        cb(data);
+      }
+    });
+  },  
+  
   db: function(send, cb){
     if(send.data) send.data = JSON.stringify(send.data);
     $.ajax({
       type: "GET", 
-      url:  'http://localhost/db',//game.debug ? 'http://localhost/db' : 'http://dotacard.herokuapp.com/db', 
+      url:  game.debug ? 'http://localhost/db' : 'http://dotacard.herokuapp.com/db', 
       data: send, 
       complete: function(receive){
         var data;
@@ -108,9 +126,7 @@ var game = {
   currentstate: 'load',
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
   states: {    
-    build: function(){
-      this.load.preLoadImages();
-      this.load.preLoadAudio();
+    build: function(){      
       this.el = $('<div>').attr('id','states').appendTo(game.container);
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       $.each(this, function(id){      
@@ -121,8 +137,8 @@ var game = {
             game.states[id].builded = true;
           }
         }
-      });     
-      setTimeout(function(){ 
+      }); 
+      setTimeout(function(){
         game.states.changeTo('intro'); 
       }, 1000);
     }, 
@@ -152,8 +168,19 @@ var game = {
     ////////////////////////////////////////////////////////////////////////////////////////
     'load': {
     ////////////////////////////////////////////////////////////////////////////////////////  
-
-      preLoadImages: function(){
+      
+      'language': function(){
+        game.loadJSON('languages', function(){
+          game.db({'get':'lang'}, function(data){
+            game.lang = data.lang.split(';')[0].split(',')[0];            
+            if(!game.languages[game.lang]) game.lang = 'en-US';
+            game.language = game.languages[game.lang];
+            game.states.build();         
+          });         
+        });
+      },
+      
+      images: function(){
         var allImgs = [];//new array for all the image urls  
         var k = 0; //iterator for adding images
         var sheets = document.styleSheets;//array of stylesheets
@@ -183,7 +210,7 @@ var game = {
         }//loop
         return allImgs;
       },
-      preLoadAudio: function(){
+      audio: function(){
         var sounds = [
           'activate',
           'crit',
@@ -201,16 +228,16 @@ var game = {
         if(!game.debug){
           window.oncontextmenu = game.nomenu;
           window.onbeforeunload = function(){
-            return 'Sure you wanna leave?';
+            return game.language.leave;
           };
         }
       },
 
       reset: function(){
         if(game.debug){
-          console.log('Reset', game);
+          console.log('Internal error: ', game);
         } else {
-          alert('Connection error, sorry.');
+          alert(game.language.error);
           location.reload(true);
         }
       }
@@ -295,26 +322,24 @@ var game = {
 
       build: function(){       
         this.menu = $('<div>').appendTo(this.el).addClass('box');
-        this.title = $('<h1>').appendTo(this.menu).text('Choose a name');
+        this.title = $('<h1>').appendTo(this.menu).text(game.language.choosename);
         this.input = $('<input>').appendTo(this.menu).attr({ 
-          placeholder: 'Type any name here', 
+          placeholder: game.language.type, 
           type: 'text',
           maxlength: 24
         })
         .keydown(function(e){
           if(e.which == 13) game.states.login.button.click();
         });    
-        var c = 'Choose a name and click to play';
-        this.button = $('<button>').appendTo(this.menu).attr({
-          placeholder: c, 
-          title: c
-        }).text('Play')
-        .click(function(){        
+        this.button = $('<button>').appendTo(this.menu).text(game.language.login).attr({
+          placeholder: game.language.choosename, 
+          title: game.language.choosename
+        }).click(function(){        
           var name = game.states.login.input.val();        
           if(!name) game.states.login.input.focus();
           else {
             game.player.name = name;
-            game.states.login.button.attr( "disabled", true );
+            game.states.login.button.attr('disabled', true );
             game.loader.addClass('loading');
             game.db({'get':'server'}, function(server){
               if(server.status == 'online') game.states.changeTo('menu');
@@ -323,8 +348,7 @@ var game = {
           } 
         });
         this.text = $('<div>').appendTo(this.menu);
-        this.logwith = $('<p>').appendTo(this.text).html('Login with: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Facebook, Google</a>');
-        this.lang = $('<p>').appendTo(this.text).html('Language: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Translate</a>');
+        this.logwith = $('<p>').appendTo(this.text).html('Comming soon: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Login with Google</a>');
       },
 
       start: function(){
@@ -338,7 +362,7 @@ var game = {
       },
 
       end: function(){
-        this.button.attr( "disabled", false );
+        this.button.attr('disabled', false );
       },
     },
 
@@ -348,25 +372,25 @@ var game = {
 
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
-        this.title = $('<h1>').appendTo(this.menu).text('Choose a game mode');
-        this.public = $('<button>').appendTo(this.menu).attr({'title': 'Find an adversary online'}).text('Play public match').click(function(){    
+        this.title = $('<h1>').appendTo(this.menu).text(game.language.choosemode);
+        this.public = $('<button>').appendTo(this.menu).attr({'title': game.language.choosepublic}).text(game.language.public).click(function(){    
           game.mode = 'public';
           game.states.changeTo('choose');
         });
 
-        this.friend = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Search for a friend to play', 'disabled': true }).text('Play with a friend');        
-        this.bot = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Play with against the computer', 'disabled': true }).text('Play with a bot');    
-        this.options = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - User Configurations'}).text('Options').click(function(){
+        this.friend = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosefriend, 'disabled': true }).text(game.language.friend);        
+        this.bot = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosebot, 'disabled': true }).text(game.language.bot);    
+        this.options = $('<button>').appendTo(this.menu).attr({ 'title': game.language.chooseoptions}).text(game.language.options).click(function(){
           game.states.changeTo('options');
         }); 
-        this.credits = $('<button>').appendTo(this.menu).attr({ 'title': 'Coming soon - Credits', 'disabled': true }).text('Credits');
+        this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosecredits, 'disabled': true }).text(game.language.credits);
       },
 
       start: function(){      
         game.loader.removeClass('loading');
         game.triesCounter.text('');
-        game.message.html('Welcome <b>'+game.player.name+'</b>! ');
-        $('<small>').addClass('logout').appendTo(game.message).text('Logout').click(function(){
+        game.message.html(game.language.welcome+' <b>'+game.player.name+'</b>!');
+        $('<small>').addClass('logout').appendTo(game.message).text(game.language.logout).click(function(){
           game.states.changeTo('login');
         });
 
@@ -384,23 +408,23 @@ var game = {
 
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
-        this.title = $('<h1>').appendTo(this.menu).text('Options');
+        this.title = $('<h1>').appendTo(this.menu).text(game.language.options);
 
-        this.resolution = $('<div>').appendTo(this.menu).attr({'title': 'Screen resolution'}).addClass('screenresolution');
-        $('<h2>').appendTo(this.resolution).text('Resolution');
-        $('<label>').text('High').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
-        $('<label>').text('Medium').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
-        $('<label>').text('Low').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
+        this.resolution = $('<div>').appendTo(this.menu).attr({'title': game.language.screenres}).addClass('screenresolution');
+        $('<h2>').appendTo(this.resolution).text(game.language.screenres);
+        $('<label>').text(game.language.high).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
+        $('<label>').text(game.language.medium).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
+        $('<label>').text(game.language.low).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
 
-        this.audio = $('<div>').appendTo(this.menu).attr({'title': 'Audio configuration'}).addClass('audioconfig');
-        $('<h2>').appendTo(this.audio).text('Audio');
+        this.audio = $('<div>').appendTo(this.menu).attr({'title': game.language.audioconfig}).addClass('audioconfig');
+        $('<h2>').appendTo(this.audio).text(game.language.audioconfig);
         this.muteinput = $('<input>').attr({type: 'checkbox', name: 'mute'}).change(this.mute);
         $('<label>').text('Mute').appendTo(this.audio).append(this.muteinput);      
         this.volumecontrol = $('<div>').addClass('volumecontrol');
         this.volumeinput = $('<div>').addClass('volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
-        $('<label>').text('Volume').appendTo(this.audio).append(this.volumeinput);
+        $('<label>').text(game.language.volume).appendTo(this.audio).append(this.volumeinput);
         $(document).on('mouseup.volume', game.states.options.volumeup);
-        this.back = $('<button>').appendTo(this.menu).attr({'title': 'Back'}).text('Back').click(function(){ game.states.backState(); });
+        this.back = $('<button>').appendTo(this.menu).attr({'title': game.language.back}).text('Back').click(function(){ game.states.backState(); });
 
         this.opt =  $('<img src="img/opt.png">').appendTo(game.topbar).addClass('opt').hide().click(function(){
           game.states.changeTo('options');        
@@ -449,12 +473,12 @@ var game = {
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){    
-        this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', 'Choose your heroes');
+        this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
         this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').addClass('hidden').on('contextmenu', game.nomenu);
         for(var slot = 0; slot < 5; slot++){
-          $('<div>').appendTo(this.pickedbox).attr({title: 'Right click here to pick'}).data('slot', slot).addClass('slot available');
+          $('<div>').appendTo(this.pickedbox).attr({title: game.language.rightpick}).data('slot', slot).addClass('slot available');
         }
-        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html('My Decks<br>Comming soon...').addClass('hidden');
+        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.language.customdecks).addClass('hidden');
         this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').addClass('hidden');
 
         this.pickDeck = Deck({
@@ -484,23 +508,19 @@ var game = {
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
       },
 
+    
       checkPublic: function(){
-        game.db({'get':'waiting'}, function(waiting){         
-          if(waiting.id == 'none'){
-            game.seed = new Date().valueOf();
-            game.id = btoa(game.seed);
-            game.db({'set': 'waiting', 'data': {id: game.id}}, function(){ 
-              game.player.type = 'challenged';
-              game.states.choose.searchGame();            
-            });
+        game.seed = new Date().valueOf();
+        game.id = btoa(game.seed);
+        game.db({'set':'waiting', 'data': {id: game.id}}, function(waiting){
+          if(game.id == waiting.id){
+            game.player.type = 'challenged';
+            game.states.choose.searchGame();            
           } else {             
             game.id = waiting.id;     
             game.seed = parseInt(atob(game.id));
-            var clearWait = {id: 'none'};            
-            game.db({'set': 'waiting', 'data': clearWait}, function(){    
-              game.player.type = 'challenger';
-              game.states.choose.foundGame();
-            });              
+            game.player.type = 'challenger';
+            game.states.choose.foundGame();            
           }
         });   
       },
@@ -508,7 +528,7 @@ var game = {
       searchGame: function(){   
         game.currentData.challenged = game.player.name;
         game.db({'set': game.id, 'data': game.currentData}, function(){
-          game.message.text('Waiting for an enemy');        
+          game.message.text(game.language.waiting);        
           game.tries = 1;   
           game.states.choose.keepSearching();
         }); 
@@ -523,13 +543,10 @@ var game = {
           } else {
             game.triesCounter.text(game.tries++);                
             if(game.tries > game.waitLimit) {
-              game.message.text('Sorry but we could not find an opponent');
-              var clearWait = {id: 'none'};            
-              game.db({'set': 'waiting', 'data': clearWait}, function(){    
-                setTimeout(function(){                
-                  game.states.changeTo('menu'); //todo: sugest bot match 
-                }, 2000); 
-              });
+              game.message.text(game.language.noenemy);  
+              setTimeout(function(){                
+                game.states.changeTo('menu'); //todo: sugest bot match 
+              }, 2000);
             }
             else game.timeout = setTimeout(game.states.choose.keepSearching, 1000);
           }
@@ -537,7 +554,7 @@ var game = {
       },
 
       foundGame: function(){       
-        game.message.text('We found a game! Connecting');
+        game.message.text(game.language.gamefound);
         game.db({'get': game.id }, function(found){     
           if(found.challenged){
             game.triesCounter.text('');
@@ -556,7 +573,7 @@ var game = {
         this.el.addClass('turn');
         game.enemy.name = enemy; 
         game.enemy.type = challenge; 
-        game.message.html('Battle Found! <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
+        game.message.html(game.language.battlefound+' <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
         this.counter.removeClass('hidden');
         game.audio('battle');
         this.count = game.debug ? 1 : game.timeToPick;
@@ -598,17 +615,17 @@ var game = {
             game.player.mana += card.data('mana');
           });
           game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
-          game.states.choose.counter.text('Game starts in: '+(game.states.choose.count)+' Cards per turn: '+ game.player.cardsPerTurn); 
-        } else game.states.choose.counter.text('Pick your deck, game starts in: '+(game.states.choose.count));
+          game.states.choose.counter.text(game.language.startsin+': '+(game.states.choose.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+        } else game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count));
         return false;
       },
 
       pickCount: function(){ 
         this.count--;
-        if($('.slot.available').length != 0) this.counter.text('Pick your deck, game starts in: '+(this.count)); 
-        else this.counter.text('Game starts in: '+(this.count)+' Cards per turn: '+ game.player.cardsPerTurn); 
+        if($('.slot.available').length != 0) this.counter.text(game.language.pickdeck+': '+(this.count)); 
+        else this.counter.text(game.language.startsin+': '+(this.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
         if(this.count < 0) {
-          this.counter.text('Get Ready!');  
+          this.counter.text(game.language.getready);  
           this.disablePick();        
           this.fillDeck();   
         }
@@ -650,7 +667,7 @@ var game = {
       },
 
       getChallengerDeck: function(){ 
-        game.message.text('Loading challenger deck');
+        game.message.text(game.language.loadingdeck);
         game.loader.addClass('loading');
         game.db({'get': game.id }, function(found){         
           if(found.challengerDeck){
@@ -667,7 +684,7 @@ var game = {
       },
 
       getChallengedDeck: function(){
-        game.message.text('Loading enemy deck');
+        game.message.text(game.language.loadingdeck);
         game.loader.addClass('loading');
         game.db({'get': game.id }, function(found){         
           if(found.challengedDeck){ 
@@ -701,8 +718,8 @@ var game = {
       ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){      
-        this.time =  $('<p>').appendTo(game.topbar).addClass('time').text('Time: 0:00 Day').hide();
-        this.turns =  $('<p>').appendTo(game.topbar).addClass('turns').text('Turns: 0/0 (0)').hide();
+        this.time =  $('<p>').appendTo(game.topbar).addClass('time').text(game.language.time+': 0:00 Day').hide();
+        this.turns =  $('<p>').appendTo(game.topbar).addClass('turns').text(game.language.turns+': 0/0 (0)').hide();
         this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea');
         this.buildMap();        
       },
@@ -762,8 +779,8 @@ var game = {
         var tower = Card({
           className: 'tower towers static '+side,
           side: side,
-          name: 'Tower',        
-          attribute: 'Building',
+          name: game.language.tower,        
+          attribute: game.language.building,
           range: 'Ranged',
           damage: 15,
           hp: 80
@@ -806,8 +823,8 @@ var game = {
       createTree: function(spot){
         var tree = Card({
           className: 'tree static neutral',
-          name: 'Tower',        
-          attribute: 'Forest Tree'
+          name: game.language.tree,        
+          attribute: game.language.forest
         }); 
         tree.on('click.select', Card.select).place(spot);
         return tree;
@@ -1005,8 +1022,8 @@ var game = {
         if(game.status != 'over') {    
           game.currentData.moves = []; 
           game.states.table.el.addClass(game.status);
-          if(game.status == 'turn') game.message.text('Your turn now!');
-          if(game.status == 'unturn') game.message.text('Enemy turn now');       
+          if(game.status == 'turn') game.message.text(game.language.yourturn);
+          if(game.status == 'unturn') game.message.text(game.language.enemyturn);       
           $('.card .damaged').remove();
           $('.card .heal').remove();
           $('.card.dead').each(function(){
@@ -1045,15 +1062,15 @@ var game = {
         game.loader.removeClass('loading');
         this.time.text('Time: '+this.hours()+' '+this.dayNight());     
         this.turns.text('Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
-        if(game.status == 'turn') game.message.text('Your turn, you have '+this.counter+' seconds');
-        if(game.status == 'unturn') game.message.text('Enemy turn ends in '+this.counter+' seconds');     
+        if(game.status == 'turn') game.message.text(game.language.yourturncount+' '+this.counter+' '+game.language.seconds);
+        else if(game.status == 'unturn') game.message.text(game.language.enemyturncount+' '+this.counter+' '+game.language.seconds);     
         if(this.counter-- < 1){
           $('.card.heroes').each(function(){
             var hero = $(this);
             hero.trigger('turnend', {target: hero});
           });
           if(game.status == 'turn') this.sendMoves();
-          if(game.status == 'unturn') this.getMoves();    
+          else if(game.status == 'unturn') this.getMoves();    
         } else {
           game.time += 1 / game.timeToPlay;
           game.timeout = setTimeout(game.states.table.turnCount.bind(game.states.table), 1000);
@@ -1065,7 +1082,7 @@ var game = {
           var hero = $(this);
           hero.trigger('playerturnend', {target: hero});
         });
-        game.message.text('Uploading your turn '+game.player.turn);
+        game.message.text(game.language.uploadingturn);
         game.loader.addClass('loading');
         Map.unhighlight();
         $('.card .damaged').remove();
@@ -1077,7 +1094,7 @@ var game = {
       },
 
       getMoves: function(){   
-        game.message.text('Loading enemy turn '+(game.enemy.turn + 1));
+        game.message.text(game.language.loadingturn);
         game.loader.addClass('loading');
         game.tries = 1;  
         game.states.table.el.removeClass('unturn');
@@ -1125,8 +1142,8 @@ var game = {
 
       dayNight: function(){
         var hours = game.time % game.dayLength;
-        if(hours < (game.dayLength/2) ) return 'Day';
-        else return 'Night';
+        if(hours < (game.dayLength/2) ) return game.language.day;
+        else return game.language.night;
       },
 
       moveSelected: function(){
@@ -1185,7 +1202,7 @@ var game = {
       },
 
       executeEnemyMoves: function(){
-        game.message.text('Your enemy moved. Get ready!');
+        game.message.text(game.language.enemymove);
         game.states.table.enemySkillsDeck.addClass('slide');
         var moves = game.currentData.moves.split('|');      
         for(var m = 0; m < moves.length; m++){
@@ -1256,7 +1273,7 @@ var game = {
       win: function(){
         game.winner = game.player.name;
         game.states.table.el.addClass('turn');
-        game.message.text('Congratulations, you won!'); 
+        game.message.text(game.language.win); 
         game.states.table.sendData();
         game.status = 'over';      
         game.states.table.showResults();
@@ -1265,7 +1282,7 @@ var game = {
       lose: function(){      
         game.winner = game.enemy.name;
         game.states.table.el.addClass('unturn');
-        game.message.text('Game Over!');
+        game.message.text(game.language.lose);
         game.loader.removeClass('loading');
         game.status = 'over';      
         game.states.table.showResults();

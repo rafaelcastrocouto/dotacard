@@ -2,16 +2,18 @@
 //HP = lvl15 hp * 0.05
 //Regen = Card HP * 0.03
 //Mana = lvl15 mana * 0.005
+//ATS = (1 + ATS%) / BAT  (avarage BAT = 1.7)
 //Skills = lvl4 
 //Ults = lvl2
-//Skill card count = 50/cooldown + 50/manacost // function(cool,mana){return Math.round((50/cool)+(50/mana))} 
-//ATS = (1 + ATS%) / BAT  (avarage BAT = 1.7)
+//Skill card count = 50/cooldown + 50/manacost 
+//..function(cool,mana){return Math.round((50/cool)+(50/mana))} 
+
 
 var Deck = function(op/* name, [filter], callback */){  
   var name = op.name, filter = op.filter, cb = op.cb, multi = op.multi;
   var deck = $('<div>').addClass('deck '+name);
   if(!game[name])
-    Deck.loadDeck(name, function(){
+    game.loadJSON(name, function(){
       Deck.createCards(deck, name, cb, filter, multi);
     });    
   else Deck.createCards(deck, name, cb, filter, multi);
@@ -19,22 +21,10 @@ var Deck = function(op/* name, [filter], callback */){
   return deck;
 };
 
-Deck.loadDeck = function(name, cb){
-  $.ajax({
-    type: "GET", 
-    url: 'json/'+name+'.json',
-    complete: function(response){
-      var data = JSON.parse(response.responseText);
-      game[name] = data;
-      cb(data);
-    }
-  });
-};
-
 Deck.createCards = function(deck, name, cb, filter, multi){   
   if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
   if(name == 'skills'){
-    Deck.loadDeck('buffs', function(){
+    game.loadJSON('buffs', function(){
       Deck.createSkillsCards(deck, name, cb, filter, multi);
     });
   }

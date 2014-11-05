@@ -100,11 +100,11 @@ var skills = {
         var source = eventdata.source;
         var target = eventdata.target;        
         var chance = skill.data('chance') / 100;
-        var dot = skill.data('dot');
-        var r = game.random();
-        if(r < chance){
+        var entangledamage = skill.data('entangledamage');
+        if(game.random() < chance){
           //todo
         }  
+      }
     },
     rabid: {
       cast: function(skill, source){},
@@ -216,8 +216,7 @@ var skills = {
         var damage = source.data('currentdamage');
         var chance = skill.data('chance') / 100;
         var bonus = skill.data('percentage') / 100;
-        var r = game.random();
-        if(r < chance){
+        if(game.random() < chance){
           game.sounds.crit.start();
           damage *= bonus;
           source.data({
@@ -431,7 +430,6 @@ var skills = {
       }
     }    
   },
-  
 
   am: {
     burn: {

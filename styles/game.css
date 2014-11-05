@@ -276,7 +276,7 @@ noscript ,
 /*LOGIN*/
 
 .login .box {
-  width: 300px;
+  width: 350px;
 }
 input {  
   border-radius: 3px;
@@ -356,13 +356,13 @@ button[disabled]:hover {
 /*OPTIONS*/
 
 .options .box {
-  width: 365px;
+  width: 500px;
 }
 
 .audioconfig,
 .screenresolution {
   display: inline-block;
-  padding: 5px 15px;
+  padding: 20px 10px;
   vertical-align: top;
 }
 

@@ -4,7 +4,7 @@ var http = require('http'),
     static = require('static.simple'),
     host = process.env.HOST,
     port = process.env.PORT || 5000,
-    waiting = '{"id":"none"}',
+    waiting = {id: 'none'},
     currentData = {},
     db = {
       get: function(name, cb){cb(currentData[name]||'');},
@@ -22,33 +22,38 @@ var send = function(response, data){
 
 http.createServer(function(request, response){
   var urlObj = url.parse(request.url, true);
-  
   var pathname = urlObj.pathname;  
   console.log('Request: ', pathname);
   if(pathname[0] == '/') pathname = pathname.slice(1); 
-  
+
   if(pathname == 'db'){
     var query = urlObj.query;
-    if(query.set) {
+    if(query.set){
       console.log('set: '+ query.set);
-      if(query.set == 'waiting') {
-        waiting = query.data;
-        send(response, true);
+      //WAITING
+      if(query.set == 'waiting'){
+        if(waiting.id == 'none'){
+          waiting = query.data;
+          send(response, waiting);
+        } else {
+          send(response, waiting);
+          waiting = {id: 'none'};
+        }
       }
+      //DEFAULT SET
       else db.set(query.set, query.data, function(data){send(response, data);});      
-//      else {
-//        db[query.set] = query.data;
-//        send(response, true);     
-//      }
-    } else if (query.get) {
+    } else if (query.get){
       console.log('get: '+ query.get);
-      if(query.get == 'server') send(response, '{"status":"online"}');
-      else if(query.get == 'waiting') send(response, waiting);
-//      else send(response, db[query.get] || '');
+      //STATUS
+      if(query.get == 'server') send(response, JSON.stringify({status: 'online'}));
+      //LANGUAGE
+      else if(query.get == 'lang') send(response, JSON.stringify({lang: request.headers['accept-language']}));
+      //DEFAULT GET
       else db.get(query.get, function(data){ send(response, data); });
-    } else send(response, 'It works!');
-    
-  } else static.read(response, pathname || 'index.html');
+    } else send(response, 'Db works!'); 
+  } 
+  //STATIC
+  else static.read(response, pathname || 'index.html');
 }).listen(port, host);
 
 console.log(new Date() 
