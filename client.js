@@ -1,6 +1,6 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.060,
+  vs: 0.061,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
@@ -40,10 +40,16 @@ var game = {
     else $('.unsupported').show();
   },
   
-  load: function(){
+  load: function(){    
+    game.states.load.data();
     game.states.load.images();
     game.states.load.audio();
     game.states.load.language();
+    game.states.load.ping(function(){
+      game.states.load.youtube();
+      game.states.load.fonts();
+      game.states.load.analytics();      
+    });
   },
   
   build: function(){
@@ -68,7 +74,7 @@ var game = {
       complete: function(response){
         var data = JSON.parse(response.responseText);
         game[name] = data;
-        cb(data);
+        if(cb) cb(data);
       }
     });
   },  
@@ -77,7 +83,7 @@ var game = {
     if(send.data) send.data = JSON.stringify(send.data);
     $.ajax({
       type: "GET", 
-      url:  game.debug ? 'http://localhost/db' : 'http://dotacard.herokuapp.com/db', 
+      url:  '/db', 
       data: send, 
       complete: function(receive){
         var data;
@@ -87,6 +93,7 @@ var game = {
     });
   },
   
+  //AUDIO
   audioctx: new AudioContext(), 
   audioBuffers: {},
   loadAudio: function(name){
@@ -111,6 +118,7 @@ var game = {
     game.mute = game.audioctx.createGain();
     game.mute.connect(game.audioctx.destination);
   },  
+  
   /*///////////////////////////////////////////////////////
 
   states.changeTo('yourState')  -> set current state
@@ -166,16 +174,28 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'load': {
+    load: {
     ////////////////////////////////////////////////////////////////////////////////////////  
       
-      'language': function(){
+      data: function(){
+        var jsondata = [
+          'heroes',
+          'skills',
+          'buffs',
+          'units'
+        ];
+        for(var i=0; i < jsondata.length; i++) game.loadJSON(jsondata[i]);
+      },
+      
+      language: function(){
         game.loadJSON('languages', function(){
           game.db({'get':'lang'}, function(data){
-            game.lang = data.lang.split(';')[0].split(',')[0];            
-            if(!game.languages[game.lang]) game.lang = 'en-US';
+            game.lang = 'en-US';
+            if(data && data.lang){
+              game.lang = data.lang.split(';')[0].split(',')[0];     
+            }
             game.language = game.languages[game.lang];
-            game.states.build();         
+            game.states.build();
           });         
         });
       },
@@ -210,6 +230,7 @@ var game = {
         }//loop
         return allImgs;
       },
+      
       audio: function(){
         var sounds = [
           'activate',
@@ -219,9 +240,41 @@ var game = {
           'pick',         
           'tower'
         ];
-        for(var i=0; i < sounds.length; i++){
-          game.loadAudio(sounds[i]);
+        for(var i=0; i < sounds.length; i++) game.loadAudio(sounds[i]);
+      },
+      
+      ping: function(cb){
+        var start = new Date();
+        $.ajax({
+          type: "GET", 
+          url: 'http://dotacard.herokuapp.com',
+          complete: function(response){
+            game.ping = new Date() - start;
+            if(response.readyState != 4) game.offline = true;     
+            if(cb) cb();
+          }
+        });
+      }, 
+      
+      fonts: function(){
+        if(!game.offline){
+          var fontstyles = [
+            '<style rel="stylesheet">',
+              '@import url("http://fonts.googleapis.com/css?family=Open+Sans");',
+              '@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");',
+              '@import url("http://fonts.googleapis.com/css?family=Sansita+One");',
+            '</style>'
+          ].join('\n');
+          $(fontstyles).appendTo('head');
         }
+      },
+      
+      analytics: function(){
+        if(!game.offline) $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
+      },
+      
+      youtube: function(){
+        if(!game.offline) $('<script src="browser_modules/youtube.iframe.min.js">').appendTo('body');
       },
 
       end: function(){
@@ -244,7 +297,7 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'intro': {   
+    intro: {   
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){         
@@ -272,6 +325,7 @@ var game = {
               events: {
                 onReady: function(event){ 
                   game.youTubePlayer = event.target;
+                  game.states.intro.play();
                 }
               }
             });
@@ -285,15 +339,15 @@ var game = {
         game.loader.addClass('loading');
         game.message.text('Loading');
         if(!game.debug){
-          this.box.fadeIn(3000);
+          this.box.fadeIn(2000);
           setTimeout(function(){
             if(game.currentstate == 'intro'){
-              game.message.text('');
-              game.loader.removeClass('loading');
-              if(game.youTubePlayer) game.states.intro.play();
-              else game.states.changeTo('login');
+              if(game.offline) game.states.changeTo('login');
+              else setTimeout(function(){
+                if(!game.youTubePlayer) game.states.changeTo('login');
+              }, 2000);
             }
-          }, 5000); 
+          }, 4000); 
 
         } else {        
           game.states.changeTo('login'); 
@@ -301,14 +355,18 @@ var game = {
       },
 
       play: function(){   
-        this.box.delay(6000).fadeOut(3000);
-        this.video.delay(3000).fadeIn(3000);
-        setTimeout(function(){
-          if(game.currentstate == 'intro') game.youTubePlayer.playVideo();
-        }, 3000);
-        setTimeout(function(){
-          if(game.currentstate == 'intro') game.states.changeTo('login');          
-        }, 105400);       
+        if(game.currentstate == 'intro'){
+          game.message.text('');
+          game.loader.removeClass('loading');        
+          this.box.delay(4000).fadeOut(1000);
+          this.video.delay(6000).fadeIn(1000);
+          setTimeout(function(){
+            if(game.currentstate == 'intro') game.youTubePlayer.playVideo();
+          }, 2000);
+          setTimeout(function(){
+            if(game.currentstate == 'intro') game.states.changeTo('login');          
+          }, 105400);     
+        }
       },
 
       end: function(){
@@ -317,7 +375,7 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'login': {  
+    login: {  
     ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){       
@@ -367,7 +425,7 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'menu': {
+    menu: {
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){     
@@ -402,8 +460,9 @@ var game = {
         }
       }
     }, 
+    
     ////////////////////////////////////////////////////////////////////////////////////////
-    'options': {
+    options: {
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){     
@@ -469,8 +528,8 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'choose': {   
-      ////////////////////////////////////////////////////////////////////////////////////////  
+    choose: {   
+    ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){    
         this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
@@ -489,8 +548,7 @@ var game = {
             $.each(pickDeck.data('cards'), function(id, card){
               card.on('click.active', game.states.choose.active);
             });
-            pickDeck.width(100 + $('.card').width() * pickDeck.children().length);
-            pickDeck.children().first().click();
+            pickDeck.width(100 + $('.card').width() * pickDeck.children().length);            
           }
         });      
       },
@@ -499,6 +557,7 @@ var game = {
         game.loader.addClass('loading');      
         game.currentData = {};
         if(game.mode == 'public') this.checkPublic();
+        this.pickDeck.children().first().click();
       },
 
       active: function(){
@@ -714,7 +773,7 @@ var game = {
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
-    'table': {
+    table: {
       ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){      
@@ -840,7 +899,7 @@ var game = {
 
       placeHeroes: function(){ 
 
-        var xxx = 'F3';//'I1';
+        var n = 'F3';//'I1';
         if(game.player.picks && game.enemy.picks){
 
           game.player.mana = 0;      
@@ -856,7 +915,7 @@ var game = {
                 card.place(Map.toId(x + p,y));
                 game.player.mana += card.data('mana');
                 if(game.debug){
-                  if(p==0) card.place(xxx);
+                  if(p==0) card.place(n);
                 }
 
               });
@@ -876,7 +935,7 @@ var game = {
                 card.place(Map.toId(x - p,y));  
                 game.enemy.mana += card.data('mana');
                 if(game.debug){
-                  if(p==0) card.place(Map.mirrorPosition(xxx));
+                  if(p==0) card.place(Map.mirrorPosition(n));
                 }         
               });
             }
@@ -925,11 +984,9 @@ var game = {
         game.player.maxCards = Math.round(game.player.mana/2);  
         game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10)
 
-        game.enemy.maxCards = Math.round(game.enemy.mana/2); 
-        game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);   
-
         this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
         this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
+        this.playerTemp = $('<div>').hide().appendTo(this.el).addClass('player deck skills temp');
         this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
         this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
         this.playerSkillsDeck = Deck({
@@ -940,12 +997,17 @@ var game = {
             deck.addClass('player available').hide().appendTo(game.states.table.el);
             $.each(deck.data('cards'), function(i, skill){   
               skill.addClass('player skill').data('side','player').on('click.select', Card.select);
-              if(skill.data('special')) {              
+              if(skill.data('special')){              
                 if(skill.data('special') == 'Permanent') skill.appendTo(game.states.table.playerPermanent);              
-              } else if(skill.data('skill') == 'ult') skill.appendTo(game.states.table.playerUlts);       
+                if(skill.data('special') == 'Temporary') skill.appendTo(game.states.table.playerTemp);              
+              } else if(skill.data('skill') == 'ult') skill.appendTo(game.states.table.playerUlts);
             });        
           }
         });
+        
+
+        game.enemy.maxCards = Math.round(game.enemy.mana/2); 
+        game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
         game.enemy.hand = 0;
         this.enemySkillsDeck = Deck({
           name: 'skills', 
@@ -989,7 +1051,7 @@ var game = {
       enemyHand: function(){
         for(var i=0; i<game.enemy.cardsPerTurn; i++){
           if(game.enemy.hand < game.enemy.maxCards){
-            game.enemy.buyCard();          
+            game.enemy.buyCard();
           }
         }      
       },
@@ -1226,7 +1288,7 @@ var game = {
             skill = $('.enemy.skills .'+hero+'-'+skillid).show();
             if(skill.data('target') == 'Enemy' || skill.data('target') == 'Player' || skill.data('target') == 'Self')
               target = $('#'+toSpot+' .card');
-            if(skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast){
+            if(Skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast){
               source.cast(skill, target);
               game.enemy.hand--;
             }
@@ -1237,7 +1299,7 @@ var game = {
             hero = move[3];
             target = $('#'+toSpot+' .card');
             skill = $('.enemy.skills .'+hero+'-'+skillid).show();
-            if(skills[hero][skillid].activate && skill && target.hasClass('enemy') && skill.activate){
+            if(Skills[hero][skillid].activate && skill && target.hasClass('enemy') && skill.activate){
               skill.activate(target);
               game.enemy.hand--;
             }

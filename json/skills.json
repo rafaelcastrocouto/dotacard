@@ -55,14 +55,27 @@
       "damage": 2,      
       "cards": 2,
       "armor": 20,
-      "resistance": 25,      
+      "resistance": 50,        
+      "entanglechance": 20,
+      "entangledamage": 6,  
+      "entangleduration": 3,  
+      "demolishpercentage": 40,
+      "returncooldown": 3,
       "description": "Summons a powerful Spirit Bear companion"
+    },
+    "return": {
+      "name": "Return",
+      "type": "Target Spot",
+      "target": "Spot",
+      "range": "Melee",
+      "special": "Temporary",
+      "description": "Teleports the Spirit Bear back to the Lone Druid"
     },
     "rabid": {
       "name": "Rabid",
       "type": "Active",
       "target": "Self",      
-      "percentage": 40,   
+      "bonus": 3,   
       "duration": 3,
       "cards": 5,
       "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    

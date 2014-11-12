@@ -19,7 +19,7 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
 **Easy 3-Step setup guide**
 
- * Linux
+ * ** ![Linux](https://sites.google.com/site/rafaelcastrocouto/download/linux.png "Linux") Linux **
 
     1 - [Download](http://nodejs.org/download/) and install [Nodejs](http://nodejs.org/) - ([Via package manager](https://github.com/joyent/node/wiki/Installing-Node.js-via-package-manager))
 
@@ -31,7 +31,7 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
     
     And it's done! If everything worked correctly you can access your [local server](http://localhost/)
 
- * Windows
+ * ** ![Windows](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows") Windows **
 
     1 - [Download](http://nodejs.org/download/) and install [Nodejs](http://nodejs.org/)
     

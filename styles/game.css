@@ -1,23 +1,15 @@
-/*FONT*/
-
-@import url("http://fonts.googleapis.com/css?family=Open+Sans");
-@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");
-@import url("http://fonts.googleapis.com/css?family=Sansita+One");
-
-/*TAGS*/ 
-
 html, body {
   user-select: none;  
   margin: 0;
   width: 100%; height: 100%;
 }
 
-body, p, button, noscript {
-  font-family: "Open Sans", "open sans", "Arial", sans-serif;
+body, p, noscript {
+  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 }
 
 h1, h2 {
-  font-family: "Julius Sans One";  
+  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;  
   padding: 1px 2px;
   margin: 0;
   font-weight: normal;
@@ -296,7 +288,7 @@ input:focus {
   50% {opacity: 0.5;}
 }
 button {
-  font-family: "Julius Sans One";
+  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;;
   font-size: 16px;
   cursor: pointer;
   padding: 8px 16px;
@@ -681,7 +673,7 @@ label input {
 }
 
 .card .damaged {
-  font-family: "Sansita One";
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
   z-index: 6;
   color: gold;
   position: absolute;
@@ -690,23 +682,38 @@ label input {
   right: 0;
   font-size: 120px;
   animation: slideup 2s linear;
-  text-shadow: 3px 0 1px white,
-    -3px 0 1px white,
-    0 3px 1px white,
-    0 -3px 2px white;
+  text-shadow: 
+     10px   0   white,
+    -10px   0   white,
+      0    10px white,
+      0   -10px white,
+     10px  10px white,
+    -10px  10px white,
+    -10px  10px white,
+     10px -10px white;
 }
 .card .damaged.critical {
   color: orangered;
 }
 .card .heal {
-  font-family: "Sansita One";
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+  z-index: 7;
   color: springgreen;
   position: absolute;
   opacity: 0;
   top: 0;  
   left: 0;
-  font-size: 180px;
+  font-size: 120px;
   animation: slideup 2s linear;
+  text-shadow: 
+     10px   0   white,
+    -10px   0   white,
+      0    10px white,
+      0   -10px white,
+     10px  10px white,
+    -10px  10px white,
+    -10px  10px white,
+     10px -10px white;  
 }
 @keyframes slideup {
   0% {top: 0;opacity: 1;}
@@ -1289,6 +1296,9 @@ label input {
 .ld.bear .img {
   background-image: url("../img/skills/lone_druid_spirit_bear.png");
 }
+.ld-return .img {
+  background-image: url("../img/skills/lone_druid_return.png");
+}
 .ld-rabid .img {
   background-image: url("../img/skills/lone_druid_rabid.png");
 }
@@ -1304,6 +1314,7 @@ label input {
 .ld-transform .img {
   background-image: url("../img/skills/lone_druid_true_form_druid.png");
 }
+
 
 .wk {
   background: #6db090;
@@ -1408,6 +1419,8 @@ label input {
 .magicimmune .img {
    background-image: url("../img/skills/magicimmune.gif")
 }
+/*
 .ethereal .img {
    background-image: url("../img/skills/ethereal.png")
 }
+*/

@@ -89,7 +89,6 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
   if(cb) cb(deck);     
 };
 
-
 Deck.createUnitsCards = function(deck, name, cb, filter){   
   var deckData = game[name];
   var cards = [];
@@ -239,7 +238,7 @@ Card.highlightTargets = function(){
       
       if(skill.data('target') == 'Passive') source.addClass('casttarget').on('contextmenu.activate', game.states.table.passiveActivate);
         
-      else if(!source.hasClasses('dead done stunned frozen')){
+      else if(!source.hasClasses('dead done stunned frozen entangled')){
         
         if(skill.data('target') == 'Self'){  
           source.addClass('casttarget').on('contextmenu.cast', game.states.table.castWithSelected);
@@ -325,7 +324,7 @@ $.fn.strokeSkill = Card.strokeSkill;
 
 Card.highlightMove = function(){
   var card = this;
-  if(card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen')){       
+  if(card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen entangled')){       
     var speed = card.data('currentspeed');
     if(speed < 1) return; 
     if(speed > 3) speed = 3;
@@ -392,7 +391,7 @@ Card.cast = function(skill, target){
     if(target.length){
       source.data('channeling', false).removeClass('channeling');
       source.trigger('cast',{skill: skill, source: source, target: target});
-      skills[hero][skillid].cast(skill, source, target);    
+      Skills[hero][skillid].cast(skill, source, target);    
       var channelduration = skill.data('channel');
       if(channelduration){
         source.data('channeling', channelduration).addClass('channeling');
@@ -423,7 +422,7 @@ Card.activate = function(target){
   var skillid = skill.data('skill');
   if(typeof target == 'string') target = $('#'+target+' .card');                           
   if(skillid && hero && target.data('hero') == hero){    
-    skills[hero][skillid].activate(skill, target);
+    Skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
     if(source.hasClass('enemy')) game.enemy.hand--;
   }
@@ -549,9 +548,14 @@ Card.damage = function(damage, target, type){
   if(typeof target == 'string') target = $('#'+target+' .card');
   var hp = target.data('currenthp') - damage;
   target.changehp(hp);  
+  target.trigger('damage', {source: this, target: target, spot: spot, damage: damage});
   if(hp < 1){
     var spot = Map.getPosition(target);    
-    setTimeout(function(){ target.trigger('die',{source: this, target: target, spot: spot}).die(); }, 2000);
+    target.addClass('dead').removeClass('target done').changehp(0);
+    setTimeout(function(){ 
+      target.trigger('die', {source: this, target: target, spot: spot});
+      target.die(); 
+    }, 2000);
     if(source.hasClass('hero') && target.hasClass('hero')){
       game[source.data('side')].kills += 1;
       var kills = source.data('kills') + 1;
@@ -615,8 +619,7 @@ Card.changehp = function(hp){
 $.fn.changehp = Card.changehp;
 
 Card.die = function(){
-  this.addClass('dead').removeClass('target done');
-  this.changehp(0);  
+  this.addClass('dead').removeClass('target done').changehp(0); 
   var pos = Map.getPosition(this);
   var spot = $('#'+pos);
   if(!spot.hasClass('cript')) spot.removeClass('block').addClass('free');
