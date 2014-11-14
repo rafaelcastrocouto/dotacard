@@ -1,10 +1,10 @@
 {
   "ld":{
-    "bear":{
+    "spiritbear":{
       "name": "Spirit Bear",
-      "hp": 135,
+      "hp": 120,
       "damage": 3,
-      "armor": 20,
+      "armor": 33,
       "resistance": 25,      
       "type": "Summon",
       "range": "Melee",

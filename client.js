@@ -1,29 +1,29 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.061,
+  vs: 0.062,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
   scrollspeed: 0.4,
   skills: null, heroes: null, buffs: null, //json
   player: {}, enemy: {},   
-  
+
   container: $('.container').first(), 
   loader: $('<span>').addClass('loader'), 
   message: $('<p>').addClass('message'), 
   triesCounter: $('<small>').addClass('triescounter'), tries: 0, 
-  
+
   timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds    
   dayLength: 10, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots   
-  
+
+  nomenu: function(){return false;}, 
+
   seed: 0, random: function(){  
     if(game.debug) return 0;
     return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
   },  
-  
-  nomenu: function(){return false;}, 
-  
+
   start: function(){
     if(window.JSON && 
        window.btoa && window.atob &&
@@ -39,7 +39,7 @@ var game = {
        Modernizr.rgba ) game.load();
     else $('.unsupported').show();
   },
-  
+
   load: function(){    
     game.states.load.data();
     game.states.load.images();
@@ -51,7 +51,7 @@ var game = {
       game.states.load.analytics();      
     });
   },
-  
+
   build: function(){
     game.loader.addClass('loading'); 
     game.message.text(game.language.battle);
@@ -66,7 +66,7 @@ var game = {
     game.builded = true;
     game.timeout = setTimeout(game.states.table.firstTurn, 1000);
   },  
-  
+
   loadJSON: function(name, cb){
     $.ajax({
       type: "GET", 
@@ -78,7 +78,7 @@ var game = {
       }
     });
   },  
-  
+
   db: function(send, cb){
     if(send.data) send.data = JSON.stringify(send.data);
     $.ajax({
@@ -92,7 +92,7 @@ var game = {
       }
     });
   },
-  
+
   //AUDIO
   audioctx: new AudioContext(), 
   audioBuffers: {},
@@ -118,7 +118,7 @@ var game = {
     game.mute = game.audioctx.createGain();
     game.mute.connect(game.audioctx.destination);
   },  
-  
+
   /*///////////////////////////////////////////////////////
 
   states.changeTo('yourState')  -> set current state
@@ -175,18 +175,22 @@ var game = {
 
     ////////////////////////////////////////////////////////////////////////////////////////
     load: {
-    ////////////////////////////////////////////////////////////////////////////////////////  
-      
+      ////////////////////////////////////////////////////////////////////////////////////////  
+
       data: function(){
-        var jsondata = [
-          'heroes',
-          'skills',
-          'buffs',
-          'units'
-        ];
+        var jsondata = ['heroes', 'skills',  'units'];
         for(var i=0; i < jsondata.length; i++) game.loadJSON(jsondata[i]);
+        game.loadJSON('buffs', function(){          
+          for(var hero in game.buffs){
+            for(var buff in game.buffs[hero]){
+              game.buffs[hero][buff].buff = hero + '-' + buff;              
+              game.buffs[hero][buff].hero = hero;
+              game.buffs[hero][buff].skill = buff;
+            }
+          }
+        });
       },
-      
+
       language: function(){
         game.loadJSON('languages', function(){
           game.db({'get':'lang'}, function(data){
@@ -199,7 +203,7 @@ var game = {
           });         
         });
       },
-      
+
       images: function(){
         var allImgs = [];//new array for all the image urls  
         var k = 0; //iterator for adding images
@@ -230,7 +234,7 @@ var game = {
         }//loop
         return allImgs;
       },
-      
+
       audio: function(){
         var sounds = [
           'activate',
@@ -242,7 +246,7 @@ var game = {
         ];
         for(var i=0; i < sounds.length; i++) game.loadAudio(sounds[i]);
       },
-      
+
       ping: function(cb){
         var start = new Date();
         $.ajax({
@@ -255,24 +259,24 @@ var game = {
           }
         });
       }, 
-      
+
       fonts: function(){
         if(!game.offline){
           var fontstyles = [
             '<style rel="stylesheet">',
-              '@import url("http://fonts.googleapis.com/css?family=Open+Sans");',
-              '@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");',
-              '@import url("http://fonts.googleapis.com/css?family=Sansita+One");',
+            '@import url("http://fonts.googleapis.com/css?family=Open+Sans");',
+            '@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");',
+            '@import url("http://fonts.googleapis.com/css?family=Sansita+One");',
             '</style>'
           ].join('\n');
           $(fontstyles).appendTo('head');
         }
       },
-      
+
       analytics: function(){
         if(!game.offline) $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
       },
-      
+
       youtube: function(){
         if(!game.offline) $('<script src="browser_modules/youtube.iframe.min.js">').appendTo('body');
       },
@@ -376,7 +380,7 @@ var game = {
 
     ////////////////////////////////////////////////////////////////////////////////////////
     login: {  
-    ////////////////////////////////////////////////////////////////////////////////////////
+      ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){       
         this.menu = $('<div>').appendTo(this.el).addClass('box');
@@ -397,6 +401,8 @@ var game = {
           if(!name) game.states.login.input.focus();
           else {
             game.player.name = name;
+            if(game.states.login.remembername) document.cookie = 'name='+name;
+            else document.cookie = 'name=';
             game.states.login.button.attr('disabled', true );
             game.loader.addClass('loading');
             game.db({'get':'server'}, function(server){
@@ -405,8 +411,19 @@ var game = {
             });            
           } 
         });
-        this.text = $('<div>').appendTo(this.menu);
-        this.logwith = $('<p>').appendTo(this.text).html('Comming soon: <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard" title="Coming soon">Login with Google</a>');
+        this.rememberlabel = $('<label>').appendTo(this.menu).text(game.language.remember);
+        this.remembercheck = $('<input>').attr({type: 'checkbox', name: 'remember'}).change(this.remember).appendTo(this.rememberlabel).click();
+        if(document.cookie){
+          var rememberedname = '';
+          var cookies = document.cookie.split(';');
+          for(var i=0; i<cookies.length; i++){
+            var cookie = cookies[i];
+            while(cookie.charAt(0)==' ') cookie = cookie.substring(1);
+            if(cookie.indexOf('name') != -1) rememberedname = cookie.substring(5, cookie.length);
+          }
+          if(rememberedname) this.input.val(rememberedname);
+        }
+
       },
 
       start: function(){
@@ -415,13 +432,20 @@ var game = {
         game.loader.removeClass('loading');
         if(game.debug){
           this.input.val('Bot'+(parseInt(Math.random()*100)));
-          //this.button.click();
+          this.button.click();
         }
       },
 
       end: function(){
         this.button.attr('disabled', false );
       },
+
+      remembername: false,
+
+      remember: function(){
+        game.states.login.remembername = !game.states.login.remembername;
+      }
+
     },
 
     ////////////////////////////////////////////////////////////////////////////////////////
@@ -456,11 +480,11 @@ var game = {
         if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
         else {
           this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-          //this.public.click();
+          this.public.click();
         }
       }
     }, 
-    
+
     ////////////////////////////////////////////////////////////////////////////////////////
     options: {
       ////////////////////////////////////////////////////////////////////////////////////////  
@@ -529,7 +553,7 @@ var game = {
 
     ////////////////////////////////////////////////////////////////////////////////////////
     choose: {   
-    ////////////////////////////////////////////////////////////////////////////////////////  
+      ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){    
         this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
@@ -567,7 +591,7 @@ var game = {
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
       },
 
-    
+
       checkPublic: function(){
         game.seed = new Date().valueOf();
         game.id = btoa(game.seed);
@@ -1000,11 +1024,12 @@ var game = {
               if(skill.data('special')){              
                 if(skill.data('special') == 'Permanent') skill.appendTo(game.states.table.playerPermanent);              
                 if(skill.data('special') == 'Temporary') skill.appendTo(game.states.table.playerTemp);              
+                if(skill.data('special') == 'Ultimate') skill.appendTo(game.states.table.playerTemp);              
               } else if(skill.data('skill') == 'ult') skill.appendTo(game.states.table.playerUlts);
             });        
           }
         });
-        
+
 
         game.enemy.maxCards = Math.round(game.enemy.mana/2); 
         game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
@@ -1382,7 +1407,7 @@ var game = {
       }
 
     } //states.table end
-    
+
   } //states end
 };
 $(game.start);

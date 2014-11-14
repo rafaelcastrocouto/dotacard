@@ -1,5 +1,80 @@
 {
   
+  "ld": {
+    "summon": {
+      "name": "Spirit Bear",
+      "type": "Summon",
+      "target": "Spot",
+      "range": "Melee",
+      "hp": 135,
+      "damage": 2,      
+      "cards": 2,
+      "armor": 20,
+      "resistance": 50,        
+      "entanglechance": 20,
+      "entangledamage": 6,  
+      "entangleduration": 3,  
+      "demolishpercentage": 40,
+      "returncooldown": 3,
+      "description": "Summons a powerful Spirit Bear companion"
+    },
+    "return": {
+      "name": "Return",
+      "type": "Target Spot",
+      "target": "Spot",
+      "range": "Melee",
+      "special": "Temporary",
+      "description": "Teleports the Spirit Bear back to the Lone Druid"
+    },
+    "rabid": {
+      "name": "Rabid",
+      "type": "Active",
+      "target": "Self",      
+      "damagebonus": 3,   
+      "duration": 3,
+      "cards": 5,
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    
+    },
+    "passive": {
+      "name": "Synergy",
+      "type": "Passive",     
+      "target": "Passive",
+      "cards": 1,
+      "bearbonus": 4,
+      "rabidbonus": 4,      
+      "ultbonus": 20,      
+      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
+    },
+    "ult": {
+      "name": "True Form",
+      "type": "Active",
+      "target": "Self",      
+      "cards": 4,
+      "armorbonus": 16,      
+      "hpbonus": 20,
+      "description": "Lone Druid morphs himself into a raging bear"       
+    },
+    "cry": {
+      "special": "Ultimate",
+      "name": "Battle Cry",
+      "type": "Active",
+      "target": "Self",
+      "duration": 4,
+      "armorbonus": 16,
+      "damagebonus": 2,
+      "cards": 1, 
+      "description": "Increases the attack of Syllabear and the Spirit Bear"       
+    },
+    "transform": {
+      "special": "Ultimate",
+      "name": "Druid Form",
+      "type": "Active",
+      "target": "Self",
+      "cards": 1, 
+      "description": "Syllabear morphs himself back into a druid"       
+    }
+  },
+  
   "cm": {
     "slow": {
       "name": "Crystal Nova",
@@ -45,81 +120,6 @@
     }    
   },
   
-  "ld": {
-    "summon": {
-      "name": "Spirit Bear",
-      "type": "Summon",
-      "target": "Spot",
-      "range": "Melee",
-      "hp": 135,
-      "damage": 2,      
-      "cards": 2,
-      "armor": 20,
-      "resistance": 50,        
-      "entanglechance": 20,
-      "entangledamage": 6,  
-      "entangleduration": 3,  
-      "demolishpercentage": 40,
-      "returncooldown": 3,
-      "description": "Summons a powerful Spirit Bear companion"
-    },
-    "return": {
-      "name": "Return",
-      "type": "Target Spot",
-      "target": "Spot",
-      "range": "Melee",
-      "special": "Temporary",
-      "description": "Teleports the Spirit Bear back to the Lone Druid"
-    },
-    "rabid": {
-      "name": "Rabid",
-      "type": "Active",
-      "target": "Self",      
-      "bonus": 3,   
-      "duration": 3,
-      "cards": 5,
-      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    
-    },
-    "passive": {
-      "name": "Synergy",
-      "type": "Passive",     
-      "target": "Passive",
-      "cards": 1,
-      "bearBonus": 4,
-      "rabidBonus": 4,      
-      "hpBonus": 20,      
-      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
-    },
-    "ult": {
-      "name": "True Form",
-      "type": "Active",
-      "target": "Self",
-      "damage": 20,
-      "armor": 50,
-      "cards": 4,
-      "hpBonus": 20,
-      "description": "Lone Druid morphs himself into a raging bear"       
-    },
-    "cry": {
-      "special": "ult",
-      "name": "Battle Cry",
-      "type": "Active",
-      "target": "Self",
-      "duratioin": 4,
-      "armor": 40,
-      "damage": 3,
-      "cards": 1, 
-      "description": "Increases the attack of Syllabear and the Spirit Bear"       
-    },
-    "transform": {
-      "special": "ult",
-      "name": "Druid Form",
-      "type": "Active",
-      "target": "Self",
-      "cards": 1, 
-      "description": "Syllabear morphs himself back into a druid"       
-    }
-  },
   "am": {
     "burn": {
       "name": "Mana Break",
@@ -239,7 +239,7 @@
       "description": "Ezalor becomes one with the light!" 
     },
     "illuminate-ult": {
-      "special": "ult",
+      "special": "Ultimate",
       "name": "Illuminate",
       "type": "Area of effect",
       "target": "Spot",
@@ -251,7 +251,7 @@
       "description": "Summon a spirit to channel light to damage enemies in a line"
     },
     "blind": {
-      "special": "ult",
+      "special": "Ultimate",
       "name": "Blinding Light",
       "type": "Area of effect",
       "target": "Area",
@@ -260,7 +260,7 @@
       "description": "Knock back and blind enemies, causing them to miss attacks"
     },
     "recall": {
-      "special": "ult",
+      "special": "Ultimate",
       "name": "Recall",
       "type": "Target Friend Unit",
       "target": "Ally",
@@ -270,7 +270,6 @@
       "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
     }
   },
-
 
   "pud": {
     "hook": {
@@ -318,7 +317,6 @@
       "description": "Channels to disable and deal damage over time to an enemy"
     }    
   },
-
 
   "nyx": {
     "stun": {

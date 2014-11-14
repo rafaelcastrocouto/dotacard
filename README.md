@@ -1,23 +1,20 @@
-#DotaCard
 [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rafaelcastrocouto/dotacard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-**[Play the apha build now][1]**
+[1]: http://dotacard.herokuapp.com/
 
-*Please report any [issue](https://github.com/rafaelcastrocouto/dotacard/issues)*
+[![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/img/banner.png)][1]
 
-[![Play DotaCard](http://rafaelcastrocouto.github.io/dotacard/img/banner.png)][1]
-
-  [1]: http://dotacard.herokuapp.com/
+**[DotaCard][1]**
 
 A DOTA card game with the heroes you love and all skills and ultimates.
 
 Please fork and help me make a hero!
 
+*Please tell me about any [sugestion or issue](https://github.com/rafaelcastrocouto/dotacard/issues)*
+
 __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
-###Developers
-
-**Easy 3-Step setup guide**
+**Easy 3-Step local setup guide**
 
  * ** ![Linux](https://sites.google.com/site/rafaelcastrocouto/download/linux.png "Linux") Linux **
 

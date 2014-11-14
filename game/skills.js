@@ -73,7 +73,7 @@ var Skills = {
     summon: {
       cast: function(skill, source, target){
         var side = source.data('side');
-        var bear = $('.'+side+'.unit.ld.bear');
+        var bear = $('.'+side+'.unit.ld.spiritbear');
         source.data('bear', bear);
         bear.data('currenthp', bear.data('hp'));
         if(!bear.data('summoned')){
@@ -162,19 +162,19 @@ var Skills = {
       cast: function(skill, source){
         source.addBuff(source, skill.data('buff'));
         var damage = source.data('currentdamage');
-        source.data('currentdamage', damage + skill.data('bonus'));
+        source.data('currentdamage', damage + skill.data('damagebonus'));
         var speed = source.data('currentspeed');
         source.data('currentspeed', speed + 1);
         var bear = source.data('bear');
         if(bear && !bear.hasClass('dead')){
           var beardamage = bear.data('currentdamage');
-          bear.data('currentdamage', damage + skill.data('bonus'));
+          bear.data('currentdamage', damage + skill.data('damagebonus'));
           var bearspeed = bear.data('currentspeed');
           bear.data('currentspeed', bearspeed + 1);
           source.addBuff(bear, skill.data('buff'));
         }
         source.data('ld-rabid', skill.data('duration'));
-        source.data('ld-rabid-bonus', skill.data('bonus'));
+        source.data('ld-rabid-bonus', skill.data('damagebonus'));
         source.on('turnstart.ld-rabid', Skills.ld.rabid.turnstart);
       },
       turnstart: function(event, eventdata){
@@ -185,7 +185,7 @@ var Skills = {
           target.data('ld-rabid', duration);
         } else {
           var damage = target.data('currentdamage');
-          target.data('currentdamage', damage - target.data('ld-rabid-bonus'));
+          target.data('currentdamage', damage - target.data('ld-rabid-damagebonus'));
           var speed = target.data('currentspeed');
           target.data('currentspeed', speed - 1);
           target.off('turnstart.ld-rabid');
@@ -194,7 +194,7 @@ var Skills = {
           var bear = source.data('bear');
           if(bear && bear.hasBuff('ld-rabid')){
             var beardamage = bear.data('currentdamage');
-            bear.data('currentdamage', beardamage - target.data('ld-rabid-bonus'));
+            bear.data('currentdamage', beardamage - target.data('ld-rabid-damagebonus'));
             var bearspeed = bear.data('currentspeed');
             bear.data('currentspeed', bearspeed - 1);            
             bear.removeBuff('ld-rabid');
@@ -204,25 +204,108 @@ var Skills = {
     },
     passive: {
       activate: function(skill, source){
+        source.addBuff(source, skill.data('buff'));
+        var side = source.data('side');
+        var rabids = $('.'+side+'.skill.ld-rabid');
+        var duration = rabids.data('duration');
+        rabids.data('duration', duration + skill.data('rabidbonus'));
+        var ults = $('.'+side+'.skill.ld-ult');
+        var hpbonus = ults.data('hpbonus');
+        ults.data('hpbonus', hpbonus + skill.data('ultbonus'));
         var bear = source.data('bear');
         if(bear){
-           
+          source.addBuff(bear, skill.data('buff'));
+          var beardamage = bear.data('currentdamage');
+          bear.data('currentdamage', beardamage + skill.data('bearbonus'));
+          var bearhp = bear.data('hp'); 
+          var currenthp = bear.data('currenthp'); 
+          var relativehp = currenthp / bearhp;
+          bear.data('hp', bearhp + skill.data('hpbonus'));
+          bear.data('currenthp', bear.data('hp') * relativehp);         
         }
       }
     },
     ult: {
       cast: function(skill, source){
+        var side = source.data('side');
+        var transform = $('.'+side+'.skill.ld-transform');
+        transform.appendTo(game.states.table.playerPermanent);       
+        var cry = $('.'+side+'.skill.ld-cry');
+        cry.appendTo(game.states.table.playerPermanent);        
+        var ldhp = source.data('hp'); 
+        var currenthp = source.data('currenthp');
+        var relativehp = currenthp / ldhp;
+        source.data('hp', ldhp + skill.data('hpbonus'));
+        source.data('currenthp', source.data('hp') * relativehp);
+        var armor = source.data('armor');
+        source.data('armor', + skill.data('armorbonus'));   
         source.addClass('transformed');
       }  
     },
-    cry: {
-      cast: function(skill, source){}
-    },
     transform: {
       cast: function(skill, source){
-        source.removeClass('transformed');
+        var side = source.data('side');
+        var transform = $('.'+side+'.skill.ld-transform');
+        transform.appendTo(game.states.table.playerTemp);        
+        var cry = $('.'+side+'.skill.ld-cry');
+        cry.appendTo(game.states.table.playerTemp);
+        var ldhp = source.data('hp'); 
+        var currenthp = source.data('currenthp');
+        var relativehp = currenthp / ldhp;
+        source.data('hp', ldhp - skill.data('hpbonus'));
+        source.data('currenthp', source.data('hp') * relativehp);
+        var armor = source.data('armor');
+        source.data('armor', - skill.data('armorbonus'));           
+        source.removeClass('transformed');        
       }      
+    },    
+    cry: {
+      cast: function(skill, source){
+        source.addBuff(source, skill.data('buff'));
+        var armor = source.data('armor');
+        source.data('armor', + skill.data('armorbonus'));  
+        var damage = source.data('currentdamage');
+        source.data('currentdamage', damage + skill.data('damagebonus')); 
+        var bear = source.data('bear');
+        if(bear){
+          source.addBuff(bear, skill.data('buff'));
+          var beararmor = source.data('armor');
+          source.data('armor', beararmor + skill.data('armorbonus'));  
+          var beardamage = source.data('currentdamage');
+          source.data('currentdamage', beardamage + skill.data('damagebonus'));    
+        }
+        source.data('ld-cry', skill.data('duration'));
+        source.data('ld-cry-damagebonus', skill.data('damagebonus'));
+        source.data('ld-cry-armorbonus', skill.data('armorbonus'));
+        source.on('turnstart.ld-cry', Skills.ld.cry.turnstart);
+      },
+      turnstart: function(event, eventdata){
+        var target = eventdata.target; 
+        var duration = target.data('ld-cry');
+        if(duration > 0) {
+          duration--;
+          target.data('ld-cry', duration);
+        } else {
+          var damage = target.data('currentdamage');
+          target.data('currentdamage', damage - target.data('ld-cry-damagebonus'));          
+          var armor = target.data('armor');
+          target.data('armor', armor - target.data('ld-cry-armorbonus'));
+          target.off('turnstart.ld-cry');
+          target.data('ld-cry', null);
+          target.removeBuff('ld-cry');
+          var bear = source.data('bear');
+          if(bear && bear.hasBuff('ld-cry')){
+            var beardamage = bear.data('currentdamage');
+            bear.data('currentdamage', beardamage - target.data('ld-cry-damagebonus'));            
+            var beararmor = bear.data('armorbonus');
+            bear.data('armorbonus', beararmor - target.data('ld-cry-armorbonus'));           
+            bear.removeBuff('ld-rabid');
+          }
+        }
+      }
+      
     }
+    
   },  
   
   wk: {

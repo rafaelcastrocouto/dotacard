@@ -23,11 +23,7 @@ var Deck = function(op/* name, [filter], callback */){
 
 Deck.createCards = function(deck, name, cb, filter, multi){   
   if(name == 'heroes') Deck.createHeroesCards(deck, name, cb, filter);
-  if(name == 'skills'){
-    game.loadJSON('buffs', function(){
-      Deck.createSkillsCards(deck, name, cb, filter, multi);
-    });
-  }
+  if(name == 'skills') Deck.createSkillsCards(deck, name, cb, filter, multi);
   if(name == 'units') Deck.createUnitsCards(deck, name, cb, filter);
 };
 
@@ -72,9 +68,6 @@ Deck.createSkillsCards = function(deck, name, cb, filter, multi){
         skillData.className = [hero+'-'+skill, name, hero].join(' ');
         if(game.buffs[hero] && game.buffs[hero][skill]){
           skillData.buff = game.buffs[hero][skill];
-          skillData.buff.hero = hero;
-          skillData.buff.skill = skill;
-          skillData.buff.buff = hero+'-'+skill
         }
         if(multi && !game.debug){
           for(var k=0; k < skillData[multi]; k++){
@@ -494,7 +487,6 @@ Card.discard = function(){
   }
 };
 $.fn.discard = Card.discard;
-
 
 Card.strokeAttack = function(){    
   var card = this;

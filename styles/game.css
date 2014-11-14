@@ -268,7 +268,7 @@ noscript ,
 /*LOGIN*/
 
 .login .box {
-  width: 350px;
+  width: 320px;
 }
 input {  
   border-radius: 3px;
@@ -322,6 +322,21 @@ button[disabled]:hover {
   background: darkgray;
 }
 
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+}
+
+label {
+  display: block; 
+  padding: 1px 2px;
+  margin: 2px;
+  text-align: left;
+}
+label input {
+  float: left;
+  margin: 5px;
+}
 
 /*MENU*/
 
@@ -356,22 +371,6 @@ button[disabled]:hover {
   display: inline-block;
   padding: 20px 10px;
   vertical-align: top;
-}
-
-input[type="checkbox"],
-input[type="radio"] {
-  cursor: pointer;
-}
-
-label {
-  display: block; 
-  padding: 1px 2px;
-  margin: 2px;
-  text-align: left;
-}
-label input {
-  float: left;
-  margin: 5px;
 }
 
 .volume {
@@ -1293,26 +1292,32 @@ label input {
   background-image: url("../img/heroes/lone_druid_full.png");
 }
 .ld-summon .img,
-.ld.bear .img {
-  background-image: url("../img/skills/lone_druid_spirit_bear.png");
+.spiritbear .img {
+  background-image: url("../img/skills.vec/lone_druid_spirit_bear.png");
 }
 .ld-return .img {
-  background-image: url("../img/skills/lone_druid_return.png");
+  background-image: url("../img/skills.vec/lone_druid_return.png");
 }
 .ld-rabid .img {
-  background-image: url("../img/skills/lone_druid_rabid.png");
+  background-image: url("../img/skills.vec/lone_druid_rabid.png");
 }
 .ld-passive .img {
-  background-image: url("../img/skills/lone_druid_synergy.png");
+  background-image: url("../img/skills.vec/lone_druid_synergy.png");
 }
 .ld-cry .img {
-  background-image: url("../img/skills/lone_druid_true_form_battle_cry.png");
+  background-image: url("../img/skills.vec/lone_druid_battle_cry.png");
 }
 .ld-ult .img {
-  background-image: url("../img/skills/lone_druid_true_form.png");
+  background-image: url("../img/skills.vec/lone_druid_true_form.png");
 }
 .ld-transform .img {
-  background-image: url("../img/skills/lone_druid_true_form_druid.png");
+  background-image: url("../img/skills.vec/lone_druid_true_form_druid.png");
+}
+.ld-entangle .img {
+  background-image: url("../img/skills.vec/lone_druid_entangle.png");
+}
+.ld-demolish .img {
+  background-image: url("../img/skills.vec/lone_druid_demolish.png");
 }
 
 
