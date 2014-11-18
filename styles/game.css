@@ -499,8 +499,7 @@ label input {
 
 .choose .card .kd,
 .choode .card .damaged,
-.choode .card .heal,
-.choose .card .buffs {
+.choode .card .heal {
   display: none;
 }
 
@@ -679,7 +678,7 @@ label input {
   opacity: 0;
   top: 0;  
   right: 0;
-  font-size: 120px;
+  font-size: 150px;
   animation: slideup 2s linear;
   text-shadow: 
      10px   0   white,
@@ -702,7 +701,7 @@ label input {
   opacity: 0;
   top: 0;  
   left: 0;
-  font-size: 120px;
+  font-size: 150px;
   animation: slideup 2s linear;
   text-shadow: 
      10px   0   white,
@@ -729,19 +728,18 @@ label input {
 }
 .card .buffs {
   position: absolute;
-  bottom: 8px;
-  left: 8px;
+  bottom: 4px;
+  left: 9px;
 }
 .card .buffs .buff {
-  float: left;
-  margin-right: 5px;
+  display: inline-block;
+  margin-right: 3px;
   position: relative;
 }
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
-  border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0,0,0,0.5) inset;
-  width: 36px; height: 36px;
+  box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;
+  width: 34px; height: 34px;
 }
 
 /*TABLE*/
@@ -806,14 +804,12 @@ label input {
 .table .deck.skills.enemy { 
   z-index: 6;
   top: 40px;
-  left: 0px;
-  opacity: 1;
-  transition: all 4s;
+  left: -10px;
+  transition: all 0.5s;
 }
 .table .deck.skills.enemy.slide {  
   z-index: 6;
-  left: 200px;
-  opacity: 0;
+  left: 100px;
 } 
 .table .deck.skills.enemy .card {  
   z-index: 6;

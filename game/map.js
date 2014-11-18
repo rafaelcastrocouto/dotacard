@@ -267,18 +267,18 @@ var Map = {
   
   highlight: function(){
     if(game.selectedCard){
-      if(game.selectedCard.hasClasses('hero unit')){        
+      if(game.selectedCard.hasClasses('hero unit')){   
+        game.selectedCard.strokeAttack(); 
         if(game.status == 'turn') {
           game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack(); 
-        }
-        game.selectedCard.strokeAttack(); 
-      } else if(game.selectedCard.hasClass('skill')){      
+        }        
+      } else if(game.selectedCard.hasClass('skill')){ 
+        game.selectedCard.highlightSource(); 
+        game.selectedCard.strokeSkill();   
         if(game.status == 'turn') {
           game.selectedCard.highlightTargets();          
-        }
-        game.selectedCard.highlightSource();  
-        game.selectedCard.strokeSkill();         
+        }             
       } else if(game.selectedCard.hasClass('tower')){
         game.selectedCard.strokeAttack(); 
       }

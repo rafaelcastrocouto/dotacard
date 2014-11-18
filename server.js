@@ -11,7 +11,9 @@ var http = require('http'),
       set: function(name, val, cb){currentData[name] = val; cb(true);}
     };
 
-if(host == 'localhost') db = require('db.csv');
+if(host == 'localhost') debug = true;
+  
+if(debug) db = require('db.csv');
 
 var send = function(response, data){
   response.writeHead(200, {
@@ -20,12 +22,12 @@ var send = function(response, data){
   response.end(''+data);
 };
 
-http.createServer(function(request, response){
+http.createServer(function(request, response){   
   var urlObj = url.parse(request.url, true);
   var pathname = urlObj.pathname;  
   console.log('Request: ', pathname);
+  if(request.headers['x-forwarded-proto']=='https') response.redirect('http://dotacard.herokuapp.com'+pathname);
   if(pathname[0] == '/') pathname = pathname.slice(1); 
-
   if(pathname == 'db'){
     var query = urlObj.query;
     if(query.set){

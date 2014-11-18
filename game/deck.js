@@ -8,7 +8,6 @@
 //Skill card count = 50/cooldown + 50/manacost 
 //..function(cool,mana){return Math.round((50/cool)+(50/mana))} 
 
-
 var Deck = function(op/* name, [filter], callback */){  
   var name = op.name, filter = op.filter, cb = op.cb, multi = op.multi;
   var deck = $('<div>').addClass('deck '+name);
@@ -166,7 +165,8 @@ var Card = function(data){
   //if(data.passive)    $('<p>').appendTo(fieldset).text('Passive skills: '+ data.passive);
   //if(data.permanent)  $('<p>').appendTo(fieldset).text('Permanent skills: '+ data.permanent);
   //if(data.temporary)  $('<p>').appendTo(fieldset).text('Special skills: '+ data.temporary);
-  //if(data.description)$('<p>').appendTo(fieldset).text(data.description);
+  
+  if(data.description) card.attr({title: data.name + ': ' + data.description});
   
   if(data.kd){
     data.kills = 0;
@@ -212,11 +212,8 @@ Card.unselect = function(){
 $.fn.unselect = Card.unselect;
 
 Card.highlightSource = function(){
-  var skill = this, hero = skill.data('hero'), source;
-  if(hero){
-    source = $('.map .card.player.'+hero).addClass('source');
-    game.castSource = source; 
-  }
+  var skill = this, hero = skill.data('hero'); 
+  if(hero) $('.map .card.player.hero.'+hero).addClass('source');
   return skill;
 };
 $.fn.highlightSource = Card.highlightSource;
@@ -224,7 +221,7 @@ $.fn.highlightSource = Card.highlightSource;
 Card.highlightTargets = function(){
   var skill = this, hero = skill.data('hero');
   if(hero){
-    var source = $('.map .card.player.'+hero);
+    var source = $('.map .source');
     if(source.hasClasses('hero unit')){       
       var spot = Map.getPosition(source);
       var range = Map.getRange(skill.data('range'));
@@ -289,7 +286,7 @@ $.fn.highlightTargets = Card.highlightTargets;
 Card.strokeSkill = function(){
   var skill = this, 
       hero = skill.data('hero'), 
-      source = $('.map .card.player.'+hero),
+      source = $('.map .source'),
       range = skill.data('range'),
       spot = Map.getPosition(source);
   if(hero && range && spot && !source.hasClasses('dead done stunned')){
@@ -417,7 +414,7 @@ Card.activate = function(target){
   if(skillid && hero && target.data('hero') == hero){    
     Skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
-    if(source.hasClass('enemy')) game.enemy.hand--;
+    if(skill.hasClass('enemy')) game.enemy.hand--;
   }
   return this;
 };
@@ -427,6 +424,7 @@ Card.addBuff = function(target, data){
   var buff = $('<div>').addClass('buff '+data.buff).attr({title: data.name +': '+ data.description});
   $('<div>').appendTo(buff).addClass('img');
   $('<div>').appendTo(buff).addClass('overlay');
+  buff.data('source', this);
   target.find('.buffs').append(buff);
   return buff;
 };
@@ -573,6 +571,15 @@ Card.damage = function(damage, target, type){
   return this;
 };
 $.fn.damage = Card.damage;
+
+Card.changedamage = function(damage){
+  damage = parseInt(damage);
+  this.find('.current .damage span').text(damage);
+  this.data('currentdamage', damage);    
+  if(this.hasClass('selected')) this.select();
+  return this;
+};
+$.fn.changedamage = Card.changedamage;
 
 Card.heal = function(healhp){ 
   healhp = Math.ceil(healhp);

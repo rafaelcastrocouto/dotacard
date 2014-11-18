@@ -1,22 +1,20 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.062,
+  vs: 0.063,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
   scrollspeed: 0.4,
   skills: null, heroes: null, buffs: null, //json
   player: {}, enemy: {},   
-
   container: $('.container').first(), 
   loader: $('<span>').addClass('loader'), 
   message: $('<p>').addClass('message'), 
   triesCounter: $('<small>').addClass('triescounter'), tries: 0, 
-
   timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds    
+  enemyplaytime: 2, //seconds
   dayLength: 10, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots   
-
   nomenu: function(){return false;}, 
 
   seed: 0, random: function(){  
@@ -94,8 +92,8 @@ var game = {
   },
 
   //AUDIO
-  audioctx: new AudioContext(), 
-  audioBuffers: {},
+  audioctx: new AudioContext(), audioBuffers: {},
+  
   loadAudio: function(name){
     if(!game.mute) game.createMuteGain();
     var ajax = new XMLHttpRequest(); 
@@ -108,12 +106,14 @@ var game = {
     }; 
     ajax.send();   
   },
+  
   audio: function(name){ 
     var sound = game.audioctx.createBufferSource();
     sound.buffer = game.audioBuffers[name];
     sound.connect(game.mute);
     sound.start();
   },
+  
   createMuteGain: function(){
     game.mute = game.audioctx.createGain();
     game.mute.connect(game.audioctx.destination);
@@ -133,7 +133,9 @@ var game = {
   ////////////////////////////////////////////////////////*/  
   currentstate: 'load',
   preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
+  
   states: {    
+    
     build: function(){      
       this.el = $('<div>').attr('id','states').appendTo(game.container);
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
@@ -178,8 +180,17 @@ var game = {
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       data: function(){
-        var jsondata = ['heroes', 'skills',  'units'];
-        for(var i=0; i < jsondata.length; i++) game.loadJSON(jsondata[i]);
+        game.loadJSON('heroes');        
+        game.loadJSON('units');        
+        game.loadJSON('skills', function(){          
+          for(var hero in game.skills){
+            for(var skill in game.skills[hero]){
+              game.skills[hero][skill].buff = hero + '-' + skill;              
+              game.skills[hero][skill].hero = hero;
+              game.skills[hero][skill].skill = skill;
+            }
+          }
+        });        
         game.loadJSON('buffs', function(){          
           for(var hero in game.buffs){
             for(var buff in game.buffs[hero]){
@@ -571,6 +582,10 @@ var game = {
             game.states.choose.size = 100;
             $.each(pickDeck.data('cards'), function(id, card){
               card.on('click.active', game.states.choose.active);
+              $.each(game.skills[card.data('hero')], function(){
+                if(this.display) card.addBuff(card, this);
+              });
+              
             });
             pickDeck.width(100 + $('.card').width() * pickDeck.children().length);            
           }
@@ -590,7 +605,6 @@ var game = {
         card.addClass('active');
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
       },
-
 
       checkPublic: function(){
         game.seed = new Date().valueOf();
@@ -1277,7 +1291,7 @@ var game = {
       },
 
       castWithSelected: function(){
-        var target = $(this), skill = game.selectedCard, source = game.castSource;
+        var target = $(this), skill = game.selectedCard, source = $('.map .source');
         var fromSpot = Map.getPosition(source);
         var toSpot = Map.getPosition(target);  
         var hero = skill.data('hero');
@@ -1344,7 +1358,7 @@ var game = {
             game.states.table.beginTurn();
             if(game.selectedCard) game.selectedCard.select()
               }
-        }, 2000);
+        }, game.enemyplaytime * 1000);
       },
 
       animateCast: function(skill, target, destiny){
@@ -1353,7 +1367,7 @@ var game = {
         skill.css({top: d.top - t.top + 30, left: d.left - t.left + 20, transform: 'translate(-50%, -50%) scale(0.3)'});
         setTimeout(function(){          
           $(this.card).css({top: '', left: '', transform: ''}).appendTo(this.destiny);          
-          if(skill.hasClass('selected') && game.castSource) game.castSource.select();
+          if(skill.hasClass('selected')) $('.map .source').select();
         }.bind({ card: skill, destiny: destiny }), 500);
       },
 

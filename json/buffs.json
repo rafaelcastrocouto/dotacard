@@ -91,10 +91,19 @@
   },
 
   "ld": {
+    "rabid": {
+      "name": "Rabid",
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear",
+      "purgeable": true
+    },    
     "demolish": {
       "name": "Demolish",
       "description": "Increases the power of the Spirit Bear, causing it to deal more damage to buildings and have additional spell resistance",
       "purgeable": true
+    },   
+    "passive": {
+      "name": "Synergy",
+      "description": "Increases the Lone Druid's synergy with his Spirit Bear"
     },
     "entangle": {
       "name": "Entangling Claws",

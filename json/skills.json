@@ -16,6 +16,7 @@
       "entangleduration": 3,  
       "demolishpercentage": 40,
       "returncooldown": 3,
+      "display": true,
       "description": "Summons a powerful Spirit Bear companion"
     },
     "return": {
@@ -33,6 +34,7 @@
       "damagebonus": 3,   
       "duration": 3,
       "cards": 5,
+      "display": true,
       "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    
     },
     "passive": {
@@ -42,7 +44,8 @@
       "cards": 1,
       "bearbonus": 4,
       "rabidbonus": 4,      
-      "ultbonus": 20,      
+      "ultbonus": 20,   
+      "display": true,
       "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
     },
     "ult": {
@@ -52,6 +55,7 @@
       "cards": 4,
       "armorbonus": 16,      
       "hpbonus": 20,
+      "display": true,
       "description": "Lone Druid morphs himself into a raging bear"       
     },
     "cry": {
@@ -75,7 +79,7 @@
     }
   },
   
-  "cm": {
+  "cm": {    
     "slow": {
       "name": "Crystal Nova",
       "type": "Area of Effect",
@@ -86,6 +90,7 @@
       "damage": 12,
       "damageType": "Magical",      
       "cards": 4,
+      "display": true,
       "description": "A burst of damaging frost slows enemies in the targeted area"
     },
     "aura": {
@@ -93,6 +98,7 @@
       "type": "Aura",
       "target": "Passive",
       "cards": 1,
+      "display": true,
       "description": "Give an extra bonus skill card per turn"    
     },
     "freeze": {
@@ -104,6 +110,7 @@
       "dot": 3,
       "damageType": "Magical", 
       "cards": 5,
+      "display": true,
       "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"    
     },
     "ult": {
@@ -116,8 +123,9 @@
       "damage": 7,
       "damageType": "Magical",       
       "cards": 1,
+      "display": true,
       "description": "Rylai channels icy explosions around her!"    
-    }    
+    }
   },
   
   "am": {
@@ -126,6 +134,7 @@
       "type": "Passive",
       "target": "Passive",
       "cards": 1,
+      "display": true,
       "description": "Everytime Antimage attacks enemy player loses a skill card of the attaked hero"
     },
     "passive": {
@@ -134,6 +143,7 @@
       "target": "Passive",      
       "percentage": 50,
       "cards": 1,
+      "display": true,
       "description": "Reduces all magic damage by half"    
     },
     "blink": {
@@ -142,6 +152,7 @@
       "target": "Spot",
       "range": "Long",
       "cards": 11,
+      "display": true,
       "description": "Teleport Anti Mage to the target spot" 
     },
     "ult": {
@@ -153,8 +164,9 @@
       "damageType": "Magical",       
       "cards": 1,
       "multiplier": 2,
+      "display": true,
       "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand"
-    }    
+    }
   },
   
   "wk": {
@@ -169,6 +181,7 @@
       "dot": 2,
       "stunduration": 3,
       "cards": 7,
+      "display": true,
       "description": "Stun and then damage over time and slows an enemy"      
     },
     "lifesteal": {
@@ -177,6 +190,7 @@
       "target": "Passive",
       "percentage": 30,      
       "cards": 1,
+      "display": true,
       "description": "Drain the life of enemy on every attack"  
     },
     "crit": {
@@ -186,8 +200,8 @@
       "chance": 15,
       "percentage": 300,      
       "cards": 1,
-      "description": "Chance of bonus damage"
-      
+      "display": true,
+      "description": "Chance of bonus damage"      
     },
     "ult": {
       "name": "Reincarnation",
@@ -197,6 +211,7 @@
       "aoe": "Melee",
       "delay": 2,
       "cards": 1,
+      "display": true,
       "description": "No one can kill the Wraith King!"
     }    
   },
@@ -212,6 +227,7 @@
       "length": 6,           
       "width": 1,           
       "cards": 5,
+      "display": true,
       "description": "Channels light to damage enemies in a line"
     },
     "leak": {
@@ -221,6 +237,7 @@
       "range": "Long",
       "duration": 4,
       "cards": 4,
+      "display": true,
       "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
     },
     "mana": {
@@ -229,6 +246,7 @@
       "target": "player",
       "range": "Ranged",
       "cards": 4,
+      "display": true,
       "description": "Gives the player two skill cards"
     },
     "ult": {
@@ -236,6 +254,7 @@
       "type": "Transform",
       "target": "Self",
       "cards": 4,
+      "display": true,
       "description": "Ezalor becomes one with the light!" 
     },
     "illuminate-ult": {
@@ -280,7 +299,8 @@
       "width": 1,
       "damage": 18,
       "damageType": "Pure",
-      "cards": 5,      
+      "cards": 5,
+      "display": true,
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
     "rot": {
@@ -292,6 +312,7 @@
       "dot": 5,
       "damageType": "Magical",  
       "cards": 1,
+      "display": true,
       "description": "A toxic cloud that deals intense damage to himself and enemies around"    
     },
     "passive": {
@@ -303,6 +324,7 @@
       "regenBonus": 1,
       "damageBonus": 1,
       "cards": 1,
+      "display": true,
       "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill" 
     },
     "ult": {
@@ -314,6 +336,7 @@
       "dot": 6,
       "damageType": "Magical", 
       "cards": 2,
+      "display": true,
       "description": "Channels to disable and deal damage over time to an enemy"
     }    
   },
@@ -326,6 +349,7 @@
       "length": 4,
       "width": 1,
       "cards": 4,
+      "display": true,
       "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
     },
     "burn": {
@@ -336,6 +360,7 @@
       "multiplier": 4,
       "damageType": "Magical",   
       "cards": 13,
+      "display": true,
       "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"    
     },
     "spike": {
@@ -345,6 +370,7 @@
       "duration": 2,
       "damageType": "Pure",
       "cards": 5,
+      "display": true,
       "description": "Reflects and negates damage received, while stunning the source of damage" 
     },
     "ult": {
@@ -355,7 +381,9 @@
       "damage": 20,
       "damageType": "Physical",
       "cards": 1, 
+      "display": true,
       "description": "Nyx Assassin becomes invisible and gains bonus on next attack"       
     }    
   }
+
 }

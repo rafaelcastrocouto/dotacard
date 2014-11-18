@@ -1,4 +1,4 @@
-ThreeNodes.js is released under the MIT License.
+DOTACARD is released under the MIT License.
 
 ----------------------------------------------------------
 
@@ -36,18 +36,12 @@ Attribution is maintained in the source control history of the product.
 
 ----------------------------------------------------------
 
-"Node.js" and "node" trademark Joyent, Inc. npm is not officially
-part of the Node.js project, and is neither owned by nor
-officially affiliated with Joyent, Inc.
+DOTACARD versions may include/require the following libraries which may have different licenses.
 
-Packages published in the npm registry are not part of npm
-itself, are the sole property of their respective maintainers,
-and are not covered by this license.
-
-----------------------------------------------------------
-
-DOTACARD includes the following libraries which may have different licenses.
-
-"jQuery", John Resig, http://jquery.com/
-"jQuery-tubular", Sean McCambridge, http://www.seanmccambridge.com/tubular/
-"-prefix-free", Lea Verou, http://leaverou.github.io/prefixfree/
+"jQuery", John Resig, http://jquery.com
+"-prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
+"modernizr", Modernizr team, http://modernizr.com
+"youtube-iframe-api", Google, https://developers.google.com/youtube/iframe_api_reference
+"google-analytics", Google, http://www.google.com/analytics
+"node", Joyent, http://nodejs.org/
+"npm", Isaac Schlueter, https://www.npmjs.org
