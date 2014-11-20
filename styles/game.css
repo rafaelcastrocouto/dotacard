@@ -107,6 +107,10 @@ noscript ,
   margin: 1em;
 }
 
+.unsupported i {
+  display: block;
+}
+
 .banner {
   border-radius: 5px;
   width: 80%;
@@ -173,6 +177,7 @@ noscript ,
 }
 
 .choose .topbar,
+.options .topbar,
 .table .topbar {
   background: rgba(0,0,0,0.4);
 }
@@ -205,6 +210,10 @@ noscript ,
   text-align: center;
 }
 
+.message {
+  border-radius: 4px;
+}
+
 .turn .message {
   text-shadow: 0 0 6px white;
 }
@@ -220,11 +229,13 @@ noscript ,
   position: absolute;
   top: 0; left: 50%;
   transform: translateX(-50%);
+  border-radius: 4px;
 }
 
 .turns {
   position: absolute;
   top: 0; right: 30px;
+  border-radius: 4px;
 }
 
 .opt {
@@ -464,9 +475,19 @@ label input {
 .slot.available {
   animation: innerlight 0.5s infinite;
 }
+.slot.available:after {
+  content: "⇓";
+  font-size: 45px;
+  position: relative;
+  animation: arrowdown 1s infinite;
+}
 @keyframes innerlight {
   0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.2);}
   50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
+}
+@keyframes arrowdown {
+  0%, 100% {top: 20px;}
+  50% {top: 60px;}
 }
 .slot:hover {
   background: rgba(255,255,255,0.1);
@@ -628,7 +649,6 @@ label input {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   background: #54a0e3;
 }
-
 .card.player.heroes.selected,
 .card.player.towers.selected {
   box-shadow: 0 0 0 10px springgreen;
@@ -687,8 +707,8 @@ label input {
       0   -10px white,
      10px  10px white,
     -10px  10px white,
-    -10px  10px white,
-     10px -10px white;
+     10px -10px white,
+    -10px -10px white;
 }
 .card .damaged.critical {
   color: orangered;
@@ -710,8 +730,8 @@ label input {
       0   -10px white,
      10px  10px white,
     -10px  10px white,
-    -10px  10px white,
-     10px -10px white;  
+     10px -10px white,
+    -10px -10px white;  
 }
 @keyframes slideup {
   0% {top: 0;opacity: 1;}
@@ -784,17 +804,18 @@ label input {
   margin-right: -140px;
 }
 .table .selectedarea {
-  width: 200px;
-  height: 300px;
+  width: 220px;
+  height: 330px;
   position: absolute;
-  top: 50px;
-  right: 15px;
+  top: 35px;
+  right: 5px;
 }
 .table .selectedarea .card {
   z-index: 9;
   transform: translate(-50%, -50%) scale(1.1);   
 }
 .table .selectedarea .card:hover {
+  z-index: 11;
   transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px); 
 }
 .table .selectedarea .card .damaged {
@@ -1287,6 +1308,9 @@ label input {
 .ld.heroes .portrait .img {
   background-image: url("../img/heroes/lone_druid_full.png");
 }
+.ld.transformed.heroes .portrait .img {
+  background-image: url("../img/heroes/lone_druid_transf.png");
+}
 .ld-summon .img,
 .spiritbear .img {
   background-image: url("../img/skills.vec/lone_druid_spirit_bear.png");
@@ -1412,16 +1436,105 @@ label input {
 /*BUFFS*/
 
 .stun .img {
-   background-image: url("../img/skills.vec/stun.png")
+   background-image: url("../img/skills.vec/stun.png");
 }
 .silence .img {
-   background-image: url("../img/skills/silence.jpg")
+   background-image: url("../img/skills/silence.jpg");
 }
 .magicimmune .img {
-   background-image: url("../img/skills/magicimmune.gif")
+   background-image: url("../img/skills/magicimmune.gif");
 }
 /*
 .ethereal .img {
    background-image: url("../img/skills/ethereal.png")
 }
 */
+
+/*TUTORIAL*/
+
+.tutorial.axe {
+  z-index: 10;
+  width: 375px;
+  height: 250px;
+  position: absolute;
+  right: -25px;
+  bottom: -450px;
+  transition: all 1s;
+  pointer-events: none;
+}
+
+.tutorial.axe.up {
+  bottom: 0;
+}
+
+.tutorial.axe .img {
+  z-index: 10;
+  background-image: url("../img/tutorial/axe2.png");
+  background-size: cover;
+  width: 100%;
+  height: 100%;
+  background-size: 100%;
+}
+
+.tutorial.axe .baloon {
+  opacity: 0.9;
+  z-index: 11;
+  padding: 28px;
+  background: #fff;
+  border: 4px solid #777;
+  border-width: 4px 8px;  
+  width: 175px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 215px;
+  right: 0;
+}
+.tutorial.axe .baloon:before,
+.tutorial.axe .baloon:after {
+  z-index: 10;
+  content: "";
+  position: absolute;
+  display: block;
+  bottom: -24px;
+  left: calc(50% - 33px);
+  height: 20px;
+}
+.tutorial.axe .baloon:before {  
+  width: 40px;  
+  border-style: solid;
+  border-width: 0 8px 4px 0;
+  border-color: #777;
+  background: transparent;
+  border-radius: 0 0 80px;
+  box-shadow: inset -20px 0 0 #fff;
+}
+.tutorial.axe .baloon:after {
+  width: 15px;
+  border-style: solid;
+  border-width: 0 8px 4px 0;
+  border-color: #777;
+  background: transparent;
+  border-radius: 40px 0 50px 0;
+  display: block;
+}
+
+.tutorial.axe .txt {
+  transform: rotate(2deg);
+  z-index: 10;
+  color: #444;
+  text-align: center;
+}
+
+.tutorial .battle {
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+  font-size: 175%;
+}
+
+.tutorialblink {
+  box-shadow: 0 0 0 10px gold;
+  animation: tutorialblink 1s infinite;
+}
+@keyframes tutorialblink {
+  0%, 100% {box-shadow: 0 0 1px 1px gold;}
+  50% {box-shadow: 0 0 10px 10px gold;}
+}

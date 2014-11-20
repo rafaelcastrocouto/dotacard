@@ -326,7 +326,7 @@ var Skills = {
         var wk = source;
         var stun = skill.data('stunduration');
         var dot = skill.data('dotduration');
-        if(game.status == 'turn') states.table.animateCast(skill, target, states.table.playerCemitery);
+        if(game.status == 'turn') game.states.table.animateCast(skill, target, game.states.table.playerCemitery);
         wk.damage(skill.data('damage'), target, skill.data('damageType'));
         wk.addStun(target, stun);        
         target.on('turnstart.wk-stun', this.dot).data('wk-stun', {
@@ -442,8 +442,8 @@ var Skills = {
           spot: spot,
           duration: skill.data('delay')
         });
-        if(this.hasClass('player')) this.appendTo(states.table.playerCemitery);
-        else this.appendTo(states.table.enemySkillsDeck);
+        if(this.hasClass('player')) this.appendTo(game.states.table.playerCemitery);
+        else this.appendTo(game.states.table.enemySkillsDeck);
       },
       resurrect: function(event, eventdata){
         var wk = eventdata.target;
@@ -498,7 +498,7 @@ var Skills = {
     slow: {
       cast: function(skill, source, target){
         var spot = Map.getPosition(target); 
-        if(game.status == 'turn') states.table.animateCast(skill, spot, states.table.playerCemitery);
+        if(game.status == 'turn') game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
         var side = source.data('side');        
         var otherside = (side == 'enemy') ? 'player': 'enemy';
         Map.inRange(spot, Map.getRange(skill.data('aoe')), function(neighbor){      
@@ -583,7 +583,7 @@ var Skills = {
     ult: {
       cast: function(skill, source){
         var spot = Map.getPosition(source); 
-        if(game.status == 'turn') states.table.animateCast(skill, spot, states.table.playerCemitery);        
+        if(game.status == 'turn') game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);        
         source.on('channel', Skills.cm.ult.channel).data('cm-ult', skill);
         source.trigger('channel', {target: source});
       },
@@ -640,7 +640,7 @@ var Skills = {
         var hero = target.data('hero');
         var side = source.data('side');
         if(side == 'enemy' && hero){
-          var cards = states.table.playerHand.children('.'+hero);
+          var cards = game.states.table.playerHand.children('.'+hero);
           if(cards.length > 0){
             var card = Deck.randomCard(cards, 'noseed');
             card.discard();
@@ -669,8 +669,8 @@ var Skills = {
         source.css({opacity: 0});
         if(game.status == 'turn') skill.css({opacity: 0});
         setTimeout(function(){
-          if(this.skill.hasClass('player')) this.skill.appendTo(states.table.playerCemitery);
-          else this.skill.appendTo(states.table.enemySkillsDeck);
+          if(this.skill.hasClass('player')) this.skill.appendTo(game.states.table.playerCemitery);
+          else this.skill.appendTo(game.states.table.enemySkillsDeck);
           this.source.place(this.target).css({opacity: 1});
           this.source.select();
         }.bind({skill: skill, source: source, target: target}), 400);        
@@ -679,7 +679,7 @@ var Skills = {
     ult: {
       cast: function(skill, source, target){
         var spot = Map.getPosition(target); 
-        if(game.status == 'turn') states.table.animateCast(skill, spot, states.table.playerCemitery);
+        if(game.status == 'turn') game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
         var side = source.data('side');
         var otherside = (side == 'enemy') ? 'player': 'enemy';
         var damage = game.enemy.maxCards - game.enemy.hand;

@@ -1,27 +1,20 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.063,
+  vs: 0.064,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
   scrollspeed: 0.4,
-  skills: null, heroes: null, buffs: null, //json
-  player: {}, enemy: {},   
+  skills: null, heroes: null, buffs: null, units: null, //json
   container: $('.container').first(), 
   loader: $('<span>').addClass('loader'), 
   message: $('<p>').addClass('message'), 
-  triesCounter: $('<small>').addClass('triescounter'), tries: 0, 
-  timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds    
-  enemyplaytime: 2, //seconds
+  tries: 0, triesCounter: $('<small>').addClass('triescounter'), 
+  timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds
   dayLength: 10, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots   
+  seed: null, 
   nomenu: function(){return false;}, 
-
-  seed: 0, random: function(){  
-    if(game.debug) return 0;
-    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
-  },  
-
   start: function(){
     if(window.JSON && 
        window.btoa && window.atob &&
@@ -34,37 +27,653 @@ var game = {
        Modernizr.csstransitions &&
        Modernizr.generatedcontent &&
        Modernizr.opacity &&
-       Modernizr.rgba ) game.load();
+       Modernizr.rgba ) 
+      
+      game.load();
+    
     else $('.unsupported').show();
   },
-
-  load: function(){    
-    game.states.load.data();
+  load: function(){
+    game.states.load.fonts();
+    game.states.load.youtube();
     game.states.load.images();
-    game.states.load.audio();
-    game.states.load.language();
-    game.states.load.ping(function(){
-      game.states.load.youtube();
-      game.states.load.fonts();
-      game.states.load.analytics();      
+    game.audio.load();
+    game.states.load.language(function(){      
+      game.states.load.data(function(){
+        game.states.build();
+      });           
+      game.states.load.analytics();         
     });
-  },
-
-  build: function(){
-    game.loader.addClass('loading'); 
-    game.message.text(game.language.battle);
-    game.audio('horn');
-    game.states.table.placeTowers();
-    game.states.table.placeTrees(); 
-    game.states.table.placeHeroes(); 
-    game.states.table.buildUnits(); 
-    game.states.table.buildSkills(); 
-    game.states.table.buildTurns(); 
-    //todo: build storage.state
-    game.builded = true;
-    game.timeout = setTimeout(game.states.table.firstTurn, 1000);
   },  
+  player: {
+    
+    buy: function(){
+      if(game.player.turn == 6 || game.debug) $('.player.deck.skills.ult .card').appendTo(game.states.table.playerSkillsDeck);
+      var availableSkills = $('.skills.available.player.deck .card');        
+      var card = Deck.randomCard(availableSkills);
+      card.appendTo(game.states.table.playerHand);
+      if(card.data('target') == 'Autoactivate') {
+        var heroid = card.data('hero');        
+        var hero = $('.map .player.heroes.'+heroid);
+        var toSpot = Map.getPosition(hero);
+        card.activate(toSpot); 
+        game.currentData.moves.push('P:'+toSpot+':'+card.data('skill')+':'+heroid); 
+      }
+    },
+    
+    buyhand: function(){      
+      for(var i=0; i<game.player.cardsPerTurn; i++){
+        if(game.states.table.playerHand.children().length < game.player.maxCards) 
+          game.player.buy();
+      }      
+    }
+    
+  },   
+  enemy: {
+    
+    playtime: 2, //seconds
+    
+    buy: function(){ 
+      game.enemy.hand++;
+      game.random(); 
+    },
+    
+    buyhand: function(){
+      for(var i=0; i<game.enemy.cardsPerTurn; i++){
+        if(game.enemy.hand < game.enemy.maxCards){
+          game.enemy.buy();
+        }
+      }      
+    }
+    
+  },
+  tutorial: {
+    
+    build: function(){
+      game.mode = 'tutorial';
+      game.seed = new Date().valueOf();
+      game.id = btoa(game.seed);
+      game.message.text(game.language.waiting);
+      game.states.choose.counter.show().text(game.language.rightpick);
+      game.enemy.name = 'axe'; 
+      game.enemy.type = 'challenged';
+      game.player.type = 'challenger';
+      game.audio.play('tutorial/axe1');
+      game.states.choose.count = game.debug ? 10 : game.timeToPick;
+      game.states.choose.enablePick();   
+      game.tutorial.axe =  $('<div>').addClass('axe tutorial').appendTo(game.states.choose.el);      
+      game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
+      game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
+      game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.language.axepick);
+      game.tutorial.axebaloon.hide();
+      setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 1000);
+      setTimeout(function(){ 
+        game.tutorial.axebaloon.fadeIn('slow'); 
+        game.message.text(game.language.tutorialstart);
+        game.loader.removeClass('loading');
+      }, 2000);      
+    },
+    
+    pick: function(){
+      game.player.mana = 0;      
+      $('.slot .card').each(function(){
+        var card = $(this);
+        game.player.mana += card.data('mana');
+      });
+      game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);
+      game.tutorial.oldAvailableSlots = 5;
+      var availableSlots = $('.slot.available').length;
+      if(availableSlots == 4) game.tutorial.message.html(game.language.axeheroes);        
+      else if(availableSlots == 3)  game.tutorial.message.html(game.language.axemaxcards);
+      else if(availableSlots == 2) game.tutorial.message.html(game.language.axecardsperturn);
+      else if(availableSlots == 1) game.tutorial.message.html(game.language.axeautodeck);            
+      if(availableSlots < game.tutorial.oldAvailableSlots) game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.oldAvailableSlots = availableSlots;
+      if(availableSlots) game.states.choose.counter.text($('.slot.available').length + ' ' + game.language.togo + '. ' + game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+      else {    
+        game.message.text(game.language.getready);
+        game.states.choose.counter.text(game.language.cardsperturn+': '+ game.player.cardsPerTurn);
+        game.tutorial.message.html(game.language.axebattle);
+        game.audio.play('tutorial/axe2');
+        setTimeout(function(){
+          game.tutorial.deck();
+        }, 2000);
+      }
+    },
+    
+    deck: function(){      
+      game.player.picks = []; 
+      $('.slot').each(function(){
+        var slot = $(this);
+        var card = slot.find('.card');
+        game.player.picks[slot.data('slot')] = card.data('hero');
+        if(game.player.picks.length == 5) game.states.changeTo('table');    
+      });   
+    },
+    
+    start: function(){
+      game.message.text(game.language.battle);
+      game.loader.removeClass('loading');
+      game.audio.play('horn');
+      game.tutorial.placeHeroes(); 
+      game.states.table.placeTowers();
+      game.states.table.placeTrees();       
+      game.states.table.buildUnits();      
+      game.tutorial.started = true;
+      game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
+      game.tutorial.axebaloon.hide();
+      game.tutorial.lessonSelectEnemy = true;
+      game.states.table.time.text(game.language.time+': 0:00 '+game.language.day); 
+      setTimeout(function(){game.tutorial.axe.addClass('up')}, 500);
+      setTimeout(game.tutorial.selectEnemy, 1000);
+      game.player.kills = 0;
+      game.enemy.kills = 0;
+    },
+    
+    placeHeroes: function(){
+      game.player.mana = 0;
+      this.playerHeroesDeck = Deck({
+        name: 'heroes', 
+        filter: game.player.picks, 
+        cb: function(deck){
+          deck.addClass('player').appendTo(game.states.table.el);
+          var x = 0, y = 3;
+          $.each(deck.data('cards'), function(i, card){   
+            var p = game.player.picks.indexOf(card.data('hero'));
+            card.addClass('player hero').data('side','player').on('click.select', game.tutorial.select);
+            card.place(Map.toId(x + p,y));
+            game.player.mana += card.data('mana');
+          });
+        }
+      });  
+      game.enemy.picks = ['am','kotl','pud','ld','nyx'];
+      this.enemyHeroesDeck = Deck({
+        name: 'heroes', 
+        filter: game.enemy.picks, 
+        cb: function(deck){
+          deck.addClass('enemy').hide().appendTo(game.states.table.el);        
+          var x = 0, y = 3;
+          $.each(deck.data('cards'), function(i, card){
+            var p = game.enemy.picks.indexOf(card.data('hero'));
+            card.addClass('enemy hero').data('side','enemy').on('click.select', game.tutorial.select);  
+            card.place(Map.mirrorPosition(Map.toId(x + p,y))); 
+          });
+        }
+      }); 
+    },
+    
+    selectEnemy: function(){          
+      game.tutorial.axebaloon.fadeIn('slow');
+      game.tutorial.message.html(game.language.axeselectenemy);
+      game.message.text(game.language.yourturncount+' 5');      
+      $('.map .enemy.hero').addClass('tutorialblink');
+    },   
+    
+    select: function(){
+      var card = $(this);
+      if(game.tutorial.lessonSelectEnemy){
+        if(card.hasAllClasses('hero enemy')){
+          $('.map .enemy.hero').removeClass('tutorialblink');
+          game.tutorial.lessonSelectEnemy = false;
+          game.tutorial.zoom();
+        }
+      }
+      if(game.tutorial.lessonSelectPlayer){
+        if(card.hasAllClasses('hero player')){
+          $('.map .player.hero').removeClass('tutorialblink');
+          game.tutorial.lessonSelectPlayer = false;          
+          game.tutorial.move();
+        }
+      }       
+      if(game.tutorial.lessonSelectSkill){
+        if(card.hasAllClasses('skill player')){
+          $('.player.skill').removeClass('tutorialblink');
+          game.tutorial.lessonSelectSkill = false;          
+          game.tutorial.skill();
+        }
+      }      
+      card.select();
+    },
+    
+    zoom: function(){
+      game.tutorial.lessonZoom = true;
+      game.tutorial.axe.css({
+        right: '',
+        left: '0',
+        transform: 'scaleX(-1)'
+      });
+      game.tutorial.axebaloon.hide().fadeIn('slow');      
+      game.tutorial.message.html(game.language.axezoom).css({transform: 'scaleX(-1)'});
+      game.message.text(game.language.yourturncount+' 4');
+      game.states.table.selectedArea.addClass('tutorialblink');
+      game.states.table.selectedArea.on('mouseover.tutorial', '.card', game.tutorial.over);
+    },   
 
+    over: function(){
+      if(game.tutorial.lessonZoom){
+        var card = $(this);
+        game.states.table.selectedArea.removeClass('tutorialblink'); 
+        game.tutorial.unselect();
+        game.tutorial.lessonZoom = false;
+      }
+    },
+        
+    unselect: function(){
+      game.tutorial.lessonUnselect = true;
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.message.html(game.language.axeunselect);   
+      game.message.text(game.language.yourturncount+' 3');
+      game.states.table.selectedArea.on('unselect.tutorial', game.tutorial.unselected);
+    }, 
+
+    unselected: function(){
+      if(game.tutorial.lessonUnselect){
+        game.tutorial.selectPlayer();
+        game.tutorial.lessonUnselect = false;
+      }
+    },
+    
+    selectPlayer: function(){
+      game.tutorial.lessonSelectPlayer = true;
+      $('.map .player.hero').addClass('tutorialblink');
+      game.tutorial.axe.css({left: '', transform: ''});
+      game.tutorial.message.css({transform: ''});
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.message.html(game.language.axeselectplayer);   
+      game.message.text(game.language.yourturncount+' 2');
+    },    
+    
+    move: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.message.html(game.language.axemove);
+      game.status = 'turn';
+      game.message.text(game.language.yourturncount+' 1');
+      $('.map .hero.player').on('move', game.tutorial.done);
+    },    
+    
+    done: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.message.html(game.language.axedone);
+      game.message.text(game.language.enemyturn);
+      game.message.addClass('tutorialblink');
+      game.status = 'unturn';
+      setTimeout(game.tutorial.wait, 4000);
+    },
+    
+    wait: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow');      
+      game.tutorial.message.html(game.language.axewait);
+      game.message.text(game.language.enemyturncount+' 2');
+      game.states.table.time.text(game.language.time+': 1:30 '+game.language.night); 
+      game.message.removeClass('tutorialblink');
+      game.states.table.time.addClass('tutorialblink');
+      setTimeout(game.tutorial.time, 4000);
+    },    
+    
+    time: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.message.text(game.language.enemyturncount+' 1');
+      game.tutorial.message.html(game.language.axetime);
+      game.states.table.time.removeClass('tutorialblink');      
+      game.states.table.turns.addClass('tutorialblink');
+      game.states.table.turns.text(game.language.turns+': 1/1 (2)')
+      setTimeout(game.tutorial.enemyMove, 4000);
+    },
+    
+    enemyMove: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow');
+      game.tutorial.message.html(game.language.axeenemymove);
+      game.message.html(game.language.enemymove);
+      game.states.table.turns.removeClass('tutorialblink');
+      var am = $('.map .enemy.hero.am');
+      if($('#E3').hasClass('block')) am.place('F4').addClass('tutorialblink');
+      else am.place('E3').addClass('tutorialblink');            
+      setTimeout(game.tutorial.attack, 4000);
+    },   
+    
+    attack: function(){
+      $('.player.hero').removeClass('done');
+      game.status = 'turn';
+      game.tutorial.buildSkills();
+      game.tutorial.axebaloon.hide().fadeIn('slow');       
+      game.tutorial.message.html(game.language.axeattack);
+      game.message.html(game.language.yourturn);
+      if(game.selectedCard) game.selectedCard.select();
+      $('.player.hero').on('attack.tutorial', game.tutorial.skillSelect);
+    },
+    
+    buildSkills : function(){
+      game.player.maxCards = Math.round(game.player.mana/2);  
+      game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);
+      
+      game.states.table.playerHand = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills hand');
+       game.states.table.playerCemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
+       game.states.table.playerSkillsDeck = Deck({
+        name: 'skills', 
+        multi: 'cards',
+        filter: game.player.picks, 
+        cb: function(deck){        
+          deck.addClass('player available').hide().appendTo(game.states.table.el);
+          $.each(deck.data('cards'), function(i, skill){   
+            skill.addClass('player skill').data('side','player').on('click.select', game.tutorial.select);              
+          });        
+        }
+      });
+    },
+    
+    skillSelect: function(){    
+      $('.map .enemy.hero.am').removeClass('tutorialblink');
+      game.tutorial.lessonSelectSkill = true;      
+      game.tutorial.axebaloon.hide().fadeIn('slow'); 
+      game.tutorial.message.html(game.language.axeskillselect);   
+      game.player.buyhand();
+      game.states.table.playerHand.show();
+      $('.player.skill').addClass('tutorialblink');   
+      setTimeout(function(){
+        $('.player.hero').removeClass('done');
+      }, 200);
+    },
+    
+    skill: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow'); 
+      game.tutorial.message.html(game.language.axeskill); 
+      $('.card').on('cast.tutorial', game.tutorial.end);
+      $('.card').on('activate.tutorial', game.tutorial.end);
+    },
+    
+    end: function(){
+      game.tutorial.axebaloon.hide().fadeIn('slow'); 
+      game.tutorial.message.html(game.language.axeend); 
+      game.states.table.showResults();
+      game.tutorial.started = false;
+    }    
+    
+  },  
+  match: {
+    
+    public: function(){
+      game.mode = 'public';
+      game.seed = new Date().valueOf();
+      game.id = btoa(game.seed);
+      game.db({'set':'waiting', 'data': {id: game.id}}, function(waiting){
+        if(game.id == waiting.id){
+          game.player.type = 'challenged';
+          game.match.wait();            
+        } else {             
+          game.id = waiting.id;     
+          game.seed = parseInt(atob(game.id));
+          game.player.type = 'challenger';
+          game.match.found();            
+        }
+      });   
+    },
+
+    wait: function(){
+      game.currentData.challenged = game.player.name;
+      game.db({'set': game.id, 'data': game.currentData}, function(){
+        game.message.text(game.language.waiting);        
+        game.tries = 1;   
+        game.match.search();
+      }); 
+    },    
+
+    search: function(){
+      clearTimeout(game.timeout);
+      game.db({'get': game.id }, function(found){
+        if(found.challenger){
+          game.triesCounter.text('');
+          game.currentData = found;
+          game.match.battle.call(game.states.choose, found.challenger, 'challenger');         
+        } else {
+          game.triesCounter.text(game.tries++);                
+          if(game.tries > game.waitLimit) {
+            game.message.text(game.language.noenemy);  
+            setTimeout(function(){                
+              game.states.changeTo('menu'); //todo: sugest bot match 
+            }, 2000);
+          }
+          else game.timeout = setTimeout(game.match.search, 1000);
+        }
+      });
+    },
+
+    found: function(){       
+      game.message.text(game.language.gamefound);
+      game.db({'get': game.id }, function(found){     
+        if(found.challenged){
+          game.triesCounter.text('');
+          game.currentData = found;  
+          game.currentData.challenger = game.player.name;
+          game.db({'set': game.id, 'data': game.currentData}, function(){
+            game.match.battle(found.challenged, 'challenged');
+          });  
+        } else game.states.load.reset();
+      });
+    },  
+    
+    pick: function(){
+      if($('.slot.available').length == 0){
+        game.player.mana = 0;
+        $('.slot .card').each(function(){
+          var card = $(this);
+          game.player.mana += card.data('mana');
+        });
+        game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
+        game.states.choose.counter.text(game.language.startsin+': '+(game.states.choose.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+      } else game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count));      
+    },
+    
+    pickCount: function(){ 
+      game.states.choose.count--;
+      if($('.slot.available').length != 0) game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count)); 
+      else game.states.choose.counter.text(game.language.startsin+': '+(this.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+      if(game.states.choose.count < 0) {
+        game.states.choose.counter.text(game.language.getready);  
+        game.states.choose.disablePick();        
+        game.match.fillDeck();   
+      }
+      else setTimeout(game.match.pickCount, 1000);
+    },
+
+    fillDeck: function(){
+      game.player.picks = [];
+      $('.pickbox .card.active').removeClass('active');
+      if(game.debug){
+        if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
+        else game.player.picks = ['ld','cm','pud','am','kotl'];
+        game.match.sendDeck();        
+        return;
+      }      
+      $('.slot').each(function(){
+        var slot = $(this), card;
+        if(slot.hasClass('available')){
+          card = Deck.randomCard($('.pickbox .card'), 'noseed');
+          slot.append(card).removeClass('available');
+        } else  card = $('.card', slot);
+        game.player.picks[slot.data('slot')] = card.data('hero');
+        if(game.player.picks.length == 5) game.match.sendDeck();      
+      });   
+    },
+
+    sendDeck: function(){     
+      game.states.choose.el.removeClass('turn'); 
+      game.states.choose.pickDeck.css('margin-left', 0);
+      game.states.choose.tries = 1;
+      if(game.player.type == 'challenged'){
+        game.currentData.challengedDeck = game.player.picks.join('|');
+        game.db({'set': game.id, 'data': game.currentData}, function(){          
+          game.match.getChallengerDeck();
+        });
+      }
+      if(game.player.type == 'challenger') game.match.getChallengedDeck();         
+    },
+
+    getChallengerDeck: function(){ 
+      clearTimeout(game.timeout);
+      game.message.text(game.language.loadingdeck);
+      game.loader.addClass('loading');
+      game.db({'get': game.id }, function(found){         
+        if(found.challengerDeck){
+          game.triesCounter.text('');
+          game.currentData = found;
+          game.enemy.picks = game.currentData.challengerDeck.split('|');
+          game.states.choose.reset();
+          game.states.changeTo('table');          
+        } else {
+          game.triesCounter.text(game.tries++);
+          if(game.tries > game.connectionLimit) game.states.load.reset();
+          else game.timeout = setTimeout(game.match.getChallengerDeck, 1000);
+        }
+      });
+    },
+
+    getChallengedDeck: function(){
+      clearTimeout(game.timeout);
+      game.message.text(game.language.loadingdeck);
+      game.loader.addClass('loading');
+      game.db({'get': game.id }, function(found){         
+        if(found.challengedDeck){ 
+          game.triesCounter.text('');
+          game.currentData = found;    
+          game.currentData.challengerDeck = game.player.picks.join('|');
+          game.enemy.picks = game.currentData.challengedDeck.split('|');
+          game.db({'set': game.id, 'data': game.currentData}, function(){ 
+            game.states.choose.reset();
+            game.states.changeTo('table');
+          });              
+        } else {
+          game.triesCounter.text(game.tries++);
+          if(game.tries > game.connectionLimit) game.states.load.reset();
+          else game.timeout = setTimeout(game.match.getChallengedDeck, 1000);
+        }      
+      });  
+    },
+
+    battle: function(enemy, challenge){
+      game.status = 'picking';
+      game.loader.removeClass('loading');
+      game.states.choose.el.addClass('turn');
+      game.enemy.name = enemy; 
+      game.enemy.type = challenge;
+      game.message.html(game.language.battlefound+' <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
+      game.states.choose.counter.show();
+      game.audio.play('battle');
+      game.states.choose.count = game.debug ? 1 : game.timeToPick;
+      game.states.choose.enablePick();        
+      setTimeout(game.match.pickCount, 1000);      
+    },
+    
+    start: function(){
+      game.loader.addClass('loading'); 
+      game.message.text(game.language.battle);
+      game.audio.play('horn');
+      game.states.table.placeTowers();
+      game.states.table.placeTrees(); 
+      game.states.table.placePlayerHeroes(); 
+      game.states.table.placeEnemyHeroes(); 
+      game.states.table.buildUnits(); 
+      game.states.table.buildSkills(); 
+      game.turn.build(); 
+      //todo: build storage.state
+      game.match.started = true;
+      setTimeout(game.turn.first, 1000);
+    },   
+
+    end: function(){
+      game.match.started = false;
+    }
+    
+  },  
+  turn: {
+    
+    first: function(){ 
+      game.currentData = {};
+      game.player.kills = 0;
+      game.enemy.kills = 0;
+      game.turn.begin();
+    },   
+    
+    build: function(){
+      game.time = 0;      
+      game.player.turn = 0;
+      game.enemy.turn = 0;
+      game.currentData.moves = [];
+      if(game.player.type == 'challenged') game.status = 'turn';
+      if(game.player.type == 'challenger') game.status = 'unturn';         
+    },
+
+    begin: function(){      
+      //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand
+      if(game.status != 'over') {    
+        game.currentData.moves = []; 
+        game.states.table.el.addClass(game.status);
+        if(game.status == 'turn') game.message.text(game.language.yourturn);
+        if(game.status == 'unturn') game.message.text(game.language.enemyturn);       
+        $('.card .damaged').remove();
+        $('.card .heal').remove();
+        $('.card.dead').each(function(){
+          var dead = $(this);
+          if(game.time > dead.data('reborn')) dead.reborn();
+        });  
+        $('.card.heroes').each(function(){
+          var hero = $(this);
+          if(hero.data('channeling')) hero.trigger('channel', {target: hero});
+        });
+        $('.card').each(function(){          
+          var card = $(this);          
+          card.trigger('turnstart', {target: card});                  
+          if(game.status == 'turn')  card.trigger('playerturnstart', {target: card});
+          else card.trigger('enemyturnstart', {target: card});
+          card.reduceStun();
+        });
+        if(game.turn == 6) $('.card', game.states.table.playerUlts).appendTo(game.states.table.playerSkillsDeck);
+        if(game.status == 'turn'){         
+          $('.map .card.player').removeClass('done');
+          game.player.buyhand();               
+          game.states.table.towerAutoAttack();        
+          Map.highlight(); 
+        } else {
+          $('.map .card.enemy').removeClass('done');
+          game.enemy.buyhand();
+        }
+        game.time = game.player.turn + game.enemy.turn;  
+        game.states.table.counter = (game.debug) ? 5 : game.timeToPlay;          
+        setTimeout(game.turn.count.bind(game.states.table), 1000);
+      }
+    },
+
+    count: function(){
+      clearTimeout(game.timeout);
+      game.loader.removeClass('loading');
+      game.states.table.time.text(game.language.time+': '+game.states.table.hours()+' '+game.states.table.dayNight());     
+      game.states.table.turns.text(game.language.turns+': '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
+      if(game.status == 'turn') game.message.text(game.language.yourturncount+' '+game.states.table.counter+' '+game.language.seconds);
+      else if(game.status == 'unturn') game.message.text(game.language.enemyturncount+' '+game.states.table.counter+' '+game.language.seconds);     
+      if(this.counter-- < 1){
+        $('.card.heroes').each(function(){
+          var hero = $(this);
+          hero.trigger('turnend', {target: hero});
+        });
+        if(game.status == 'turn') this.sendMoves();
+        else if(game.status == 'unturn') this.getMoves();    
+      } else {
+        game.time += 1 / game.timeToPlay;
+        game.timeout = setTimeout(game.turn.count, 1000);
+      }
+    },
+    
+    enemyend: function(){
+      if(game.status != 'over'){
+        game.status = 'turn';
+        game.states.table.enemySkillsDeck.removeClass('slide');
+        $('.card.enemy.heroes').removeClass('done');
+        $('.enemy.skills .card').hide();
+        game.turn.begin();
+        if(game.selectedCard) game.selectedCard.select()
+      }
+    },
+    
+  },
   loadJSON: function(name, cb){
     $.ajax({
       type: "GET", 
@@ -76,7 +685,6 @@ var game = {
       }
     });
   },  
-
   db: function(send, cb){
     if(send.data) send.data = JSON.stringify(send.data);
     $.ajax({
@@ -89,59 +697,77 @@ var game = {
         if(cb) cb(data || {});
       }
     });
-  },
-
-  //AUDIO
-  audioctx: new AudioContext(), audioBuffers: {},
-  
-  loadAudio: function(name){
-    if(!game.mute) game.createMuteGain();
-    var ajax = new XMLHttpRequest(); 
-    ajax.open("GET", '/audio/'+name+'.mp3', true); 
-    ajax.responseType = "arraybuffer"; 
-    ajax.onload = function(){ 
-      game.audioctx.decodeAudioData(ajax.response, function(buffer){ 
-        game.audioBuffers[name] = buffer;
-      }); 
-    }; 
-    ajax.send();   
-  },
-  
-  audio: function(name){ 
-    var sound = game.audioctx.createBufferSource();
-    sound.buffer = game.audioBuffers[name];
-    sound.connect(game.mute);
-    sound.start();
-  },
-  
-  createMuteGain: function(){
-    game.mute = game.audioctx.createGain();
-    game.mute.connect(game.audioctx.destination);
   },  
+  random: function(){  
+    if(game.debug) return 0;
+    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
+  },    
+  audio: {
 
-  /*///////////////////////////////////////////////////////
-
-  states.changeTo('yourState')  -> set current state
-         .currentstate -> get current state
-         .el -> states div appended to game.container
-
-  each state: has an element (this.el) appended to states.el
-  if (build function) will run only once
-  if (start function) will run every time it enters the state
-  if (end function) will run every time it leaves the state
-
-  ////////////////////////////////////////////////////////*/  
-  currentstate: 'load',
-  preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],
-  
-  states: {    
+    buffers: {},
     
-    build: function(){      
+    build: function(){
+      game.audio.context = new AudioContext();
+      game.mute = game.audio.context.createGain();
+      game.mute.connect(game.audio.context.destination);
+      var sounds = [
+        'activate',
+        'crit',
+        'horn',
+        'battle',
+        'pick',         
+        'tower',
+        'tutorial/axe1',
+        'tutorial/axe2'
+      ];
+      for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);      
+    },
+
+    load: function(name){
+      if(!game.audio.context) game.audio.build();
+      var ajax = new XMLHttpRequest(); 
+      ajax.open("GET", '/audio/'+name+'.mp3', true); 
+      ajax.responseType = "arraybuffer"; 
+      ajax.onload = function(){ 
+        game.audio.context.decodeAudioData(ajax.response, function(buffer){ 
+          game.audio.buffers[name] = buffer;
+        }); 
+      }; 
+      ajax.send();   
+    },
+
+    play: function(name){ 
+      var sound = game.audio.context.createBufferSource();
+      sound.buffer = game.audio.buffers[name];
+      sound.connect(game.mute);
+      sound.start();
+    }
+    
+  },     
+  states: {    
+
+    /*////////////////////////game.states.system//
+
+    states.changeTo('somestate')  -> set current state
+    states.currentstate -> get current state
+    states.el -> states div appended to game.container
+    states[states.currentstate].el -> state div appended to states.el
+    states.backState() -> change to the previous state
+
+    if a state has a build function, it will run once
+    if a state has a start function, it will run every time it enters the state
+    if a state has a end function, it will run every time it leaves the state
+
+    ///////////////////////////////////////*/
+    
+    preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],  
+    
+    build: function(){
       this.el = $('<div>').attr('id','states').appendTo(game.container);
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       $.each(this, function(id){      
-        if(game.preBuild.indexOf(id) >= 0){
-          game.states[id].el = $('<div>').attr('id',id).appendTo(game.states.el).addClass('hidden');
+        if(game.states.preBuild.indexOf(id) >= 0){
+          game.states[id].el = $('<div>').addClass('state-'+id).appendTo(game.states.el).hide();
           if(game.states[id].build) {
             game.states[id].build();
             game.states[id].builded = true;
@@ -152,12 +778,12 @@ var game = {
         game.states.changeTo('intro'); 
       }, 1000);
     }, 
-
+    
     changeTo: function(state){
       if(this == game.currentstate) return;   
       var pre = game.currentstate;
       var oldstate = this[pre];
-      if(oldstate.el) oldstate.el.addClass('hidden'); 
+      if(oldstate.el) oldstate.el.hide(); 
       if(oldstate.end) oldstate.end();    
       var newstate = this[state];
       if(newstate.build && !newstate.builded){      
@@ -165,21 +791,21 @@ var game = {
         newstate.builded = true;
       }
       this.el.removeClass(pre).addClass(state);
-      if(newstate.el) newstate.el.removeClass('hidden').append(game.topbar);
+      if(newstate.el) newstate.el.show().append(game.topbar);
       game.currentstate = state;
       game.backstate = pre;
       if(newstate.start) newstate.start();
     },
-
+    
     backState: function(){
-      this.changeTo(game.backstate);
+      game.states.changeTo(game.backstate);
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    
+    //states////////////////////////////////////////////////
+    
     load: {
-      ////////////////////////////////////////////////////////////////////////////////////////  
 
-      data: function(){
+      data: function(cb){
         game.loadJSON('heroes');        
         game.loadJSON('units');        
         game.loadJSON('skills', function(){          
@@ -200,9 +826,10 @@ var game = {
             }
           }
         });
+        if(cb) setTimeout(cb, 500);
       },
 
-      language: function(){
+      language: function(cb){
         game.loadJSON('languages', function(){
           game.db({'get':'lang'}, function(data){
             game.lang = 'en-US';
@@ -210,7 +837,7 @@ var game = {
               game.lang = data.lang.split(';')[0].split(',')[0];     
             }
             game.language = game.languages[game.lang];
-            game.states.build();
+            if(cb) cb();
           });         
         });
       },
@@ -244,18 +871,6 @@ var game = {
           }
         }//loop
         return allImgs;
-      },
-
-      audio: function(){
-        var sounds = [
-          'activate',
-          'crit',
-          'horn',
-          'battle',
-          'pick',         
-          'tower'
-        ];
-        for(var i=0; i < sounds.length; i++) game.loadAudio(sounds[i]);
       },
 
       ping: function(cb){
@@ -310,19 +925,14 @@ var game = {
         }
       }
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    intro: {   
-      ////////////////////////////////////////////////////////////////////////////////////////  
+    
+    intro: {    
 
       build: function(){         
         if(!game.debug){ 
           this.video = $('<div>').addClass('video').hide().appendTo(this.el);
           this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
-          this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.el).click(function(){
-            clearTimeout(game.timeout);  
-            game.states.changeTo('login');
-          }).contextmenu(game.nomenu);
+          this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.el).click(function(){game.states.changeTo('login');}).contextmenu(game.nomenu);
           var ratio = 16/9;
           var width = game.states.el.width() * 1.1;
           var height = Math.ceil(width / ratio);
@@ -388,10 +998,8 @@ var game = {
         if(game.youTubePlayer) game.youTubePlayer.pauseVideo();
       }
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    
     login: {  
-      ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){       
         this.menu = $('<div>').appendTo(this.el).addClass('box');
@@ -412,8 +1020,8 @@ var game = {
           if(!name) game.states.login.input.focus();
           else {
             game.player.name = name;
-            if(game.states.login.remembername) document.cookie = 'name='+name;
-            else document.cookie = 'name=';
+            if(game.states.login.remembername) $.cookie('name', name);
+            else $.removeCookie('name');
             game.states.login.button.attr('disabled', true );
             game.loader.addClass('loading');
             game.db({'get':'server'}, function(server){
@@ -424,17 +1032,8 @@ var game = {
         });
         this.rememberlabel = $('<label>').appendTo(this.menu).text(game.language.remember);
         this.remembercheck = $('<input>').attr({type: 'checkbox', name: 'remember'}).change(this.remember).appendTo(this.rememberlabel).click();
-        if(document.cookie){
-          var rememberedname = '';
-          var cookies = document.cookie.split(';');
-          for(var i=0; i<cookies.length; i++){
-            var cookie = cookies[i];
-            while(cookie.charAt(0)==' ') cookie = cookie.substring(1);
-            if(cookie.indexOf('name') != -1) rememberedname = cookie.substring(5, cookie.length);
-          }
-          if(rememberedname) this.input.val(rememberedname);
-        }
-
+        var rememberedname = $.cookie('name');
+        if(rememberedname) this.input.val(rememberedname);
       },
 
       start: function(){
@@ -458,19 +1057,20 @@ var game = {
       }
 
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////
-    menu: {
-      ////////////////////////////////////////////////////////////////////////////////////////  
-
+    
+    menu: {  
+      
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
         this.title = $('<h1>').appendTo(this.menu).text(game.language.choosemode);
-        this.public = $('<button>').appendTo(this.menu).attr({'title': game.language.choosepublic}).text(game.language.public).click(function(){    
-          game.mode = 'public';
+        this.tutorial = $('<button>').appendTo(this.menu).attr({'title': game.language.tutorial}).text(game.language.tutorial).click(function(){    
+          game.tutorial.build();
           game.states.changeTo('choose');
         });
-
+        this.public = $('<button>').appendTo(this.menu).attr({'title': game.language.choosepublic}).text(game.language.public).click(function(){    
+          game.match.public();
+          game.states.changeTo('choose');
+        });
         this.friend = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosefriend, 'disabled': true }).text(game.language.friend);        
         this.bot = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosebot, 'disabled': true }).text(game.language.bot);    
         this.options = $('<button>').appendTo(this.menu).attr({ 'title': game.language.chooseoptions}).text(game.language.options).click(function(){
@@ -478,27 +1078,24 @@ var game = {
         }); 
         this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosecredits, 'disabled': true }).text(game.language.credits);
       },
-
       start: function(){      
+        game.states.options.opt.show();  
         game.loader.removeClass('loading');
         game.triesCounter.text('');
         game.message.html(game.language.welcome+' <b>'+game.player.name+'</b>!');
         $('<small>').addClass('logout').appendTo(game.message).text(game.language.logout).click(function(){
           game.states.changeTo('login');
         });
-
         this.public.focus();
         if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
         else {
           this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-          this.public.click();
+          //this.public.click();
         }
-      }
+      }  
     }, 
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    
     options: {
-      ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
@@ -506,10 +1103,13 @@ var game = {
 
         this.resolution = $('<div>').appendTo(this.menu).attr({'title': game.language.screenres}).addClass('screenresolution');
         $('<h2>').appendTo(this.resolution).text(game.language.screenres);
-        $('<label>').text(game.language.high).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
+        this.high = $('<label>').text(game.language.high).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
         $('<label>').text(game.language.medium).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
-        $('<label>').text(game.language.low).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
-
+        this.low = $('<label>').text(game.language.low).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
+        
+        var rememberedres = $.cookie('resolution');
+        if(rememberedres) this[rememberedres].click();
+        
         this.audio = $('<div>').appendTo(this.menu).attr({'title': game.language.audioconfig}).addClass('audioconfig');
         $('<h2>').appendTo(this.audio).text(game.language.audioconfig);
         this.muteinput = $('<input>').attr({type: 'checkbox', name: 'mute'}).change(this.mute);
@@ -518,22 +1118,30 @@ var game = {
         this.volumeinput = $('<div>').addClass('volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
         $('<label>').text(game.language.volume).appendTo(this.audio).append(this.volumeinput);
         $(document).on('mouseup.volume', game.states.options.volumeup);
-        this.back = $('<button>').appendTo(this.menu).attr({'title': game.language.back}).text('Back').click(function(){ game.states.backState(); });
-
-        this.opt =  $('<img src="img/opt.png">').appendTo(game.topbar).addClass('opt').hide().click(function(){
-          game.states.changeTo('options');        
-        });
+        
+        var rememberedvol = $.cookie('volume');
+        if(rememberedvol){ 
+          var vol = parseFloat(rememberedvol);
+          if(vol == 0) this.muteinput.prop('checked', true);
+          game.mute.gain.value = vol;          
+          game.states.options.volumecontrol.css('transform', 'scale('+rememberedvol+')');
+        }
+        
+        this.back = $('<button>').appendTo(this.menu).attr({'title': game.language.back}).text(game.language.back).click(game.states.backState);
+        
+        this.opt =  $('<img src="img/opt.png">').appendTo(game.topbar).addClass('opt').hide().on('click.opt', function(){ game.states.changeTo('options'); });
+      },
+      
+      start: function(){
+        game.states.options.opt.off('click.opt').on('click.back', game.states.backState);  
       },
 
       mute: function(){
-        if(this.checked) {
-          game.mute.gain.value = 0;
-          game.states.options.volumecontrol.css('transform', 'scale(0)');
-        } else {
-          game.mute.gain.value = 1;
-          game.states.options.volumecontrol.css('transform', 'scale(1)');
-        }
-
+        var vol = game.unmutedvolume || 1;
+        if(this.checked) vol = 0;
+        $.cookie('volume', vol);
+        game.mute.gain.value = vol;
+        game.states.options.volumecontrol.css('transform', 'scale('+vol+')');        
       }, 
 
       volumedown: function(event){
@@ -554,26 +1162,33 @@ var game = {
         } else game.states.options.muteinput.prop('checked', false);
         game.states.options.volumecontrol.css('transform', 'scale('+volume+')');
         game.mute.gain.value = volume;
+        game.unmutedvolume = volume;
+        $.cookie('volume', volume);
       },
 
       changeResolution: function(){ 
         var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
         game.states.el.removeClass('low high').addClass(resolution);
+        $.cookie('resolution', resolution);
+      },
+      
+      end: function(){
+        game.states.options.opt.off('click.back').on('click.opt', game.states.backState);  
       }
+      
     },
-
-    ////////////////////////////////////////////////////////////////////////////////////////
+    
     choose: {   
       ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){    
         this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
-        this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').addClass('hidden').on('contextmenu', game.nomenu);
+        this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide().on('contextmenu', game.nomenu);
         for(var slot = 0; slot < 5; slot++){
           $('<div>').appendTo(this.pickedbox).attr({title: game.language.rightpick}).data('slot', slot).addClass('slot available');
         }
-        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.language.customdecks).addClass('hidden');
-        this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').addClass('hidden');
+        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.language.customdecks).hide();
+        this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
 
         this.pickDeck = Deck({
           name: 'heroes', 
@@ -589,13 +1204,12 @@ var game = {
             });
             pickDeck.width(100 + $('.card').width() * pickDeck.children().length);            
           }
-        });      
+        });        
       },
 
       start: function(){ 
         game.loader.addClass('loading');      
-        game.currentData = {};
-        if(game.mode == 'public') this.checkPublic();
+        game.states.options.opt.show(); 
         this.pickDeck.children().first().click();
       },
 
@@ -605,83 +1219,10 @@ var game = {
         card.addClass('active');
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
       },
-
-      checkPublic: function(){
-        game.seed = new Date().valueOf();
-        game.id = btoa(game.seed);
-        game.db({'set':'waiting', 'data': {id: game.id}}, function(waiting){
-          if(game.id == waiting.id){
-            game.player.type = 'challenged';
-            game.states.choose.searchGame();            
-          } else {             
-            game.id = waiting.id;     
-            game.seed = parseInt(atob(game.id));
-            game.player.type = 'challenger';
-            game.states.choose.foundGame();            
-          }
-        });   
-      },
-
-      searchGame: function(){   
-        game.currentData.challenged = game.player.name;
-        game.db({'set': game.id, 'data': game.currentData}, function(){
-          game.message.text(game.language.waiting);        
-          game.tries = 1;   
-          game.states.choose.keepSearching();
-        }); 
-      },    
-
-      keepSearching: function(){
-        game.db({'get': game.id }, function(found){
-          if(found.challenger){
-            game.triesCounter.text('');
-            game.currentData = found;
-            game.states.choose.battle(found.challenger, 'challenger');         
-          } else {
-            game.triesCounter.text(game.tries++);                
-            if(game.tries > game.waitLimit) {
-              game.message.text(game.language.noenemy);  
-              setTimeout(function(){                
-                game.states.changeTo('menu'); //todo: sugest bot match 
-              }, 2000);
-            }
-            else game.timeout = setTimeout(game.states.choose.keepSearching, 1000);
-          }
-        });
-      },
-
-      foundGame: function(){       
-        game.message.text(game.language.gamefound);
-        game.db({'get': game.id }, function(found){     
-          if(found.challenged){
-            game.triesCounter.text('');
-            game.currentData = found;  
-            game.currentData.challenger = game.player.name;
-            game.db({'set': game.id, 'data': game.currentData}, function(){
-              game.states.choose.battle(found.challenged, 'challenged');
-            });  
-          } else game.states.load.reset();
-        });
-      },  
-
-      battle: function(enemy, challenge){     
-        game.status = 'picking';
-        game.loader.removeClass('loading');
-        this.el.addClass('turn');
-        game.enemy.name = enemy; 
-        game.enemy.type = challenge; 
-        game.message.html(game.language.battlefound+' <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
-        this.counter.removeClass('hidden');
-        game.audio('battle');
-        this.count = game.debug ? 1 : game.timeToPick;
-        this.enablePick();
-        clearTimeout(game.timeout);
-        game.timeout = setTimeout(game.states.choose.pickCount.bind(this), 1000);      
-      },
-
+      
       enablePick: function(){
-        this.pickedbox.removeClass('hidden');
-        this.prepickbox.removeClass('hidden');
+        this.pickedbox.show();
+        if(game.mode !== 'tutorial') this.prepickbox.show();
         $('.slot').on('contextmenu.pick', game.states.choose.pick);
       },
 
@@ -701,116 +1242,28 @@ var game = {
           var card = slot.children('.card');
           card.on('click.active', game.states.choose.active).insertBefore(pick);             
         }
-        game.audio('pick');
+        game.audio.play('pick');
         card.addClass('active');
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);    
         pick.removeClass('active').appendTo(slot).off('click.active');
-        if($('.slot.available').length == 0){
-          game.player.mana = 0;
-          $('.slot .card').each(function(){
-            var card = $(this);
-            game.player.mana += card.data('mana');
-          });
-          game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
-          game.states.choose.counter.text(game.language.startsin+': '+(game.states.choose.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
-        } else game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count));
+        if(game.mode == 'tutorial') game.tutorial.pick();
+        else game.match.pick();
         return false;
       },
-
-      pickCount: function(){ 
-        this.count--;
-        if($('.slot.available').length != 0) this.counter.text(game.language.pickdeck+': '+(this.count)); 
-        else this.counter.text(game.language.startsin+': '+(this.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
-        if(this.count < 0) {
-          this.counter.text(game.language.getready);  
-          this.disablePick();        
-          this.fillDeck();   
-        }
-        else setTimeout(this.pickCount.bind(this), 1000);
-      },
-
-      fillDeck: function(){
-        game.player.picks = [];
-        $('.pickbox .card.active').removeClass('active');
-        if(game.debug){
-          if(game.player.type == 'challenger') game.player.picks = ['wk','cm','ld','nyx','kotl'];
-          else game.player.picks = ['ld','cm','pud','am','kotl'];
-          game.states.choose.sendDeck();        
-          return;
-        }      
-        $('.slot').each(function(){
-          var slot = $(this), card;
-          if(slot.hasClass('available')){
-            card = Deck.randomCard($('.pickbox .card'), 'noseed');
-            slot.append(card).removeClass('available');
-          } else  card = $('.card', slot);
-          game.player.picks[slot.data('slot')] = card.data('hero');
-          if(game.player.picks.length == 5) game.states.choose.sendDeck();        
-        });   
-      },
-
-      sendDeck: function(){     
-        this.el.removeClass('turn'); 
-        this.pickDeck.css('margin-left', 0);
-        clearTimeout(this.timeout);
-        this.tries = 1;
-        if(game.player.type == 'challenged'){
-          game.currentData.challengedDeck = game.player.picks.join('|');
-          game.db({'set': game.id, 'data': game.currentData}, function(){          
-            game.states.choose.getChallengerDeck();
-          });
-        }
-        if(game.player.type == 'challenger') this.getChallengedDeck();         
-      },
-
-      getChallengerDeck: function(){ 
-        game.message.text(game.language.loadingdeck);
-        game.loader.addClass('loading');
-        game.db({'get': game.id }, function(found){         
-          if(found.challengerDeck){
-            game.triesCounter.text('');
-            game.currentData = found;
-            game.enemy.picks = game.currentData.challengerDeck.split('|');
-            game.states.changeTo('table');          
-          } else {
-            game.triesCounter.text(game.tries++);
-            if(game.tries > game.connectionLimit) game.states.load.reset();
-            else game.timeout = setTimeout(game.states.choose.getChallengerDeck, 1000);
-          }
-        });
-      },
-
-      getChallengedDeck: function(){
-        game.message.text(game.language.loadingdeck);
-        game.loader.addClass('loading');
-        game.db({'get': game.id }, function(found){         
-          if(found.challengedDeck){ 
-            game.triesCounter.text('');
-            game.currentData = found;    
-            game.currentData.challengerDeck = game.player.picks.join('|');
-            game.enemy.picks = game.currentData.challengedDeck.split('|');
-            game.db({'set': game.id, 'data': game.currentData}, function(){            
-              game.states.changeTo('table');
-            });              
-          } else {
-            game.triesCounter.text(game.tries++);
-            if(game.tries > game.connectionLimit) game.states.load.reset();
-            else game.timeout = setTimeout(game.states.choose.getChallengedDeck, 1000);
-          }      
-        });  
-      },
-
-      end: function(){           
-        clearTimeout(game.timeout);                   
-        this.pickedbox.addClass('hidden');
-        this.prepickbox.addClass('hidden');       
+      
+      reset: function(){
         $('.pickedbox .card').appendTo(this.pickDeck);
         $('.slot').addClass('available');
-        this.counter.addClass('hidden');
-      }
-    },
+        this.counter.hide();
+      },
 
-    ////////////////////////////////////////////////////////////////////////////////////////
+      end: function(){     
+        this.pickedbox.hide();
+        this.prepickbox.hide(); 
+      }
+      
+    },
+    
     table: {
       ////////////////////////////////////////////////////////////////////////////////////////
 
@@ -818,20 +1271,19 @@ var game = {
         this.time =  $('<p>').appendTo(game.topbar).addClass('time').text(game.language.time+': 0:00 Day').hide();
         this.turns =  $('<p>').appendTo(game.topbar).addClass('turns').text(game.language.turns+': 0/0 (0)').hide();
         this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea');
-        this.buildMap();        
+        this.buildMap();
+        this.el.click(function(event){
+          var target = $(event.target)
+          if(!target.closest('.selected').length && !target.closest('.selectedarea').length) Card.unselect();
+        });
       },
 
-      start: function(){      
-        if(!game.builded) game.build();      
+      start: function(){     
+        if(game.mode == 'tutorial' && !game.tutorial.started) game.tutorial.start();
+        else if(!game.match.started) game.match.start();
         this.time.show();
         this.turns.show();
         game.states.options.opt.show();
-      },
-
-      end: function(){
-        this.time.hide();
-        this.turns.hide();
-        game.states.options.opt.hide();
       },
 
       buildMap: function(){
@@ -909,7 +1361,7 @@ var game = {
           }
         });  
         if(!lowestHp.notfound) {
-          game.audio('tower');  
+          game.audio.play('tower');  
           game.player.tower.attack(lowestHp);
           var fromSpot = Map.getPosition(game.player.tower);
           var toSpot = Map.getPosition(lowestHp);
@@ -935,11 +1387,8 @@ var game = {
         });
       },
 
-      placeHeroes: function(){ 
-
-        var n = 'F3';//'I1';
-        if(game.player.picks && game.enemy.picks){
-
+      placePlayerHeroes: function(){
+        if(game.player.picks){
           game.player.mana = 0;      
           this.playerHeroesDeck = Deck({
             name: 'heroes', 
@@ -953,13 +1402,16 @@ var game = {
                 card.place(Map.toId(x + p,y));
                 game.player.mana += card.data('mana');
                 if(game.debug){
-                  if(p==0) card.place(n);
+                  if(p==0) card.place('F3');
                 }
-
               });
             }
           });  
-
+        }
+      },
+      
+      placeEnemyHeroes: function(){ 
+        if(game.enemy.picks){
           game.enemy.mana = 0;
           this.enemyHeroesDeck = Deck({
             name: 'heroes', 
@@ -973,14 +1425,13 @@ var game = {
                 card.place(Map.toId(x - p,y));  
                 game.enemy.mana += card.data('mana');
                 if(game.debug){
-                  if(p==0) card.place(Map.mirrorPosition(n));
+                  if(p==0) card.place(Map.mirrorPosition('F3'));
                 }         
               });
             }
           }); 
         }
       },
-
 
       buildUnits: function(){       
         $('#A1').addClass('camp');
@@ -1044,7 +1495,6 @@ var game = {
           }
         });
 
-
         game.enemy.maxCards = Math.round(game.enemy.mana/2); 
         game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
         game.enemy.hand = 0;
@@ -1059,124 +1509,7 @@ var game = {
           }
         });
 
-        game.player.buyCard = function(){
-          if(game.player.turn == 6) ('.player.deck.skills.ult .card').appendTo(game.states.table.playerSkillsDeck);
-          var availableSkills = $('.skills.available.player.deck .card');        
-          var card = Deck.randomCard(availableSkills);
-          card.appendTo(game.states.table.playerHand);
-          if(card.data('target') == 'Autoactivate') {
-            var heroid = card.data('hero');        
-            var hero = $('.map .player.heroes.'+heroid);
-            var toSpot = Map.getPosition(hero);
-            card.activate(toSpot); 
-            game.currentData.moves.push('P:'+toSpot+':'+card.data('skill')+':'+heroid); 
-          }
-        };
-
-        game.enemy.buyCard = function(){ 
-          game.enemy.hand++;
-          game.random(); 
-        }
-
-      },
-
-      selectHand: function(){      
-        for(var i=0; i<game.player.cardsPerTurn; i++){
-          if(game.states.table.playerHand.children().length < game.player.maxCards) 
-            game.player.buyCard();
-        }      
-      },    
-
-      enemyHand: function(){
-        for(var i=0; i<game.enemy.cardsPerTurn; i++){
-          if(game.enemy.hand < game.enemy.maxCards){
-            game.enemy.buyCard();
-          }
-        }      
-      },
-
-      buildTurns: function(){
-        game.time = 0;      
-        game.player.turn = 0;
-        game.enemy.turn = 0;
-        game.currentData.moves = [];
-        if(game.player.type == 'challenged') game.status = 'turn';
-        if(game.player.type == 'challenger') game.status = 'unturn';         
-      },
-
-      firstTurn: function(){ 
-        game.currentData = {};
-        game.player.kills = 0;
-        game.enemy.kills = 0;
-
-        game.states.table.el.click(function(event){
-          var target = $(event.target)
-          if(!target.closest('.selected').length && 
-             !target.closest('.selectedarea').length) Card.unselect();
-        });
-        game.player.tower.select();
-        game.states.table.beginTurn();
-      },
-
-      beginTurn: function(){      
-        //todo: update storage.state = game.state - each hero hp position buffs etc, each player skill hand
-        if(game.status != 'over') {    
-          game.currentData.moves = []; 
-          game.states.table.el.addClass(game.status);
-          if(game.status == 'turn') game.message.text(game.language.yourturn);
-          if(game.status == 'unturn') game.message.text(game.language.enemyturn);       
-          $('.card .damaged').remove();
-          $('.card .heal').remove();
-          $('.card.dead').each(function(){
-            var dead = $(this);
-            if(game.time > dead.data('reborn')) dead.reborn();
-          });  
-          $('.card.heroes').each(function(){
-            var hero = $(this);
-            if(hero.data('channeling')) hero.trigger('channel', {target: hero});
-          });
-          $('.card').each(function(){          
-            var card = $(this);          
-            card.trigger('turnstart', {target: card});                  
-            if(game.status == 'turn')  card.trigger('playerturnstart', {target: card});
-            else card.trigger('enemyturnstart', {target: card});
-            card.reduceStun();
-          });
-          if(game.turn == 6) $('.card', game.states.table.playerUlts).appendTo(game.states.table.playerSkillsDeck);
-          if(game.status == 'turn'){         
-            $('.map .card.player').removeClass('done');
-            game.states.table.selectHand();               
-            game.states.table.towerAutoAttack();        
-            Map.highlight(); 
-          } else {
-            $('.map .card.enemy').removeClass('done');
-            game.states.table.enemyHand();
-          }
-          game.time = game.player.turn + game.enemy.turn;  
-          game.states.table.counter = (game.debug) ? 5 : game.timeToPlay;
-          clearTimeout(game.timeout);
-          game.timeout = setTimeout(game.states.table.turnCount.bind(game.states.table), 1000);
-        }
-      },
-
-      turnCount: function(){
-        game.loader.removeClass('loading');
-        this.time.text('Time: '+this.hours()+' '+this.dayNight());     
-        this.turns.text('Turns: '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
-        if(game.status == 'turn') game.message.text(game.language.yourturncount+' '+this.counter+' '+game.language.seconds);
-        else if(game.status == 'unturn') game.message.text(game.language.enemyturncount+' '+this.counter+' '+game.language.seconds);     
-        if(this.counter-- < 1){
-          $('.card.heroes').each(function(){
-            var hero = $(this);
-            hero.trigger('turnend', {target: hero});
-          });
-          if(game.status == 'turn') this.sendMoves();
-          else if(game.status == 'unturn') this.getMoves();    
-        } else {
-          game.time += 1 / game.timeToPlay;
-          game.timeout = setTimeout(game.states.table.turnCount.bind(game.states.table), 1000);
-        }
-      },
+      },   
 
       sendMoves: function(){
         $('.card.heroes').each(function(){
@@ -1189,8 +1522,7 @@ var game = {
         $('.card .damaged').remove();
         $('.card .heal').remove();
         game.status = 'unturn';
-        game.states.table.el.removeClass('turn');    
-        clearTimeout(game.timeout);
+        game.states.table.el.removeClass('turn');
         game.states.table.sendData();
       },
 
@@ -1199,8 +1531,7 @@ var game = {
         game.loader.addClass('loading');
         game.tries = 1;  
         game.states.table.el.removeClass('unturn');
-        clearTimeout(game.timeout);
-        game.timeout = setTimeout(game.states.table.getData, 1000);
+        setTimeout(game.states.table.getData, 1000);
       },
 
       sendData: function(){
@@ -1208,12 +1539,12 @@ var game = {
         game.currentData[game.player.type + 'Turn'] = game.player.turn;  
         game.currentData.moves = game.currentData.moves.join('|');   
         game.db({'set': game.id, 'data': game.currentData}, function(){
-          clearTimeout(game.timeout);
-          game.timeout = setTimeout(game.states.table.beginTurn, 1000);
+          setTimeout(game.turn.begin, 1000);
         });      
       },
 
-      getData: function(){        
+      getData: function(){
+        clearTimeout(game.timeout);
         game.db({'get': game.id }, function(data){                    
           if(data[game.enemy.type + 'Turn'] == (game.enemy.turn + 1) ){
             game.triesCounter.text('');
@@ -1249,12 +1580,11 @@ var game = {
 
       moveSelected: function(){
         var spot = $(this), card = game.selectedCard;
-        if(game.selectedCard.hasClass('skill') && game.selectedCard.data('hero')) card = $('.map .card.player.'+game.selectedCard.data('hero'));
         var fromSpot = Map.getPosition(card);  
         var toSpot = Map.getPosition(spot);
         if(game.status == 'turn' && spot.hasClass('free') && (fromSpot != toSpot) && !card.hasClass('done')){
           card.move(toSpot);        
-          game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
+          if(game.mode != 'tutorial') game.currentData.moves.push('M:'+fromSpot+':'+toSpot);
           Map.unhighlight();
         }  
         return false;
@@ -1266,7 +1596,7 @@ var game = {
         var toSpot = Map.getPosition(target);  
         if(game.status == 'turn' && source.data('damage') && (fromSpot != toSpot) && !source.hasClass('done') && target.data('currenthp')){ 
           source.attack(target);      
-          game.currentData.moves.push('A:'+fromSpot+':'+toSpot); 
+          if(game.mode != 'tutorial') game.currentData.moves.push('A:'+fromSpot+':'+toSpot); 
           Map.unhighlight();
         }
         return false;
@@ -1278,8 +1608,8 @@ var game = {
         var skillid = skill.data('skill');
         var toSpot = Map.getPosition(target);  
         if(hero && skillid && game.status == 'turn'){ 
-          game.audio('activate');
-          game.currentData.moves.push('P:'+toSpot+':'+skillid+':'+hero); 
+          game.audio.play('activate');
+          if(game.mode != 'tutorial') game.currentData.moves.push('P:'+toSpot+':'+skillid+':'+hero); 
           skill.activate(target);
           var t = skill.offset(), d = target.offset();
           skill.css({top: d.top - t.top + 30, left: d.left - t.left + 20, transform: 'translate(-50%, -50%) scale(0.3)'});
@@ -1347,18 +1677,8 @@ var game = {
         $('.card.heroes').each(function(){
           var hero = $(this);
           hero.trigger('enemyturnend', {target: hero});
-        });         
-        clearTimeout(game.timeout);
-        game.timeout = setTimeout(function(){
-          if(game.status != 'over'){
-            game.status = 'turn';
-            game.states.table.enemySkillsDeck.removeClass('slide');
-            $('.card.enemy.heroes').removeClass('done');
-            $('.enemy.skills .card').hide();
-            game.states.table.beginTurn();
-            if(game.selectedCard) game.selectedCard.select()
-              }
-        }, game.enemyplaytime * 1000);
+        });
+        setTimeout(game.turn.enemyend, game.enemy.playtime * 1000);
       },
 
       animateCast: function(skill, target, destiny){
@@ -1410,18 +1730,27 @@ var game = {
           var text = $('<span>').text( hero.data('name')+': '+hero.data('kills')+' / '+hero.data('deaths') );
           $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid).append(img, text);
         });
-        $('<button>').appendTo(this.resultsbox).text('Close')
-        .click(function(){  
-          $('#table .card').remove();
-          $('#table .deck').remove();
-          this.resultsbox.remove();
-          game.builded = false;
+        $('<button>').appendTo(this.resultsbox).text('Close').click(function(){  
+          game.states.table.clear();
           game.states.changeTo('menu');
         });
-      }
+      },
+      
+      clear: function(){
+        $('#table .card').remove();
+        $('#table .deck').remove();
+        this.resultsbox.remove();
+        game.match.end();
+      },
+      
+      end: function(){
+        this.time.hide();
+        this.turns.hide();
+      },
 
     } //states.table end
-
-  } //states end
+    
+  }, //states end
+  currentstate: 'load',  
 };
 $(game.start);

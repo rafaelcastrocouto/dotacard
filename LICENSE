@@ -36,12 +36,12 @@ Attribution is maintained in the source control history of the product.
 
 ----------------------------------------------------------
 
-DOTACARD versions may include/require the following libraries which may have different licenses.
+DOTACARD versions may include or require the following libraries, which may have other licenses.
 
 "jQuery", John Resig, http://jquery.com
+"jQuery Cookie Plugin", Klaus Hartl, https://github.com/carhartl/jquery-cookie
 "-prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
 "modernizr", Modernizr team, http://modernizr.com
 "youtube-iframe-api", Google, https://developers.google.com/youtube/iframe_api_reference
 "google-analytics", Google, http://www.google.com/analytics
 "node", Joyent, http://nodejs.org/
-"npm", Isaac Schlueter, https://www.npmjs.org

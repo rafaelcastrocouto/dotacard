@@ -208,6 +208,7 @@ Card.unselect = function(){
   if(game.selectedCard) game.selectedCard.removeClass('selected');
   game.selectedCard = null;
   game.states.table.selectedArea.empty();
+  game.states.table.selectedArea.trigger('unselect');
 };
 $.fn.unselect = Card.unselect;
 
@@ -380,7 +381,7 @@ Card.cast = function(skill, target){
     }
     if(target.length){
       source.data('channeling', false).removeClass('channeling');
-      source.trigger('cast',{skill: skill, source: source, target: target});
+      source.trigger('cast', {skill: skill, source: source, target: target});
       Skills[hero][skillid].cast(skill, source, target);    
       var channelduration = skill.data('channel');
       if(channelduration){
@@ -411,7 +412,8 @@ Card.activate = function(target){
   var hero = skill.data('hero');
   var skillid = skill.data('skill');
   if(typeof target == 'string') target = $('#'+target+' .card');                           
-  if(skillid && hero && target.data('hero') == hero){    
+  if(skillid && hero && target.data('hero') == hero){  
+    target.trigger('activate', {skill: skill, target: target});
     Skills[hero][skillid].activate(skill, target);
     Map.unhighlight();
     if(skill.hasClass('enemy')) game.enemy.hand--;
