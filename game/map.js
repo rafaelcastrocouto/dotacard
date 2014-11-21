@@ -270,8 +270,8 @@ var Map = {
       if(game.selectedCard.hasClasses('hero unit')){   
         game.selectedCard.strokeAttack(); 
         if(game.status == 'turn') {
-          game.selectedCard.highlightMove();
-          game.selectedCard.highlightAttack(); 
+          if(!game.tutorial.lessonAttack) game.selectedCard.highlightMove();
+          if(!game.tutorial.lessonSkill) game.selectedCard.highlightAttack(); 
         }        
       } else if(game.selectedCard.hasClass('skill')){ 
         game.selectedCard.highlightSource(); 

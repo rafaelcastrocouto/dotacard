@@ -1,6 +1,6 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.064,
+  vs: 0.065,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
@@ -101,10 +101,13 @@ var game = {
       game.audio.play('tutorial/axe1');
       game.states.choose.count = game.debug ? 10 : game.timeToPick;
       game.states.choose.enablePick();   
-      game.tutorial.axe =  $('<div>').addClass('axe tutorial').appendTo(game.states.choose.el);      
-      game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
-      game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
-      game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.language.axepick);
+      if(!game.tutorial.axe){
+        game.tutorial.axe =  $('<div>').addClass('axe tutorial');   
+        game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
+        game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
+        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.language.axepick);
+      }
+      game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axebaloon.hide();
       setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 1000);
       setTimeout(function(){ 
@@ -115,12 +118,6 @@ var game = {
     },
     
     pick: function(){
-      game.player.mana = 0;      
-      $('.slot .card').each(function(){
-        var card = $(this);
-        game.player.mana += card.data('mana');
-      });
-      game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);
       game.tutorial.oldAvailableSlots = 5;
       var availableSlots = $('.slot.available').length;
       if(availableSlots == 4) game.tutorial.message.html(game.language.axeheroes);        
@@ -128,7 +125,7 @@ var game = {
       else if(availableSlots == 2) game.tutorial.message.html(game.language.axecardsperturn);
       else if(availableSlots == 1) game.tutorial.message.html(game.language.axeautodeck);            
       if(availableSlots < game.tutorial.oldAvailableSlots) game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.oldAvailableSlots = availableSlots;
+      
       if(availableSlots) game.states.choose.counter.text($('.slot.available').length + ' ' + game.language.togo + '. ' + game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
       else {    
         game.message.text(game.language.getready);
@@ -139,6 +136,7 @@ var game = {
           game.tutorial.deck();
         }, 2000);
       }
+      game.tutorial.oldAvailableSlots = availableSlots;
     },
     
     deck: function(){      
@@ -147,7 +145,10 @@ var game = {
         var slot = $(this);
         var card = slot.find('.card');
         game.player.picks[slot.data('slot')] = card.data('hero');
-        if(game.player.picks.length == 5) game.states.changeTo('table');    
+        if(game.player.picks.length == 5) {
+          game.states.choose.reset();
+          game.states.changeTo('table');    
+        }
       });   
     },
     
@@ -172,7 +173,7 @@ var game = {
     
     placeHeroes: function(){
       game.player.mana = 0;
-      this.playerHeroesDeck = Deck({
+      game.states.table.playerHeroesDeck = Deck({
         name: 'heroes', 
         filter: game.player.picks, 
         cb: function(deck){
@@ -186,8 +187,8 @@ var game = {
           });
         }
       });  
-      game.enemy.picks = ['am','kotl','pud','ld','nyx'];
-      this.enemyHeroesDeck = Deck({
+      game.enemy.picks = ['nyx','kotl','pud','ld','am'];
+      game.states.table.enemyHeroesDeck = Deck({
         name: 'heroes', 
         filter: game.enemy.picks, 
         cb: function(deck){
@@ -225,10 +226,10 @@ var game = {
           game.tutorial.move();
         }
       }       
-      if(game.tutorial.lessonSelectSkill){
+      if(game.tutorial.lessonSkill){
         if(card.hasAllClasses('skill player')){
           $('.player.skill').removeClass('tutorialblink');
-          game.tutorial.lessonSelectSkill = false;          
+          game.tutorial.lessonSkill = false;          
           game.tutorial.skill();
         }
       }      
@@ -332,6 +333,7 @@ var game = {
     },   
     
     attack: function(){
+      game.tutorial.lessonAttack = true; 
       $('.player.hero').removeClass('done');
       game.status = 'turn';
       game.tutorial.buildSkills();
@@ -343,9 +345,6 @@ var game = {
     },
     
     buildSkills : function(){
-      game.player.maxCards = Math.round(game.player.mana/2);  
-      game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);
-      
       game.states.table.playerHand = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills hand');
        game.states.table.playerCemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
        game.states.table.playerSkillsDeck = Deck({
@@ -363,7 +362,7 @@ var game = {
     
     skillSelect: function(){    
       $('.map .enemy.hero.am').removeClass('tutorialblink');
-      game.tutorial.lessonSelectSkill = true;      
+      game.tutorial.lessonSkill = true;      
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
       game.tutorial.message.html(game.language.axeskillselect);   
       game.player.buyhand();
@@ -382,11 +381,16 @@ var game = {
     },
     
     end: function(){
+      game.tutorial.lessonAttack = false; 
+      game.tutorial.lessonSkill = false; 
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
       game.tutorial.message.html(game.language.axeend); 
+      game.message.text(game.language.lose);
+      game.winner = game.player.name;
       game.states.table.showResults();
       game.tutorial.started = false;
-    }    
+      game.status = 'over';
+    }
     
   },  
   match: {
@@ -453,12 +457,6 @@ var game = {
     
     pick: function(){
       if($('.slot.available').length == 0){
-        game.player.mana = 0;
-        $('.slot .card').each(function(){
-          var card = $(this);
-          game.player.mana += card.data('mana');
-        });
-        game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10); 
         game.states.choose.counter.text(game.language.startsin+': '+(game.states.choose.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
       } else game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count));      
     },
@@ -566,18 +564,58 @@ var game = {
     start: function(){
       game.loader.addClass('loading'); 
       game.message.text(game.language.battle);
-      game.audio.play('horn');
+      game.audio.play('horn');      
       game.states.table.placeTowers();
       game.states.table.placeTrees(); 
       game.states.table.placePlayerHeroes(); 
       game.states.table.placeEnemyHeroes(); 
       game.states.table.buildUnits(); 
-      game.states.table.buildSkills(); 
+      game.match.buildSkills();       
       game.turn.build(); 
       //todo: build storage.state
       game.match.started = true;
       setTimeout(game.turn.first, 1000);
     },   
+
+    buildSkills: function(){             
+
+      this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
+      this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
+      this.playerTemp = $('<div>').hide().appendTo(this.el).addClass('player deck skills temp');
+      this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
+      this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
+      this.playerSkillsDeck = Deck({
+        name: 'skills', 
+        multi: 'cards',
+        filter: game.player.picks, 
+        cb: function(deck){        
+          deck.addClass('player available').hide().appendTo(game.states.table.el);
+          $.each(deck.data('cards'), function(i, skill){   
+            skill.addClass('player skill').data('side','player').on('click.select', Card.select);
+            if(skill.data('special')){              
+              if(skill.data('special') == 'Permanent') skill.appendTo(game.states.table.playerPermanent);              
+              if(skill.data('special') == 'Temporary') skill.appendTo(game.states.table.playerTemp);              
+              if(skill.data('special') == 'Ultimate') skill.appendTo(game.states.table.playerTemp);              
+            } else if(skill.data('skill') == 'ult') skill.appendTo(game.states.table.playerUlts);
+          });        
+        }
+      });
+
+      game.enemy.maxCards = Math.round(game.enemy.mana/2); 
+      game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
+      game.enemy.hand = 0;
+      this.enemySkillsDeck = Deck({
+        name: 'skills', 
+        filter: game.enemy.picks, 
+        cb: function(deck){        
+          deck.addClass('enemy hand cemitery permanent').appendTo(game.states.table.el);
+          $.each(deck.data('cards'), function(i, skill){   
+            skill.hide().addClass('enemy skill').data('side','enemy');        
+          });        
+        }
+      });
+
+    },  
 
     end: function(){
       game.match.started = false;
@@ -763,12 +801,12 @@ var game = {
     preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],  
     
     build: function(){
-      this.el = $('<div>').attr('id','states').appendTo(game.container);
+      this.el = $('<div>').addClass('states frame').appendTo(game.container);
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       $.each(this, function(id){      
         if(game.states.preBuild.indexOf(id) >= 0){
-          game.states[id].el = $('<div>').addClass('state-'+id).appendTo(game.states.el).hide();
-          if(game.states[id].build) {
+          game.states[id].el = $('<div>').addClass('state '+id).appendTo(game.states.el).hide();
+          if(game.states[id].build){
             game.states[id].build();
             game.states[id].builded = true;
           }
@@ -790,7 +828,7 @@ var game = {
         newstate.build();
         newstate.builded = true;
       }
-      this.el.removeClass(pre).addClass(state);
+      this.el.removeClass(pre);
       if(newstate.el) newstate.el.show().append(game.topbar);
       game.currentstate = state;
       game.backstate = pre;
@@ -1078,6 +1116,7 @@ var game = {
         }); 
         this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosecredits, 'disabled': true }).text(game.language.credits);
       },
+      
       start: function(){      
         game.states.options.opt.show();  
         game.loader.removeClass('loading');
@@ -1179,13 +1218,12 @@ var game = {
     },
     
     choose: {   
-      ////////////////////////////////////////////////////////////////////////////////////////  
 
       build: function(){    
         this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
         this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide().on('contextmenu', game.nomenu);
         for(var slot = 0; slot < 5; slot++){
-          $('<div>').appendTo(this.pickedbox).attr({title: game.language.rightpick}).data('slot', slot).addClass('slot available');
+          $('<div>').appendTo(this.pickedbox).attr({title: game.language.rightpick}).data('slot', slot).addClass('slot available').on('contextmenu.pick', game.states.choose.pick);
         }
         this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.language.customdecks).hide();
         this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
@@ -1223,7 +1261,6 @@ var game = {
       enablePick: function(){
         this.pickedbox.show();
         if(game.mode !== 'tutorial') this.prepickbox.show();
-        $('.slot').on('contextmenu.pick', game.states.choose.pick);
       },
 
       disablePick: function(){      
@@ -1231,6 +1268,7 @@ var game = {
       },
 
       pick: function(){
+        game.audio.play('pick');
         var slot = $(this).closest('.slot');
         var pick = $('.pickbox .card.active');
         var card;
@@ -1241,20 +1279,27 @@ var game = {
         } else {
           var card = slot.children('.card');
           card.on('click.active', game.states.choose.active).insertBefore(pick);             
-        }
-        game.audio.play('pick');
+        }        
         card.addClass('active');
-        game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);    
+        game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1); 
         pick.removeClass('active').appendTo(slot).off('click.active');
+        game.player.mana = 0;
+        $('.slot .card').each(function(){
+          var card = $(this);
+          game.player.mana += card.data('mana');
+        });
+        //10 to 14 = 2 cards; 15 to 20 = 3 cards
+        game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10);   
+        game.player.maxCards = Math.round(game.player.mana/2);  
         if(game.mode == 'tutorial') game.tutorial.pick();
         else game.match.pick();
         return false;
       },
       
       reset: function(){
-        $('.pickedbox .card').appendTo(this.pickDeck);
+        $('.pickedbox .card').appendTo(this.pickDeck).on('click.active', game.states.choose.active);
         $('.slot').addClass('available');
-        this.counter.hide();
+        game.states.choose.counter.hide();
       },
 
       end: function(){     
@@ -1265,7 +1310,6 @@ var game = {
     },
     
     table: {
-      ////////////////////////////////////////////////////////////////////////////////////////
 
       build: function(){      
         this.time =  $('<p>').appendTo(game.topbar).addClass('time').text(game.language.time+': 0:00 Day').hide();
@@ -1280,7 +1324,7 @@ var game = {
 
       start: function(){     
         if(game.mode == 'tutorial' && !game.tutorial.started) game.tutorial.start();
-        else if(!game.match.started) game.match.start();
+        else if(!game.match.started) game.match.start();        
         this.time.show();
         this.turns.show();
         game.states.options.opt.show();
@@ -1310,7 +1354,7 @@ var game = {
           'height': game.height,
           'class': 'map'
         }).appendTo(this.camera);
-
+        
         setInterval(game.states.table.scroll, 16);      
       },   
 
@@ -1466,50 +1510,7 @@ var game = {
             });
           }
         }); 
-      },    
-
-      buildSkills: function(){        
-        //10 to 14 = 2 cards; 15 to 20 = 3 cards
-        game.player.maxCards = Math.round(game.player.mana/2);  
-        game.player.cardsPerTurn = 1 + Math.round(game.player.mana/10)
-
-        this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
-        this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
-        this.playerTemp = $('<div>').hide().appendTo(this.el).addClass('player deck skills temp');
-        this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
-        this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
-        this.playerSkillsDeck = Deck({
-          name: 'skills', 
-          multi: 'cards',
-          filter: game.player.picks, 
-          cb: function(deck){        
-            deck.addClass('player available').hide().appendTo(game.states.table.el);
-            $.each(deck.data('cards'), function(i, skill){   
-              skill.addClass('player skill').data('side','player').on('click.select', Card.select);
-              if(skill.data('special')){              
-                if(skill.data('special') == 'Permanent') skill.appendTo(game.states.table.playerPermanent);              
-                if(skill.data('special') == 'Temporary') skill.appendTo(game.states.table.playerTemp);              
-                if(skill.data('special') == 'Ultimate') skill.appendTo(game.states.table.playerTemp);              
-              } else if(skill.data('skill') == 'ult') skill.appendTo(game.states.table.playerUlts);
-            });        
-          }
-        });
-
-        game.enemy.maxCards = Math.round(game.enemy.mana/2); 
-        game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
-        game.enemy.hand = 0;
-        this.enemySkillsDeck = Deck({
-          name: 'skills', 
-          filter: game.enemy.picks, 
-          cb: function(deck){        
-            deck.addClass('enemy hand cemitery permanent').appendTo(game.states.table.el);
-            $.each(deck.data('cards'), function(i, skill){   
-              skill.hide().addClass('enemy skill').data('side','enemy');        
-            });        
-          }
-        });
-
-      },   
+      },     
 
       sendMoves: function(){
         $('.card.heroes').each(function(){
@@ -1627,7 +1628,7 @@ var game = {
         var hero = skill.data('hero');
         var skillid = skill.data('skill');
         if(hero && skillid && fromSpot && toSpot && game.status == 'turn' && !source.hasClass('done')){ 
-          game.currentData.moves.push('C:'+fromSpot+':'+toSpot+':'+skillid+':'+hero); 
+          if(game.mode != 'tutorial') game.currentData.moves.push('C:'+fromSpot+':'+toSpot+':'+skillid+':'+hero); 
           source.cast(skill, toSpot);         
         }
       },
@@ -1710,14 +1711,15 @@ var game = {
       },
 
       showResults: function(){
-        Map.unhighlight();
-        $('#table .card').off('click.select');
-        this.resultsbox = $('<div>').appendTo(this.el).attr({'class': 'resultsbox box'});
+        game.states.table.selectedArea.hide();
+        game.states.table.camera.hide();
+        $('.table .deck').hide();
+        game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).attr({'class': 'resultsbox box'});
         $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner+' victory');
         $('<h1>').appendTo(this.resultsbox).text('Towers HP: '+game.player.tower.data('currenthp')+' / '+game.enemy.tower.data('currenthp'));
         $('<h1>').appendTo(this.resultsbox).text('Heroes KD: '+game.player.kills+' / '+game.enemy.kills);
-        this.playerResults = $('<div>').appendTo(this.resultsbox).attr({'class': 'results'});
-        this.enemyResults = $('<div>').appendTo(this.resultsbox).attr({'class': 'results'});
+        game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).attr({'class': 'results'});
+        game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).attr({'class': 'results'});
         $('.player.heroes.card').not('.zoom').each(function(){
           var hero = $(this), heroid = $(this).data('hero'); 
           var img = $('<div>').addClass('portrait').append($('<div>').addClass('img'));
@@ -1730,16 +1732,19 @@ var game = {
           var text = $('<span>').text( hero.data('name')+': '+hero.data('kills')+' / '+hero.data('deaths') );
           $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid).append(img, text);
         });
-        $('<button>').appendTo(this.resultsbox).text('Close').click(function(){  
+        $('<button>').appendTo(game.states.table.resultsbox).text('Close').click(function(){  
           game.states.table.clear();
           game.states.changeTo('menu');
         });
       },
       
       clear: function(){
-        $('#table .card').remove();
-        $('#table .deck').remove();
-        this.resultsbox.remove();
+        $('.state-table .card').remove();
+        $('.state-table .deck').remove();
+        game.states.table.time.remove();
+        game.states.table.turns.remove();
+        game.states.table.resultsbox.remove();
+        game.states.table.selectedArea.remove();
         game.match.end();
       },
       
@@ -1751,6 +1756,7 @@ var game = {
     } //states.table end
     
   }, //states end
-  currentstate: 'load',  
+  
+  currentstate: 'load'
 };
 $(game.start);

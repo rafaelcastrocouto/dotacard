@@ -9,7 +9,8 @@ var http = require('http'),
     db = {
       get: function(name, cb){cb(currentData[name]||'');},
       set: function(name, val, cb){currentData[name] = val; cb(true);}
-    };
+    },
+    debug = false;
 
 if(host == 'localhost') debug = true;
   

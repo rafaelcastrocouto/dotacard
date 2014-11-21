@@ -75,38 +75,32 @@ small {
   font-size: 60%;
 }
 
-/*CLASS*/
+/*CLASSES*/
 
 .container {
   display: table-cell;
   vertical-align: middle;
 }
 
-.unsupported, 
-noscript ,
-#states {
+.frame {
   margin: 0 auto;
   width: 970px;
   height: 600px;  
   background-color: #c2beb2;  
-  background-size: cover;
   position: relative;  
   overflow: hidden;
   border-radius: 4px;
   box-shadow: 0 0 6px black;  
-  background-image: url("../img/bkg/polygon-light.jpg");  
 }
 
 .unsupported {
   text-align: center;
   display: none;
 }
-
 .unsupported p {
   display: block;
   margin: 1em;
 }
-
 .unsupported i {
   display: block;
 }
@@ -129,7 +123,6 @@ noscript ,
   border-radius: 5px;
   background: rgba(0,0,0,0.4);
 }
-
 .box div p {
   display: block;
 }
@@ -143,23 +136,25 @@ noscript ,
 
 /*STATES*/
 
-#states {
-  transition: background 0.4s linear;
-}
-#states.low {
+.states.low {
   transform: scale(0.75);
 }
-#states.high {
+.states.high {
   transform: scale(1.25);
 }
-#states > div {
+.states > div {
   width: 100%; height: 100%;
   position: relative;
 }
 
-#states.table, 
-#states.choose,
-#states.options {
+.state {
+  background-size: cover;
+  background-image: url("../img/bkg/polygon-light.jpg");  
+}
+
+.state.table, 
+.state.choose,
+.state.options {
   background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
@@ -809,6 +804,7 @@ label input {
   position: absolute;
   top: 35px;
   right: 5px;
+  border-radius: 10px;
 }
 .table .selectedarea .card {
   z-index: 9;
@@ -895,7 +891,7 @@ label input {
 .map .card:hover,
 .map .card.selected,
 .map .card.source {
-  transform: translate3d(-50%, -50%, 100px) rotateX(-30deg);
+  transform: translate3d(-50%, -50%, 75px) rotateX(-30deg);
 }
 
 .map .spot.playerarea {
