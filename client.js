@@ -743,6 +743,19 @@ var game = {
   },    
   audio: {
 
+    ab2str: function(buf) {
+      return String.fromCharCode.apply(null, new Uint16Array(buf));
+    },
+
+    str2ab: function(str) {
+      var buf = new ArrayBuffer(str.length*2); // 2 bytes for each char
+      var bufView = new Uint16Array(buf);
+      for (var i=0, strLen=str.length; i<strLen; i++) {
+        bufView[i] = str.charCodeAt(i);
+      }
+      return buf;
+    },
+    
     buffers: {},
 
     load: function(name){
@@ -751,6 +764,8 @@ var game = {
       ajax.open("GET", '/audio/'+name+'.mp3', true); 
       ajax.responseType = "arraybuffer"; 
       ajax.onload = function(){ 
+        var buffer = ajax.response;
+        if(typeof(ajax.response) == "string") buffer = game.audio.str2ab(ajax.response);
         game.audio.context.decodeAudioData(ajax.response, function(buffer){ 
           game.audio.buffers[name] = buffer;
         }); 
