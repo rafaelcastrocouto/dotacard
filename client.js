@@ -1,6 +1,6 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.065,
+  vs: 0.066,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
@@ -34,15 +34,15 @@ var game = {
     else $('.unsupported').show();
   },
   load: function(){
+    game.states.load.audio();
     game.states.load.fonts();
     game.states.load.youtube();
-    game.states.load.images();
-    game.audio.load();
-    game.states.load.language(function(){      
+    game.states.load.images();    
+    game.states.load.language(function(){   
       game.states.load.data(function(){
         game.states.build();
-      });           
-      game.states.load.analytics();         
+        game.states.load.analytics();  
+      });          
     });
   },  
   player: {
@@ -93,8 +93,8 @@ var game = {
       game.mode = 'tutorial';
       game.seed = new Date().valueOf();
       game.id = btoa(game.seed);
-      game.message.text(game.language.waiting);
-      game.states.choose.counter.show().text(game.language.rightpick);
+      game.message.text(game.ui.waiting);
+      game.states.choose.counter.show().text(game.ui.rightpick);
       game.enemy.name = 'axe'; 
       game.enemy.type = 'challenged';
       game.player.type = 'challenger';
@@ -105,14 +105,14 @@ var game = {
         game.tutorial.axe =  $('<div>').addClass('axe tutorial');   
         game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
         game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
-        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.language.axepick);
+        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.ui.axepick);
       }
       game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axebaloon.hide();
       setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 1000);
       setTimeout(function(){ 
         game.tutorial.axebaloon.fadeIn('slow'); 
-        game.message.text(game.language.tutorialstart);
+        game.message.text(game.ui.tutorialstart);
         game.loader.removeClass('loading');
       }, 2000);      
     },
@@ -120,18 +120,24 @@ var game = {
     pick: function(){
       game.tutorial.oldAvailableSlots = 5;
       var availableSlots = $('.slot.available').length;
-      if(availableSlots == 4) game.tutorial.message.html(game.language.axeheroes);        
-      else if(availableSlots == 3)  game.tutorial.message.html(game.language.axemaxcards);
-      else if(availableSlots == 2) game.tutorial.message.html(game.language.axecardsperturn);
-      else if(availableSlots == 1) game.tutorial.message.html(game.language.axeautodeck);            
+      if(availableSlots == 4) game.tutorial.message.html(game.ui.axeheroes);        
+      else if(availableSlots == 3)  game.tutorial.message.html(game.ui.axemaxcards);
+      else if(availableSlots == 2) game.tutorial.message.html(game.ui.axecardsperturn);
+      else if(availableSlots == 1) game.tutorial.message.html(game.ui.axeautodeck);            
       if(availableSlots < game.tutorial.oldAvailableSlots) game.tutorial.axebaloon.hide().fadeIn('slow');
       
-      if(availableSlots) game.states.choose.counter.text($('.slot.available').length + ' ' + game.language.togo + '. ' + game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+      if(availableSlots) game.states.choose.counter.text($('.slot.available').length + ' ' + game.ui.togo + '. ' + game.ui.cardsperturn+': '+ game.player.cardsPerTurn); 
       else {    
-        game.message.text(game.language.getready);
-        game.states.choose.counter.text(game.language.cardsperturn+': '+ game.player.cardsPerTurn);
-        game.tutorial.message.html(game.language.axebattle);
-        game.audio.play('tutorial/axe2');
+        game.message.text(game.ui.getready);
+        game.states.choose.counter.text(game.ui.cardsperturn+': '+ game.player.cardsPerTurn);        
+        game.tutorial.axe.css({
+          right: '',
+          left: '0',
+          transform: 'scaleX(-1)'
+        });
+        game.tutorial.message.css({transform: 'scaleX(-1)'});
+        game.audio.play('tutorial/axebattle');
+        game.tutorial.message.html(game.ui.axebattle);
         setTimeout(function(){
           game.tutorial.deck();
         }, 2000);
@@ -153,7 +159,7 @@ var game = {
     },
     
     start: function(){
-      game.message.text(game.language.battle);
+      game.message.text(game.ui.battle);
       game.loader.removeClass('loading');
       game.audio.play('horn');
       game.tutorial.placeHeroes(); 
@@ -164,7 +170,7 @@ var game = {
       game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
       game.tutorial.axebaloon.hide();
       game.tutorial.lessonSelectEnemy = true;
-      game.states.table.time.text(game.language.time+': 0:00 '+game.language.day); 
+      game.states.table.time.text(game.ui.time+': 0:00 '+game.ui.day); 
       setTimeout(function(){game.tutorial.axe.addClass('up')}, 500);
       setTimeout(game.tutorial.selectEnemy, 1000);
       game.player.kills = 0;
@@ -205,8 +211,8 @@ var game = {
     
     selectEnemy: function(){          
       game.tutorial.axebaloon.fadeIn('slow');
-      game.tutorial.message.html(game.language.axeselectenemy);
-      game.message.text(game.language.yourturncount+' 5');      
+      game.tutorial.message.html(game.ui.axeselectenemy);
+      game.message.text(game.ui.yourturncount+' 5');      
       $('.map .enemy.hero').addClass('tutorialblink');
     },   
     
@@ -238,14 +244,9 @@ var game = {
     
     zoom: function(){
       game.tutorial.lessonZoom = true;
-      game.tutorial.axe.css({
-        right: '',
-        left: '0',
-        transform: 'scaleX(-1)'
-      });
       game.tutorial.axebaloon.hide().fadeIn('slow');      
-      game.tutorial.message.html(game.language.axezoom).css({transform: 'scaleX(-1)'});
-      game.message.text(game.language.yourturncount+' 4');
+      game.tutorial.message.html(game.ui.axezoom);
+      game.message.text(game.ui.yourturncount+' 4');
       game.states.table.selectedArea.addClass('tutorialblink');
       game.states.table.selectedArea.on('mouseover.tutorial', '.card', game.tutorial.over);
     },   
@@ -262,8 +263,8 @@ var game = {
     unselect: function(){
       game.tutorial.lessonUnselect = true;
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.message.html(game.language.axeunselect);   
-      game.message.text(game.language.yourturncount+' 3');
+      game.tutorial.message.html(game.ui.axeunselect);   
+      game.message.text(game.ui.yourturncount+' 3');
       game.states.table.selectedArea.on('unselect.tutorial', game.tutorial.unselected);
     }, 
 
@@ -280,22 +281,22 @@ var game = {
       game.tutorial.axe.css({left: '', transform: ''});
       game.tutorial.message.css({transform: ''});
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.message.html(game.language.axeselectplayer);   
-      game.message.text(game.language.yourturncount+' 2');
+      game.tutorial.message.html(game.ui.axeselectplayer);   
+      game.message.text(game.ui.yourturncount+' 2');
     },    
     
     move: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.message.html(game.language.axemove);
+      game.tutorial.message.html(game.ui.axemove);
       game.status = 'turn';
-      game.message.text(game.language.yourturncount+' 1');
+      game.message.text(game.ui.yourturncount+' 1');
       $('.map .hero.player').on('move', game.tutorial.done);
     },    
     
     done: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.message.html(game.language.axedone);
-      game.message.text(game.language.enemyturn);
+      game.tutorial.message.html(game.ui.axedone);
+      game.message.text(game.ui.enemyturn);
       game.message.addClass('tutorialblink');
       game.status = 'unturn';
       setTimeout(game.tutorial.wait, 4000);
@@ -303,9 +304,9 @@ var game = {
     
     wait: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');      
-      game.tutorial.message.html(game.language.axewait);
-      game.message.text(game.language.enemyturncount+' 2');
-      game.states.table.time.text(game.language.time+': 1:30 '+game.language.night); 
+      game.tutorial.message.html(game.ui.axewait);
+      game.message.text(game.ui.enemyturncount+' 2');
+      game.states.table.time.text(game.ui.time+': 1:30 '+game.ui.night); 
       game.message.removeClass('tutorialblink');
       game.states.table.time.addClass('tutorialblink');
       setTimeout(game.tutorial.time, 4000);
@@ -313,18 +314,18 @@ var game = {
     
     time: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.message.text(game.language.enemyturncount+' 1');
-      game.tutorial.message.html(game.language.axetime);
+      game.message.text(game.ui.enemyturncount+' 1');
+      game.tutorial.message.html(game.ui.axetime);
       game.states.table.time.removeClass('tutorialblink');      
       game.states.table.turns.addClass('tutorialblink');
-      game.states.table.turns.text(game.language.turns+': 1/1 (2)')
+      game.states.table.turns.text(game.ui.turns+': 1/1 (2)')
       setTimeout(game.tutorial.enemyMove, 4000);
     },
     
     enemyMove: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
-      game.tutorial.message.html(game.language.axeenemymove);
-      game.message.html(game.language.enemymove);
+      game.tutorial.message.html(game.ui.axeenemymove);
+      game.message.html(game.ui.enemymove);
       game.states.table.turns.removeClass('tutorialblink');
       var am = $('.map .enemy.hero.am');
       if($('#E3').hasClass('block')) am.place('F4').addClass('tutorialblink');
@@ -338,8 +339,8 @@ var game = {
       game.status = 'turn';
       game.tutorial.buildSkills();
       game.tutorial.axebaloon.hide().fadeIn('slow');       
-      game.tutorial.message.html(game.language.axeattack);
-      game.message.html(game.language.yourturn);
+      game.tutorial.message.html(game.ui.axeattack);
+      game.message.html(game.ui.yourturn);
       if(game.selectedCard) game.selectedCard.select();
       $('.player.hero').on('attack.tutorial', game.tutorial.skillSelect);
     },
@@ -364,7 +365,7 @@ var game = {
       $('.map .enemy.hero.am').removeClass('tutorialblink');
       game.tutorial.lessonSkill = true;      
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
-      game.tutorial.message.html(game.language.axeskillselect);   
+      game.tutorial.message.html(game.ui.axeskillselect);   
       game.player.buyhand();
       game.states.table.playerHand.show();
       $('.player.skill').addClass('tutorialblink');   
@@ -375,7 +376,7 @@ var game = {
     
     skill: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
-      game.tutorial.message.html(game.language.axeskill); 
+      game.tutorial.message.html(game.ui.axeskill); 
       $('.card').on('cast.tutorial', game.tutorial.end);
       $('.card').on('activate.tutorial', game.tutorial.end);
     },
@@ -384,8 +385,8 @@ var game = {
       game.tutorial.lessonAttack = false; 
       game.tutorial.lessonSkill = false; 
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
-      game.tutorial.message.html(game.language.axeend); 
-      game.message.text(game.language.lose);
+      game.tutorial.message.html(game.ui.axeend); 
+      game.message.text(game.ui.lose);
       game.winner = game.player.name;
       game.states.table.showResults();
       game.tutorial.started = false;
@@ -415,7 +416,7 @@ var game = {
     wait: function(){
       game.currentData.challenged = game.player.name;
       game.db({'set': game.id, 'data': game.currentData}, function(){
-        game.message.text(game.language.waiting);        
+        game.message.text(game.ui.waiting);        
         game.tries = 1;   
         game.match.search();
       }); 
@@ -431,7 +432,7 @@ var game = {
         } else {
           game.triesCounter.text(game.tries++);                
           if(game.tries > game.waitLimit) {
-            game.message.text(game.language.noenemy);  
+            game.message.text(game.ui.noenemy);  
             setTimeout(function(){                
               game.states.changeTo('menu'); //todo: sugest bot match 
             }, 2000);
@@ -442,7 +443,7 @@ var game = {
     },
 
     found: function(){       
-      game.message.text(game.language.gamefound);
+      game.message.text(game.ui.gamefound);
       game.db({'get': game.id }, function(found){     
         if(found.challenged){
           game.triesCounter.text('');
@@ -457,16 +458,16 @@ var game = {
     
     pick: function(){
       if($('.slot.available').length == 0){
-        game.states.choose.counter.text(game.language.startsin+': '+(game.states.choose.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
-      } else game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count));      
+        game.states.choose.counter.text(game.ui.startsin+': '+(game.states.choose.count)+' '+game.ui.cardsperturn+': '+ game.player.cardsPerTurn); 
+      } else game.states.choose.counter.text(game.ui.pickdeck+': '+(game.states.choose.count));      
     },
     
     pickCount: function(){ 
       game.states.choose.count--;
-      if($('.slot.available').length != 0) game.states.choose.counter.text(game.language.pickdeck+': '+(game.states.choose.count)); 
-      else game.states.choose.counter.text(game.language.startsin+': '+(this.count)+' '+game.language.cardsperturn+': '+ game.player.cardsPerTurn); 
+      if($('.slot.available').length != 0) game.states.choose.counter.text(game.ui.pickdeck+': '+(game.states.choose.count)); 
+      else game.states.choose.counter.text(game.ui.startsin+': '+(this.count)+' '+game.ui.cardsperturn+': '+ game.player.cardsPerTurn); 
       if(game.states.choose.count < 0) {
-        game.states.choose.counter.text(game.language.getready);  
+        game.states.choose.counter.text(game.ui.getready);  
         game.states.choose.disablePick();        
         game.match.fillDeck();   
       }
@@ -508,7 +509,7 @@ var game = {
 
     getChallengerDeck: function(){ 
       clearTimeout(game.timeout);
-      game.message.text(game.language.loadingdeck);
+      game.message.text(game.ui.loadingdeck);
       game.loader.addClass('loading');
       game.db({'get': game.id }, function(found){         
         if(found.challengerDeck){
@@ -527,7 +528,7 @@ var game = {
 
     getChallengedDeck: function(){
       clearTimeout(game.timeout);
-      game.message.text(game.language.loadingdeck);
+      game.message.text(game.ui.loadingdeck);
       game.loader.addClass('loading');
       game.db({'get': game.id }, function(found){         
         if(found.challengedDeck){ 
@@ -553,7 +554,7 @@ var game = {
       game.states.choose.el.addClass('turn');
       game.enemy.name = enemy; 
       game.enemy.type = challenge;
-      game.message.html(game.language.battlefound+' <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
+      game.message.html(game.ui.battlefound+' <b>'+ game.player.name + '</b> vs <b class="enemy">' + game.enemy.name+'</b>');                
       game.states.choose.counter.show();
       game.audio.play('battle');
       game.states.choose.count = game.debug ? 1 : game.timeToPick;
@@ -563,7 +564,7 @@ var game = {
     
     start: function(){
       game.loader.addClass('loading'); 
-      game.message.text(game.language.battle);
+      game.message.text(game.ui.battle);
       game.audio.play('horn');      
       game.states.table.placeTowers();
       game.states.table.placeTrees(); 
@@ -645,8 +646,8 @@ var game = {
       if(game.status != 'over') {    
         game.currentData.moves = []; 
         game.states.table.el.addClass(game.status);
-        if(game.status == 'turn') game.message.text(game.language.yourturn);
-        if(game.status == 'unturn') game.message.text(game.language.enemyturn);       
+        if(game.status == 'turn') game.message.text(game.ui.yourturn);
+        if(game.status == 'unturn') game.message.text(game.ui.enemyturn);       
         $('.card .damaged').remove();
         $('.card .heal').remove();
         $('.card.dead').each(function(){
@@ -683,10 +684,10 @@ var game = {
     count: function(){
       clearTimeout(game.timeout);
       game.loader.removeClass('loading');
-      game.states.table.time.text(game.language.time+': '+game.states.table.hours()+' '+game.states.table.dayNight());     
-      game.states.table.turns.text(game.language.turns+': '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
-      if(game.status == 'turn') game.message.text(game.language.yourturncount+' '+game.states.table.counter+' '+game.language.seconds);
-      else if(game.status == 'unturn') game.message.text(game.language.enemyturncount+' '+game.states.table.counter+' '+game.language.seconds);     
+      game.states.table.time.text(game.ui.time+': '+game.states.table.hours()+' '+game.states.table.dayNight());     
+      game.states.table.turns.text(game.ui.turns+': '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
+      if(game.status == 'turn') game.message.text(game.ui.yourturncount+' '+game.states.table.counter+' '+game.ui.seconds);
+      else if(game.status == 'unturn') game.message.text(game.ui.enemyturncount+' '+game.states.table.counter+' '+game.ui.seconds);     
       if(this.counter-- < 1){
         $('.card.heroes').each(function(){
           var hero = $(this);
@@ -715,7 +716,7 @@ var game = {
   loadJSON: function(name, cb){
     $.ajax({
       type: "GET", 
-      url: 'json/'+name+'.json',
+      url: 'json/'+game.langDir+name+'.json',
       complete: function(response){
         var data = JSON.parse(response.responseText);
         game[name] = data;
@@ -743,26 +744,9 @@ var game = {
   audio: {
 
     buffers: {},
-    
-    build: function(){
-      game.audio.context = new AudioContext();
-      game.mute = game.audio.context.createGain();
-      game.mute.connect(game.audio.context.destination);
-      var sounds = [
-        'activate',
-        'crit',
-        'horn',
-        'battle',
-        'pick',         
-        'tower',
-        'tutorial/axe1',
-        'tutorial/axe2'
-      ];
-      for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);      
-    },
 
     load: function(name){
-      if(!game.audio.context) game.audio.build();
+      if(!game.audio.context) game.states.load.audio();
       var ajax = new XMLHttpRequest(); 
       ajax.open("GET", '/audio/'+name+'.mp3', true); 
       ajax.responseType = "arraybuffer"; 
@@ -844,6 +828,7 @@ var game = {
     load: {
 
       data: function(cb){
+        game.loadJSON('ui');
         game.loadJSON('heroes');        
         game.loadJSON('units');        
         game.loadJSON('skills', function(){          
@@ -864,21 +849,48 @@ var game = {
             }
           }
         });
-        if(cb) setTimeout(cb, 500);
+        if(cb){
+          game.checkLoad = function(){
+            if(game.ui && 
+               game.heroes && 
+               game.buffs &&
+               game.skills &&
+               game.units) cb();
+            else setTimeout(game.checkLoad, 500);
+          }
+          game.checkLoad();
+        }
       },
 
       language: function(cb){
-        game.loadJSON('languages', function(){
-          game.db({'get':'lang'}, function(data){
-            game.lang = 'en-US';
-            if(data && data.lang){
-              game.lang = data.lang.split(';')[0].split(',')[0];     
-            }
-            game.language = game.languages[game.lang];
-            if(cb) cb();
-          });         
+        game.db({'get':'lang'}, function(data){          
+          game.lang = 'en-US';
+          game.langDir = '';
+          if(data && data.lang){
+            game.lang = data.lang.split(';')[0].split(',')[0];     
+            game.langDir = game.lang + '/';
+          }
+          if(cb) cb();                
         });
-      },
+      },      
+    
+      audio: function(){
+        game.audio.context = new AudioContext();
+        game.mute = game.audio.context.createGain();
+        game.mute.connect(game.audio.context.destination);
+        var sounds = [
+          'activate',
+          'crit',
+          'horn',
+          'battle',
+          'pick',         
+          'tower',
+          'tutorial/axehere',
+          'tutorial/axebattle',
+          'tutorial/axemove'
+        ];
+        for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);      
+      },      
 
       images: function(){
         var allImgs = [];//new array for all the image urls  
@@ -949,7 +961,7 @@ var game = {
         if(!game.debug){
           window.oncontextmenu = game.nomenu;
           window.onbeforeunload = function(){
-            return game.language.leave;
+            return game.ui.leave;
           };
         }
       },
@@ -958,7 +970,7 @@ var game = {
         if(game.debug){
           console.log('Internal error: ', game);
         } else {
-          alert(game.language.error);
+          alert(game.ui.error);
           location.reload(true);
         }
       }
@@ -1041,18 +1053,18 @@ var game = {
 
       build: function(){       
         this.menu = $('<div>').appendTo(this.el).addClass('box');
-        this.title = $('<h1>').appendTo(this.menu).text(game.language.choosename);
+        this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosename);
         this.input = $('<input>').appendTo(this.menu).attr({ 
-          placeholder: game.language.type, 
+          placeholder: game.ui.type, 
           type: 'text',
           maxlength: 24
         })
         .keydown(function(e){
           if(e.which == 13) game.states.login.button.click();
         });    
-        this.button = $('<button>').appendTo(this.menu).text(game.language.login).attr({
-          placeholder: game.language.choosename, 
-          title: game.language.choosename
+        this.button = $('<button>').appendTo(this.menu).text(game.ui.login).attr({
+          placeholder: game.ui.choosename, 
+          title: game.ui.choosename
         }).click(function(){        
           var name = game.states.login.input.val();        
           if(!name) game.states.login.input.focus();
@@ -1068,7 +1080,7 @@ var game = {
             });            
           } 
         });
-        this.rememberlabel = $('<label>').appendTo(this.menu).text(game.language.remember);
+        this.rememberlabel = $('<label>').appendTo(this.menu).text(game.ui.remember);
         this.remembercheck = $('<input>').attr({type: 'checkbox', name: 'remember'}).change(this.remember).appendTo(this.rememberlabel).click();
         var rememberedname = $.cookie('name');
         if(rememberedname) this.input.val(rememberedname);
@@ -1100,29 +1112,29 @@ var game = {
       
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
-        this.title = $('<h1>').appendTo(this.menu).text(game.language.choosemode);
-        this.tutorial = $('<button>').appendTo(this.menu).attr({'title': game.language.tutorial}).text(game.language.tutorial).click(function(){    
+        this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosemode);
+        this.tutorial = $('<button>').appendTo(this.menu).attr({'title': game.ui.tutorial}).text(game.ui.tutorial).click(function(){    
           game.tutorial.build();
           game.states.changeTo('choose');
         });
-        this.public = $('<button>').appendTo(this.menu).attr({'title': game.language.choosepublic}).text(game.language.public).click(function(){    
+        this.public = $('<button>').appendTo(this.menu).attr({'title': game.ui.choosepublic}).text(game.ui.public).click(function(){    
           game.match.public();
           game.states.changeTo('choose');
         });
-        this.friend = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosefriend, 'disabled': true }).text(game.language.friend);        
-        this.bot = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosebot, 'disabled': true }).text(game.language.bot);    
-        this.options = $('<button>').appendTo(this.menu).attr({ 'title': game.language.chooseoptions}).text(game.language.options).click(function(){
+        this.friend = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.choosefriend, 'disabled': true }).text(game.ui.friend);        
+        this.bot = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.choosebot, 'disabled': true }).text(game.ui.bot);    
+        this.options = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.chooseoptions}).text(game.ui.options).click(function(){
           game.states.changeTo('options');
         }); 
-        this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.language.choosecredits, 'disabled': true }).text(game.language.credits);
+        this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.choosecredits, 'disabled': true }).text(game.ui.credits);
       },
       
       start: function(){      
         game.states.options.opt.show();  
         game.loader.removeClass('loading');
         game.triesCounter.text('');
-        game.message.html(game.language.welcome+' <b>'+game.player.name+'</b>!');
-        $('<small>').addClass('logout').appendTo(game.message).text(game.language.logout).click(function(){
+        game.message.html(game.ui.welcome+' <b>'+game.player.name+'</b>!');
+        $('<small>').addClass('logout').appendTo(game.message).text(game.ui.logout).click(function(){
           game.states.changeTo('login');
         });
         this.public.focus();
@@ -1138,24 +1150,24 @@ var game = {
 
       build: function(){     
         this.menu = $('<div>').appendTo(this.el).addClass('box'); 
-        this.title = $('<h1>').appendTo(this.menu).text(game.language.options);
+        this.title = $('<h1>').appendTo(this.menu).text(game.ui.options);
 
-        this.resolution = $('<div>').appendTo(this.menu).attr({'title': game.language.screenres}).addClass('screenresolution');
-        $('<h2>').appendTo(this.resolution).text(game.language.screenres);
-        this.high = $('<label>').text(game.language.high).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
-        $('<label>').text(game.language.medium).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
-        this.low = $('<label>').text(game.language.low).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
+        this.resolution = $('<div>').appendTo(this.menu).attr({'title': game.ui.screenres}).addClass('screenresolution');
+        $('<h2>').appendTo(this.resolution).text(game.ui.screenres);
+        this.high = $('<label>').text(game.ui.high).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(this.changeResolution));
+        $('<label>').text(game.ui.medium).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true}).change(this.changeResolution));
+        this.low = $('<label>').text(game.ui.low).appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(this.changeResolution));
         
         var rememberedres = $.cookie('resolution');
         if(rememberedres) this[rememberedres].click();
         
-        this.audio = $('<div>').appendTo(this.menu).attr({'title': game.language.audioconfig}).addClass('audioconfig');
-        $('<h2>').appendTo(this.audio).text(game.language.audioconfig);
+        this.audio = $('<div>').appendTo(this.menu).attr({'title': game.ui.audioconfig}).addClass('audioconfig');
+        $('<h2>').appendTo(this.audio).text(game.ui.audioconfig);
         this.muteinput = $('<input>').attr({type: 'checkbox', name: 'mute'}).change(this.mute);
         $('<label>').text('Mute').appendTo(this.audio).append(this.muteinput);      
         this.volumecontrol = $('<div>').addClass('volumecontrol');
         this.volumeinput = $('<div>').addClass('volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
-        $('<label>').text(game.language.volume).appendTo(this.audio).append(this.volumeinput);
+        $('<label>').text(game.ui.volume).appendTo(this.audio).append(this.volumeinput);
         $(document).on('mouseup.volume', game.states.options.volumeup);
         
         var rememberedvol = $.cookie('volume');
@@ -1166,7 +1178,7 @@ var game = {
           game.states.options.volumecontrol.css('transform', 'scale('+rememberedvol+')');
         }
         
-        this.back = $('<button>').appendTo(this.menu).attr({'title': game.language.back}).text(game.language.back).click(game.states.backState);
+        this.back = $('<button>').appendTo(this.menu).attr({'title': game.ui.back}).text(game.ui.back).click(game.states.backState);
         
         this.opt =  $('<img src="img/opt.png">').appendTo(game.topbar).addClass('opt').hide().on('click.opt', function(){ game.states.changeTo('options'); });
       },
@@ -1220,12 +1232,12 @@ var game = {
     choose: {   
 
       build: function(){    
-        this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.language.chooseheroes);
+        this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.ui.chooseheroes);
         this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide().on('contextmenu', game.nomenu);
         for(var slot = 0; slot < 5; slot++){
-          $('<div>').appendTo(this.pickedbox).attr({title: game.language.rightpick}).data('slot', slot).addClass('slot available').on('contextmenu.pick', game.states.choose.pick);
+          $('<div>').appendTo(this.pickedbox).attr({title: game.ui.rightpick}).data('slot', slot).addClass('slot available').on('contextmenu.pick', game.states.choose.pick);
         }
-        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.language.customdecks).hide();
+        this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.ui.customdecks).hide();
         this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
 
         this.pickDeck = Deck({
@@ -1312,8 +1324,8 @@ var game = {
     table: {
 
       build: function(){      
-        this.time =  $('<p>').appendTo(game.topbar).addClass('time').text(game.language.time+': 0:00 Day').hide();
-        this.turns =  $('<p>').appendTo(game.topbar).addClass('turns').text(game.language.turns+': 0/0 (0)').hide();
+        this.time =  $('<p>').appendTo(game.topbar).addClass('time').text(game.ui.time+': 0:00 Day').hide();
+        this.turns =  $('<p>').appendTo(game.topbar).addClass('turns').text(game.ui.turns+': 0/0 (0)').hide();
         this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea');
         this.buildMap();
         this.el.click(function(event){
@@ -1372,8 +1384,8 @@ var game = {
         var tower = Card({
           className: 'tower towers static '+side,
           side: side,
-          name: game.language.tower,        
-          attribute: game.language.building,
+          name: game.ui.tower,        
+          attribute: game.ui.building,
           range: 'Ranged',
           damage: 15,
           hp: 80
@@ -1416,8 +1428,8 @@ var game = {
       createTree: function(spot){
         var tree = Card({
           className: 'tree static neutral',
-          name: game.language.tree,        
-          attribute: game.language.forest
+          name: game.ui.tree,        
+          attribute: game.ui.forest
         }); 
         tree.on('click.select', Card.select).place(spot);
         return tree;
@@ -1517,7 +1529,7 @@ var game = {
           var hero = $(this);
           hero.trigger('playerturnend', {target: hero});
         });
-        game.message.text(game.language.uploadingturn);
+        game.message.text(game.ui.uploadingturn);
         game.loader.addClass('loading');
         Map.unhighlight();
         $('.card .damaged').remove();
@@ -1528,7 +1540,7 @@ var game = {
       },
 
       getMoves: function(){   
-        game.message.text(game.language.loadingturn);
+        game.message.text(game.ui.loadingturn);
         game.loader.addClass('loading');
         game.tries = 1;  
         game.states.table.el.removeClass('unturn');
@@ -1575,8 +1587,8 @@ var game = {
 
       dayNight: function(){
         var hours = game.time % game.dayLength;
-        if(hours < (game.dayLength/2) ) return game.language.day;
-        else return game.language.night;
+        if(hours < (game.dayLength/2) ) return game.ui.day;
+        else return game.ui.night;
       },
 
       moveSelected: function(){
@@ -1634,7 +1646,7 @@ var game = {
       },
 
       executeEnemyMoves: function(){
-        game.message.text(game.language.enemymove);
+        game.message.text(game.ui.enemymove);
         game.states.table.enemySkillsDeck.addClass('slide');
         var moves = game.currentData.moves.split('|');      
         for(var m = 0; m < moves.length; m++){
@@ -1695,7 +1707,7 @@ var game = {
       win: function(){
         game.winner = game.player.name;
         game.states.table.el.addClass('turn');
-        game.message.text(game.language.win); 
+        game.message.text(game.ui.win); 
         game.states.table.sendData();
         game.status = 'over';      
         game.states.table.showResults();
@@ -1704,7 +1716,7 @@ var game = {
       lose: function(){      
         game.winner = game.enemy.name;
         game.states.table.el.addClass('unturn');
-        game.message.text(game.language.lose);
+        game.message.text(game.ui.lose);
         game.loader.removeClass('loading');
         game.status = 'over';      
         game.states.table.showResults();

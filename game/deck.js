@@ -132,7 +132,7 @@ var Card = function(data){
   var desc = $('<div>').addClass('desc').appendTo(fieldset);
 
   if(data.hp){
-    $('<p>').addClass('hp').appendTo(desc).text('Hit points: '+ data.hp);
+    $('<p>').addClass('hp').appendTo(desc).text(game.ui.hp+': '+data.hp);
     data.currenthp = data.hp;        
     $('<p>').addClass('hp').appendTo(current).html('HP <span>'+ data.currenthp +'</span>');   
   }  
@@ -141,24 +141,22 @@ var Card = function(data){
   var range = '';
   if(data.damage){    
     if(data.range) range = ' ('+data.range+')';
-    $('<p>').addClass('damage').appendTo(desc).text('Damage: '+ data.damage + range);
+    $('<p>').addClass('damage').appendTo(desc).text(game.ui.damage+ ': '+ data.damage + range);
     data.currentdamage = data.damage;
     $('<p>').addClass('damage').appendTo(current).html('DMG <span>'+ data.currentdamage +'</span>');
   }
-  if(data.range && !range) $('<p>').appendTo(desc).text('Range: '+data.range);
-  
-  if(data.armor) $('<p>').appendTo(desc).text('Armor: '+data.armor+'%');
-  if(data.resistance) $('<p>').appendTo(desc).text('Magic Resistance: '+data.resistance+'%');
-  
-  if(data.type)       $('<p>').appendTo(desc).text('Type: '+data.type);
-  if(data.cards)      $('<p>').appendTo(desc).text('Cards: '+data.cards);
-  if(data.chance)     $('<p>').appendTo(desc).text('Chance: '+data.chance+'%');
-  if(data.percentage) $('<p>').appendTo(desc).text('Bonus: '+data.percentage+'%');
-  if(data.delay)      $('<p>').appendTo(desc).text('Delay: '+data.delay);
-  if(data.damageType) $('<p>').appendTo(desc).text('Damage Type: '+data.damageType);
-  if(data.duration)   $('<p>').appendTo(desc).text('Duration: '+data.duration);
-  if(data.dot)        $('<p>').appendTo(desc).text('Damage over time: '+data.dot);
-  if(data.multiplier) $('<p>').appendTo(desc).text('Multiplier: '+data.multiplier);
+  if(data.range && !range) $('<p>').appendTo(desc).text(game.ui.range+': '+data.range);  
+  if(data.armor)      $('<p>').appendTo(desc).text(game.ui.armor+     ': '+data.armor+'%');
+  if(data.resistance) $('<p>').appendTo(desc).text(game.ui.resistance+': '+data.resistance+'%');  
+  if(data.type)       $('<p>').appendTo(desc).text(game.ui.type+      ': '+data.type);
+  if(data.cards)      $('<p>').appendTo(desc).text(game.ui.cards+     ': '+data.cards);
+  if(data.chance)     $('<p>').appendTo(desc).text(game.ui.chance+    ': '+data.chance+'%');
+  if(data.percentage) $('<p>').appendTo(desc).text(game.ui.percentage+': '+data.percentage+'%');
+  if(data.delay)      $('<p>').appendTo(desc).text(game.ui.delay+     ': '+data.delay);
+  if(data.damageType) $('<p>').appendTo(desc).text(game.ui.damageType+': '+data.damageType);
+  if(data.duration)   $('<p>').appendTo(desc).text(game.ui.duration+  ': '+data.duration+' '+game.ui.turns);
+  if(data.dot)        $('<p>').appendTo(desc).text(game.ui.dot+       ': '+data.dot);
+  if(data.multiplier) $('<p>').appendTo(desc).text(game.ui.multiplier+': '+data.multiplier+'X');
   
   
   //if(data.skills)     $('<p>').appendTo(fieldset).text('Skills: '+ data.skills);  
@@ -171,7 +169,7 @@ var Card = function(data){
   if(data.kd){
     data.kills = 0;
     data.deaths = 0;
-    $('<p>').addClass('kd').appendTo(desc).html('Kills/Deaths: <span class="kills">0</span>/<span class="deaths">0</span>');
+    $('<p>').addClass('kd').appendTo(desc).html(game.ui.kd+': <span class="kills">0</span>/<span class="deaths">0</span>');
   }
   
   if(data.buffs) $('<div>').addClass('buffs').appendTo(fieldset);

@@ -26,8 +26,11 @@ var send = function(response, data){
 http.createServer(function(request, response){   
   var urlObj = url.parse(request.url, true);
   var pathname = urlObj.pathname;  
-  console.log('Request: ', pathname);
-  if(request.headers['x-forwarded-proto']=='https') response.redirect('http://dotacard.herokuapp.com'+pathname);
+  if(request.headers['x-forwarded-proto'] == 'https'){
+    response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'}); 
+    response.end();
+  }
+  console.log('request: '+pathname);
   if(pathname[0] == '/') pathname = pathname.slice(1); 
   if(pathname == 'db'){
     var query = urlObj.query;

@@ -85,7 +85,7 @@ var Skills = {
           bear.on('attack', this.entangle);
           bear.data('ld-entangle-skill', skill);
           bear.data('ld-return-cooldown', skill.data('returncooldown'));
-          bear.on('damage', Skills.ld['return'].breakreturn);          
+          bear.on('damage', Skills.ld.return.breakreturn);          
         } else bear.addClass('summoned');              
         var returnskillcard = $('.'+side+'.skill.ld-return');
         returnskillcard.appendTo(game.states.table.playerPermanent);      
@@ -135,7 +135,7 @@ var Skills = {
         }
       }
     },
-    'return': {
+    return: {
        cast: function(skill, source, target){
         var side = source.data('side');
         var ld = $('.'+side+'.hero.ld');
@@ -153,7 +153,7 @@ var Skills = {
         var returnskillcard = $('.'+side+'.skill.ld-return');
         returnskillcard.appendTo(game.states.table.playerTemp);
         bear.data('currentreturncooldown', bear.data('ld-return-cooldown'));
-        bear.on('turnstart.ld-return', Skills.ld['return'].turnstart);
+        bear.on('turnstart.ld-return', Skills.ld.return.turnstart);
       },
       turnstart: function(event, eventdata){
         var bear = eventdata.target; 

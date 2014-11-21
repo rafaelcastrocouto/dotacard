@@ -596,7 +596,7 @@ label input {
   right: 5px;
 }
 .card .current p {
-  margin: 1px;
+  margin: 0;
   font-size: 12px;
   font-weight: bold;
   display: inline-block;
