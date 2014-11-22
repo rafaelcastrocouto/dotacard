@@ -1,6 +1,6 @@
 {
   "choosename": "Escolha um nome",
-  "type": "Digite um nome",
+  "logintype": "Digite um nome",
   "login": "Entrar",
   "remember": "Gravar nome",
   "welcome": "Bem-vindo",

@@ -1,6 +1,6 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.066,
+  vs: 0.068,
   debug: (location.host == "localhost"),   
   id: null, currentData: {}, currentstate: 'load', 
   status: 'loading', mode: '',
@@ -13,9 +13,9 @@ var game = {
   timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds
   dayLength: 10, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots   
-  seed: null, 
-  nomenu: function(){return false;}, 
-  start: function(){
+  seed: null,
+  currentstate: 'load',
+  start: function(){    
     if(window.JSON && 
        window.btoa && window.atob &&
        window.AudioContext && 
@@ -27,24 +27,66 @@ var game = {
        Modernizr.csstransitions &&
        Modernizr.generatedcontent &&
        Modernizr.opacity &&
-       Modernizr.rgba ) 
-      
-      game.load();
-    
+       Modernizr.rgba ) game.load();
     else $('.unsupported').show();
-  },
+  },    
   load: function(){
+    $('.frame.welcome').show();
+    game.states.load.video();
     game.states.load.audio();
-    game.states.load.fonts();
-    game.states.load.youtube();
-    game.states.load.images();    
+    game.states.load.images(); 
     game.states.load.language(function(){   
-      game.states.load.data(function(){
-        game.states.build();
-        game.states.load.analytics();  
-      });          
+      game.states.load.data(game.poll);          
+    });
+    game.states.load.ping(function(){
+      if(!game.offline){
+        game.states.load.webfonts();
+        game.states.load.analytics(); 
+      }
+    });   
+  },  
+  poll: function(){
+    clearTimeout(game.timeout);
+    if(game.ui && 
+       game.heroes && 
+       game.buffs &&
+       game.skills &&
+       game.units &&
+       game.videoplayer &&
+       game.audio.count == 1) game.states.build();
+    else game.timeout = setTimeout(game.poll, 500);
+  },
+  loadJSON: function(name, cb){
+    $.ajax({
+      type: "GET", 
+      url: 'json/'+game.langDir+name+'.json',
+      complete: function(response){
+        var data = JSON.parse(response.responseText);
+        game[name] = data;
+        if(cb) cb(data);
+      }
     });
   },  
+  db: function(send, cb){
+    if(send.data) send.data = JSON.stringify(send.data);
+    $.ajax({
+      type: "GET", 
+      url:  '/db', 
+      data: send, 
+      complete: function(receive){
+        var data;
+        if(receive.responseText) data = JSON.parse(receive.responseText); 
+        if(cb) cb(data || {});
+      }
+    });
+  },  
+  random: function(){  
+    if(game.debug) return 0;
+    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
+  },
+  nomenu: function(){
+    return false;
+  },
   player: {
     
     buy: function(){
@@ -98,7 +140,7 @@ var game = {
       game.enemy.name = 'axe'; 
       game.enemy.type = 'challenged';
       game.player.type = 'challenger';
-      game.audio.play('tutorial/axe1');
+      game.audio.play('tutorial/axehere');
       game.states.choose.count = game.debug ? 10 : game.timeToPick;
       game.states.choose.enablePick();   
       if(!game.tutorial.axe){
@@ -109,12 +151,12 @@ var game = {
       }
       game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axebaloon.hide();
-      setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 1000);
+      setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 400);
       setTimeout(function(){ 
         game.tutorial.axebaloon.fadeIn('slow'); 
         game.message.text(game.ui.tutorialstart);
         game.loader.removeClass('loading');
-      }, 2000);      
+      }, 800);      
     },
     
     pick: function(){
@@ -712,36 +754,33 @@ var game = {
       }
     },
     
-  },
-  loadJSON: function(name, cb){
-    $.ajax({
-      type: "GET", 
-      url: 'json/'+game.langDir+name+'.json',
-      complete: function(response){
-        var data = JSON.parse(response.responseText);
-        game[name] = data;
-        if(cb) cb(data);
-      }
-    });
-  },  
-  db: function(send, cb){
-    if(send.data) send.data = JSON.stringify(send.data);
-    $.ajax({
-      type: "GET", 
-      url:  '/db', 
-      data: send, 
-      complete: function(receive){
-        var data;
-        if(receive.responseText) data = JSON.parse(receive.responseText); 
-        if(cb) cb(data || {});
-      }
-    });
-  },  
-  random: function(){  
-    if(game.debug) return 0;
-    return parseFloat('0.'+Math.sin(++game.seed).toString().substr(6));
-  },    
+  }, 
   audio: {
+    
+    buffers: {}, count: 0,
+
+    load: function(name){
+      if(!game.audio.context) game.states.load.audio();
+      var ajax = new XMLHttpRequest(); 
+      ajax.open("GET", '/audio/'+name+'.mp3', true); 
+      ajax.responseType = "arraybuffer"; 
+      ajax.onload = function(){ 
+        var buffer = ajax.response;
+        if(typeof(ajax.response) == "string") buffer = game.audio.str2ab(ajax.response);
+        game.audio.context.decodeAudioData(ajax.response, function(buffer){ 
+          game.audio.buffers[name] = buffer;
+          game.audio.count--;
+        }); 
+      }; 
+      ajax.send();   
+    },
+
+    play: function(name){
+      var sound = game.audio.context.createBufferSource();
+      sound.buffer = game.audio.buffers[name];
+      sound.connect(game.mute);
+      sound.start();
+    },
 
     ab2str: function(buf) {
       return String.fromCharCode.apply(null, new Uint16Array(buf));
@@ -754,31 +793,7 @@ var game = {
         bufView[i] = str.charCodeAt(i);
       }
       return buf;
-    },
-    
-    buffers: {},
-
-    load: function(name){
-      if(!game.audio.context) game.states.load.audio();
-      var ajax = new XMLHttpRequest(); 
-      ajax.open("GET", '/audio/'+name+'.mp3', true); 
-      ajax.responseType = "arraybuffer"; 
-      ajax.onload = function(){ 
-        var buffer = ajax.response;
-        if(typeof(ajax.response) == "string") buffer = game.audio.str2ab(ajax.response);
-        game.audio.context.decodeAudioData(ajax.response, function(buffer){ 
-          game.audio.buffers[name] = buffer;
-        }); 
-      }; 
-      ajax.send();   
-    },
-
-    play: function(name){ 
-      var sound = game.audio.context.createBufferSource();
-      sound.buffer = game.audio.buffers[name];
-      sound.connect(game.mute);
-      sound.start();
-    }
+    }    
     
   },     
   states: {    
@@ -799,21 +814,17 @@ var game = {
     
     preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],  
     
-    build: function(){
-      this.el = $('<div>').addClass('states frame').appendTo(game.container);
+    build: function(){      
+      this.el = $('<div>').addClass('states frame').appendTo(game.container).hide();
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
-      $.each(this, function(id){      
-        if(game.states.preBuild.indexOf(id) >= 0){
-          game.states[id].el = $('<div>').addClass('state '+id).appendTo(game.states.el).hide();
-          if(game.states[id].build){
-            game.states[id].build();
-            game.states[id].builded = true;
-          }
-        }
+      $.each(game.states.preBuild, function(){
+        game.states[this].el = $('<div>').addClass('state '+this).appendTo(game.states.el).hide();
+        if(game.states[this].build){
+          game.states[this].build();
+          game.states[this].builded = true;
+        }        
       }); 
-      setTimeout(function(){
-        game.states.changeTo('intro'); 
-      }, 1000);
+      game.states.changeTo('intro');
     }, 
     
     changeTo: function(state){
@@ -840,7 +851,7 @@ var game = {
     
     //states////////////////////////////////////////////////
     
-    load: {
+    load: {   
 
       data: function(cb){
         game.loadJSON('ui');
@@ -864,17 +875,7 @@ var game = {
             }
           }
         });
-        if(cb){
-          game.checkLoad = function(){
-            if(game.ui && 
-               game.heroes && 
-               game.buffs &&
-               game.skills &&
-               game.units) cb();
-            else setTimeout(game.checkLoad, 500);
-          }
-          game.checkLoad();
-        }
+        if(cb) cb();        
       },
 
       language: function(cb){
@@ -904,8 +905,26 @@ var game = {
           'tutorial/axebattle',
           'tutorial/axemove'
         ];
-        for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);      
+        game.audio.count = sounds.length;
+        for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);
       },      
+      
+      video: function(){
+        if(!game.debug){ 
+          game.states.intro.player = $('<div>').addClass('player');              
+          var ratio = 16/9;
+          var width = $('.frame').width() * 1.1;
+          var height = Math.ceil(width / ratio);
+          game.states.intro.video = $('<video>')
+          .attr({id: 'introvideo', autobuffer: true, autoplay: true, preload: true})
+          .css({width: width, height: height}).appendTo(game.states.intro.player)
+          .on('canplay',function(){
+            game.videoplayer = game.states.intro.video[0];
+          });          
+          game.states.intro.mp4 = $('<source>').attr({type: 'video/mp4', src: '/video/intro.mp4'}).appendTo(game.states.intro.video);      
+          game.states.intro.webm = $('<source>').attr({type: 'video/webm', src: '/video/intro.webm'}).appendTo(game.states.intro.video);  
+        } else game.videoplayer = {};
+      },
 
       images: function(){
         var allImgs = [];//new array for all the image urls  
@@ -927,7 +946,7 @@ var game = {
           //parse cssPile for image urls and load them into the DOM
           var imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);//reg ex to get a string of between a "(" and a ".filename"
           if(imgUrls != null && imgUrls.length>0 && imgUrls != ''){//loop array
-            var arr = $.makeArray(imgUrls);//create array from regex obj        
+            var arr = $.makeArray(imgUrls);//create array from regex obj  
             $.each(arr, function(){
               allImgs[k] = new Image(); //new img obj
               allImgs[k].src = (this[0] == '/' || this.match('http://')) ? this : baseURL + this;//set src either absolute or rel to css dir
@@ -945,31 +964,27 @@ var game = {
           url: 'http://dotacard.herokuapp.com',
           complete: function(response){
             game.ping = new Date() - start;
-            if(response.readyState != 4) game.offline = true;     
+            if(response.readyState == 4) game.offline = false;
+            else game.offline = true;
             if(cb) cb();
           }
         });
       }, 
 
-      fonts: function(){
-        if(!game.offline){
-          var fontstyles = [
-            '<style rel="stylesheet">',
-            '@import url("http://fonts.googleapis.com/css?family=Open+Sans");',
-            '@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");',
-            '@import url("http://fonts.googleapis.com/css?family=Sansita+One");',
-            '</style>'
-          ].join('\n');
-          $(fontstyles).appendTo('head');
-        }
+      webfonts: function(){
+        var fontstyles = [
+          '<style rel="stylesheet">',
+          '@import url("http://fonts.googleapis.com/css?family=Open+Sans");',
+          '@import url("http://fonts.googleapis.com/css?family=Julius+Sans+One");',
+          '@import url("http://fonts.googleapis.com/css?family=Sansita+One");',
+          '</style>'
+        ].join('\n');
+        $(fontstyles).appendTo('head');
+
       },
 
       analytics: function(){
-        if(!game.offline) $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
-      },
-
-      youtube: function(){
-        if(!game.offline) $('<script src="browser_modules/youtube.iframe.min.js">').appendTo('body');
+        if(!game.debug) $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
       },
 
       end: function(){
@@ -992,75 +1007,32 @@ var game = {
     },
     
     intro: {    
-
-      build: function(){         
-        if(!game.debug){ 
-          this.video = $('<div>').addClass('video').hide().appendTo(this.el);
-          this.youtube = $('<video>').attr({id: 'introvideo'}).appendTo(this.video);
-          this.skipvideo = $('<div>').addClass('skipvideo').appendTo(this.el).click(function(){game.states.changeTo('login');}).contextmenu(game.nomenu);
-          var ratio = 16/9;
-          var width = game.states.el.width() * 1.1;
-          var height = Math.ceil(width / ratio);
-          window.onYouTubeIframeAPIReady = function(){
-            new YT.Player('introvideo', {          
-              videoId: '-cSFPIwMEq4',
-              width: width,
-              height: height,        
-              playerVars: {
-                controls: 0,
-                showinfo: 0,
-                modestbranding: 1,
-                wmode: 'transparent'
-              },
-              events: {
-                onReady: function(event){ 
-                  game.youTubePlayer = event.target;
-                  game.states.intro.play();
-                }
-              }
-            });
-          }
-          this.box = $('<div>').hide().appendTo(this.el).addClass('box');
-          this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha '+game.vs+'</a>');
-        }
+      
+      build: function(){    
+        if(!game.debug) this.player.appendTo(this.el).hide();
+        this.skip = $('<div>').addClass('skip').appendTo(this.el).click(function(){game.states.changeTo('login');}).contextmenu(game.nomenu);
+        this.box = $('<div>').hide().appendTo(this.el).addClass('box');
+        this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha '+game.vs+'</a>');
       },
 
       start: function(){
-        game.loader.addClass('loading');
-        game.message.text('Loading');
+        $('.frame.welcome').hide();
+        game.states.el.show();
+        this.box.fadeIn(2000).fadeOut(1000);
         if(!game.debug){
-          this.box.fadeIn(2000);
-          setTimeout(function(){
-            if(game.currentstate == 'intro'){
-              if(game.offline) game.states.changeTo('login');
-              else setTimeout(function(){
-                if(!game.youTubePlayer) game.states.changeTo('login');
-              }, 2000);
-            }
-          }, 4000); 
-
-        } else {        
-          game.states.changeTo('login'); 
-        }
-      },
-
-      play: function(){   
-        if(game.currentstate == 'intro'){
-          game.message.text('');
-          game.loader.removeClass('loading');        
-          this.box.delay(4000).fadeOut(1000);
-          this.video.delay(6000).fadeIn(1000);
-          setTimeout(function(){
-            if(game.currentstate == 'intro') game.youTubePlayer.playVideo();
-          }, 2000);
+          this.player.delay(1000).fadeIn(1000);
           setTimeout(function(){
             if(game.currentstate == 'intro') game.states.changeTo('login');          
-          }, 105400);     
+          }, 102400);
+        } else {
+          setTimeout(function(){
+            game.states.changeTo('login');
+          }, 2000);
         }
       },
 
       end: function(){
-        if(game.youTubePlayer) game.youTubePlayer.pauseVideo();
+        if(!game.debug && game.videoplayer) game.videoplayer.pause();
       }
     },
     
@@ -1070,7 +1042,7 @@ var game = {
         this.menu = $('<div>').appendTo(this.el).addClass('box');
         this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosename);
         this.input = $('<input>').appendTo(this.menu).attr({ 
-          placeholder: game.ui.type, 
+          placeholder: game.ui.logintype, 
           type: 'text',
           maxlength: 24
         })
@@ -1782,8 +1754,6 @@ var game = {
 
     } //states.table end
     
-  }, //states end
-  
-  currentstate: 'load'
+  } //states end
 };
 $(game.start);

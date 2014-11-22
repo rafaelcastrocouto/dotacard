@@ -1,6 +1,6 @@
 {
   "choosename": "Choose a name",
-  "type": "Type any name here",
+  "logintype": "Type any name here",
   "login": "Login",
   "remember": "Remember my name",
   "welcome": "Welcome",
