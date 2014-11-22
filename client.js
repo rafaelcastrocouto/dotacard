@@ -1,8 +1,8 @@
 /* by rafælcastrocouto */
 var game = { 
-  vs: 0.068,
+  vs: 0.069,
   debug: (location.host == "localhost"),   
-  id: null, currentData: {}, currentstate: 'load', 
+  id: null, currentData: {}, 
   status: 'loading', mode: '',
   scrollspeed: 0.4,
   skills: null, heroes: null, buffs: null, units: null, //json
@@ -11,10 +11,9 @@ var game = {
   message: $('<p>').addClass('message'), 
   tries: 0, triesCounter: $('<small>').addClass('triescounter'), 
   timeToPick: 30, timeToPlay: 10, waitLimit: 90, connectionLimit: 30, //seconds
-  dayLength: 10, deadLength: 10, //turns   
+  dayLength: 60, deadLength: 10, //turns   
   map: null, width: 12,  height: 5, //slots   
   seed: null,
-  currentstate: 'load',
   start: function(){    
     if(window.JSON && 
        window.btoa && window.atob &&
@@ -39,10 +38,7 @@ var game = {
       game.states.load.data(game.poll);          
     });
     game.states.load.ping(function(){
-      if(!game.offline){
-        game.states.load.webfonts();
-        game.states.load.analytics(); 
-      }
+      if(!game.offline && !game.debug) game.states.load.analytics(); 
     });   
   },  
   poll: function(){
@@ -53,7 +49,10 @@ var game = {
        game.skills &&
        game.units &&
        game.videoplayer &&
-       game.audio.count == 1) game.states.build();
+       game.audio.count < 1) {
+      game.status = "loaded";
+      game.states.build();
+    }
     else game.timeout = setTimeout(game.poll, 500);
   },
   loadJSON: function(name, cb){
@@ -90,10 +89,10 @@ var game = {
   player: {
     
     buy: function(){
-      if(game.player.turn == 6 || game.debug) $('.player.deck.skills.ult .card').appendTo(game.states.table.playerSkillsDeck);
+      if(game.player.turn == 6 || game.debug) $('.player.deck.skills.ult .card').appendTo(game.player.skills.deck);
       var availableSkills = $('.skills.available.player.deck .card');        
       var card = Deck.randomCard(availableSkills);
-      card.appendTo(game.states.table.playerHand);
+      card.appendTo(game.player.skills.hand);
       if(card.data('target') == 'Autoactivate') {
         var heroid = card.data('hero');        
         var hero = $('.map .player.heroes.'+heroid);
@@ -105,7 +104,7 @@ var game = {
     
     buyhand: function(){      
       for(var i=0; i<game.player.cardsPerTurn; i++){
-        if(game.states.table.playerHand.children().length < game.player.maxCards) 
+        if(game.player.skills.hand.children().length < game.player.maxCards) 
           game.player.buy();
       }      
     }
@@ -139,24 +138,25 @@ var game = {
       game.states.choose.counter.show().text(game.ui.rightpick);
       game.enemy.name = 'axe'; 
       game.enemy.type = 'challenged';
-      game.player.type = 'challenger';
-      game.audio.play('tutorial/axehere');
+      game.player.type = 'challenger';      
       game.states.choose.count = game.debug ? 10 : game.timeToPick;
       game.states.choose.enablePick();   
       if(!game.tutorial.axe){
         game.tutorial.axe =  $('<div>').addClass('axe tutorial');   
         game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
         game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
-        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon).html(game.ui.axepick);
+        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon);
       }
+      game.tutorial.message.html(game.ui.axepick)
       game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axebaloon.hide();
-      setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 400);
+      setTimeout(function(){ game.tutorial.axe.addClass('up'); }, 10);
       setTimeout(function(){ 
+        game.audio.play('tutorial/axehere');
         game.tutorial.axebaloon.fadeIn('slow'); 
         game.message.text(game.ui.tutorialstart);
         game.loader.removeClass('loading');
-      }, 800);      
+      }, 400);      
     },
     
     pick: function(){
@@ -168,7 +168,7 @@ var game = {
       else if(availableSlots == 1) game.tutorial.message.html(game.ui.axeautodeck);            
       if(availableSlots < game.tutorial.oldAvailableSlots) game.tutorial.axebaloon.hide().fadeIn('slow');
       
-      if(availableSlots) game.states.choose.counter.text($('.slot.available').length + ' ' + game.ui.togo + '. ' + game.ui.cardsperturn+': '+ game.player.cardsPerTurn); 
+      if(availableSlots) game.states.choose.counter.text(availableSlots + ' ' + game.ui.togo + '. ' + game.ui.cardsperturn+': '+ game.player.cardsPerTurn); 
       else {    
         game.message.text(game.ui.getready);
         game.states.choose.counter.text(game.ui.cardsperturn+': '+ game.player.cardsPerTurn);        
@@ -178,11 +178,9 @@ var game = {
           transform: 'scaleX(-1)'
         });
         game.tutorial.message.css({transform: 'scaleX(-1)'});
-        game.audio.play('tutorial/axebattle');
+        game.audio.play('tutorial/axebattle'); 
         game.tutorial.message.html(game.ui.axebattle);
-        setTimeout(function(){
-          game.tutorial.deck();
-        }, 2000);
+        setTimeout(function(){ game.tutorial.deck(); }, 2000);
       }
       game.tutorial.oldAvailableSlots = availableSlots;
     },
@@ -221,7 +219,7 @@ var game = {
     
     placeHeroes: function(){
       game.player.mana = 0;
-      game.states.table.playerHeroesDeck = Deck({
+      game.player.heroesDeck = Deck({
         name: 'heroes', 
         filter: game.player.picks, 
         cb: function(deck){
@@ -236,7 +234,7 @@ var game = {
         }
       });  
       game.enemy.picks = ['nyx','kotl','pud','ld','am'];
-      game.states.table.enemyHeroesDeck = Deck({
+      game.enemy.heroesDeck = Deck({
         name: 'heroes', 
         filter: game.enemy.picks, 
         cb: function(deck){
@@ -330,12 +328,19 @@ var game = {
     move: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.tutorial.message.html(game.ui.axemove);
+      game.audio.play('tutorial/axemove');
       game.status = 'turn';
       game.message.text(game.ui.yourturncount+' 1');
       $('.map .hero.player').on('move', game.tutorial.done);
     },    
     
     done: function(){
+      game.tutorial.axe.css({
+          right: '',
+          left: '0',
+          transform: 'scaleX(-1)'
+        });
+      game.tutorial.message.css({transform: 'scaleX(-1)'});
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.tutorial.message.html(game.ui.axedone);
       game.message.text(game.ui.enemyturn);
@@ -348,6 +353,7 @@ var game = {
       game.tutorial.axebaloon.hide().fadeIn('slow');      
       game.tutorial.message.html(game.ui.axewait);
       game.message.text(game.ui.enemyturncount+' 2');
+      game.audio.play('tutorial/axetime');
       game.states.table.time.text(game.ui.time+': 1:30 '+game.ui.night); 
       game.message.removeClass('tutorialblink');
       game.states.table.time.addClass('tutorialblink');
@@ -357,59 +363,80 @@ var game = {
     time: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.message.text(game.ui.enemyturncount+' 1');
-      game.tutorial.message.html(game.ui.axetime);
+      game.tutorial.message.html(game.ui.axetime);      
       game.states.table.time.removeClass('tutorialblink');      
       game.states.table.turns.addClass('tutorialblink');
       game.states.table.turns.text(game.ui.turns+': 1/1 (2)')
       setTimeout(game.tutorial.enemyMove, 4000);
+      game.tutorial.buildSkills();
     },
     
     enemyMove: function(){
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.tutorial.message.html(game.ui.axeenemymove);
       game.message.html(game.ui.enemymove);
+      game.audio.play('tutorial/axewait');
       game.states.table.turns.removeClass('tutorialblink');
-      var am = $('.map .enemy.hero.am');
-      if($('#E3').hasClass('block')) am.place('F4').addClass('tutorialblink');
-      else am.place('E3').addClass('tutorialblink');            
+      var to = 'H3';
+      if($('#'+to).hasClass('block')) to = 'I3';
+      game.currentData = {
+        moves: 'C:E4:'+to+':blink:am'
+      };     
+      game.states.table.executeEnemyMoves();
       setTimeout(game.tutorial.attack, 4000);
     },   
     
     attack: function(){
+      game.tutorial.axe.css({left: '', transform: ''});
+      game.tutorial.message.css({transform: ''});
+      game.enemy.skills.deck.removeClass('slide');
+      $('.enemy.skills .card').hide();
       game.tutorial.lessonAttack = true; 
       $('.player.hero').removeClass('done');
-      game.status = 'turn';
-      game.tutorial.buildSkills();
+      game.status = 'turn';      
       game.tutorial.axebaloon.hide().fadeIn('slow');       
       game.tutorial.message.html(game.ui.axeattack);
+      game.audio.play('tutorial/axeattack');
       game.message.html(game.ui.yourturn);
       if(game.selectedCard) game.selectedCard.select();
       $('.player.hero').on('attack.tutorial', game.tutorial.skillSelect);
     },
     
     buildSkills : function(){
-      game.states.table.playerHand = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills hand');
-       game.states.table.playerCemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
-       game.states.table.playerSkillsDeck = Deck({
+      game.player.skills = {};
+      game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills hand');
+      game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
+      game.player.skills.deck = Deck({
+      name: 'skills', 
+      multi: 'cards',
+      filter: game.player.picks, 
+      cb: function(deck){        
+        deck.addClass('player available').hide().appendTo(game.states.table.el);
+        $.each(deck.data('cards'), function(i, skill){   
+          skill.addClass('player skill').data('side','player').on('click.select', game.tutorial.select);              
+        });        
+      }
+      });
+      
+      game.enemy.skills = {};
+      game.enemy.skills.deck = Deck({
         name: 'skills', 
-        multi: 'cards',
-        filter: game.player.picks, 
+        filter: ['am'], 
         cb: function(deck){        
-          deck.addClass('player available').hide().appendTo(game.states.table.el);
+          deck.addClass('enemy hand cemitery permanent').appendTo(game.states.table.el);
           $.each(deck.data('cards'), function(i, skill){   
-            skill.addClass('player skill').data('side','player').on('click.select', game.tutorial.select);              
+            skill.hide().addClass('enemy skill').data('side','enemy');        
           });        
         }
       });
     },
     
     skillSelect: function(){    
-      $('.map .enemy.hero.am').removeClass('tutorialblink');
       game.tutorial.lessonSkill = true;      
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
       game.tutorial.message.html(game.ui.axeskillselect);   
       game.player.buyhand();
-      game.states.table.playerHand.show();
+      game.player.skills.hand.show();
       $('.player.skill').addClass('tutorialblink');   
       setTimeout(function(){
         $('.player.hero').removeClass('done');
@@ -428,6 +455,7 @@ var game = {
       game.tutorial.lessonSkill = false; 
       game.tutorial.axebaloon.hide().fadeIn('slow'); 
       game.tutorial.message.html(game.ui.axeend); 
+      game.audio.play('tutorial/axeah')
       game.message.text(game.ui.lose);
       game.winner = game.player.name;
       game.states.table.showResults();
@@ -621,13 +649,13 @@ var game = {
     },   
 
     buildSkills: function(){             
-
-      this.playerHand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
-      this.playerPermanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
-      this.playerTemp = $('<div>').hide().appendTo(this.el).addClass('player deck skills temp');
-      this.playerUlts = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
-      this.playerCemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
-      this.playerSkillsDeck = Deck({
+      game.player.skills = {};
+      game.player.skills.hand = $('<div>').appendTo(this.el).addClass('player deck skills hand');
+      game.player.skills.permanent = $('<div>').appendTo(this.el).addClass('player deck skills permanent');
+      game.player.skills.temp = $('<div>').hide().appendTo(this.el).addClass('player deck skills temp');
+      game.player.skills.ults = $('<div>').hide().appendTo(this.el).addClass('player deck skills ult');      
+      game.player.skills.cemitery = $('<div>').hide().appendTo(this.el).addClass('player deck skills cemitery');
+      game.player.skills.deck = Deck({
         name: 'skills', 
         multi: 'cards',
         filter: game.player.picks, 
@@ -647,7 +675,8 @@ var game = {
       game.enemy.maxCards = Math.round(game.enemy.mana/2); 
       game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana/10);           
       game.enemy.hand = 0;
-      this.enemySkillsDeck = Deck({
+      game.enemy.skills = {};
+      game.enemy.skills.deck = Deck({
         name: 'skills', 
         filter: game.enemy.picks, 
         cb: function(deck){        
@@ -659,7 +688,73 @@ var game = {
       });
 
     },  
+    
+    sendMoves: function(){
+      $('.card.heroes').each(function(){
+        var hero = $(this);
+        hero.trigger('playerturnend', {target: hero});
+      });
+      game.message.text(game.ui.uploadingturn);
+      game.loader.addClass('loading');
+      Map.unhighlight();
+      $('.card .damaged').remove();
+      $('.card .heal').remove();
+      game.status = 'unturn';
+      game.states.table.el.removeClass('turn');
+      game.match.sendData();
+    },
 
+    getMoves: function(){   
+      game.message.text(game.ui.loadingturn);
+      game.loader.addClass('loading');
+      game.tries = 1;  
+      game.states.table.el.removeClass('unturn');
+      setTimeout(game.match.getData, 1000);
+    },
+
+    sendData: function(){
+      game.player.turn++;
+      game.currentData[game.player.type + 'Turn'] = game.player.turn;  
+      game.currentData.moves = game.currentData.moves.join('|');   
+      game.db({'set': game.id, 'data': game.currentData}, function(){
+        setTimeout(game.turn.begin, 1000);
+      });      
+    },
+
+    getData: function(){
+      clearTimeout(game.timeout);
+      game.db({'get': game.id }, function(data){                    
+        if(data[game.enemy.type + 'Turn'] == (game.enemy.turn + 1) ){
+          game.triesCounter.text('');
+          game.currentData = data;
+          game.enemy.turn++;
+          game.states.table.executeEnemyMoves();            
+        } else {
+          game.triesCounter.text(game.tries++);
+          if(game.tries > game.connectionLimit) game.states.load.reset();
+          else game.timeout = setTimeout(game.match.getData, 1000);
+        }
+      });
+    },
+
+    win: function(){
+      game.winner = game.player.name;
+      game.states.table.el.addClass('turn');
+      game.message.text(game.ui.win); 
+      game.match.sendData();
+      game.status = 'over';      
+      game.states.table.showResults();
+    },    
+
+    lose: function(){      
+      game.winner = game.enemy.name;
+      game.states.table.el.addClass('unturn');
+      game.message.text(game.ui.lose);
+      game.loader.removeClass('loading');
+      game.status = 'over';      
+      game.states.table.showResults();
+    },
+    
     end: function(){
       game.match.started = false;
     }
@@ -707,7 +802,7 @@ var game = {
           else card.trigger('enemyturnstart', {target: card});
           card.reduceStun();
         });
-        if(game.turn == 6) $('.card', game.states.table.playerUlts).appendTo(game.states.table.playerSkillsDeck);
+        if(game.turn == 6) $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck);
         if(game.status == 'turn'){         
           $('.map .card.player').removeClass('done');
           game.player.buyhand();               
@@ -718,8 +813,8 @@ var game = {
           game.enemy.buyhand();
         }
         game.time = game.player.turn + game.enemy.turn;  
-        game.states.table.counter = (game.debug) ? 5 : game.timeToPlay;          
-        setTimeout(game.turn.count.bind(game.states.table), 1000);
+        game.turn.counter = (game.debug) ? 5 : game.timeToPlay;          
+        setTimeout(game.turn.count, 1000);
       }
     },
 
@@ -728,15 +823,15 @@ var game = {
       game.loader.removeClass('loading');
       game.states.table.time.text(game.ui.time+': '+game.states.table.hours()+' '+game.states.table.dayNight());     
       game.states.table.turns.text(game.ui.turns+': '+game.player.turn+'/'+game.enemy.turn +' ('+parseInt(game.time)+')');     
-      if(game.status == 'turn') game.message.text(game.ui.yourturncount+' '+game.states.table.counter+' '+game.ui.seconds);
-      else if(game.status == 'unturn') game.message.text(game.ui.enemyturncount+' '+game.states.table.counter+' '+game.ui.seconds);     
-      if(this.counter-- < 1){
+      if(game.status == 'turn') game.message.text(game.ui.yourturncount+' '+game.turn.counter+' '+game.ui.seconds);
+      else if(game.status == 'unturn') game.message.text(game.ui.enemyturncount+' '+game.turn.counter+' '+game.ui.seconds);     
+      if(game.turn.counter-- < 1){
         $('.card.heroes').each(function(){
           var hero = $(this);
           hero.trigger('turnend', {target: hero});
         });
-        if(game.status == 'turn') this.sendMoves();
-        else if(game.status == 'unturn') this.getMoves();    
+        if(game.status == 'turn') game.match.sendMoves();
+        else if(game.status == 'unturn') game.match.getMoves();    
       } else {
         game.time += 1 / game.timeToPlay;
         game.timeout = setTimeout(game.turn.count, 1000);
@@ -746,7 +841,7 @@ var game = {
     enemyend: function(){
       if(game.status != 'over'){
         game.status = 'turn';
-        game.states.table.enemySkillsDeck.removeClass('slide');
+        game.enemy.skills.deck.removeClass('slide');
         $('.card.enemy.heroes').removeClass('done');
         $('.enemy.skills .card').hide();
         game.turn.begin();
@@ -760,7 +855,6 @@ var game = {
     buffers: {}, count: 0,
 
     load: function(name){
-      if(!game.audio.context) game.states.load.audio();
       var ajax = new XMLHttpRequest(); 
       ajax.open("GET", '/audio/'+name+'.mp3', true); 
       ajax.responseType = "arraybuffer"; 
@@ -811,9 +905,8 @@ var game = {
     if a state has a end function, it will run every time it leaves the state
 
     ///////////////////////////////////////*/
-    
-    preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],  
-    
+    currentstate: 'load', 
+    preBuild: ['intro', 'login', 'menu', 'options', 'choose', 'table'],      
     build: function(){      
       this.el = $('<div>').addClass('states frame').appendTo(game.container).hide();
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
@@ -825,11 +918,10 @@ var game = {
         }        
       }); 
       game.states.changeTo('intro');
-    }, 
-    
+    },     
     changeTo: function(state){
-      if(this == game.currentstate) return;   
-      var pre = game.currentstate;
+      if(this == game.states.currentstate) return;   
+      var pre = game.states.currentstate;
       var oldstate = this[pre];
       if(oldstate.el) oldstate.el.hide(); 
       if(oldstate.end) oldstate.end();    
@@ -840,11 +932,10 @@ var game = {
       }
       this.el.removeClass(pre);
       if(newstate.el) newstate.el.show().append(game.topbar);
-      game.currentstate = state;
+      game.states.currentstate = state;
       game.backstate = pre;
       if(newstate.start) newstate.start();
-    },
-    
+    },    
     backState: function(){
       game.states.changeTo(game.backstate);
     },
@@ -903,7 +994,11 @@ var game = {
           'tower',
           'tutorial/axehere',
           'tutorial/axebattle',
-          'tutorial/axemove'
+          'tutorial/axemove',
+          'tutorial/axeattack',
+          'tutorial/axetime',
+          'tutorial/axewait',
+          'tutorial/axeah'
         ];
         game.audio.count = sounds.length;
         for(var i=0; i < sounds.length; i++) game.audio.load(sounds[i]);
@@ -916,7 +1011,7 @@ var game = {
           var width = $('.frame').width() * 1.1;
           var height = Math.ceil(width / ratio);
           game.states.intro.video = $('<video>')
-          .attr({id: 'introvideo', autobuffer: true, autoplay: true, preload: true})
+          .attr({id: 'introvideo', autobuffer: true, preload: true})
           .css({width: width, height: height}).appendTo(game.states.intro.player)
           .on('canplay',function(){
             game.videoplayer = game.states.intro.video[0];
@@ -1010,25 +1105,26 @@ var game = {
       
       build: function(){    
         if(!game.debug) this.player.appendTo(this.el).hide();
-        this.skip = $('<div>').addClass('skip').appendTo(this.el).click(function(){game.states.changeTo('login');}).contextmenu(game.nomenu);
+        this.divskip = $('<div>').addClass('skip').appendTo(this.el).click(function(){game.states.changeTo('login');}).contextmenu(game.nomenu);
         this.box = $('<div>').hide().appendTo(this.el).addClass('box');
         this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha '+game.vs+'</a>');
       },
 
       start: function(){
-        $('.frame.welcome').hide();
+        $('.frame.welcome').hide();        
         game.states.el.show();
-        this.box.fadeIn(2000).fadeOut(1000);
+        game.states.intro.box.fadeIn(2000).fadeOut(1000);
         if(!game.debug){
-          this.player.delay(1000).fadeIn(1000);
-          setTimeout(function(){
-            if(game.currentstate == 'intro') game.states.changeTo('login');          
-          }, 102400);
+          game.videoplayer.play();
+          game.states.intro.player.delay(1000).fadeIn(1000);
+          setTimeout(game.states.intro.skip, 102400);
         } else {
-          setTimeout(function(){
-            game.states.changeTo('login');
-          }, 2000);
+          setTimeout(game.states.intro.skip, 2000);
         }
+      },
+      
+      skip: function(){
+        if(game.states.currentstate == 'intro') game.states.changeTo('login');
       },
 
       end: function(){
@@ -1081,6 +1177,8 @@ var game = {
           this.input.val('Bot'+(parseInt(Math.random()*100)));
           this.button.click();
         }
+        game.states.options.opt.hide();  
+        $('.forklink').show();
       },
 
       end: function(){
@@ -1114,10 +1212,10 @@ var game = {
           game.states.changeTo('options');
         }); 
         this.credits = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.choosecredits, 'disabled': true }).text(game.ui.credits);
+        this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
       },
       
-      start: function(){      
-        game.states.options.opt.show();  
+      start: function(){            
         game.loader.removeClass('loading');
         game.triesCounter.text('');
         game.message.html(game.ui.welcome+' <b>'+game.player.name+'</b>!');
@@ -1125,12 +1223,7 @@ var game = {
           game.states.changeTo('login');
         });
         this.public.focus();
-        if(!game.debug && !this.chat) this.chat = $('<iframe src="http://webchat.freenode.net?nick='+game.player.name+'&channels=%23dotacard" width="450" height="570"></iframe>').addClass('chat').appendTo(this.el);
-        else {
-          this.chat = $('<div>').addClass('chat').appendTo(this.el).text('Chat window');
-          //this.public.click();
-        }
-      }  
+      } 
     }, 
     
     options: {
@@ -1247,12 +1340,13 @@ var game = {
       start: function(){ 
         game.loader.addClass('loading');      
         game.states.options.opt.show(); 
-        this.pickDeck.children().first().click();
+        $('.forklink').hide();
+        if($('.choose .card.active').length == 0) this.pickDeck.children().first().click();
       },
 
       active: function(){
         var card = $(this);
-        $('.card.active').removeClass('active');
+        $('.choose .card.active').removeClass('active');
         card.addClass('active');
         game.states.choose.pickDeck.css('margin-left', card.index() * card.width()/2 * -1);
       },
@@ -1267,7 +1361,7 @@ var game = {
       },
 
       pick: function(){
-        game.audio.play('pick');
+        game.audio.play('activate');
         var slot = $(this).closest('.slot');
         var pick = $('.pickbox .card.active');
         var card;
@@ -1323,9 +1417,11 @@ var game = {
 
       start: function(){     
         if(game.mode == 'tutorial' && !game.tutorial.started) game.tutorial.start();
-        else if(!game.match.started) game.match.start();        
+        else if(game.mode == 'public' && !game.match.started) game.match.start();        
         this.time.show();
         this.turns.show();
+        this.camera.show();
+        this.selectedArea.show();
         game.states.options.opt.show();
       },
 
@@ -1433,7 +1529,7 @@ var game = {
       placePlayerHeroes: function(){
         if(game.player.picks){
           game.player.mana = 0;      
-          this.playerHeroesDeck = Deck({
+          game.player.heroesDeck = Deck({
             name: 'heroes', 
             filter: game.player.picks, 
             cb: function(deck){        
@@ -1456,7 +1552,7 @@ var game = {
       placeEnemyHeroes: function(){ 
         if(game.enemy.picks){
           game.enemy.mana = 0;
-          this.enemyHeroesDeck = Deck({
+          game.enemy.heroesDeck = Deck({
             name: 'heroes', 
             filter: game.enemy.picks, 
             cb: function(deck){
@@ -1479,7 +1575,8 @@ var game = {
       buildUnits: function(){       
         $('#A1').addClass('camp');
         $('#L5').addClass('camp');
-        this.neutralUnitsDeck = Deck({
+        game.neutrals = {};
+        game.neutrals.unitsDeck = Deck({
           name: 'units', 
           filter: ['forest'], 
           cb: function(deck){
@@ -1489,7 +1586,7 @@ var game = {
             });
           }
         });       
-        this.playerUnitsDeck = Deck({
+        game.player.unitsDeck = Deck({
           name: 'units', 
           filter: game.player.picks, 
           cb: function(deck){
@@ -1499,7 +1596,7 @@ var game = {
             });
           }
         });       
-        this.enemyUnitsDeck = Deck({
+        game.enemy.unitsDeck = Deck({
           name: 'units', 
           filter: game.enemy.picks, 
           cb: function(deck){
@@ -1509,54 +1606,6 @@ var game = {
             });
           }
         }); 
-      },     
-
-      sendMoves: function(){
-        $('.card.heroes').each(function(){
-          var hero = $(this);
-          hero.trigger('playerturnend', {target: hero});
-        });
-        game.message.text(game.ui.uploadingturn);
-        game.loader.addClass('loading');
-        Map.unhighlight();
-        $('.card .damaged').remove();
-        $('.card .heal').remove();
-        game.status = 'unturn';
-        game.states.table.el.removeClass('turn');
-        game.states.table.sendData();
-      },
-
-      getMoves: function(){   
-        game.message.text(game.ui.loadingturn);
-        game.loader.addClass('loading');
-        game.tries = 1;  
-        game.states.table.el.removeClass('unturn');
-        setTimeout(game.states.table.getData, 1000);
-      },
-
-      sendData: function(){
-        game.player.turn++;
-        game.currentData[game.player.type + 'Turn'] = game.player.turn;  
-        game.currentData.moves = game.currentData.moves.join('|');   
-        game.db({'set': game.id, 'data': game.currentData}, function(){
-          setTimeout(game.turn.begin, 1000);
-        });      
-      },
-
-      getData: function(){
-        clearTimeout(game.timeout);
-        game.db({'get': game.id }, function(data){                    
-          if(data[game.enemy.type + 'Turn'] == (game.enemy.turn + 1) ){
-            game.triesCounter.text('');
-            game.currentData = data;
-            game.enemy.turn++;
-            game.states.table.executeEnemyMoves();            
-          } else {
-            game.triesCounter.text(game.tries++);
-            if(game.tries > game.connectionLimit) game.states.load.reset();
-            else game.timeout = setTimeout(game.states.table.getData, 1000);
-          }
-        });
       },
 
       hours: function(){
@@ -1634,15 +1683,15 @@ var game = {
 
       executeEnemyMoves: function(){
         game.message.text(game.ui.enemymove);
-        game.states.table.enemySkillsDeck.addClass('slide');
+        game.enemy.skills.deck.addClass('slide');
         var moves = game.currentData.moves.split('|');      
         for(var m = 0; m < moves.length; m++){
           var move = moves[m].split(':');
           var fromSpot = Map.mirrorPosition(move[1]), toSpot = Map.mirrorPosition(move[2]);
           var source, target, hero, skillid, skill;
 
-          if(move[0] == 'M'){   
-            target = $('#'+fromSpot+' .card');
+          if(move[0] == 'M'){  
+            target = $('#'+fromSpot+' .card'); console.log(target);
             if(toSpot && !target.hasClass('done') && target.hasClass('enemy') && target.move) target.move(toSpot);
           }        
           if(move[0] == 'A'){
@@ -1678,7 +1727,7 @@ var game = {
           var hero = $(this);
           hero.trigger('enemyturnend', {target: hero});
         });
-        setTimeout(game.turn.enemyend, game.enemy.playtime * 1000);
+        if(game.mode != 'tutorial') setTimeout(game.turn.enemyend, game.enemy.playtime * 1000);
       },
 
       animateCast: function(skill, target, destiny){
@@ -1691,32 +1740,14 @@ var game = {
         }.bind({ card: skill, destiny: destiny }), 500);
       },
 
-      win: function(){
-        game.winner = game.player.name;
-        game.states.table.el.addClass('turn');
-        game.message.text(game.ui.win); 
-        game.states.table.sendData();
-        game.status = 'over';      
-        game.states.table.showResults();
-      },    
-
-      lose: function(){      
-        game.winner = game.enemy.name;
-        game.states.table.el.addClass('unturn');
-        game.message.text(game.ui.lose);
-        game.loader.removeClass('loading');
-        game.status = 'over';      
-        game.states.table.showResults();
-      },
-
       showResults: function(){
         game.states.table.selectedArea.hide();
         game.states.table.camera.hide();
         $('.table .deck').hide();
         game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).attr({'class': 'resultsbox box'});
-        $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner+' victory');
-        $('<h1>').appendTo(this.resultsbox).text('Towers HP: '+game.player.tower.data('currenthp')+' / '+game.enemy.tower.data('currenthp'));
-        $('<h1>').appendTo(this.resultsbox).text('Heroes KD: '+game.player.kills+' / '+game.enemy.kills);
+        $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner+' '+game.ui.victory);
+        $('<h1>').appendTo(this.resultsbox).text(game.ui.towers+' HP: '+game.player.tower.data('currenthp')+' / '+game.enemy.tower.data('currenthp'));
+        $('<h1>').appendTo(this.resultsbox).text(game.ui.heroes+' '+game.ui.kd+': '+game.player.kills+' / '+game.enemy.kills);
         game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).attr({'class': 'results'});
         game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).attr({'class': 'results'});
         $('.player.heroes.card').not('.zoom').each(function(){
@@ -1731,19 +1762,18 @@ var game = {
           var text = $('<span>').text( hero.data('name')+': '+hero.data('kills')+' / '+hero.data('deaths') );
           $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid).append(img, text);
         });
-        $('<button>').appendTo(game.states.table.resultsbox).text('Close').click(function(){  
+        $('<button>').appendTo(game.states.table.resultsbox).text(game.ui.close).click(function(){  
           game.states.table.clear();
           game.states.changeTo('menu');
         });
       },
       
       clear: function(){
-        $('.state-table .card').remove();
-        $('.state-table .deck').remove();
-        game.states.table.time.remove();
-        game.states.table.turns.remove();
+        $('.table .card').remove();
+        $('.table .deck').remove();
+        game.states.table.time.hide();
+        game.states.table.turns.hide();
         game.states.table.resultsbox.remove();
-        game.states.table.selectedArea.remove();
         game.match.end();
       },
       

@@ -64,6 +64,7 @@
   "night": "Noite",
   "turns": "Turnos",
   "tower": "Torre",
+  "towers": "Torres",
   "building": "Edificação",
   "tree": "Árvore",
   "forest": "Floresta",
@@ -90,5 +91,8 @@
   "damageType" : "Tipo de Dano",
   "dot" : "Dano por turno",
   "duration" : "Duração",
-  "kd": "Matou/Morreu"
+  "kd": "K/D",
+  "close": "Sair",
+  "victory": "venceu",
+  "heroes": "Heróis"
 }

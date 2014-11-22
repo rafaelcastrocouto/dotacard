@@ -10,6 +10,7 @@ var http = require('http'),
       get: function(name, cb){cb(currentData[name]||'');},
       set: function(name, val, cb){currentData[name] = val; cb(true);}
     },
+    chat = [];
     debug = false;
 
 if(host == 'localhost') debug = true;
@@ -45,13 +46,18 @@ http.createServer(function(request, response){
           send(response, waiting);
           waiting = {id: 'none'};
         }
-      }
-      //DEFAULT SET
+      } //CHAT
+      else  if(query.set == 'waiting'){
+        chat.push(query.data);
+        send(response, JSON.stringify({messages: chat}));
+      } //DEFAULT SET
       else db.set(query.set, query.data, function(data){send(response, data);});      
     } else if (query.get){
       console.log('get: '+ query.get);
       //STATUS
       if(query.get == 'server') send(response, JSON.stringify({status: 'online'}));
+      //CHAT
+      if(query.get == 'chat') send(response, JSON.stringify({messages: chat}));
       //LANGUAGE
       else if(query.get == 'lang') send(response, JSON.stringify({lang: request.headers['accept-language']}));
       //DEFAULT GET

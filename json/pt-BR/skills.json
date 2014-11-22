@@ -124,7 +124,7 @@
       "damageType": "Magical",       
       "cards": 1,
       "display": true,
-      "description": "Rylai channels icy explosions around her!"    
+      "description": "Rylai canaliza uma tempestade de neve ao seu redor"    
     }
   },
   
@@ -135,7 +135,7 @@
       "target": "Passive",
       "cards": 1,
       "display": true,
-      "description": "Everytime Antimage attacks enemy player loses a skill card of the attaked hero"
+      "description": "A cada ataque o AnitMage obriga o oponente a descartar uma habilidade da unidade atacada"
     },
     "passive": {
       "name": "Spell Shield",
@@ -144,7 +144,7 @@
       "percentage": 50,
       "cards": 1,
       "display": true,
-      "description": "Reduces all magic damage by half"    
+      "description": "Reduz todo damo mágico pela metade"    
     },
     "blink": {
       "name": "Blink",
@@ -153,7 +153,7 @@
       "range": "Long",
       "cards": 11,
       "display": true,
-      "description": "Teleport Anti Mage to the target spot" 
+      "description": "Teleporta o AntiMage instantâneamente" 
     },
     "ult": {
       "name": "Mana Void",
@@ -165,7 +165,7 @@
       "cards": 1,
       "multiplier": 2,
       "display": true,
-      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand"
+      "description": "Causa dano em área ao redor de uma unidade inimiga. O dano é igual a metade no número de cartas que o jogador poderia ter em suas mãos (Max-Hand/2)"
     }
   },
   

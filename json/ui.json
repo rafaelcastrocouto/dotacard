@@ -64,6 +64,7 @@
   "night": "Night",
   "turns": "Turns",
   "tower": "Tower",
+  "towers": "Towers",
   "building": "Building",
   "tree": "Tree",
   "forest": "Forest",
@@ -92,5 +93,8 @@
   "dot": "Damage over time",
   "multiplier": "Multiplier",
   "duration": "Duration",
-  "kd": "Kills/Deaths"
+  "kd": "K/D",
+  "close": "Close",
+  "victory": "victory",
+  "heroes": "Heroes"
 }
