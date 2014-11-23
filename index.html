@@ -6,7 +6,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8"/>
     <meta http-equiv="content-script-type" content="text/javascript"/>
     <meta http-equiv="content-style-type" content="text/css"/>
-    <script src="browser_modules/modernizr.min.js" ></script>
+    <script src="browser_modules/require.js" ></script>
     <link href="favicon.ico" rel="icon" type="image/vnd.microsoft.icon"/>
     <link href="favicon.png" rel="icon" type="image/png"/>
     <link href="styles/normalize.min.css" rel="stylesheet" data-noprefix/>
@@ -32,16 +32,13 @@
         <div class="box">
           <img class="banner" src="img/banner.png" />
           <h3>Welcome to DotaCard</h3>
-          <p>Loading...</p>
+          <p><span class="loader loading"></span><span class="message">Loading...</span></p>
         </div>
       </div>
     </div>
     <a class="forklink" href="https://github.com/rafaelcastrocouto/dotacard" target="_blank">
       <img class="fork" src="img/fork.png" />
-    </a>   
-    <script src="browser_modules/jquery.min.js"></script>    
-    <script src="browser_modules/jquery.cookie.min.js"></script>    
-    <script src="browser_modules/prefixfree.min.js"></script>
+    </a>     
     <script src="game/map.js"></script>
     <script src="game/deck.js"></script>
     <script src="game/skills.js"></script>

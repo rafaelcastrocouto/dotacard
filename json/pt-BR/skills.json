@@ -49,6 +49,7 @@
       "description": "Aumenta a sinergia entra o Druida e o Espírito Urso" 
     },
     "ult": {
+      "special": "Permanent",
       "name": "Forma Real",
       "type": "Active",
       "target": "Self",      
@@ -70,8 +71,8 @@
       "description": "Aumenta o ataque do Druida e do Espírito Urso"       
     },
     "transform": {
-      "special": "Ultimate",
-      "name": "Druid Form",
+      "special": "Transform",
+      "name": "Forma de Druida",
       "type": "Active",
       "target": "Self",
       "cards": 1, 

@@ -47,10 +47,12 @@ http.createServer(function(request, response){
           waiting = {id: 'none'};
         }
       } //CHAT
-      else  if(query.set == 'waiting'){
+      else if(query.set == 'chat'){
         chat.push(query.data);
+        while(chat.length > 240) chat.shift();
         send(response, JSON.stringify({messages: chat}));
       } //DEFAULT SET
+      
       else db.set(query.set, query.data, function(data){send(response, data);});      
     } else if (query.get){
       console.log('get: '+ query.get);

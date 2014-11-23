@@ -241,9 +241,10 @@ var Skills = {
       cast: function(skill, source){
         var side = source.data('side');
         var transform = $('.'+side+'.skill.ld-transform');
-        transform.appendTo(game.states.table.playerPermanent);       
+        transform.appendTo(game.player.skills.permanent);       
         var cry = $('.'+side+'.skill.ld-cry');
-        cry.appendTo(game.states.table.playerPermanent);        
+        cry.appendTo(game.player.skills.permanent);       
+        skill.appendTo(game.player.skills.temp); 
         var ldhp = source.data('hp'); 
         var currenthp = source.data('currenthp');
         var relativehp = currenthp / ldhp;
@@ -257,10 +258,11 @@ var Skills = {
     transform: {
       cast: function(skill, source){
         var side = source.data('side');
-        var transform = $('.'+side+'.skill.ld-transform');
-        transform.appendTo(game.states.table.playerTemp);        
+        var ult = $('.'+side+'.skill.ld-ult');
+        ult.appendTo(game.player.skills.permanent); 
+        skill.appendTo(game.player.skills.temp);        
         var cry = $('.'+side+'.skill.ld-cry');
-        cry.appendTo(game.states.table.playerTemp);
+        cry.appendTo(game.player.skills.temp);
         var ldhp = source.data('hp'); 
         var currenthp = source.data('currenthp');
         var relativehp = currenthp / ldhp;

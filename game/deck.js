@@ -377,7 +377,7 @@ Card.cast = function(skill, target){
       if(t == 'Area' || t == 'Spot' || t == 'Around') target = $('#'+target);
       else target = $('#'+target+' .card');
     }
-    if(target.length){
+    if(target.length){      
       source.data('channeling', false).removeClass('channeling');
       source.trigger('cast', {skill: skill, source: source, target: target});
       Skills[hero][skillid].cast(skill, source, target);    
@@ -395,10 +395,14 @@ Card.cast = function(skill, target){
             channeler.off('channel turnstart.channel');
           }
         });
-      }
-      Map.unhighlight();
+      }      
       if(source.hasClass('enemy')) game.enemy.hand--;
-      this.addClass('done');
+      else source.select();
+      if(skill.data('special') != 'Permanent' &&
+         skill.data('special') != 'Transform'){
+        source.addClass('done');
+        setTimeout(function(){skill.discard();}, 400);
+      }
     }
   }
   return this;
@@ -412,9 +416,13 @@ Card.activate = function(target){
   if(typeof target == 'string') target = $('#'+target+' .card');                           
   if(skillid && hero && target.data('hero') == hero){  
     target.trigger('activate', {skill: skill, target: target});
-    Skills[hero][skillid].activate(skill, target);
-    Map.unhighlight();
+    Skills[hero][skillid].activate(skill, target);    
     if(skill.hasClass('enemy')) game.enemy.hand--;
+    else target.select();
+    if(skill.data('special') != 'Permanent'&&
+       skill.data('special') != 'Transform') {
+      setTimeout(function(){skill.discard();}, 400);
+    }
   }
   return this;
 };
@@ -477,11 +485,13 @@ Card.reduceStun = function(){
 $.fn.reduceStun = Card.reduceStun;
 
 Card.discard = function(){
-  this.trigger('discard');
-  if(this.hasClass('player')) this.appendTo(game.states.table.playerCemitery);
-  else{
-    this.appendTo(game.states.table.enemySkillsDeck);
-    game.enemy.hand--;
+  if(this.hasClass('skill')){
+    this.trigger('discard');
+    if(this.hasClass('player')) this.appendTo(game.player.skills.cemitery);
+    else {
+      this.appendTo(game.enemy.skills.deck);
+      game.enemy.hand--;
+    }
   }
 };
 $.fn.discard = Card.discard;
@@ -628,12 +638,12 @@ Card.die = function(){
     this.data('deaths', deaths);
     this.find('.deaths').text(deaths);
     this.data('reborn', game.time + game.deadLength);
-    if(this.hasClass('player')) this.appendTo(game.states.table.playerHeroesDeck);
-    else if(this.hasClass('enemy')) this.appendTo(game.states.table.enemyHeroesDeck);
+    if(this.hasClass('player')) this.appendTo(game.player.heroesDeck);
+    else if(this.hasClass('enemy')) this.appendTo(game.enemy.heroesDeck);
 
   } else if(this.hasClass('tower')){ 
-    if(this.hasClass('player')) game.states.table.lose();
-    else if(this.hasClass('enemy')) game.states.table.win();
+    if(this.hasClass('player')) game.match.lose();
+    else if(this.hasClass('enemy')) game.match.win();
   }
   else this.remove();
   return this;

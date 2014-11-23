@@ -86,7 +86,7 @@ img {
 }
 small {
   cursor: default;
-  font-size: 60%;
+  font-size: 70%;
 }
 
 /*CLASSES*/
@@ -110,6 +110,11 @@ small {
 .frame p {
   display: block;
   margin: 1em;
+}
+
+.welcome .message {
+  margin: 0 0 0 30px;
+  line-height: 30px;
 }
 
 .unsupported,
@@ -195,7 +200,7 @@ small {
 .loader {
   width: 16px;
   height: 16px;
-  display: inline-block;
+  position: fixed;
   vertical-align: top; 
   margin: 4px;
   padding: 0;
@@ -213,6 +218,7 @@ small {
   100% { transform: rotate(360deg);}
 }
 .triescounter {
+  font-size: 8px;
   position: absolute;
   left: 9px;
   top: 9px;
@@ -220,10 +226,12 @@ small {
   text-align: center;
 }
 
-.message {
+.message,
+.topbar .message {
   margin-left: 25px;
   border-radius: 4px;
 }
+
 
 .turn .message {
   text-shadow: 0 0 6px white;
@@ -365,7 +373,7 @@ label input {
 
 .menu .box {
   transform: none;
-  left: 20px;
+  right: 20px;
   width: 250px;
   height: 350px;
   padding: 80px 100px;
@@ -379,13 +387,94 @@ label input {
 .chat {
   background: rgb(227,239,250);
   position: absolute;
-  right: 20px; top: 50px;
-  width: 450px; height: 500px;
-  opacity: 0.8;
-  border: 1px solid rgb(195,210,224);
+  left: 20px; top: 50px;
+  width: 434px; height: 494px;
   border-radius: 4px;
-  padding: 4px;
+  padding: 8px;
   color: #4d4843;
+  transition: left .4s;
+}
+
+.choose .chat,
+.table .chat {
+  padding-right: 12px;
+  left: -419px;
+  height: 20px;
+  background: rgba(0,0,0,0.4);
+}
+.choose .chat:hover,
+.table .chat:hover {
+  left: 0px;
+  height: 410px;
+  background: rgb(227,239,250);
+}
+.choose .chat *,
+.table .chat * {
+  display: none
+}
+.choose .chat:hover *,
+.table .chat:hover * {
+  display: block;
+}
+.choose .chat:after,
+.table .chat:after {
+  content: "";
+  display: block;
+  background: transparent;
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: 11px;
+  top: 20px;
+  border: 4px solid #f7f7ff;
+  border-left-color: transparent;
+  border-bottom-color: transparent;   
+}
+.choose .chat:before,
+.table .chat:before {
+  content: "";
+  display: block;
+  background: #f7f7ff;
+  width: 22px;
+  height: 16px;
+  border-radius: 50%;
+  right: 7px;
+  position: absolute;
+}
+
+.chat .messages {
+  height: calc(100% - 64px);
+  overflow-y: scroll;
+  padding: 4px;
+  background: rgba(0,0,0,0.1);
+  margin: 4px 2px;
+  word-break: break-word;
+}
+
+.chat .messages p {
+  margin: 4px 2px;
+  background: #f7f7ff;
+  box-shadow: 4px 5px 0 #ccc;
+  float: left;
+  clear: both;
+}
+
+.chat input {
+  width: 365px;
+  margin: 0 5px 0 1px;
+  height: 15px;
+  position: absolute;
+  bottom: 6px;
+}
+
+.chat button {
+  width: 50px;
+  display: inline-block;
+  height: 23px;
+  line-height: 10px;
+  font-size: 14px;
+  float: right;
+  margin: 5px 0;
 }
 
 /*OPTIONS*/
@@ -435,6 +524,8 @@ label input {
 
 .choose .counter {
   width: 100%;
+  position: absolute;
+  bottom: -8px;
 }
 
 .pickbox {
@@ -790,7 +881,7 @@ label input {
 
 .table .deck .card {  
   transform: translate(-50%, -50%) scale(0.4);
-  margin-right: -180px;
+  margin-right: -190px;
   left: 40px;
 }
 .table .deck .card:hover {
@@ -809,9 +900,12 @@ label input {
   left: 160px;
   width: 350px;
 }
-.table .player.skills.permanent.deck {
+.table .player.skills.permanent.deck {  
   left: 175px;
   width: 160px;
+}
+.table .player.skills.permanent.deck .card {  
+  margin-right: -140px;
 }
 .table .player.skills.hand {
   right: 10px;
@@ -824,7 +918,7 @@ label input {
   width: 220px;
   height: 330px;
   position: absolute;
-  top: 35px;
+  top: 34px;
   right: 5px;
   border-radius: 10px;
 }
@@ -860,8 +954,8 @@ label input {
 .camera {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   position: absolute;
-  top: 35px; left: 5px;    
-  width: 733px; height: 456px;
+  top: 35px; left: 40px;    
+  width: 700px; height: 450px;
   background: #666;
   perspective: 1600px;
   overflow: hidden;

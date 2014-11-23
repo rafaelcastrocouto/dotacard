@@ -49,6 +49,7 @@
       "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
     },
     "ult": {
+      "special": "Permanent",
       "name": "True Form",
       "type": "Active",
       "target": "Self",      
@@ -70,7 +71,7 @@
       "description": "Increases the attack of Syllabear and the Spirit Bear"       
     },
     "transform": {
-      "special": "Ultimate",
+      "special": "Transform",
       "name": "Druid Form",
       "type": "Active",
       "target": "Self",
