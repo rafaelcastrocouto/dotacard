@@ -1,36 +1,36 @@
 {
   "ld":{
     "spiritbear":{
-      "name": "Spirit Bear",
+      "name": "Espírito Urso",
       "hp": 120,
       "damage": 3,
       "armor": 33,
-      "resistance": 25,      
+      "resistance": 25,
       "type": "Summon",
-      "range": "Melee",
-      "passive": "Entangling Claws, Demolish",
-      "permanent": "Return"
+      "range": "Perto",
+      "passive": "Garras Entrelaçantes, Demolir",
+      "permanent": "Retornar"
     }
   },
-  "forest":{  
+  "forest":{
     "cent": {
-      "name": "Centaur",
-      "range": "Melee",
+      "name": "Centauro",
+      "range": "Perto",
       "hp": 135,
       "regen": 2,
       "mana": 3,
       "damage": 5,
       "skills": "War Stomp",
-      "buffs": "War Stompt Stun"
+      "buffs": "War Stompt"
      },
-    
+
     "golem": {
       "name": "Golem",
-      "range": "Melee",
+      "range": "Perto",
       "hp": 135,
       "regen": 1,
       "damage": 5,
       "passive": "Spell Immunity"
-    }    
+    }
   }
 }

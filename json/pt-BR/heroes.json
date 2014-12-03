@@ -2,21 +2,21 @@
   "kotl":{
     "name": "Keeper of the Light",
     "attribute": "Inteligência",
-    "range": "Ranged",
+    "range": "Distante",
     "hp": 45,
     "mana": 4,
     "damage": 9,
     "armor": 20,
     "resistance": 25,
-    "skills": "Illuminate, Mana Leak, Chakra Magic, Spirit Form",
+    "skills": "Iluminar, Vazamento de Mana, Magia do Chakra, Forma Espiritual",
     "temporary": "Blinding Light, Recall",
-    "buffs": "Mana Leaking, Blinded, Recalling"
+    "buffs": "Mana Leak, Blinded, Recall"
   },
-  
+
   "wk":{
     "name": "Wraith King",
     "attribute": "Força",
-    "range": "Melee",
+    "range": "Perto",
     "hp": 66,
     "mana": 3,
     "damage": 10,
@@ -24,13 +24,13 @@
     "resistance": 25,
     "skills": "Wraithfire Blast, Reincarnation",
     "passive": "Mortal Strike, Vampiric Aura",
-    "buffs": "Wraithfire Blast Stun, Wraithfire Blast Burn, Vampiric Aura, Reincarnation Slow"
+    "buffs": "Wraithfire Blast, Wraithfire Blast, Vampiric Aura, Reincarnation"
   },
-  
+
   "pud":{
     "name": "Pudge, the Butcher",
     "attribute": "Força",
-    "range": "Melee",
+    "range": "Perto",
     "hp": 74,
     "mana": 2,
     "damage": 10,
@@ -39,27 +39,27 @@
     "skills": "Meat Hook, Dismember",
     "passive": "Flesh Heap",
     "permanent": "Rot",
-    "buffs": "Dismember Hold"
+    "buffs": "Dismember"
   },
-  
+
   "cm":{
     "name": "Crystal Maiden",
     "attribute": "Inteligência",
-    "range": "Ranged",
+    "range": "Distante",
     "hp": 45,
-    "mana": 4, 
-    "damage": 4,
+    "mana": 4,
+    "damage": 8,
     "armor": 20,
-    "resistance": 25,    
+    "resistance": 25,
     "skills": "Crystal Nova, Frostbite, Freezing Field",
     "passive": "Arcane Aura",
-    "buffs": "Crystal Nova Slow, Frostbitten, Freezing Field"
+    "buffs": "Crystal Nova, Frostbitte, Freezing Field"
   },
-  
+
   "nyx":{
     "name": "Nyx Assassin",
     "attribute": "Agilidade",
-    "range": "Melee",
+    "range": "Perto",
     "hp": 51,
     "mana": 3,
     "damage": 8,
@@ -67,13 +67,13 @@
     "resistance": 25,
     "skills": "Impale, Mana Burn, Spiked Carapace, Vendetta",
     "passive": "Arcane Aura",
-    "buffs": "Impale Stun, Spiked Stun, Vendetta"    
+    "buffs": "Impale, Spike, Vendetta"
   },
-  
+
   "am":{
     "name": "Anti Mage",
     "attribute": "Agilidade",
-    "range": "Melee",
+    "range": "Perto",
     "hp": 42,
     "mana": 3,
     "damage": 9,
@@ -82,11 +82,11 @@
     "skills": "Blink, Mana Burn, Mana Void",
     "passive": "Mana Break, Spell Shield"
   },
-  
+
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agilidade",
-    "range": "Short",
+    "range": "Médio",
     "hp": 51,
     "mana": 2,
     "damage": 9,
@@ -94,8 +94,8 @@
     "resistance": 25,
     "skills": "Spirit Bear, Rabid, True Form",
     "passive": "Synergy",
-    "temporary": "Battle Cry",    
+    "temporary": "Battle Cry",
     "buffs": "Rabid, Battle Cry, True Form"
   }
-  
+
 }

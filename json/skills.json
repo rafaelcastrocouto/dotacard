@@ -1,19 +1,19 @@
 {
-  
+
   "ld": {
     "summon": {
       "name": "Spirit Bear",
-      "type": "Summon",
-      "target": "Spot",
+      "type": "Active",
+      "targets": ["Spot", "Free"],
       "range": "Melee",
       "hp": 135,
-      "damage": 2,      
+      "damage": 2,
       "cards": 2,
       "armor": 20,
-      "resistance": 50,        
+      "resistance": 50,
       "entanglechance": 20,
-      "entangledamage": 6,  
-      "entangleduration": 3,  
+      "entangledamage": 6,
+      "entangleduration": 3,
       "demolishpercentage": 40,
       "returncooldown": 3,
       "display": true,
@@ -21,119 +21,121 @@
     },
     "return": {
       "name": "Return",
-      "type": "Target Spot",
-      "target": "Spot",
+      "deck": "Temporary",
+      "type": "Free",
+      "targets": ["Spot", "Free"],
       "range": "Melee",
-      "special": "Temporary",
       "description": "Teleports the Spirit Bear back to the Lone Druid"
     },
     "rabid": {
       "name": "Rabid",
       "type": "Active",
-      "target": "Self",      
-      "damagebonus": 3,   
+      "targets": ["Self"],
+      "damagebonus": 3,
       "duration": 3,
       "cards": 5,
       "display": true,
-      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"    
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"
     },
     "passive": {
       "name": "Synergy",
-      "type": "Passive",     
-      "target": "Passive",
+      "type": "Passive",
+      "targets": ["Self"],
       "cards": 1,
       "bearbonus": 4,
-      "rabidbonus": 4,      
-      "ultbonus": 20,   
+      "rabidbonus": 4,
+      "ultbonus": 20,
       "display": true,
-      "description": "Increases the Lone Druid's synergy with his Spirit Bear" 
+      "description": "Increases the Lone Druid's synergy with his Spirit Bear"
     },
     "ult": {
-      "special": "Permanent",
       "name": "True Form",
-      "type": "Active",
-      "target": "Self",      
-      "cards": 4,
-      "armorbonus": 16,      
+      "type": "Free",
+      "targets": ["Self"],
+      "cards": 1,
+      "armorbonus": 16,
       "hpbonus": 20,
       "display": true,
-      "description": "Lone Druid morphs himself into a raging bear"       
+      "description": "Lone Druid morphs himself into a raging bear"
     },
     "cry": {
-      "special": "Ultimate",
       "name": "Battle Cry",
+      "deck": "Temporary",
       "type": "Active",
-      "target": "Self",
+      "targets": ["Self"],
       "duration": 4,
       "armorbonus": 16,
       "damagebonus": 2,
-      "cards": 1, 
-      "description": "Increases the attack of Syllabear and the Spirit Bear"       
+      "cards": 1,
+      "description": "Increases the attack of Syllabear and the Spirit Bear"
     },
     "transform": {
-      "special": "Transform",
       "name": "Druid Form",
-      "type": "Active",
-      "target": "Self",
-      "cards": 1, 
-      "description": "Syllabear morphs himself back into a druid"       
+      "deck": "Temporary",
+      "type": "Free",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Syllabear morphs himself back into a druid"
     }
   },
-  
-  "cm": {    
+
+  "cm": {
     "slow": {
       "name": "Crystal Nova",
-      "type": "Area of Effect",
-      "target": "Area",
+      "type": "Active",
+      "targets": ["Spot", "Self"],
       "range": "Ranged",
-      "aoe": "Melee",
+      "aoe": "Radial",
+      "aoerange": "Melee",
       "duration": 3,
       "damage": 12,
-      "damageType": "Magical",      
-      "cards": 4,
+      "damageType": "Magical",
+      "cards": 5,
       "display": true,
       "description": "A burst of damaging frost slows enemies in the targeted area"
     },
     "aura": {
       "name": "Arcane Aura",
-      "type": "Aura",
-      "target": "Passive",
+      "type": "Passive",
+      "targets": ["Self"],
       "cards": 1,
       "display": true,
-      "description": "Give an extra bonus skill card per turn"    
+      "description": "Give an extra bonus skill card per turn"
     },
     "freeze": {
       "name": "Frostbite",
-      "type": "Target Enemy Unit",     
-      "target": "Enemy",
+      "type": "Active",
+      "targets": ["Enemy"],
       "range": "Ranged",
       "duration": 3,
       "dot": 3,
-      "damageType": "Magical", 
+      "damageType": "Magical",
       "cards": 5,
       "display": true,
-      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"    
+      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"
     },
     "ult": {
       "name": "Freezing Field",
       "channel": 5,
-      "type": "Area of Effect",
-      "target": "Self",
+      "type": "Channel",
+      "targets": ["Self"],
       "range": "Long",
+      "aoe": "Radial",
+      "aoerange": "Long",
       "duration": 2,
       "damage": 7,
-      "damageType": "Magical",       
+      "damageType": "Magical",
       "cards": 1,
       "display": true,
-      "description": "Rylai channels icy explosions around her!"    
+      "description": "Rylai channels icy explosions around her!"
     }
   },
-  
+
   "am": {
     "burn": {
       "name": "Mana Break",
       "type": "Passive",
-      "target": "Passive",
+      "targets": ["Self"],
       "cards": 1,
       "display": true,
       "description": "Everytime Antimage attacks enemy player loses a skill card of the attaked hero"
@@ -141,100 +143,103 @@
     "passive": {
       "name": "Spell Shield",
       "type": "Passive",
-      "target": "Passive",      
+      "targets": ["Self"],
       "percentage": 50,
       "cards": 1,
       "display": true,
-      "description": "Reduces all magic damage by half"    
+      "description": "Reduces all magic damage by half"
     },
     "blink": {
       "name": "Blink",
-      "type": "Target spot",     
-      "target": "Spot",
+      "type": "Active",
+      "targets": ["Spot", "Free"],
       "range": "Long",
-      "cards": 11,
+      "cards": 8,
       "display": true,
-      "description": "Teleport Anti Mage to the target spot" 
+      "description": "Teleport Anti Mage to the target spot"
     },
     "ult": {
       "name": "Mana Void",
-      "type": "Area of Effect",
-      "target": "Enemy",
-      "range": "Short", 
-      "aoe": "Ranged", 
-      "damageType": "Magical",       
+      "type": "Active",
+      "targets": ["Enemy"],
+      "range": "Short",
+      "aoe": "Radial",
+      "aoerange": "Ranged",
+      "damageType": "Magical",
       "cards": 1,
       "multiplier": 2,
       "display": true,
       "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand (Max-Hand/2)"
     }
   },
-  
+
   "wk": {
     "stun": {
       "name": "Wraithfire Blast",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",
+      "type": "Active",
+      "targets": ["Enemy"],
       "range": "Short",
       "damage": 10,
       "damageType": "Magical",
-      "dotduration": 2,      
+      "dotduration": 2,
       "dot": 2,
       "stunduration": 3,
       "cards": 7,
       "display": true,
-      "description": "Stun and then damage over time and slows an enemy"      
+      "description": "Stun and then damage over time and slows an enemy"
     },
     "lifesteal": {
-      "name": "Vampiric Aura",      
-      "type": "Aura",
-      "target": "Passive",
-      "percentage": 30,      
+      "name": "Vampiric Aura",
+      "type": "Passive",
+      "targets": ["Self"],
+      "percentage": 30,
       "cards": 1,
       "display": true,
-      "description": "Drain the life of enemy on every attack"  
+      "description": "Drain the life of enemy on every attack"
     },
     "crit": {
       "name": "Mortal Strike",
       "type": "Passive",
-      "target": "Passive",      
+      "targets": ["Self"],
       "chance": 15,
-      "percentage": 300,      
+      "percentage": 300,
       "cards": 1,
       "display": true,
-      "description": "Chance of bonus damage"      
+      "description": "Chance of critical damage"
     },
     "ult": {
       "name": "Reincarnation",
-      "type": "Passive",
-      "target": "Autoactivate",
+      "type": "Automatic",
+      "targets": ["Enemy"],
       "duration": 3,
-      "aoe": "Melee",
+      "aoe": "Radial",
+      "aoerange": "Melee",
       "delay": 2,
       "cards": 1,
       "display": true,
       "description": "No one can kill the Wraith King!"
-    }    
+    }
   },
 
   "kotl": {
     "illuminate": {
       "name": "Illuminate",
-      "channel": true,
-      "type": "Area of effect",
-      "target": "Spot",
+      "channel": 4,
+      "type": "Channel",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoewidth": 3,
+      "aoerange": 8,
       "damage": 5,
-      "damageType": "Magical",     
-      "length": 6,           
-      "width": 1,           
-      "cards": 5,
+      "damageType": "Magical",
+      "cards": 4,
       "display": true,
       "description": "Channels light to damage enemies in a line"
     },
     "leak": {
       "name": "Mana Leak",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",      
+      "type": "Active",
+      "targets": ["Enemy"],
       "range": "Long",
       "duration": 4,
       "cards": 4,
@@ -243,8 +248,8 @@
     },
     "mana": {
       "name": "Chakra Magic",
-      "type": "Target Friend Unit",
-      "target": "player",
+      "type": "Active",
+      "targets": ["Ally", "Self"],
       "range": "Ranged",
       "cards": 4,
       "display": true,
@@ -252,39 +257,29 @@
     },
     "ult": {
       "name": "Spirit Form",
-      "type": "Transform",
-      "target": "Self",
-      "cards": 4,
+      "type": "Active",
+      "targets": ["Self"],
+      "cards": 2,
       "display": true,
-      "description": "Ezalor becomes one with the light!" 
-    },
-    "illuminate-ult": {
-      "special": "Ultimate",
-      "name": "Illuminate",
-      "type": "Area of effect",
-      "target": "Spot",
-      "damage": 5,
-      "damageType": "Magical",     
-      "length": 6,           
-      "width": 1,           
-      "cards": 1,
-      "description": "Summon a spirit to channel light to damage enemies in a line"
+      "description": "Ezalor becomes one with the light!"
     },
     "blind": {
-      "special": "Ultimate",
       "name": "Blinding Light",
-      "type": "Area of effect",
-      "target": "Area",
-      "range": "Ranged", 
+      "deck": "Temporary",
+      "type": "Active",
+      "targets": ["Spot", "Self"],
+      "aoe": "Radial",
+      "aoerange": "Ranged",
+      "range": "Ranged",
       "cards": 1,
       "description": "Knock back and blind enemies, causing them to miss attacks"
     },
     "recall": {
-      "special": "Ultimate",
       "name": "Recall",
-      "type": "Target Friend Unit",
-      "target": "Ally",
-      "range": "Global", 
+      "deck": "Temporary",
+      "type": "Active",
+      "targets": ["Ally"],
+      "range": "Global",
       "delay": 1,
       "cards": 1,
       "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
@@ -294,97 +289,99 @@
   "pud": {
     "hook": {
       "name": "Meat Hook",
-      "type": "Target spot",
-      "target": "Spot",
-      "length": 5,
-      "width": 1,
+      "type": "Active",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoewidth": 1,
+      "aoerange": 6,
       "damage": 18,
       "damageType": "Pure",
-      "cards": 5,
+      "cards": 6,
       "display": true,
       "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
     },
     "rot": {
-      "special": "Permanent",
       "name": "Rot",
-      "type": "Toggle",
-      "target": "Self",   
-      "range": "Melee",
+      "type": "Free",
+      "targets": ["Self"],
+      "aoe": "Radial",
+      "aoerange": "Melee",
       "dot": 5,
-      "damageType": "Magical",  
+      "damageType": "Magical",
       "cards": 1,
       "display": true,
-      "description": "A toxic cloud that deals intense damage to himself and enemies around"    
+      "description": "A toxic cloud that deals intense damage to himself and enemies around"
     },
     "passive": {
       "name": "Flesh Heap",
-      "type": "Passive",     
-      "target": "Passive",     
+      "type": "Passive",
+      "targets": ["Self"],
       "percentage": 12,
       "hpBonus": 3,
       "regenBonus": 1,
       "damageBonus": 1,
       "cards": 1,
       "display": true,
-      "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill" 
+      "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill"
     },
     "ult": {
       "name": "Dismember",
       "channel": true,
-      "type": "Target Enemy Unit",
-      "target": "Enemy",        
+      "type": "Channel",
+      "targets": ["Enemy"],
       "range": "Melee",
       "dot": 6,
-      "damageType": "Magical", 
+      "damageType": "Magical",
       "cards": 2,
       "display": true,
-      "description": "Channels to disable and deal damage over time to an enemy"
-    }    
+      "description": "Pudge chows down on an enemy unit, disabling it and dealing damage over time"
+    }
   },
 
   "nyx": {
     "stun": {
       "name": "Impale",
-      "type": "Area of Effect",
-      "target": "Spot",  
-      "length": 4,
-      "width": 1,
+      "type": "Active",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoewidth": 1,
+      "aoerange": 3,
       "cards": 4,
       "display": true,
       "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
     },
     "burn": {
       "name": "Mana Burn",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",      
+      "type": "Active",
+      "targets": ["Enemy"],
       "range": "Ranged",
       "multiplier": 4,
-      "damageType": "Magical",   
-      "cards": 13,
+      "damageType": "Magical",
+      "cards": 8,
       "display": true,
-      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"    
+      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"
     },
     "spike": {
       "name": "Spiked Carapace",
-      "type": "Active",     
-      "target": "Self",      
+      "type": "Active",
+      "targets": ["Self"],
       "duration": 2,
       "damageType": "Pure",
       "cards": 5,
       "display": true,
-      "description": "Reflects and negates damage received, while stunning the source of damage" 
+      "description": "Reflects and negates damage received, while stunning the source of damage"
     },
     "ult": {
       "name": "Vendetta",
       "type": "Active",
-      "target": "Self",
+      "targets": ["Self"],
       "duratioin": 8,
       "damage": 20,
       "damageType": "Physical",
-      "cards": 1, 
+      "cards": 1,
       "display": true,
-      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"       
-    }    
+      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"
+    }
   }
 
 }

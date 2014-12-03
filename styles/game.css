@@ -16,31 +16,31 @@
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff) format('woff2');
+  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
 
+
+body, p, noscript, .card h1 {
+  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+h1, h2, button {
+  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+.tutorial .battle,
+.card .damaged,
+.card .heal {
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+input[type="text"] {
+  font-family: monospace;
+}
+
 html, body {
-  user-select: none;  
+  user-select: none;
   margin: 0;
   width: 100%; height: 100%;
 }
-
-body, p, noscript {
-  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-}
-
-h1, h2 {
-  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;  
-  padding: 1px 2px;
-  margin: 0;
-  font-weight: normal;
-}
-
-noscript {  
-  display: block;
-}
-
 body {
   display: table;
   background-attachment: fixed;
@@ -72,6 +72,11 @@ a:visited {
   text-decoration: none;
   color: inherit;
 }
+h1, h2 {
+  padding: 1px 2px;
+  margin: 0;
+  font-weight: normal;
+}
 h1 {
   font-size: 22px;
   cursor: default;
@@ -79,7 +84,7 @@ h1 {
 h2 {
   font-size: 19px;
   cursor: default;
-
+  margin: 10px 0;
 }
 img {
   border: 0;
@@ -88,7 +93,9 @@ small {
   cursor: default;
   font-size: 70%;
 }
-
+noscript {
+  display: block;
+}
 /*CLASSES*/
 
 .container {
@@ -99,12 +106,12 @@ small {
 .frame {
   margin: 0 auto;
   width: 970px;
-  height: 600px;  
-  background-color: #c2beb2;  
-  position: relative;  
+  height: 600px;
+  background-color: #c2beb2;
+  position: relative;
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: 0 0 6px black;  
+  box-shadow: 0 0 6px black;
 }
 
 .frame p {
@@ -112,14 +119,10 @@ small {
   margin: 1em;
 }
 
+
 .welcome .message {
   margin: 0 0 0 30px;
   line-height: 30px;
-}
-
-.unsupported,
-.welcome {
-  display: none;
 }
 
 .banner {
@@ -127,7 +130,7 @@ small {
   width: 100%;
 }
 
-.hidden {
+.hidden, .unsupported {
   display: none;
 }
 
@@ -135,11 +138,11 @@ small {
   position: absolute;
   top: 50%; left: 50%;
   width: 45%;
-  transform: translate(-50%, -50%);  
+  transform: translate(-50%, -50%);
   padding: 50px 100px;
   text-align: center;
   border-radius: 5px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
 }
 .box div p {
   display: block;
@@ -155,7 +158,7 @@ small {
 /*STATES*/
 
 .states.low {
-  transform: scale(0.75);
+  transform: scale(0.6);
 }
 .states.high {
   transform: scale(1.25);
@@ -168,12 +171,11 @@ small {
 .state,
 .frame {
   background-size: cover;
-  background-image: url("../img/bkg/polygon-light.jpg");  
+  background-image: url("../img/bkg/polygon-light.jpg");
 }
 
-.state.table, 
-.state.choose,
-.state.options {
+.state.table,
+.state.choose {
   background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
@@ -192,23 +194,27 @@ small {
 }
 
 .choose .topbar,
-.options .topbar,
 .table .topbar {
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.5);
 }
 
 .loader {
   width: 16px;
   height: 16px;
   position: fixed;
-  vertical-align: top; 
+  vertical-align: top;
   margin: 4px;
   padding: 0;
   border: 3px solid transparent;
   border-bottom: 3px solid white;
-  border-radius: 50%; 
+  border-radius: 50%;
   visibility: hidden;
 }
+.states .loader {
+  position: absolute;
+  top: 0; left: 0;
+}
+
 .loader.loading {
   visibility: visible;
   animation: rotate 1s linear infinite;
@@ -233,7 +239,7 @@ small {
 }
 
 
-.turn .message {
+.unturn .message {
   text-shadow: 0 0 6px white;
 }
 
@@ -262,8 +268,9 @@ small {
   cursor: pointer;
   height: 20px;
   position: absolute;
-  top: 0; right: 5px;
-  margin: 5px;  
+  top: 0; right: 0;
+  margin: 7px;
+  color: white;
 }
 
 /*INTRO*/
@@ -301,9 +308,8 @@ small {
 .login .box {
   width: 320px;
 }
-input {  
+input {
   border-radius: 3px;
-  font-family: monospace;
   letter-spacing: -1px;
   word-spacing: -1px;
   font-size: 16px;
@@ -311,6 +317,8 @@ input {
   outline: 0;
   border: 0;
   padding: 5px;
+  margin: 1px;
+  height: 22px;
 }
 input:focus {
   animation: shade 0.5s;
@@ -319,7 +327,6 @@ input:focus {
   50% {opacity: 0.5;}
 }
 button {
-  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;;
   font-size: 16px;
   cursor: pointer;
   padding: 8px 16px;
@@ -340,16 +347,16 @@ button:hover {
   background: lightgray;
 }
 button:active {
-  top: -1px;
+  top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
-button[disabled] {  
+button[disabled] {
   background: darkgray;
   color: gray;
   text-shadow: none;
   box-shadow: 0 4px 0 gray;
 }
-button[disabled]:hover {  
+button[disabled]:hover {
   background: darkgray;
 }
 
@@ -359,10 +366,11 @@ input[type="radio"] {
 }
 
 label {
-  display: block; 
+  display: block;
   padding: 1px 2px;
   margin: 2px;
   text-align: left;
+  height: 28px;
 }
 label input {
   float: left;
@@ -385,7 +393,7 @@ label input {
   width: 200px;
 }
 .chat {
-  background: rgb(227,239,250);
+  background: rgba(240,250,255,0.5);
   position: absolute;
   left: 20px; top: 50px;
   width: 434px; height: 494px;
@@ -393,6 +401,10 @@ label input {
   padding: 8px;
   color: #4d4843;
   transition: left .4s;
+}
+.chat h1 {
+  color: white;
+  height: 26px;
 }
 
 .choose .chat,
@@ -405,76 +417,88 @@ label input {
 .choose .chat:hover,
 .table .chat:hover {
   left: 0px;
-  height: 410px;
-  background: rgb(227,239,250);
+  height: 494px;
+  background: rgba(240,250,255,0.5);
+  z-index: 12;
 }
-.choose .chat *,
-.table .chat * {
+.choose .chat > *,
+.table .chat > * {
   display: none
 }
-.choose .chat:hover *,
-.table .chat:hover * {
+.choose .chat:hover > *,
+.table .chat:hover > * {
   display: block;
 }
-.choose .chat:after,
-.table .chat:after {
-  content: "";
-  display: block;
-  background: transparent;
-  width: 0;
-  height: 0;
-  position: absolute;
-  right: 11px;
-  top: 20px;
-  border: 4px solid #f7f7ff;
-  border-left-color: transparent;
-  border-bottom-color: transparent;   
-}
-.choose .chat:before,
-.table .chat:before {
-  content: "";
-  display: block;
-  background: #f7f7ff;
-  width: 22px;
-  height: 16px;
-  border-radius: 50%;
-  right: 7px;
-  position: absolute;
+.choose .chat:hover .chat-icon,
+.table .chat:hover .chat-icon {
+  display: none;
 }
 
+.states .chat-icon {
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  display: none;
+}
+.choose .chat .chat-icon,
+.table .chat .chat-icon {
+  display: inline-block;
+}
 .chat .messages {
-  height: calc(100% - 64px);
+  height: calc(100% - 76px);
   overflow-y: scroll;
   padding: 4px;
   background: rgba(0,0,0,0.1);
   margin: 4px 2px;
   word-break: break-word;
+  border: rgba(250,250,255,0.5);
+  user-select: text;
 }
 
 .chat .messages p {
-  margin: 4px 2px;
-  background: #f7f7ff;
-  box-shadow: 4px 5px 0 #ccc;
+  margin: 8px 2px;
+  background: rgba(250,250,255,0.9);
+  box-shadow: 4px 5px 0 rgba(0,0,0,0.2);
   float: left;
   clear: both;
+  padding: 6px 9px;
+  line-height: 1.5em;
 }
+.chat .messages p { transform: rotate(2deg); }
+.chat .messages p:nth-child(2n) { transform: rotate(-0.8deg); }
+.chat .messages p:nth-child(3n) { transform: rotate(-1.6deg); }
+.chat .messages p:nth-child(5n) { transform: rotate(0); }
 
 .chat input {
   width: 365px;
   margin: 0 5px 0 1px;
-  height: 15px;
+  height: 22px;
   position: absolute;
   bottom: 6px;
 }
 
 .chat button {
   width: 50px;
-  display: inline-block;
-  height: 23px;
+  height: 30px;
   line-height: 10px;
   font-size: 14px;
-  float: right;
-  margin: 5px 0;
+  position: absolute;
+  top: auto;
+  bottom: -3px;
+  right: 10px;
+}
+.chat button:active {
+  bottom: -6px;
+}
+.choose .chat button,
+.table .chat button {
+  bottom: 2px;
+}
+.choose .chat button:active,
+.table .chat button:active {
+  bottom: -1px;
 }
 
 /*OPTIONS*/
@@ -529,7 +553,7 @@ label input {
 }
 
 .pickbox {
-  width: 760px;  
+  width: 760px;
   height: 300px;
   position: absolute;
   top: 35px;
@@ -543,14 +567,15 @@ label input {
 }
 
 .pickbox .deck {
-  position: relative;  
+  position: relative;
   left: -50%;
   height: 300px;
 }
 
-.pickbox .card {  
+.pickbox .card {
   margin: 0 -50px;
-  transform: translate(-50%, -50%) scale(0.4);     
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
 }
 
 .pickbox .card.active {
@@ -559,7 +584,7 @@ label input {
 }
 
 .pickedbox {
-  width: 540px;  
+  width: 540px;
   height: 190px;
   position: absolute;
   top: 360px;
@@ -576,7 +601,7 @@ label input {
   float: left;
   width: 100px;
   height: 150px;
-  margin: 4px;  
+  margin: 4px;
   box-shadow: inset 0 0 40px rgba(255,255,255,0.1);
 }
 
@@ -603,13 +628,14 @@ label input {
 
 .pickedbox .card {
   animation: slidedown 0.5s;
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0.4);
 }
 @keyframes slidedown {
-  0% {top: 0%;}
+  0% {top: 0;}
   100% {top: 50%;}
 }
-.pickedbox .card:hover { 
+.pickedbox .card:hover {
   top: 45%;
   transform: translate(-50%, -50%) scale(0.45);
 }
@@ -636,25 +662,27 @@ label input {
 
 .card {
   position: relative;
-  top: 50%; left: 50%;
   display: inline-block;
-  background: blue;
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
-  text-align: left;  
+  text-align: left;
   transition: all 0.4s;
   padding: 0;
   width: 200px; height: 300px;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.5);  
+  box-shadow: 0 0 20px rgba(255,255,255,0.5);
   z-index: 1;
   color: #4d4843;
 }
+.card.enemy {
+  transition: all 1.4s;
+}
+
 .card:hover {
   z-index: 2;
   box-shadow: 0 0 15px 5px rgba(255,255,255,0.5);
 }
 
-.card legend {     
+.card legend {
   color: white;
   font-size: 14px;
   text-transform: uppercase;
@@ -695,9 +723,8 @@ label input {
   width: 100%;
 }
 
-.card h1 {   
+.card h1 {
   cursor: inherit;
-  font-family: "Open Sans", "open sans", "Arial", sans-serif;
   margin: 4px 0 2px;
   font-size: 12px;
   font-weight: bold;
@@ -718,8 +745,8 @@ label input {
   text-align: center;
   display: inline-block;
   border-radius: 50%;
-  width: 23px;
-  height: 19px;  
+  width: 22px;
+  height: 18px;
   padding: 0;
   padding-top: 4px;
 }
@@ -727,7 +754,7 @@ label input {
   background: #ceeb71;
 }
 .card .current .damage span {
-  background: #ed8c8c; 
+  background: #ed8c8c;
   color: white;
 }
 
@@ -735,7 +762,7 @@ label input {
   clear: left;
 }
 
-.card p { 
+.card p {
   cursor: inherit;
   text-align: justify;
   margin: 0;
@@ -790,25 +817,24 @@ label input {
 .card.player.done {
   background: silver;
 }
-.map .card.player.done.selected {  
+.map .card.player.done.selected {
   box-shadow: 0 0 0 10px gray;
 }
-.map .card.enemy.heroes.done, 
+.map .card.enemy.heroes.done,
 .map .card.enemy.heroes.done.selected {
   box-shadow: 0 0 0 10px gold;
 }
 
 .card .damaged {
-  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
   z-index: 6;
   color: gold;
   position: absolute;
   opacity: 0;
-  top: 0;  
+  top: 0;
   right: 0;
   font-size: 150px;
   animation: slideup 2s linear;
-  text-shadow: 
+  text-shadow:
      10px   0   white,
     -10px   0   white,
       0    10px white,
@@ -822,16 +848,15 @@ label input {
   color: orangered;
 }
 .card .heal {
-  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
   z-index: 7;
   color: springgreen;
   position: absolute;
   opacity: 0;
-  top: 0;  
+  top: 0;
   left: 0;
   font-size: 150px;
   animation: slideup 2s linear;
-  text-shadow: 
+  text-shadow:
      10px   0   white,
     -10px   0   white,
       0    10px white,
@@ -839,7 +864,7 @@ label input {
      10px  10px white,
     -10px  10px white,
      10px -10px white,
-    -10px -10px white;  
+    -10px -10px white;
 }
 @keyframes slideup {
   0% {top: 0;opacity: 1;}
@@ -874,19 +899,20 @@ label input {
 
 .table .deck {
   position: absolute;
-  height: 120px; 
+  height: 120px;
   bottom: -10px;
   z-index: 6;
 }
 
-.table .deck .card {  
+.table .deck .card {
+  top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(0.4);
   margin-right: -190px;
   left: 40px;
 }
 .table .deck .card:hover {
-  z-index: 8;
   transform: translate(-50%, -50%) scale(0.5);
+  z-index: 8;
 }
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
@@ -900,11 +926,11 @@ label input {
   left: 160px;
   width: 350px;
 }
-.table .player.skills.permanent.deck {  
+.table .player.skills.free.deck {
   left: 175px;
   width: 160px;
 }
-.table .player.skills.permanent.deck .card {  
+.table .player.skills.free.deck .card {
   margin-right: -140px;
 }
 .table .player.skills.hand {
@@ -924,27 +950,28 @@ label input {
 }
 .table .selectedarea .card {
   z-index: 9;
-  transform: translate(-50%, -50%) scale(1.1);   
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.1);
 }
 .table .selectedarea .card:hover {
   z-index: 11;
-  transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px); 
+  transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px);
 }
 .table .selectedarea .card .damaged {
   display: none;
 }
 
-.table .deck.skills.enemy { 
+.table .deck.skills.enemy {
   z-index: 6;
   top: 40px;
   left: -10px;
   transition: all 0.5s;
 }
-.table .deck.skills.enemy.slide {  
+.table .deck.skills.enemy.slide {
   z-index: 6;
   left: 100px;
-} 
-.table .deck.skills.enemy .card {  
+}
+.table .deck.skills.enemy .card {
   z-index: 6;
   margin-right: -100px;
 }
@@ -954,8 +981,8 @@ label input {
 .camera {
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   position: absolute;
-  top: 35px; left: 40px;    
-  width: 700px; height: 450px;
+  top: 30px; left: 0;
+  width: 740px; height: 450px;
   background: #666;
   perspective: 1600px;
   overflow: hidden;
@@ -965,24 +992,25 @@ label input {
   content: "";
   display: block;
   position: absolute;
-  top: 0; left: 0;  
-  width: 733px; height: 456px;
+  top: 0; left: 0;
+  width: 740px; height: 456px;
   box-shadow: inset 0 0 20px 5px black;
   pointer-events: none;
 }
 
 .map {
   z-index: 1;
-  background-size: contain;
+  background-size: 80% 70%;
+  background-position: 340px 300px;
   background-image: url("../img/bkg/map_vectorized.png");
-  transform: rotateX(30deg) translate(-40%, -50.4%) scale3d(0.46,0.46,0.46);
+  transform: rotateX(40deg) translate(-40%, -58%) scale3d(0.5,0.5,0.5);
   transform-style: preserve-3d;
   padding: 1000px;
-  width: 2544px; height: 1560px;
+  width: 2544px; height: 1870px;
 }
 
 .map .row {
-  width: 2544px; height: 312px; 
+  width: 2544px; height: 312px;
 }
 
 .map .spot {
@@ -1007,7 +1035,7 @@ label input {
 .map .card:hover,
 .map .card.selected,
 .map .card.source {
-  transform: translate3d(-50%, -50%, 75px) rotateX(-30deg);
+  transform: translate3d(-50%, -50%, 75px) rotateX(-40deg);
 }
 
 .map .spot.playerarea {
@@ -1031,7 +1059,7 @@ label input {
   background: rgba(255,255,100,0.25);
 }
 
-.map .spot.movearea {  
+.map .spot.movearea {
   cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
 }
 
@@ -1042,7 +1070,7 @@ label input {
   content: ""; display: block;
   position: absolute;
 }
-  
+
 .movearea:after {
   width: 120px; height: 12px;
   background: springgreen;
@@ -1055,7 +1083,7 @@ label input {
   border-right: 12px solid springgreen;
   border-bottom: 12px solid springgreen;
   background: transparent;
-  left: 60px; top: 40px; 
+  left: 60px; top: 40px;
   transform: rotate(45deg);
 }
 .movearea:hover:before {
@@ -1066,11 +1094,11 @@ label input {
   50% { top: 80px; }
 }
 
-.attacktarget:after, 
+.attacktarget:after,
 .attacktarget:before {
   z-index: 4;
   position: absolute;
-  content:""; 
+  content:"";
   display: block;
 }
 .attacktarget:before {
@@ -1079,10 +1107,10 @@ label input {
   border-right: 12px solid orangered;
   border-bottom: 12px solid orangered;
   background: transparent;
-  left: 60px; top: 50px; 
-  transform: rotate(45deg) scale(1);  
+  left: 60px; top: 50px;
+  transform: rotate(45deg) scale(1);
 }
-.attacktarget:hover:before {  
+.attacktarget:hover:before {
   animation: scaleattackbefore 1.5s infinite;
 }
 @keyframes scaleattackbefore {
@@ -1094,24 +1122,24 @@ label input {
   border: 0px solid transparent;
   border-top: 12px solid orangered;
   background: transparent;
-  left: 30px; bottom: 30px; 
+  left: 30px; bottom: 30px;
   transform: rotate(0deg) scale(1);
   transition: all 0.5s;
   border-radius: 6px;
 }
-.attacktarget:hover:after {  
+.attacktarget:hover:after {
   animation: scaleattackafter 1.5s infinite;
 }
 @keyframes scaleattackafter {
-  0%, 100% { 
+  0%, 100% {
     width: 150px;
-    bottom: 30px; left: 30px;  
+    bottom: 30px; left: 30px;
     transform: rotate(0deg) scale(1);
     border-radius: 3px;
   }
-  20%, 80% { 
-    width: 50px; 
-    bottom: 70px; left: 60px; 
+  20%, 80% {
+    width: 50px;
+    bottom: 70px; left: 60px;
     border: 20px solid transparent;
     border-top: 12px solid orangered;
     border-left: 12px solid orangered;
@@ -1123,11 +1151,11 @@ label input {
   }
 }
 
-.targetarea:after, 
+.targetarea:after,
 .targetarea:before {
   z-index: 4;
   position: absolute;
-  content:""; 
+  content:"";
   display: block;
 }
 .targetarea:before {
@@ -1136,17 +1164,17 @@ label input {
   border-right: 12px solid dodgerblue;
   border-bottom: 12px solid dodgerblue;
   background: transparent;
-  left: 60px; top: 50px; 
-  transform: rotate(45deg) scale(1);  
+  left: 60px; top: 50px;
+  transform: rotate(45deg) scale(1);
 }
-.targetarea:hover:before {  
+.targetarea:hover:before {
   animation: scalespotbefore 1.5s infinite;
 }
 @keyframes scalespotbefore {
-  0%, 100% { 
-    left: 60px; top: 50px; 
+  0%, 100% {
+    left: 60px; top: 50px;
     width: 50px; height: 50px;
-    transform: rotate(45deg) scale(1); 
+    transform: rotate(45deg) scale(1);
   }
   20%, 80% {
     width: 100px; height: 100px;
@@ -1154,8 +1182,8 @@ label input {
     border: 12px solid transparent;
     border-left: 12px solid dodgerblue;
     border-top: 12px solid dodgerblue;
-    border-radius: 50%;   
-    transform: rotate(45deg) scale(1); 
+    border-radius: 50%;
+    transform: rotate(45deg) scale(1);
   }
   50% { transform: rotate(45deg) scale(1.2); }
 }
@@ -1164,24 +1192,24 @@ label input {
   border: 0px solid transparent;
   border-top: 12px solid dodgerblue;
   background: transparent;
-  left: 30px; bottom: 30px; 
+  left: 30px; bottom: 30px;
   transform: rotate(0deg) scale(1);
   transition: all 0.5s;
   border-radius: 6px;
 }
-.targetarea:hover:after {  
+.targetarea:hover:after {
   animation: scalespotafter 1.5s infinite;
 }
 @keyframes scalespotafter {
-  0%, 100% { 
+  0%, 100% {
     width: 150px; height: 50px;
-    left: 30px; bottom: 30px; 
+    left: 30px; bottom: 30px;
     transform: rotate(0deg) scale(1);
     border: 12px solid transparent;
     border-bottom: 12px solid dodgerblue;
     border-radius: 6px;
   }
-  20%, 80% { 
+  20%, 80% {
     width: 100px; height: 100px;
     left: 40px; bottom: 86px;
     transform: rotate(45deg) scale(1);
@@ -1195,11 +1223,11 @@ label input {
   }
 }
 
-.casttarget:after, 
+.casttarget:after,
 .casttarget:before {
   z-index: 4;
   position: absolute;
-  content:""; 
+  content:"";
   display: block;
 }
 .casttarget:before {
@@ -1208,10 +1236,10 @@ label input {
   border-right: 12px solid dodgerblue;
   border-bottom: 12px solid dodgerblue;
   background: transparent;
-  left: 60px; top: 50px; 
-  transform: rotate(45deg) scale(1);  
+  left: 60px; top: 50px;
+  transform: rotate(45deg) scale(1);
 }
-.casttarget:hover:before {  
+.casttarget:hover:before {
   animation: scalecastbefore 1.5s infinite;
 }
 @keyframes scalecastbefore {
@@ -1223,24 +1251,24 @@ label input {
   border: 0px solid transparent;
   border-top: 12px solid dodgerblue;
   background: transparent;
-  left: 30px; bottom: 30px; 
+  left: 30px; bottom: 30px;
   transform: rotate(0deg) scale(1);
   transition: all 0.5s;
   border-radius: 6px;
 }
-.casttarget:hover:after {  
+.casttarget:hover:after {
   animation: scalecastafter 1.5s infinite;
 }
 @keyframes scalecastafter {
-  0%, 100% { 
+  0%, 100% {
     width: 150px;
-    bottom: 30px; left: 30px;  
+    bottom: 30px; left: 30px;
     transform: rotate(0deg) scale(1);
     border-radius: 3px;
   }
-  20%, 80% { 
-    width: 50px; 
-    bottom: 70px; left: 60px; 
+  20%, 80% {
+    width: 50px;
+    bottom: 70px; left: 60px;
     border: 20px solid transparent;
     border-top: 12px solid dodgerblue;
     border-left: 12px solid dodgerblue;
@@ -1254,52 +1282,52 @@ label input {
 
 /*STROKES*/
 
-.map .spot.stroke.playerattack.top { 
+.map .spot.stroke.playerattack.top {
   border-top: 6px solid gold;
 }
-.map .spot.stroke.playerattack.bottom { 
+.map .spot.stroke.playerattack.bottom {
   border-bottom: 6px solid gold;
 }
-.map .spot.stroke.playerattack.left { 
+.map .spot.stroke.playerattack.left {
   border-left: 6px solid gold;
 }
-.map .spot.stroke.playerattack.right { 
+.map .spot.stroke.playerattack.right {
   border-right: 6px solid gold;
 }
-.map .spot.stroke.enemyattack.top { 
+.map .spot.stroke.enemyattack.top {
   border-top: 6px solid orangered;
 }
-.map .spot.stroke.enemyattack.bottom { 
+.map .spot.stroke.enemyattack.bottom {
   border-bottom: 6px solid orangered;
 }
-.map .spot.stroke.enemyattack.left { 
+.map .spot.stroke.enemyattack.left {
   border-left: 6px solid orangered;
 }
-.map .spot.stroke.enemyattack.right { 
+.map .spot.stroke.enemyattack.right {
   border-right: 6px solid orangered;
 }
-.map .spot.stroke.skillcast.top { 
+.map .spot.stroke.skillcast.top {
   border-top: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.bottom { 
+.map .spot.stroke.skillcast.bottom {
   border-bottom: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.left { 
+.map .spot.stroke.skillcast.left {
   border-left: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.right { 
+.map .spot.stroke.skillcast.right {
   border-right: 6px solid springgreen;
 }
-.map .spot.stroke.skillarea.top { 
+.map .spot.stroke.skillarea.top {
   border-top: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.bottom { 
+.map .spot.stroke.skillarea.bottom {
   border-bottom: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.left { 
+.map .spot.stroke.skillarea.left {
   border-left: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.right { 
+.map .spot.stroke.skillarea.right {
   border-right: 6px solid dodgerblue;
 }
 
@@ -1336,10 +1364,10 @@ label input {
   padding: 5px;
   position: relative;
   overflow: hidden;
-  white-space: nowrap; 
+  white-space: nowrap;
 }
 .table .results span {
-  line-height: 30px;  
+  line-height: 30px;
   margin-left: 70px;
 }
 .table .results .portrait {
@@ -1401,55 +1429,51 @@ label input {
   background-image: url("../img/heroes/antimage_full.png");
 }
 .am-burn .img {
-  background-image: url("../img/skills.vec/antimage_mana_break.png");
+  background-image: url("../img/skills/antimage_mana_break.png");
 }
 .am-blink .img {
-  background-image: url("../img/skills.vec/antimage_blink.png");
+  background-image: url("../img/skills/antimage_blink.png");
 }
 .am-passive .img {
-  background-image: url("../img/skills.vec/antimage_spell_shield.png");
+  background-image: url("../img/skills/antimage_spell_shield.png");
 }
 .am-ult .img {
-  background-image: url("../img/skills.vec/antimage_mana_void.png");
+  background-image: url("../img/skills/antimage_mana_void.png");
 }
 
 
 .ld {
   background: #62a64e;
 }
-.ld.heroes .portrait .img {
+.ld.heroes .portrait .img,
+.ld-transform .img {
   background-image: url("../img/heroes/lone_druid_full.png");
 }
-.ld.transformed.heroes .portrait .img {
+.ld.transformed.heroes .portrait .img,
+.ld-ult .img {
   background-image: url("../img/heroes/lone_druid_transf.png");
 }
 .ld-summon .img,
 .spiritbear .img {
-  background-image: url("../img/skills.vec/lone_druid_spirit_bear.png");
+  background-image: url("../img/skills/lone_druid_spirit_bear.png");
 }
 .ld-return .img {
-  background-image: url("../img/skills.vec/lone_druid_return.png");
+  background-image: url("../img/skills/lone_druid_return.png");
 }
 .ld-rabid .img {
-  background-image: url("../img/skills.vec/lone_druid_rabid.png");
+  background-image: url("../img/skills/lone_druid_rabid.png");
 }
 .ld-passive .img {
-  background-image: url("../img/skills.vec/lone_druid_synergy.png");
+  background-image: url("../img/skills/lone_druid_synergy.png");
 }
 .ld-cry .img {
-  background-image: url("../img/skills.vec/lone_druid_battle_cry.png");
-}
-.ld-ult .img {
-  background-image: url("../img/skills.vec/lone_druid_true_form.png");
-}
-.ld-transform .img {
-  background-image: url("../img/skills.vec/lone_druid_true_form_druid.png");
+  background-image: url("../img/skills/lone_druid_battle_cry.png");
 }
 .ld-entangle .img {
-  background-image: url("../img/skills.vec/lone_druid_entangle.png");
+  background-image: url("../img/skills/lone_druid_entangle.png");
 }
 .ld-demolish .img {
-  background-image: url("../img/skills.vec/lone_druid_demolish.png");
+  background-image: url("../img/skills/lone_druid_demolish.png");
 }
 
 
@@ -1461,16 +1485,16 @@ label input {
 }
 .wk-stun .img,
 .wk-dot .img {
-  background-image: url("../img/skills.vec/skeleton_king_hellfire_blast.png");
+  background-image: url("../img/skills/skeleton_king_hellfire_blast.png");
 }
 .wk-lifesteal .img {
-  background-image: url("../img/skills.vec/skeleton_king_vampiric_aura.png");
+  background-image: url("../img/skills/skeleton_king_vampiric_aura.png");
 }
 .wk-crit .img {
-  background-image: url("../img/skills.vec/skeleton_king_mortal_strike.png");
+  background-image: url("../img/skills/skeleton_king_mortal_strike.png");
 }
 .wk-ult .img {
-  background-image: url("../img/skills.vec/skeleton_king_reincarnation.png");
+  background-image: url("../img/skills/skeleton_king_reincarnation.png");
 }
 
 
@@ -1513,16 +1537,16 @@ label input {
   background-image: url("../img/heroes/crystal_maiden_full.png");
 }
 .cm-slow .img {
-  background-image: url("../img/skills.vec/crystal_maiden_crystal_nova.png");
+  background-image: url("../img/skills/crystal_maiden_crystal_nova.png");
 }
 .cm-aura .img {
-  background-image: url("../img/skills.vec/crystal_maiden_brilliance_aura.png");
+  background-image: url("../img/skills/crystal_maiden_brilliance_aura.png");
 }
 .cm-freeze .img {
-  background-image: url("../img/skills.vec/crystal_maiden_frostbite.png");
+  background-image: url("../img/skills/crystal_maiden_frostbite.png");
 }
 .cm-ult .img {
-  background-image: url("../img/skills.vec/crystal_maiden_freezing_field.png");
+  background-image: url("../img/skills/crystal_maiden_freezing_field.png");
 }
 
 
@@ -1548,7 +1572,7 @@ label input {
 /*BUFFS*/
 
 .stun .img {
-   background-image: url("../img/skills.vec/stun.png");
+   background-image: url("../img/skills/stun.png");
 }
 .silence .img {
    background-image: url("../img/skills/silence.jpg");
@@ -1579,9 +1603,17 @@ label input {
   bottom: 0;
 }
 
+.tutorial.axe.left {
+  right: auto;
+  left: 0;
+  transform: scaleX(-1);
+}
+.tutorial.axe.left .txt  {
+  transform: scaleX(-1);
+}
 .tutorial.axe .img {
   z-index: 10;
-  background-image: url("../img/tutorial/axe2.png");
+  background-image: url("../img/tutorial/axe.png");
   background-size: cover;
   width: 100%;
   height: 100%;
@@ -1594,7 +1626,7 @@ label input {
   padding: 28px;
   background: #fff;
   border: 4px solid #777;
-  border-width: 4px 8px;  
+  border-width: 4px 8px;
   width: 175px;
   border-radius: 50%;
   position: absolute;
@@ -1611,8 +1643,8 @@ label input {
   left: calc(50% - 33px);
   height: 20px;
 }
-.tutorial.axe .baloon:before {  
-  width: 40px;  
+.tutorial.axe .baloon:before {
+  width: 40px;
   border-style: solid;
   border-width: 0 8px 4px 0;
   border-color: #777;
@@ -1638,7 +1670,6 @@ label input {
 }
 
 .tutorial .battle {
-  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
   font-size: 175%;
 }
 
@@ -1649,4 +1680,45 @@ label input {
 @keyframes tutorialblink {
   0%, 100% {box-shadow: 0 0 1px 1px gold;}
   50% {box-shadow: 0 0 10px 10px gold;}
+}
+
+.markdown {
+  max-width: 800px;
+  min-width: 240px;
+  margin: 20px auto;
+  padding: 10px;
+  background: #f7f7ff;
+  color: rgb(51, 51, 51);
+}
+
+.markdown h1,
+.markdown h2 {
+  margin: 1px 10px;
+}
+
+.markdown h1 {
+  font-size: 32px;
+}
+
+.markdown h2 {
+  font-size: 26px;
+}
+
+.markdown p {
+  display: block;
+  margin: 10px;
+}
+
+.markdown > p:last-child {
+  text-align: right;
+  margin: 40px 20px;
+}
+
+.markdown ul {
+  padding-left: 0px;
+  margin-left: 50px;
+}
+
+.markdown a {
+  color: rgb(65, 131, 196);
 }

@@ -1,7 +1,7 @@
 {
   "name": "dotacard",
-  "description": "A Dota inspired card game online",
+  "description": "A DOTA card game online",
   "repository": "https://github.com/rafaelcastrocouto/dotacard",
   "logo": "http://rafaelcastrocouto.github.io/dotacard/img/banner.jpg",
-  "keywords": ["game", "dota", "card"]
+  "keywords": ["dotacard", "game", "dota", "card", "cards"]
 }

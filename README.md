@@ -1,5 +1,3 @@
-[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rafaelcastrocouto/dotacard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-
 [1]: http://dotacard.herokuapp.com
 
 [2]: https://github.com/rafaelcastrocouto/dotacard/fork
@@ -8,17 +6,17 @@
 
 [![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/img/banner.png)][1]
 
-**[DotaCard][1]**
+[![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/rafaelcastrocouto/dotacard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-A DOTA card game with the heroes you love and all skills and ultimates.
+[<h2>**DOTACARD** <sub><sup>alpha</sup></sub></h2>][1]
 
-Please [fork][2] and help me make a hero!
+A **DOTA** card game with the heroes you love and all skills and ultimates.
+
+Please [fork][2] and help to build the game, you can even **make a hero**!
 
 *Report any [sugestion or issue](https://github.com/rafaelcastrocouto/dotacard/issues)*
 
-__[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
-
-**Easy 3-Step local setup guide**
+**Local install: easy 3-step setup**
 
  * **![Linux](https://sites.google.com/site/rafaelcastrocouto/download/linux.png "Linux") Linux**
 
@@ -26,26 +24,31 @@ __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
     2 - [Fork][2] or [download][3] this repository
 
-    3 - Run the following command in a terminal: 
+    3 - Run the following command in a terminal at the repository folder: 
 
-    `HOST=localhost PORT=80 node server.js` and press (**Enter**)
+    `HOST=localhost PORT=80 node server.js` and press **Enter**
     
-    And it's done! If everything worked correctly you can access your [local server](http://localhost/)
+    You can also run `server.sh` as an alternative to step 3
+    
+    And it's done! If everything worked correctly you can access your [local server at http://localhost/](http://localhost/)
+
+
 
  * **![Windows](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows") Windows**
 
     1 - [Download](http://nodejs.org/download/) and install [Nodejs](http://nodejs.org/)
     
-    2 - [Fork][2] or [download][3] this repository
-    
-    (You can also use [Github for Windows](https://windows.github.com/) to manage repositories)
+    2 - [Fork][2] or [download][3] this repository (Via [Github for Windows](https://windows.github.com/))
 
-    3.a - Double click the `server.bat` file
+    3 - Press (![Windows Key](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows Key")**+R**) type 
+    
+    `cmd` and press **Enter** and in the prompt at the folder repository, type 
+    
+    `set HOST=localhost& set PORT=80& node server.js` and press **Enter**
+    
+    You can also run `server.bat` as an alternative to step 3
+    
+    And it's done! If everything worked correctly you can access [your local server at http://localhost/](http://localhost/)
 
-    3.b - OR press (![Windows Key](https://sites.google.com/site/rafaelcastrocouto/download/win.png "Windows Key")**+R**) type 
     
-    `cmd` and press (**Enter**) and in the prompt, type 
-    
-    `set HOST=localhost& set PORT=80& node server.js` and press (**Enter**)
-    
-    And it's done! If everything worked correctly you can access your [local server](http://localhost/)
+__[GPL License](http://opensource.org/licenses/gpl-3.0.html)__

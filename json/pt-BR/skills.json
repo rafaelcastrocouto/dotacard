@@ -1,390 +1,389 @@
 {
-  
+
   "ld": {
     "summon": {
       "name": "Espírito Urso",
-      "type": "Summon",
-      "target": "Spot",
-      "range": "Melee",
+      "type": "Ativa",
+      "targets": ["Local", "Livre"],
+      "range": "Perto",
       "hp": 135,
-      "damage": 2,      
+      "damage": 2,
       "cards": 2,
       "armor": 20,
-      "resistance": 50,        
+      "resistance": 50,
       "entanglechance": 20,
-      "entangledamage": 6,  
-      "entangleduration": 3,  
+      "entangledamage": 6,
+      "entangleduration": 3,
       "demolishpercentage": 40,
       "returncooldown": 3,
       "display": true,
-      "description": "Invoca um poderoso Espírito Urso companheiro "
+      "description": "Invoca um poderoso Espírito Urso companheiro"
     },
     "return": {
       "name": "Retornar",
-      "type": "Target Spot",
-      "target": "Spot",
-      "range": "Melee",
-      "special": "Temporary",
+      "deck": "Temporária",
+      "type": "Livre",
+      "targets": ["Local", "Livre"],
+      "range": "Perto",
+      "cards": 1,
       "description": "Teleporta o Espírito Urso de volta para o Druida"
     },
     "rabid": {
       "name": "Raiva",
-      "type": "Active",
-      "target": "Self",      
-      "damagebonus": 3,   
+      "type": "Ativa",
+      "targets": ["Próprio"],
+      "damagebonus": 3,
       "duration": 3,
       "cards": 5,
       "display": true,
-      "description": "Aumenta o ataque e o movimento do Druida e do Espírito Urso"    
+      "description": "Aumenta o ataque e o movimento do Druida e do Espírito Urso"
     },
     "passive": {
       "name": "Sinergia",
-      "type": "Passive",     
-      "target": "Passive",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "cards": 1,
       "bearbonus": 4,
-      "rabidbonus": 4,      
-      "ultbonus": 20,   
+      "rabidbonus": 4,
+      "ultbonus": 20,
       "display": true,
-      "description": "Aumenta a sinergia entra o Druida e o Espírito Urso" 
+      "description": "Aumenta a sinergia entra o Druida e o Espírito Urso"
     },
     "ult": {
-      "special": "Permanent",
       "name": "Forma Real",
-      "type": "Active",
-      "target": "Self",      
-      "cards": 4,
-      "armorbonus": 16,      
+      "type": "Livre",
+      "targets": ["Próprio"],
+      "cards": 1,
+      "armorbonus": 16,
       "hpbonus": 20,
       "display": true,
-      "description": "O Duida se tranforma em um urso furioso"       
+      "description": "O Duida se tranforma em um urso furioso"
     },
     "cry": {
-      "special": "Ultimate",
       "name": "Battle Cry",
-      "type": "Active",
-      "target": "Self",
+      "deck": "Temporária",
+      "type": "Ativa",
+      "targets": ["Próprio"],
       "duration": 4,
       "armorbonus": 16,
       "damagebonus": 2,
-      "cards": 1, 
-      "description": "Aumenta o ataque do Druida e do Espírito Urso"       
+      "cards": 1,
+      "description": "Aumenta o ataque do Druida e do Espírito Urso"
     },
     "transform": {
-      "special": "Transform",
       "name": "Forma de Druida",
-      "type": "Active",
-      "target": "Self",
-      "cards": 1, 
-      "description": "O Druida volta a sua forma humana"       
+      "deck": "Temporária",
+      "type": "Livre",
+      "targets": ["Próprio"],
+      "cards": 1,
+      "description": "O Druida volta a sua forma humana"
     }
   },
-  
-  "cm": {    
+
+  "cm": {
     "slow": {
       "name": "Explosão Cristalina",
-      "type": "Area of Effect",
-      "target": "Area",
-      "range": "Ranged",
-      "aoe": "Melee",
+      "type": "Ativa",
+      "targets": ["Local", "Próprio"],
+      "range": "Distante",
+      "aoe": "Radial",
+      "aoerange": "Perto",
       "duration": 3,
       "damage": 12,
-      "damageType": "Magical",      
+      "damageType": "Mágico",
       "cards": 4,
       "display": true,
       "description": "Uma explosão de gelo que causa dano e diminui a velocidade dos inimigos"
     },
     "aura": {
       "name": "Aura Arcana",
-      "type": "Aura",
-      "target": "Passive",
+      "type": "Passiva",
+      "target": ["Próprio"],
       "cards": 1,
       "display": true,
-      "description": "O jogador compra uma carta a mais por turno"    
+      "description": "O jogador compra uma carta a mais por turno"
     },
     "freeze": {
       "name": "Congelamento",
-      "type": "Target Enemy Unit",     
-      "target": "Enemy",
-      "range": "Ranged",
+      "type": "Ativa",
+      "targets": ["Inimigo"],
+      "range": "Distante",
       "duration": 3,
       "dot": 3,
-      "damageType": "Magical", 
+      "damageType": "Mágico",
       "cards": 5,
       "display": true,
-      "description": "Congela uma unidade inimiga, que pode se mover ou atacar e recebe dano por turno"    
+      "description": "Congela uma unidade inimiga, que pode se mover ou atacar e recebe dano por turno"
     },
     "ult": {
-      "name": "Freezing Field",
+      "name": "Campo Congelante",
       "channel": 5,
-      "type": "Area of Effect",
-      "target": "Self",
-      "range": "Long",
+      "type": "Canalização",
+      "targets": ["Próprio"],
+      "range": "Longe",
+      "aoe": "Radial",
+      "aoerange": "Longe",
       "duration": 2,
       "damage": 7,
-      "damageType": "Magical",       
+      "damageType": "Mágico",
       "cards": 1,
       "display": true,
-      "description": "Rylai canaliza uma tempestade de neve ao seu redor"    
+      "description": "Rylai canaliza uma tempestade de neve ao seu redor"
     }
   },
-  
+
   "am": {
     "burn": {
-      "name": "Mana Break",
-      "type": "Passive",
-      "target": "Passive",
+      "name": "Quebra de Mana",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "cards": 1,
       "display": true,
       "description": "A cada ataque o AnitMage obriga o oponente a descartar uma habilidade da unidade atacada"
     },
     "passive": {
-      "name": "Spell Shield",
-      "type": "Passive",
-      "target": "Passive",      
+      "name": "Escudo Antimagia",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "percentage": 50,
       "cards": 1,
       "display": true,
-      "description": "Reduz todo damo mágico pela metade"    
+      "description": "Reduz todo damo mágico pela metade"
     },
     "blink": {
       "name": "Blink",
-      "type": "Target spot",     
-      "target": "Spot",
-      "range": "Long",
-      "cards": 11,
+      "type": "Ativa",
+      "targets": ["Local", "Livre"],
+      "range": "Longe",
+      "cards": 8,
       "display": true,
-      "description": "Teleporta o AntiMage instantâneamente" 
+      "description": "Teleporta o AntiMage instantâneamente"
     },
     "ult": {
       "name": "Mana Void",
-      "type": "Area of Effect",
-      "target": "Enemy",
-      "range": "Short", 
-      "aoe": "Ranged", 
-      "damageType": "Magical",       
+      "type": "Ativa",
+      "targets": ["Inimigo"],
+      "range": "Médio",
+      "aoe": "Radial",
+      "aoerange": "Distante",
+      "damageType": "Mágico",
       "cards": 1,
       "multiplier": 2,
       "display": true,
       "description": "Causa dano em área ao redor de uma unidade inimiga. O dano é igual a metade no número de cartas que o jogador poderia ter em suas mãos (Max-Hand/2)"
     }
   },
-  
+
   "wk": {
     "stun": {
-      "name": "Wraithfire Blast",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",
-      "range": "Short",
+      "name": "Explosão Maldita",
+      "type": "Ativa",
+      "targets": ["Enemy"],
+      "range": "Médio",
       "damage": 10,
-      "damageType": "Magical",
-      "dotduration": 2,      
+      "damageType": "Mágico",
+      "dotduration": 2,
       "dot": 2,
       "stunduration": 3,
       "cards": 7,
       "display": true,
-      "description": "Stun and then damage over time and slows an enemy"      
+      "description": "Atordoa e depois causa dano por turno à uma unidade inimiga"
     },
     "lifesteal": {
-      "name": "Vampiric Aura",      
-      "type": "Aura",
-      "target": "Passive",
-      "percentage": 30,      
+      "name": "Aura Vampírica",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "percentage": 30,
       "cards": 1,
       "display": true,
-      "description": "Drain the life of enemy on every attack"  
+      "description": "Drena a vida dos inimigos a cada ataque"
     },
     "crit": {
-      "name": "Mortal Strike",
-      "type": "Passive",
-      "target": "Passive",      
+      "name": "Golpe Mortal",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "chance": 15,
-      "percentage": 300,      
+      "percentage": 300,
       "cards": 1,
       "display": true,
-      "description": "Chance of bonus damage"      
+      "description": "Chance de dano crítico"
     },
     "ult": {
-      "name": "Reincarnation",
-      "type": "Passive",
-      "target": "Autoactivate",
+      "name": "Reencarnação",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "duration": 3,
-      "aoe": "Melee",
+      "aoe": "Radial",
+      "aoerange": "Perto",
       "delay": 2,
       "cards": 1,
       "display": true,
-      "description": "No one can kill the Wraith King!"
-    }    
+      "description": "Ninguém pode matar o Rei!"
+    }
   },
 
   "kotl": {
     "illuminate": {
-      "name": "Illuminate",
+      "name": "Iluminar",
       "channel": true,
-      "type": "Area of effect",
-      "target": "Spot",
+      "type": "Canalização",
+      "targets": ["Local"],
+      "aoe": "Linear",
+      "aoewidth": 3,
+      "aoerange": 8,
       "damage": 5,
-      "damageType": "Magical",     
-      "length": 6,           
-      "width": 1,           
-      "cards": 5,
+      "damageType": "Mágico",
+      "cards": 4,
       "display": true,
-      "description": "Channels light to damage enemies in a line"
+      "description": "Canaliza luz causando dano em área"
     },
     "leak": {
-      "name": "Mana Leak",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",      
-      "range": "Long",
+      "name": "Vazamento de Mana",
+      "type": "Ativa",
+      "targets": ["Inimigo"],
+      "range": "Longe",
       "duration": 4,
       "cards": 4,
       "display": true,
-      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
+      "description": "Amaldiçoa uma unidade inimiga obrigando o inimigo a descartar uma carta de habilidade a cada movimento, caso o inimigo não tenha mais cartas a unidade é atordoada"
     },
     "mana": {
-      "name": "Chakra Magic",
-      "type": "Target Friend Unit",
-      "target": "player",
-      "range": "Ranged",
+      "name": "Magia do Chakra",
+      "type": "Ativa",
+      "target": ["Próprio", "Aliado"],
+      "ranges": "Distante",
       "cards": 4,
       "display": true,
-      "description": "Gives the player two skill cards"
+      "description": "O jogador compra duas cartas de habilidade"
     },
     "ult": {
-      "name": "Spirit Form",
-      "type": "Transform",
-      "target": "Self",
-      "cards": 4,
+      "name": "Forma Espiritual",
+      "type": "Ativa",
+      "targets": ["Próprio"],
+      "cards": 2,
       "display": true,
-      "description": "Ezalor becomes one with the light!" 
-    },
-    "illuminate-ult": {
-      "special": "Ultimate",
-      "name": "Illuminate",
-      "type": "Area of effect",
-      "target": "Spot",
-      "damage": 5,
-      "damageType": "Magical",     
-      "length": 6,           
-      "width": 1,           
-      "cards": 1,
-      "description": "Summon a spirit to channel light to damage enemies in a line"
+      "description": "Ezalor se torna um com a luz!"
     },
     "blind": {
-      "special": "Ultimate",
-      "name": "Blinding Light",
-      "type": "Area of effect",
-      "target": "Area",
-      "range": "Ranged", 
+      "name": "Luz Cegante",
+      "deck": "Temporária",
+      "type": "Ativa",
+      "targets": ["Local", "Próprio"],
+      "aoe": "Radial",
+      "aoerange": "Distante",
+      "range": "Distante",
       "cards": 1,
-      "description": "Knock back and blind enemies, causing them to miss attacks"
+      "description": "Uma luz cegante arremessa as unidades inimigas, fazendo com que errem ataques."
     },
     "recall": {
-      "special": "Ultimate",
-      "name": "Recall",
-      "type": "Target Friend Unit",
-      "target": "Ally",
-      "range": "Global", 
+      "name": "Revocar",
+      "deck": "Temporária",
+      "type": "Ativa",
+      "targets": ["Aliados"],
+      "range": "Global",
       "delay": 1,
       "cards": 1,
-      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
+      "description": "Caso não sofra dano por um turno, teletransporta o herói alvo para a sua posição"
     }
   },
 
   "pud": {
     "hook": {
       "name": "Meat Hook",
-      "type": "Target spot",
-      "target": "Spot",
-      "length": 5,
-      "width": 1,
+      "type": "Ativa",
+      "target": ["Local"],
+      "aoe": "Linear",
+      "aoewidth": 1,
+      "aoerange": 6,
       "damage": 18,
-      "damageType": "Pure",
-      "cards": 5,
+      "damageType": "Puro",
+      "cards": 6,
       "display": true,
-      "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy"
+      "description": "Lança um gancho que agarra a primeira unidade que encontrar, arrastando-a de volta e causando dano caso seja uma unidade inimiga"
     },
     "rot": {
-      "special": "Permanent",
       "name": "Rot",
-      "type": "Toggle",
-      "target": "Self",   
-      "range": "Melee",
+      "deck": "Permanente",
+      "type": "Livre",
+      "targets": ["Próprio"],
+      "aoe": "Radial",
+      "aoerange": "Perto",
       "dot": 5,
-      "damageType": "Magical",  
+      "damageType": "Mágico",
       "cards": 1,
       "display": true,
-      "description": "A toxic cloud that deals intense damage to himself and enemies around"    
+      "description": "Uma nuvem tóxica que causa dano as unidades inimigas e ao próprio Pudge"
     },
     "passive": {
-      "name": "Flesh Heap",
-      "type": "Passive",     
-      "target": "Passive",     
+      "name": "Armadura de Corpos",
+      "type": "Passiva",
+      "targets": ["Próprio"],
       "percentage": 12,
       "hpBonus": 3,
       "regenBonus": 1,
       "damageBonus": 1,
       "cards": 1,
       "display": true,
-      "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill" 
+      "description": "Reduz o dano mágico e aumenta o HP e o Dano a cada morte ao redor do Pudge"
     },
     "ult": {
-      "name": "Dismember",
+      "name": "Desmembrar",
       "channel": true,
-      "type": "Target Enemy Unit",
-      "target": "Enemy",        
-      "range": "Melee",
+      "type": "Canalização",
+      "targets": ["Inimigo"],
+      "range": "Perto",
       "dot": 6,
-      "damageType": "Magical", 
+      "damageType": "Mágico",
       "cards": 2,
       "display": true,
-      "description": "Channels to disable and deal damage over time to an enemy"
-    }    
+      "description": "Pudge devora uma unidade inimiga, desativando-a e causando dano por turno"
+    }
   },
 
   "nyx": {
     "stun": {
       "name": "Impale",
-      "type": "Area of Effect",
-      "target": "Spot",  
-      "length": 4,
-      "width": 1,
+      "type": "Ativa",
+      "targets": ["Local"],
+      "aoe": "Linear",
+      "aoewidth": 1,
+      "aoerange": 3,
       "cards": 4,
       "display": true,
-      "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
+      "description": "Espinhos rochosos emergem da terra, unidades inimigas atingidas são atordoadas e recebem dano"
     },
     "burn": {
       "name": "Mana Burn",
-      "type": "Target Enemy Unit",
-      "target": "Enemy",      
-      "range": "Ranged",
+      "type": "Ativa",
+      "targets": ["Inimigo"],
+      "range": "Distante",
       "multiplier": 4,
-      "damageType": "Magical",   
-      "cards": 13,
+      "damageType": "Mágico",
+      "cards": 8,
       "display": true,
-      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"    
+      "description": "Causa dano ao alvo obriga o oponente a descartar uma habilidade do alvo"
     },
     "spike": {
       "name": "Spiked Carapace",
-      "type": "Active",     
-      "target": "Self",      
+      "type": "Ativa",
+      "targets": ["Próprio"],
       "duration": 2,
       "damageType": "Pure",
       "cards": 5,
       "display": true,
-      "description": "Reflects and negates damage received, while stunning the source of damage" 
+      "description": "Reflete e nega o dano recebido e atordoa o atacante"
     },
     "ult": {
       "name": "Vendetta",
-      "type": "Active",
-      "target": "Self",
+      "type": "Ativa",
+      "targets": ["Próprio"],
       "duratioin": 8,
       "damage": 20,
       "damageType": "Physical",
-      "cards": 1, 
+      "cards": 1,
       "display": true,
-      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"       
-    }    
+      "description": "Nyx Assassin fica invisível e o dano do seu próximo ataque é aumentado"
+    }
   }
 
 }
