@@ -1,7 +1,18 @@
 {
   "name": "dotacard",
+  "version": "0.0.7",
   "description": "A DOTA card game online",
   "repository": "https://github.com/rafaelcastrocouto/dotacard",
   "logo": "http://rafaelcastrocouto.github.io/dotacard/img/banner.jpg",
-  "keywords": ["dotacard", "game", "dota", "card", "cards"]
+  "keywords": ["dotacard", "game", "dota", "card", "cards"],
+  "license": "GPL",
+  "homepage": "http://dotacard.herokuapp.com/",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rafaelcastrocouto/dotacard"
+  },
+  "readmeFilename": "Readme.md",
+  "bugs": {
+    "url": "https://github.com/rafaelcastrocouto/dotacard/issues"
+  }
 }

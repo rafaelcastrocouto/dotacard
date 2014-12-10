@@ -1,9 +1,13 @@
+/*FONTS*/
 @font-face {
-  font-family: 'Sansita One';
+  font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Sansita One'), local('SansitaOne'), url('fonts/sansita-latin.woff2') format('woff2');
+  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
+}
+body, p, noscript, .card h1 {
+  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
 @font-face {
   font-family: 'Julius Sans One';
@@ -12,25 +16,23 @@
   src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(fonts/julius-latin.woff2) format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
 }
+h1, h2, .button {
+  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
 @font-face {
-  font-family: 'Open Sans';
+  font-family: 'Sansita One';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
+  src: local('Sansita One'), local('SansitaOne'), url('fonts/sansita-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2212, U+2215, U+E0FF, U+EFFD, U+F000;
-}
-
-
-body, p, noscript, .card h1 {
-  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
-}
-h1, h2, button {
-  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
 .tutorial .battle,
 .card .damaged,
 .card .heal {
   font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+.slot.available:after {
+  font-family: "FontAwesome"
 }
 input[type="text"] {
   font-family: monospace;
@@ -42,7 +44,6 @@ html, body {
   width: 100%; height: 100%;
 }
 body {
-  display: table;
   background-attachment: fixed;
   background-color: #22272c;
   background: radial-gradient(ellipse farthest-corner at center top, #6e7a66 0%, #343b43 30%, #22272c 60%, #22272c 100%), #22272c;
@@ -99,8 +100,9 @@ noscript {
 /*CLASSES*/
 
 .container {
-  display: table-cell;
-  vertical-align: middle;
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%)
 }
 
 .frame {
@@ -264,7 +266,7 @@ noscript {
   border-radius: 4px;
 }
 
-.opt {
+.topbar .opt {
   cursor: pointer;
   height: 20px;
   position: absolute;
@@ -306,7 +308,7 @@ noscript {
 /*LOGIN*/
 
 .login .box {
-  width: 320px;
+  width: 340px;
 }
 input {
   border-radius: 3px;
@@ -326,7 +328,8 @@ input:focus {
 @keyframes shade {
   50% {opacity: 0.5;}
 }
-button {
+.button {
+  display: inline-block;
   font-size: 16px;
   cursor: pointer;
   padding: 8px 16px;
@@ -343,21 +346,25 @@ button {
   top: -3px;
   transition: all 0.2s;
 }
-button:hover {
+.button:hover {
   background: lightgray;
 }
-button:active {
+.button:active {
   top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
-button[disabled] {
+.button[disabled] {
   background: darkgray;
   color: gray;
   text-shadow: none;
   box-shadow: 0 4px 0 gray;
 }
-button[disabled]:hover {
+.button[disabled]:hover {
   background: darkgray;
+}
+
+.fa {
+  margin: 4px;
 }
 
 input[type="checkbox"],
@@ -373,8 +380,11 @@ label {
   height: 28px;
 }
 label input {
-  float: left;
-  margin: 5px;
+  margin: 0 5px;
+}
+
+label span {
+  vertical-align: super;
 }
 
 /*MENU*/
@@ -387,10 +397,10 @@ label input {
   padding: 80px 100px;
   top: 50px;
 }
-.menu  button {
+.menu  .button {
   display: block;
   margin: 12px auto;
-  width: 200px;
+  width: 216px;
 }
 .chat {
   background: rgba(240,250,255,0.5);
@@ -479,26 +489,21 @@ label input {
   bottom: 6px;
 }
 
-.chat button {
-  width: 50px;
-  height: 30px;
+.chat .button {
+  width: 30px;
+  height: 15px;
   line-height: 10px;
   font-size: 14px;
   position: absolute;
   top: auto;
-  bottom: -3px;
+  bottom: 9px;
   right: 10px;
+  text-align: center;
+  margin: 0;
+  padding: 4px 10px 10px 10px;
 }
-.chat button:active {
+.chat .button:active {
   bottom: -6px;
-}
-.choose .chat button,
-.table .chat button {
-  bottom: 2px;
-}
-.choose .chat button:active,
-.table .chat button:active {
-  bottom: -1px;
 }
 
 /*OPTIONS*/
@@ -522,7 +527,7 @@ label input {
   border-top: 20px solid transparent;
   border-right: 50px solid rgba(255,255,255,0.2);
   display: inline-block;
-  margin: 0px 6px;
+  margin: 5px 10px;
 }
 
 .volumecontrol {
@@ -673,7 +678,7 @@ label input {
   z-index: 1;
   color: #4d4843;
 }
-.card.enemy {
+.map .card.enemy {
   transition: all 1.4s;
 }
 
@@ -1002,7 +1007,7 @@ label input {
   z-index: 1;
   background-size: 80% 70%;
   background-position: 340px 300px;
-  background-image: url("../img/bkg/map_vectorized.png");
+  background-image: url("../img/bkg/map_vectorized.jpg");
   transform: rotateX(40deg) translate(-40%, -58%) scale3d(0.5,0.5,0.5);
   transform-style: preserve-3d;
   padding: 1000px;

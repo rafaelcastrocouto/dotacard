@@ -4,7 +4,6 @@
 var game = (function () {
   'use strict';
   return {
-    vs: 0.071,
     debug: (location.host === 'localhost'),
     id: null,
     currentData: {},
@@ -61,6 +60,19 @@ var game = (function () {
       ].join('\n');
     },
     load: function () {
+      game.states.load.pack();
+      game.states.load.video();
+      game.states.load.audio();
+      game.states.load.images();
+      game.states.load.language(function () {
+        game.states.load.data();
+        setTimeout(game.states.load.poll, 1000);
+      });
+      game.states.load.ping(function () {
+        if (!game.offline && !game.debug) {
+          game.states.load.analytics();
+        }
+      });
       if (!Number.prototype.map) { Number.prototype.map = function (a, b, c, d) { return c + (d - c) * ((this - a) / (b - a)); }; }
       if (!Number.prototype.limit) { Number.prototype.limit = function (a, b) { return Math.min(b, Math.max(a, this)); }; }
       if (!Number.prototype.round) { Number.prototype.round = function (a) { return Math.round(this); }; }
@@ -134,7 +146,6 @@ var game = (function () {
       $.fn.changehp = game.card.changehp;
       $.fn.die = game.card.die;
       $.fn.reborn = game.card.reborn;
-      game.states.load.build();
     },
     db: function (send, cb) {
       if (typeof send.data !== 'string') {
@@ -238,6 +249,7 @@ var game = (function () {
         }
         if (data.description) {
           card.attr({ title: data.name + ': ' + data.description });
+          $('<p>').appendTo(desc).text(data.name + ': ' + data.description);
         }
         if (data.kd) {
           data.kills = 0;
@@ -356,14 +368,14 @@ var game = (function () {
         var skill = this,
           hero = skill.data('hero'),
           source = $('.map .source'),
-          range = skill.data('range'),
+          range = game.map.getRange(skill.data('range')),
           spot = game.map.getPosition(source);
         if (hero && range && spot && !source.hasClasses('dead done stunned')) {
-          game.map.stroke(spot, game.map.getRange(range), 'skillcast');
+          game.map.stroke(spot, range, 'skillcast');
           //console.log(skill, skill.data('targets'));
           if (skill.data('aoe')) {
             game.castspot = spot;
-            game.castrange = game.map.getRange(range);
+            game.castrange = range;
             game.aoerange = game.map.getRange(skill.data('aoerange'));
             game.aoe = skill.data('aoe');
             if (game.aoe === 'Linear') {
@@ -381,7 +393,7 @@ var game = (function () {
                 }
               } else {
                 $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-                game.map.stroke(game.castspot, game.map.getPosition($(this)), 'skillcast');
+                game.map.stroke(game.castspot, game.castrange, 'skillcast');
               }
             });
           }
@@ -596,15 +608,11 @@ var game = (function () {
       },
       attack: function (target) {
         if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-        var source = this,
+        var source = this, name,
           fromSpot = game.map.getPosition(source),
           toSpot = game.map.getPosition(target);
         if (source.data('currentdamage') && fromSpot !== toSpot && target.data('currenthp')) {
           source.data('channeling', false).removeClass('channeling');
-          source.trigger('beforeattack', {
-            source: source,
-            target: target
-          });
           source.trigger('attack', {
             source: source,
             target: target
@@ -614,8 +622,14 @@ var game = (function () {
             source: source,
             target: target
           });
+          if (source.hasClass('tower')) {
+            name = 'tower';
+          } else if (source.hasClass('bear')) {
+            name = 'bear';
+          } else { name = source.data('hero'); }
+          game.audio.play(name + '/attack');
+          source.addClass('done');
         }
-        source.addClass('done');
         return this;
       },
       damage: function (damage, target, type) {
@@ -1850,7 +1864,7 @@ var game = (function () {
         }).keydown(function (e) {
           if (e.which === 13) { game.chat.button.click(); }
         });
-        game.chat.button = $('<button>').addClass('fa fa-comment-o').appendTo(game.chat.el).click(function () {
+        game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).click(function () {
           var msg = game.chat.input.val();
           if (!msg) {
             game.chat.input.focus();
@@ -1869,7 +1883,7 @@ var game = (function () {
               }, 2000);
             });
           }
-        });
+        }).append($('<span>').addClass('fa fa-comment-o'));
         game.chat.icon = $('<span>').addClass('chat-icon fa fa-comment-o').appendTo(game.chat.el);
         setInterval(function () {
           game.db({ 'get': 'chat' }, function (chat) {
@@ -2162,7 +2176,8 @@ var game = (function () {
         //
       },
       getRange: function (att) {
-        var range = 1;
+        var range = att;
+        if (att === game.ui.ortho) { range = 1; }
         if (att === game.ui.melee) { range = 2; }
         if (att === game.ui.short) { range = 3; }
         if (att === game.ui.ranged) { range = 4; }
@@ -2238,20 +2253,6 @@ var game = (function () {
       },
       //state
       load: {
-        build: function () {
-          game.states.load.video();
-          game.states.load.audio();
-          game.states.load.images();
-          game.states.load.language(function () {
-            game.states.load.data();
-            setTimeout(game.states.load.poll, 500);
-          });
-          game.states.load.ping(function () {
-            if (!game.offline && !game.debug) {
-              game.states.load.analytics();
-            }
-          });
-        },
         language: function (cb) {
           var currentlang = [
             'en-US',
@@ -2268,6 +2269,18 @@ var game = (function () {
               }
             }
             if (cb) { cb(); }
+          });
+        },
+        pack: function () {
+          $.ajax({
+            type: 'GET',
+            url: 'package.json',
+            complete: function (response) {
+              var data = JSON.parse(response.responseText);
+              $.each(data, function (name) {
+                game[name] = this;
+              });
+            }
           });
         },
         json: function (name, cb) {
@@ -2326,14 +2339,21 @@ var game = (function () {
             'horn',
             'battle',
             'pick',
-            'tower',
+            'tower/attack',
             'tutorial/axehere',
             'tutorial/axebattle',
             'tutorial/axemove',
             'tutorial/axeattack',
             'tutorial/axetime',
             'tutorial/axewait',
-            'tutorial/axeah'
+            'tutorial/axeah',
+            'am/attack',
+            'cm/attack',
+            'kotl/attack',
+            'ld/attack',
+            'nyx/attack',
+            'pudge/attack',
+            'wk/attack'
           ], i;
           for (i = 0; i < sounds.length; i += 1) { game.audio.load(sounds[i]); }
           game.audio.count = sounds.length;
@@ -2397,7 +2417,7 @@ var game = (function () {
           var start = new Date();
           $.ajax({
             type: 'GET',
-            url: 'http://dotacard.herokuapp.com',
+            url: game.homepage,
             complete: function (response) {
               game.ping = new Date() - start;
               if (response.readyState === 4) {
@@ -2412,7 +2432,7 @@ var game = (function () {
         },
         poll: function () {
           clearTimeout(game.timeout);
-          if (game.ui && game.heroes && game.buffs && game.skills && game.units && game.videoplayer && game.audio.count < 1) {
+          if (game.version && game.ui && game.heroes && game.buffs && game.skills && game.units && game.videoplayer && game.audio.count < 1) {
             game.status = 'loaded';
             game.states.build();
           } else {
@@ -2443,7 +2463,7 @@ var game = (function () {
             game.states.changeTo('login');
           }).contextmenu(game.nomenu);
           this.box = $('<div>').hide().appendTo(this.el).addClass('box');
-          this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha ' + game.vs + '</a>');
+          this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha ' + game.version + '</a>');
         },
         start: function () {
           $('.frame.welcome').hide();
@@ -2476,7 +2496,7 @@ var game = (function () {
           }).keydown(function (e) {
             if (e.which === 13) { game.states.login.button.click(); }
           });
-          this.button = $('<button>').appendTo(this.menu).text(game.ui.login).attr({
+          this.button = $('<div>').addClass('button').appendTo(this.menu).text(game.ui.login).attr({
             placeholder: game.ui.choosename,
             title: game.ui.choosename
           }).click(function () {
@@ -2498,8 +2518,8 @@ var game = (function () {
                 } else { game.states.load.reset(); }
               });
             }
-          });
-          this.rememberlabel = $('<label>').appendTo(this.menu).text(game.ui.remember);
+          }).append($('<span>').addClass('fa fa-sign-in'));
+          this.rememberlabel = $('<label>').appendTo(this.menu).append($('<span>').text(game.ui.remember));
           this.remembercheck = $('<input>').attr({
             type: 'checkbox',
             name: 'remember',
@@ -2529,29 +2549,29 @@ var game = (function () {
         build: function () {
           this.menu = $('<div>').appendTo(this.el).addClass('box');
           this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosemode);
-          this.tutorial = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.tutorial }).text(game.ui.tutorial).click(function () {
+          this.tutorial = $('<div>').addClass('button').appendTo(this.menu).attr({ 'title': game.ui.tutorial }).text(game.ui.tutorial).click(function () {
             game.tutorial.build();
             game.states.changeTo('choose');
-          });
-          this.online = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.chooseonline }).text(game.ui.online).click(function () {
+          }).append($('<span>').addClass('fa fa-graduation-cap'));
+          this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({
+            'title': game.ui.choosecampain,
+            'disabled': true
+          }).text(game.ui.campain).append($('<span>').addClass('fa fa-gamepad'));
+          this.online = $('<div>').addClass('button').appendTo(this.menu).attr({ 'title': game.ui.chooseonline }).text(game.ui.online).click(function () {
             game.match.online();
             game.states.changeTo('choose');
-          });
-          this.friend = $('<button>').appendTo(this.menu).attr({
+          }).append($('<span>').addClass('fa fa-globe'));
+          this.friend = $('<div>').addClass('button').appendTo(this.menu).attr({
             'title': game.ui.choosefriend,
             'disabled': true
-          }).text(game.ui.friend);
-          this.bot = $('<button>').appendTo(this.menu).attr({
-            'title': game.ui.choosebot,
-            'disabled': true
-          }).text(game.ui.bot);
-          this.options = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.chooseoptions }).text(game.ui.options).click(function () {
+          }).text(game.ui.friend).append($('<span>').addClass('fa fa-user'));
+          this.options = $('<div>').addClass('button').appendTo(this.menu).attr({ 'title': game.ui.chooseoptions }).text(game.ui.options).click(function () {
             game.states.changeTo('options');
-          });
-          this.credits = $('<button>').appendTo(this.menu).attr({
+          }).append($('<span>').addClass('fa fa-sliders'));
+          this.credits = $('<div>').addClass('button').appendTo(this.menu).attr({
             'title': game.ui.choosecredits,
             'disabled': true
-          }).text(game.ui.credits);
+          }).text(game.ui.credits).append($('<span>').addClass('fa fa-lightbulb-o'));
         },
         start: function () {
           game.states.options.opt.hide();
@@ -2571,21 +2591,21 @@ var game = (function () {
           this.title = $('<h1>').appendTo(this.menu).text(game.ui.options);
           this.resolution = $('<div>').appendTo(this.menu).attr({ 'title': game.ui.screenres }).addClass('screenresolution');
           $('<h2>').appendTo(this.resolution).text(game.ui.screenres);
-          this.high = $('<label>').text(game.ui.high).appendTo(this.resolution).append($('<input>').attr({
+          this.high = $('<label>').appendTo(this.resolution).append($('<input>').attr({
             type: 'radio',
             name: 'resolution',
             value: 'high'
-          }).change(this.changeResolution));
-          $('<label>').text(game.ui.medium).appendTo(this.resolution).append($('<input>').attr({
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.high));
+          $('<label>').appendTo(this.resolution).append($('<input>').attr({
             type: 'radio',
             name: 'resolution',
             checked: true
-          }).change(this.changeResolution));
-          this.low = $('<label>').text(game.ui.low).appendTo(this.resolution).append($('<input>').attr({
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.medium));
+          this.low = $('<label>').appendTo(this.resolution).append($('<input>').attr({
             type: 'radio',
             name: 'resolution',
             value: 'low'
-          }).change(this.changeResolution));
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.low));
           var rememberedvol, vol,
             rememberedres = $.cookie('resolution');
           if (rememberedres && this[rememberedres]) { this[rememberedres].click(); }
@@ -2595,10 +2615,10 @@ var game = (function () {
             type: 'checkbox',
             name: 'mute'
           }).change(this.mute);
-          $('<label>').text('Mute').appendTo(this.audio).append(this.muteinput);
+          $('<label>').appendTo(this.audio).append(this.muteinput).append($('<span>').text(game.ui.mute));
           this.volumecontrol = $('<div>').addClass('volumecontrol');
           this.volumeinput = $('<div>').addClass('volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
-          $('<label>').text(game.ui.volume).appendTo(this.audio).append(this.volumeinput);
+          $('<label>').appendTo(this.audio).append($('<span>').text(game.ui.volume)).append(this.volumeinput);
           $(document).on('mouseup.volume', game.states.options.volumeup);
           rememberedvol = $.cookie('volume');
           if (rememberedvol) {
@@ -2607,8 +2627,8 @@ var game = (function () {
             game.mute.gain.value = vol;
             game.states.options.volumecontrol.css('transform', 'scale(' + rememberedvol + ')');
           }
-          this.back = $('<button>').appendTo(this.menu).attr({ 'title': game.ui.back }).text(game.ui.back).click(game.states.backState);
-          this.opt = $('<span>').appendTo(game.topbar).addClass('opt fa fa-cogs').hide().on('click.opt', function () {
+          this.back = $('<div>').addClass('button').appendTo(this.menu).attr({ 'title': game.ui.back }).text(game.ui.back).click(game.states.backState).append($('<span>').addClass('fa fa-reply'));
+          this.opt = $('<span>').appendTo(game.topbar).addClass('opt fa fa-sliders').hide().on('click.opt', function () {
             game.states.changeTo('options');
           });
         },
@@ -2785,7 +2805,6 @@ var game = (function () {
             }
           });
           if (!lowestHp.notfound) {
-            game.audio.play('tower');
             game.player.tower.attack(lowestHp);
             fromSpot = game.map.getPosition(game.player.tower);
             toSpot = game.map.getPosition(lowestHp);
@@ -2881,11 +2900,11 @@ var game = (function () {
               text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
             $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid).append(img, text);
           });
-          $('<button>').appendTo(game.states.table.resultsbox).text(game.ui.close).click(function () {
+          $('<div>').addClass('button').appendTo(game.states.table.resultsbox).text(game.ui.close).click(function () {
             game.states.table.clear();
             if (game.mode === 'tutorial') { game.tutorial.clear(); }
             game.states.changeTo('menu');
-          });
+          }).append($('<span>').addClass('fa fa-reply'));
         },
         clear: function () {
           $('.table .card').remove();

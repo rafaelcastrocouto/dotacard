@@ -1,35 +1,35 @@
 {
-  
+
   "am": {
     "burn": {
       "name": "Quebra de Mana",
-      "description": "O inimigo tem que descartar um habilidade do herói atacado"      
+      "description": "O inimigo tem que descartar um habilidade do herói atacado"
     },
     "passive": {
       "name": "Escudo Antimagia",
-      "description": "Reduz o dano mágico pela metade"      
+      "description": "Reduz o dano mágico pela metade"
     }
   },
-  
+
   "wk": {
     "stun": {
       "name": "Explosão Maldita",
       "description": "Explosão Maldita causa dano por turno",
       "purgeable": true
-    },    
+    },
     "lifesteal": {
       "name": "Aura Vampírica",
-      "description": "Restaura vida com base no dano causado"  
+      "description": "Restaura vida com base no dano causado"
     },
     "crit": {
       "name": "Golpe Mortal",
-      "description": "Chance de dano extra ao atacar"  
+      "description": "Chance de dano extra ao atacar"
     },
     "ult": {
       "name": "Reencarnação",
       "description": "Unidades inimigas ficam lentas ao testemunhar o retorno do rei",
       "purgeable": true
-    }    
+    }
   },
 
   "ktol": {
@@ -56,6 +56,10 @@
       "description": "Movimentação reduzida por uma explosão de gelo",
       "purgeable": true
     },
+    "aura": {
+      "name": "Aura Arcana",
+      "description": "O jogador ganha uma carta extra por turno"
+    },
     "freeze": {
       "name": "Congelamento",
       "description": "Unidade está congelada, não pode se mover ou atacar e recebe dano por turno",
@@ -65,14 +69,14 @@
       "name": "Campo Congelante",
       "description": "Movimentação reduzida por diversas explosões congelantes",
       "purgeable": true
-    }    
+    }
   },
 
   "pud": {
     "ult": {
       "name": "Desmembrar",
       "description": "Unidade presa e recebendo dano por turno"
-    }    
+    }
   },
 
   "nyx": {
@@ -82,12 +86,12 @@
     },
     "spike": {
       "name": "Carapaça de Espinhos",
-      "description": "Atordoado pelo dano refletido pela carapaça de espinhos" 
+      "description": "Atordoado pelo dano refletido pela carapaça de espinhos"
     },
     "ult": {
       "name": "Vingança",
-      "description": "Nyx Assassin está invisível e com bônus de dano"       
-    }    
+      "description": "Nyx Assassin está invisível e com bônus de dano"
+    }
   },
 
   "ld": {
@@ -95,12 +99,12 @@
       "name": "Raiva",
       "description": "Aumenta o ataque e a movimentação do Druida e de seu urso",
       "purgeable": true
-    },    
+    },
     "demolish": {
       "name": "Demolir",
       "description": "O Espírito Urso causa dano adicional à edificações",
       "purgeable": true
-    },   
+    },
     "passive": {
       "name": "Sinergia",
       "description": "Aumenta a sinergia do Druida com o seu Espírito Urso, aprimorando atributos e habilidades"
@@ -112,7 +116,7 @@
     },
     "ult": {
       "name": "Forma Real",
-      "description": "O Druida se transforma em um urso furioso"       
+      "description": "O Druida se transforma em um urso furioso"
     },
     "cry": {
       "name": "Rugido de Batalha",

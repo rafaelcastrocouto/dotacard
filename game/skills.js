@@ -444,7 +444,7 @@ var Skills = {
       passive: function(skill, source){
         source.addBuff(source, skill.data('buff'));
         source.on({
-          'beforeattack.wk': this.attack,
+          'attack.wk': this.attack,
           'afterattack.wk': this.afterattack
         }).data('wk-crit', skill);
       },
@@ -581,6 +581,7 @@ var Skills = {
         game[side].cardsPerTurn += 1;
         source.on('die.cm-aura');
         source.on('reborn.cm-aura');
+        source.addBuff(source, skill.data('buff'));
       },
       die: function(event, eventdata){
         var cm = eventdata.target;

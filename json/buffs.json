@@ -1,35 +1,35 @@
 {
-  
+
   "am": {
     "burn": {
       "name": "Mana Break",
-      "description": "Enemy must discard a skill of the attacked hero"      
+      "description": "Enemy must discard a skill of the attacked hero"
     },
     "passive": {
       "name": "Spell Shield",
-      "description": "Reduces all magic damage by half"      
+      "description": "Reduces all magic damage by half"
     }
   },
-  
+
   "wk": {
     "stun": {
       "name": "Wraithfire Blast",
       "description": "Wraithfire Blast damage over time",
       "purgeable": true
-    },    
+    },
     "lifesteal": {
       "name": "Wraithfire Blast Burn",
-      "description": "Drain the life of enemy on every attack"  
+      "description": "Drain the life of enemy on every attack"
     },
     "crit": {
       "name": "Mortal Strike",
-      "description": "Chance of bonus damage"  
+      "description": "Chance of bonus damage"
     },
     "ult": {
       "name": "Reincarnation Slow",
       "description": "Witness the Wraith King return!",
       "purgeable": true
-    }    
+    }
   },
 
   "ktol": {
@@ -52,12 +52,16 @@
 
   "cm": {
     "slow": {
-      "name": "Crystal Nova Slow",
+      "name": "Crystal Nova",
       "description": "Slowed by a burst of damaging frost",
       "purgeable": true
     },
+    "aura": {
+      "name": "Arcane Aura",
+      "description": "Player buys one extra card per turn"
+    },
     "freeze": {
-      "name": "Frostbitten",
+      "name": "Frostbite",
       "description": "Encased in ice, prohibited to move and attack and receiving damage over time",
       "purgeable": true
     },
@@ -65,14 +69,14 @@
       "name": "Freezing Field",
       "description": "Slowed by icy explosions",
       "purgeable": true
-    }    
+    }
   },
 
   "pud": {
     "ult": {
       "name": "Dismember Hold",
       "description": "Disabled and receiving damage over time by Pudge claws"
-    }    
+    }
   },
 
   "nyx": {
@@ -82,12 +86,12 @@
     },
     "spike": {
       "name": "Spiked Stun",
-      "description": "Stunned by Spiked Carapace reflected damage" 
+      "description": "Stunned by Spiked Carapace reflected damage"
     },
     "ult": {
       "name": "Vendetta",
-      "description": "Nyx Assassin is invisible and will deal bonus damage on next attack"       
-    }    
+      "description": "Nyx Assassin is invisible and will deal bonus damage on next attack"
+    }
   },
 
   "ld": {
@@ -95,12 +99,12 @@
       "name": "Rabid",
       "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear",
       "purgeable": true
-    },    
+    },
     "demolish": {
       "name": "Demolish",
       "description": "Increases the power of the Spirit Bear, causing it to deal more damage to buildings and have additional spell resistance",
       "purgeable": true
-    },   
+    },
     "passive": {
       "name": "Synergy",
       "description": "Increases the Lone Druid's synergy with his Spirit Bear"
@@ -112,7 +116,7 @@
     },
     "ult": {
       "name": "True Form",
-      "description": "Lone Druid morphed himself into a raging bear"       
+      "description": "Lone Druid morphed himself into a raging bear"
     },
     "cry": {
       "name": "Battle Cry",
