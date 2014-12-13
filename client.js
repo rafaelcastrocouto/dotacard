@@ -28,6 +28,9 @@ var game = (function () {
     width: 12,
     height: 6,
     seed: null,
+    nomenu: function () {
+      return false;
+    },
     start: function () {
       if (Skills &&
           window.$ &&
@@ -172,9 +175,6 @@ var game = (function () {
       }
       game.seed += 1;
       return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
-    },
-    nomenu: function () {
-      return false;
     },
     card: {
       build: function (data) {
@@ -1053,6 +1053,65 @@ var game = (function () {
         }
       }
     },
+    tower: {
+      build: function (side, pos) {
+        var tower = game.card.build({
+          className: 'tower towers static ' + side,
+          side: side,
+          name: game.ui.tower,
+          attribute: game.ui.building,
+          range: game.ui.ranged,
+          damage: 15,
+          hp: 80
+        });
+        tower.on('click.select', game.card.select).place(pos);
+        game.map.around(pos, game.map.getRange(game.ui.ranged), function (spot) {
+          spot.addClass(side + 'area');
+        });
+        return tower;
+      },
+      place: function () {
+        game.player.tower = game.tower.build('player', 'C5');
+        game.enemy.tower = game.tower.build('enemy', 'J2');
+      },
+      attack: function () {
+        var fromSpot, toSpot,
+          lowestHp = {
+            notfound: true,
+            data: function (c) { return Infinity; }
+          };
+        $('.map .playerarea .card.enemy').each(function () {
+          var target = $(this);
+          if (target.data('currenthp') < lowestHp.data('currenthp')) {
+            lowestHp = target;
+          }
+        });
+        if (!lowestHp.notfound) {
+          game.player.tower.attack(lowestHp);
+          fromSpot = game.map.getPosition(game.player.tower);
+          toSpot = game.map.getPosition(lowestHp);
+          game.currentData.moves.push('A:' + fromSpot + ':' + toSpot);
+        }
+      }
+    },
+    tree: {
+      build: function (spot) {
+        var tree = game.card.build({
+          className: 'tree static neutral',
+          name: game.ui.tree,
+          attribute: game.ui.forest
+        });
+        tree.on('click.select', game.card.select).place(spot);
+        return tree;
+      },
+      place: function () {
+        var treeSpots = 'A2 A3 B3';
+        $.each(treeSpots.split(' '), function () {
+          game.tree.build(this);
+          game.tree.build(game.map.mirrorPosition(this));
+        });
+      },
+    },
     tutorial: {
       build: function () {
         game.mode = 'tutorial';
@@ -1129,8 +1188,8 @@ var game = (function () {
         game.message.text(game.ui.battle);
         game.loader.removeClass('loading');
         game.audio.play('horn');
-        game.states.table.placeTowers();
-        game.states.table.placeTrees();
+        game.tower.place();
+        game.tree.place();
         game.tutorial.placePlayerHeroes();
         game.tutorial.placeEnemyHeroes();
         game.states.table.buildUnits();
@@ -1569,7 +1628,7 @@ var game = (function () {
         game.match.placeEnemyHeroes();
         game.match.buildSkills();
         game.states.table.placeTowers();
-        game.states.table.placeTrees();
+        game.tree.place();
         game.states.table.buildUnits();
         game.turn.build();
         game.match.started = true;
@@ -1759,7 +1818,7 @@ var game = (function () {
           if (game.status === 'turn') {
             $('.map .card.player').removeClass('done');
             game.player.buyHand();
-            game.states.table.towerAutoAttack();
+            game.tower.attack();
             game.map.highlight();
           } else {
             $('.map .card.enemy').removeClass('done');
@@ -2772,61 +2831,6 @@ var game = (function () {
           this.selectedArea.show();
           game.states.options.opt.show();
         },
-        createTower: function (side, pos) {
-          var tower = game.card.build({
-            className: 'tower towers static ' + side,
-            side: side,
-            name: game.ui.tower,
-            attribute: game.ui.building,
-            range: game.ui.ranged,
-            damage: 15,
-            hp: 80
-          });
-          tower.on('click.select', game.card.select).place(pos);
-          game.map.around(pos, game.map.getRange(game.ui.ranged), function (spot) {
-            spot.addClass(side + 'area');
-          });
-          return tower;
-        },
-        placeTowers: function () {
-          game.player.tower = this.createTower('player', 'C5');
-          game.enemy.tower = this.createTower('enemy', 'J2');
-        },
-        towerAutoAttack: function () {
-          var fromSpot, toSpot,
-            lowestHp = {
-              notfound: true,
-              data: function (c) { return Infinity; }
-            };
-          $('.map .playerarea .card.enemy').each(function () {
-            var target = $(this);
-            if (target.data('currenthp') < lowestHp.data('currenthp')) {
-              lowestHp = target;
-            }
-          });
-          if (!lowestHp.notfound) {
-            game.player.tower.attack(lowestHp);
-            fromSpot = game.map.getPosition(game.player.tower);
-            toSpot = game.map.getPosition(lowestHp);
-            game.currentData.moves.push('A:' + fromSpot + ':' + toSpot);
-          }
-        },
-        createTree: function (spot) {
-          var tree = game.card.build({
-            className: 'tree static neutral',
-            name: game.ui.tree,
-            attribute: game.ui.forest
-          });
-          tree.on('click.select', game.card.select).place(spot);
-          return tree;
-        },
-        placeTrees: function () {
-          var treeSpots = 'A2 A3 B3';
-          $.each(treeSpots.split(' '), function () {
-            game.states.table.createTree(this);
-            game.states.table.createTree(game.map.mirrorPosition(this));
-          });
-        },
         buildUnits: function () {
           $('#A1').addClass('camp');
           $('#L6').addClass('camp');
@@ -2919,7 +2923,7 @@ var game = (function () {
           this.turns.hide();
         }
       }
-    }
+    },
   };
 }());
 game.start();
