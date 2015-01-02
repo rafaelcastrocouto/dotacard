@@ -64,15 +64,11 @@ p {
   display: inline-block;
 }
 
-a {
-  text-decoration: underline;
-  color: inherit;
-}
-
-a:visited {
+a, a:visited {
   text-decoration: none;
   color: inherit;
 }
+
 h1, h2 {
   padding: 1px 2px;
   margin: 0;
@@ -97,6 +93,7 @@ small {
 noscript {
   display: block;
 }
+
 /*CLASSES*/
 
 .container {
@@ -290,21 +287,6 @@ noscript {
   font-size: 33%;
 }
 
-.player video {
-  pointer-events: none;
-  left: 50%;
-  position: absolute;
-  transform: translateX(-50%);
-  filter: contrast(1.2);
-  -webkit-filter: contrast(1.2);
-}
-
-.skip {
-  width: 100%; height: 100%;
-  position: absolute;
-  top: 0; left: 0;
-}
-
 /*LOGIN*/
 
 .login .box {
@@ -410,13 +392,14 @@ label span {
   border-radius: 4px;
   padding: 8px;
   color: #4d4843;
-  transition: left .4s;
+  transition: all 1s;
 }
 .chat h1 {
   color: white;
   height: 26px;
 }
 
+.options .chat,
 .choose .chat,
 .table .chat {
   padding-right: 12px;
@@ -424,6 +407,7 @@ label span {
   height: 20px;
   background: rgba(0,0,0,0.4);
 }
+.options .chat:hover,
 .choose .chat:hover,
 .table .chat:hover {
   left: 0px;
@@ -431,19 +415,26 @@ label span {
   background: rgba(240,250,255,0.5);
   z-index: 12;
 }
+.options .chat > *,
 .choose .chat > *,
 .table .chat > * {
   display: none
 }
+.options .chat:hover > *,
 .choose .chat:hover > *,
 .table .chat:hover > * {
   display: block;
 }
+.options .chat:hover .chat-icon,
 .choose .chat:hover .chat-icon,
 .table .chat:hover .chat-icon {
   display: none;
 }
-
+.options .chat .chat-icon,
+.choose .chat .chat-icon,
+.table .chat .chat-icon {
+  display: inline-block;
+}
 .states .chat-icon {
   color: white;
   position: absolute;
@@ -452,10 +443,7 @@ label span {
   margin: 10px;
   display: none;
 }
-.choose .chat .chat-icon,
-.table .chat .chat-icon {
-  display: inline-block;
-}
+
 .chat .messages {
   height: calc(100% - 76px);
   overflow-y: scroll;
@@ -613,18 +601,18 @@ label span {
 .slot.available {
   animation: innerlight 0.5s infinite;
 }
-.slot.available:after {
-  content: "⇓";
-  font-size: 45px;
-  position: relative;
-  animation: arrowdown 1s infinite;
-}
 @keyframes innerlight {
   0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.2);}
   50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
 }
+.slot.available:after {
+  content: "";
+  font-size: 26px;
+  position: relative;
+  animation: arrowdown 1s infinite;
+}
 @keyframes arrowdown {
-  0%, 100% {top: 20px;}
+  0%, 100% {top: 40px;}
   50% {top: 60px;}
 }
 .slot:hover {
@@ -674,17 +662,12 @@ label span {
   padding: 0;
   width: 200px; height: 300px;
   border-radius: 8px;
-  box-shadow: 0 0 20px rgba(255,255,255,0.5);
   z-index: 1;
   color: #4d4843;
-}
-.map .card.enemy {
-  transition: all 1.4s;
 }
 
 .card:hover {
   z-index: 2;
-  box-shadow: 0 0 15px 5px rgba(255,255,255,0.5);
 }
 
 .card legend {
@@ -775,6 +758,11 @@ label span {
   font-size: 11px;
   line-height: 13px;
   display: block;
+}
+
+.card .description {
+  font-style: italic;
+  font-size: 10px;
 }
 
 .card.player {
@@ -952,17 +940,42 @@ label span {
   top: 34px;
   right: 5px;
   border-radius: 10px;
+  perspective: 600px;
 }
+
 .table .selectedarea .card {
+  position: absolute;
   z-index: 9;
   top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
+  backface-visibility: hidden;
+}
+.table .selectedarea .cardback {
+  background: #111;
+  background-image: url(../img/cardback.jpg);
+  background-size: cover;  
+  position: absolute;
+  padding: 0;
+  width: 200px; height: 300px;
+  border-radius: 8px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.1);
+  backface-visibility: hidden;
+  transition: all 0.4s;
+}
+
+.table .selectedarea.flip .card {
   transform: translate(-50%, -50%) scale(1.1);
 }
-.table .selectedarea .card:hover {
-  z-index: 11;
-  transform: translate(-50%, -50%) scale(1.9) translate(-50px, 55px);
+.table .selectedarea.flip .cardback {
+  transform: translate(-50%, -50%) scale(1.1) rotateY(180deg);
 }
-.table .selectedarea .card .damaged {
+.table .selectedarea.flip:hover .card {
+  z-index: 11;
+  transform: translate(-50%, -50%) scale(1.86) translate(-42px, 62px);
+}
+.table .selectedarea .card .damaged,
+.table .selectedarea .card .heal {
   display: none;
 }
 
@@ -970,7 +983,7 @@ label span {
   z-index: 6;
   top: 40px;
   left: -10px;
-  transition: all 0.5s;
+  transition: all 1s;
 }
 .table .deck.skills.enemy.slide {
   z-index: 6;

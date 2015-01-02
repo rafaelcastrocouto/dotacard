@@ -20,8 +20,7 @@
       "regen": 2,
       "mana": 3,
       "damage": 5,
-      "skills": "War Stomp",
-      "buffs": "War Stompt"
+      "skills": "Pisão de Guerra"
      },
 
     "golem": {
@@ -30,7 +29,7 @@
       "hp": 135,
       "regen": 1,
       "damage": 5,
-      "passive": "Spell Immunity"
+      "passive": "Imunidade Mágica"
     }
   }
 }
