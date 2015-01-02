@@ -1,5 +1,57 @@
 {
 
+  "cm": {
+    "slow": {
+      "name": "Crystal Nova",
+      "type": "Active",
+      "targets": ["Spot", "Self"],
+      "range": "Ranged",
+      "aoe": "Radial",
+      "aoerange": "Melee",
+      "duration": 3,
+      "damage": 12,
+      "damageType": "Magical",
+      "cards": 5,
+      "display": true,
+      "description": "A burst of damaging frost slows enemies in the targeted area"
+    },
+    "aura": {
+      "name": "Arcane Aura",
+      "type": "Passive",
+      "targets": ["Self"],
+      "cards": 1,
+      "display": true,
+      "description": "Give an extra bonus skill card per turn"
+    },
+    "freeze": {
+      "name": "Frostbite",
+      "type": "Active",
+      "targets": ["Enemy"],
+      "range": "Ranged",
+      "duration": 3,
+      "dot": 3,
+      "damageType": "Magical",
+      "cards": 5,
+      "display": true,
+      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"
+    },
+    "ult": {
+      "name": "Freezing Field",
+      "channel": 5,
+      "type": "Channel",
+      "targets": ["Self"],
+      "range": "Long",
+      "aoe": "Radial",
+      "aoerange": "Long",
+      "duration": 2,
+      "damage": 7,
+      "damageType": "Magical",
+      "cards": 1,
+      "display": true,
+      "description": "Rylai channels icy explosions around her!"
+    }
+  },
+
   "ld": {
     "summon": {
       "name": "Spirit Bear",
@@ -76,58 +128,6 @@
       "targets": ["Self"],
       "cards": 1,
       "description": "Syllabear morphs himself back into a druid"
-    }
-  },
-
-  "cm": {
-    "slow": {
-      "name": "Crystal Nova",
-      "type": "Active",
-      "targets": ["Spot", "Self"],
-      "range": "Ranged",
-      "aoe": "Radial",
-      "aoerange": "Melee",
-      "duration": 3,
-      "damage": 12,
-      "damageType": "Magical",
-      "cards": 5,
-      "display": true,
-      "description": "A burst of damaging frost slows enemies in the targeted area"
-    },
-    "aura": {
-      "name": "Arcane Aura",
-      "type": "Passive",
-      "targets": ["Self"],
-      "cards": 1,
-      "display": true,
-      "description": "Give an extra bonus skill card per turn"
-    },
-    "freeze": {
-      "name": "Frostbite",
-      "type": "Active",
-      "targets": ["Enemy"],
-      "range": "Ranged",
-      "duration": 3,
-      "dot": 3,
-      "damageType": "Magical",
-      "cards": 5,
-      "display": true,
-      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"
-    },
-    "ult": {
-      "name": "Freezing Field",
-      "channel": 5,
-      "type": "Channel",
-      "targets": ["Self"],
-      "range": "Long",
-      "aoe": "Radial",
-      "aoerange": "Long",
-      "duration": 2,
-      "damage": 7,
-      "damageType": "Magical",
-      "cards": 1,
-      "display": true,
-      "description": "Rylai channels icy explosions around her!"
     }
   },
 

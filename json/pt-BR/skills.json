@@ -1,5 +1,57 @@
 {
 
+  "cm": {
+    "slow": {
+      "name": "Explosão Cristalina",
+      "type": "Ativa",
+      "targets": ["Local", "Próprio"],
+      "range": "Distante",
+      "aoe": "Radial",
+      "aoerange": "Perto",
+      "duration": 3,
+      "damage": 12,
+      "damageType": "Mágico",
+      "cards": 4,
+      "display": true,
+      "description": "Uma explosão de gelo que causa dano e diminui a velocidade dos inimigos"
+    },
+    "aura": {
+      "name": "Aura Arcana",
+      "type": "Passiva",
+      "target": ["Próprio"],
+      "cards": 1,
+      "display": true,
+      "description": "O jogador compra uma carta a mais por turno"
+    },
+    "freeze": {
+      "name": "Congelamento",
+      "type": "Ativa",
+      "targets": ["Inimigos"],
+      "range": "Distante",
+      "duration": 3,
+      "dot": 3,
+      "damageType": "Mágico",
+      "cards": 5,
+      "display": true,
+      "description": "Congela uma unidade inimiga, que pode se mover ou atacar e recebe dano por turno"
+    },
+    "ult": {
+      "name": "Campo Congelante",
+      "channel": 5,
+      "type": "Canalização",
+      "targets": ["Próprio"],
+      "range": "Longe",
+      "aoe": "Radial",
+      "aoerange": "Longe",
+      "duration": 2,
+      "damage": 7,
+      "damageType": "Mágico",
+      "cards": 1,
+      "display": true,
+      "description": "Rylai canaliza uma tempestade de neve ao seu redor"
+    }
+  },
+
   "ld": {
     "summon": {
       "name": "Espírito Urso",
@@ -80,58 +132,6 @@
     }
   },
 
-  "cm": {
-    "slow": {
-      "name": "Explosão Cristalina",
-      "type": "Ativa",
-      "targets": ["Local", "Próprio"],
-      "range": "Distante",
-      "aoe": "Radial",
-      "aoerange": "Perto",
-      "duration": 3,
-      "damage": 12,
-      "damageType": "Mágico",
-      "cards": 4,
-      "display": true,
-      "description": "Uma explosão de gelo que causa dano e diminui a velocidade dos inimigos"
-    },
-    "aura": {
-      "name": "Aura Arcana",
-      "type": "Passiva",
-      "target": ["Próprio"],
-      "cards": 1,
-      "display": true,
-      "description": "O jogador compra uma carta a mais por turno"
-    },
-    "freeze": {
-      "name": "Congelamento",
-      "type": "Ativa",
-      "targets": ["Inimigo"],
-      "range": "Distante",
-      "duration": 3,
-      "dot": 3,
-      "damageType": "Mágico",
-      "cards": 5,
-      "display": true,
-      "description": "Congela uma unidade inimiga, que pode se mover ou atacar e recebe dano por turno"
-    },
-    "ult": {
-      "name": "Campo Congelante",
-      "channel": 5,
-      "type": "Canalização",
-      "targets": ["Próprio"],
-      "range": "Longe",
-      "aoe": "Radial",
-      "aoerange": "Longe",
-      "duration": 2,
-      "damage": 7,
-      "damageType": "Mágico",
-      "cards": 1,
-      "display": true,
-      "description": "Rylai canaliza uma tempestade de neve ao seu redor"
-    }
-  },
-
   "am": {
     "burn": {
       "name": "Quebra de Mana",
@@ -162,7 +162,7 @@
     "ult": {
       "name": "Mana Void",
       "type": "Ativa",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Médio",
       "aoe": "Radial",
       "aoerange": "Distante",
@@ -240,7 +240,7 @@
     "leak": {
       "name": "Vazamento de Mana",
       "type": "Ativa",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Longe",
       "duration": 4,
       "cards": 4,
@@ -250,7 +250,7 @@
     "mana": {
       "name": "Magia do Chakra",
       "type": "Ativa",
-      "target": ["Próprio", "Aliado"],
+      "target": ["Próprio", "Aliados"],
       "ranges": "Distante",
       "cards": 4,
       "display": true,
@@ -330,7 +330,7 @@
       "name": "Desmembrar",
       "channel": true,
       "type": "Canalização",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Perto",
       "dot": 6,
       "damageType": "Mágico",
@@ -355,7 +355,7 @@
     "burn": {
       "name": "Mana Burn",
       "type": "Ativa",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Distante",
       "multiplier": 4,
       "damageType": "Mágico",
