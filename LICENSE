@@ -42,7 +42,6 @@ DOTACARD versions may include or require the following libraries, which may have
 "jQuery Cookie Plugin", Klaus Hartl, https://github.com/carhartl/jquery-cookie
 "-prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
 "modernizr", Modernizr team, http://modernizr.com
+"youtube-iframe-api", Google, https://developers.google.com/youtube/iframe_api_reference
 "google-analytics", Google, http://www.google.com/analytics
-"nodejs", Joyent, http://nodejs.org/
-"emojify" - Hassan Khan - http://hassankhan.github.io/emojify.js/
-"Font Awesome" - Davegandy - http://fontawesome.io
+"node", Joyent, http://nodejs.org/

@@ -1,7 +1,7 @@
 {
   "choosename": "Choose a name",
-  "logtype": "Type a name here",
-  "log": "Login",
+  "logintype": "Type a name here",
+  "login": "Login",
   "remember": "Remember my name",
   "welcome": "Welcome",
   "joined": "joined",

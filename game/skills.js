@@ -16,11 +16,11 @@
 //CPT 10 to 14 = 2 cards; 15 to 20 = 3 cards
 //MC 5 to 10
 //
-// RANGES:
+// RANGES
 //
 //        0     1       2       3         4          5           6          7           8
-// atk range:     |  Melee |  Short  | Ranged  |   Long
-// speed:    Slow | Normal |  Fast                                          ▒          ▒▒▒
+// range:         /  Melee /  Short  / Ranged  /   Long
+// speed:    Slow / Normal /  Fast                                          ▒          ▒▒▒
 //                                                   ▒          ▒▒▒       ▒▒░▒▒       ▒░░░▒
 //                              ▒        ▒▒▒       ▒▒░▒▒       ▒░░░▒     ▒░░░░░▒     ▒░░░░░▒
 //              ▒     ▒▒▒      ▒░▒      ▒░░░▒      ▒░░░▒      ▒░░░░░▒    ▒░░░░░▒    ▒░░░░░░░▒
@@ -32,140 +32,6 @@
 
 
 var Skills = {
-
-  cm: {
-    slow: {
-      cast: function(skill, source, target){
-        var spot = game.map.getPosition(target);
-        if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
-        var side = source.data('side');
-        var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
-          console.log('cm', neighbor);
-          var card = neighbor.find('.card.'+otherside);
-          if(card.length){
-            source.damage(skill.data('damage'), card, skill.data('damageType'));
-            if(card.data('cm-slow')){
-              card.data('cm-slow', skill.data('duration'));
-            } else {
-              card.data('cm-slow', skill.data('duration'));
-              source.addBuff(card, skill.data('buff'));
-              var speed = card.data('speed') - 1;
-              card.data('currentspeed', speed);
-              card.on('turnstart.cm-slow', Skills.cm.slow.turnstart);
-            }
-          }
-        });
-      },
-      turnstart: function(event, eventdata){
-        var target = eventdata.target;
-        var duration = target.data('cm-slow');
-        if(duration > 0) {
-          duration -= 1;
-          target.data('cm-slow', duration);
-        } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
-          target.off('turnstart.cm-slow');
-          target.data('cm-slow', null);
-          target.removeBuff('cm-slow');
-        }
-      }
-    },
-    aura: {
-      passive: function(skill, source){
-        var side = source.data('side');
-        game[side].cardsPerTurn += 1;
-        source.on('die.cm-aura');
-        source.on('reborn.cm-aura');
-        source.addBuff(source, skill.data('buff'));
-      },
-      die: function(event, eventdata){
-        var cm = eventdata.target;
-        var side = cm.data('side');
-        game[side].cardsPerTurn -= 1;
-      },
-      reborn: function(event, eventdata){
-        var cm = eventdata.target;
-        var side = cm.data('side');
-        game[side].cardsPerTurn += 1;
-      }
-    },
-    freeze: {
-      cast: function(skill, source, target){
-        source.addBuff(target, skill.data('buff'));
-        target.addClass('frozen');
-        target.data('cm-freeze', {
-          source: source,
-          skill: skill,
-          duration: skill.data('duration')
-        });
-        target.on('turnstart.cm-freeze', this.dot);
-      },
-      dot: function(event, eventdata){
-        var target = eventdata.target;
-        var data = target.data('cm-freeze');
-        var source = data.source;
-        var skill = data.skill;
-        var duration = data.duration;
-        if(duration > 0) {
-          source.damage(skill.data('dot'), target, skill.data('damageType'));
-          duration -= 1;
-          data.duration = duration;
-          target.data('cm-freeze', data);
-        } else {
-          target.removeClass('frozen');
-          target.data('cm-freeze', null);
-          target.off('turnstart.cm-freeze');
-          target.removeBuff('cm-freeze');
-        }
-      }
-    },
-    ult: {
-      cast: function(skill, source){
-        var spot = game.map.getPosition(source);
-        if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
-        source.on('channel', Skills.cm.ult.channel).data('cm-ult', skill);
-        source.trigger('channel', {target: source});
-      },
-      channel: function(event, eventdata){
-        var cm = eventdata.target;
-        var skill = cm.data('cm-ult');
-        var spot = game.map.getPosition(cm);
-        var side = cm.data('side');
-        var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('range')), function(neighbor){
-          var card = neighbor.find('.card.'+otherside);
-          if(card.length){
-            cm.damage(skill.data('damage'), card, skill.data('damageType'));
-            if(card.data('cm-ult')){
-              card.data('cm-ult', skill.data('duration'));
-            } else {
-              card.data('cm-ult', skill.data('duration'));
-              cm.addBuff(card, skill.data('buff'));
-              var speed = card.data('speed') - 1;
-              card.data('currentspeed', speed);
-              card.on('turnstart.cm-ult', Skills.cm.ult.turnstart);
-            }
-          }
-        });
-      },
-      turnstart: function(event, eventdata){
-        var target = eventdata.target;
-        var duration = target.data('cm-ult');
-        if(duration > 0) {
-          duration -= 1;
-          target.data('cm-ult', duration);
-        } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
-          target.off('turnstart.cm-ult');
-          target.data('cm-ult', null);
-          target.removeBuff('cm-ult');
-        }
-      }
-    }
-  },
 
   ktol: {
     illuminate: {
@@ -667,6 +533,139 @@ var Skills = {
       discard: function(event, eventdata){
         var target = eventdata.target;
         target.off('die.wk-ult');
+      }
+    }
+  },
+
+  cm: {
+    slow: {
+      cast: function(skill, source, target){
+        var spot = game.map.getPosition(target);
+        if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
+        var side = source.data('side');
+        var otherside = (side === 'enemy') ? 'player': 'enemy';
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
+          var card = neighbor.find('.card.'+otherside);
+          if(card.length){
+            source.damage(skill.data('damage'), card, skill.data('damageType'));
+            if(card.data('cm-slow')){
+              card.data('cm-slow', skill.data('duration'));
+            } else {
+              card.data('cm-slow', skill.data('duration'));
+              source.addBuff(card, skill.data('buff'));
+              var speed = card.data('speed') - 1;
+              card.data('currentspeed', speed);
+              card.on('turnstart.cm-slow', Skills.cm.slow.turnstart);
+            }
+          }
+        });
+      },
+      turnstart: function(event, eventdata){
+        var target = eventdata.target;
+        var duration = target.data('cm-slow');
+        if(duration > 0) {
+          duration -= 1;
+          target.data('cm-slow', duration);
+        } else {
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.cm-slow');
+          target.data('cm-slow', null);
+          target.removeBuff('cm-slow');
+        }
+      }
+    },
+    aura: {
+      passive: function(skill, source){
+        var side = source.data('side');
+        game[side].cardsPerTurn += 1;
+        source.on('die.cm-aura');
+        source.on('reborn.cm-aura');
+        source.addBuff(source, skill.data('buff'));
+      },
+      die: function(event, eventdata){
+        var cm = eventdata.target;
+        var side = cm.data('side');
+        game[side].cardsPerTurn -= 1;
+      },
+      reborn: function(event, eventdata){
+        var cm = eventdata.target;
+        var side = cm.data('side');
+        game[side].cardsPerTurn += 1;
+      }
+    },
+    freeze: {
+      cast: function(skill, source, target){
+        source.addBuff(target, skill.data('buff'));
+        target.addClass('frozen');
+        target.data('cm-freeze', {
+          source: source,
+          skill: skill,
+          duration: skill.data('duration')
+        });
+        target.on('turnstart.cm-freeze', this.dot);
+      },
+      dot: function(event, eventdata){
+        var target = eventdata.target;
+        var data = target.data('cm-freeze');
+        var source = data.source;
+        var skill = data.skill;
+        var duration = data.duration;
+        if(duration > 0) {
+          source.damage(skill.data('dot'), target, skill.data('damageType'));
+          duration -= 1;
+          data.duration = duration;
+          target.data('cm-freeze', data);
+        } else {
+          target.removeClass('frozen');
+          target.data('cm-freeze', null);
+          target.off('turnstart.cm-freeze');
+          target.removeBuff('cm-freeze');
+        }
+      }
+    },
+    ult: {
+      cast: function(skill, source){
+        var spot = game.map.getPosition(source);
+        if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
+        source.on('channel', Skills.cm.ult.channel).data('cm-ult', skill);
+        source.trigger('channel', {target: source});
+      },
+      channel: function(event, eventdata){
+        var cm = eventdata.target;
+        var skill = cm.data('cm-ult');
+        var spot = game.map.getPosition(cm);
+        var side = cm.data('side');
+        var otherside = (side === 'enemy') ? 'player': 'enemy';
+        game.map.inRange(spot, game.map.getRange(skill.data('range')), function(neighbor){
+          var card = neighbor.find('.card.'+otherside);
+          if(card.length){
+            cm.damage(skill.data('damage'), card, skill.data('damageType'));
+            if(card.data('cm-ult')){
+              card.data('cm-ult', skill.data('duration'));
+            } else {
+              card.data('cm-ult', skill.data('duration'));
+              cm.addBuff(card, skill.data('buff'));
+              var speed = card.data('speed') - 1;
+              card.data('currentspeed', speed);
+              card.on('turnstart.cm-ult', Skills.cm.ult.turnstart);
+            }
+          }
+        });
+      },
+      turnstart: function(event, eventdata){
+        var target = eventdata.target;
+        var duration = target.data('cm-ult');
+        if(duration > 0) {
+          duration -= 1;
+          target.data('cm-ult', duration);
+        } else {
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.cm-ult');
+          target.data('cm-ult', null);
+          target.removeBuff('cm-ult');
+        }
       }
     }
   },

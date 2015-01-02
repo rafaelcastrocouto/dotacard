@@ -1,6 +1,6 @@
 {
   "name": "dotacard",
-  "version": "0.0.75",
+  "version": "0.0.74",
   "author": "rafaelcastrocouto",
   "description": "DotaCard game",
   "homepage": "http://dotacard.herokuapp.com/",
@@ -12,15 +12,9 @@
   "scripts": {
     "start": "node server.js"
   },
-  "bugs": {
-    "url": "https://github.com/rafaelcastrocouto/dotacard/issues"
-  },
-  "keywords": ["cardgame", "game", "card", "cards", "dota"],
   "dependencies": {
+    "db.csv": ">= 0.0.2",
     "static.simple": ">= 0.0.8"
-  },
-  "devDependencies": {
-    "db.csv": ">= 0.0.2"
   },
   "readmeFilename": "Readme.md",
   "engine": "node >= 0.10.x",
