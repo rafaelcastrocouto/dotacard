@@ -16,8 +16,6 @@ var http = require('http'),
     chat = [],
     debug = false;
 
-if(debug) { db = require('db.csv'); }
-
 var send = function(response, data){
   response.writeHead(200, {
     'Content-Type': 'application/json'//,'Access-Control-Allow-Origin': '*'
