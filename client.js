@@ -112,7 +112,7 @@ var game = (function () {
     },
     load: function () {
       game.status = 'loading';
-      location.hash = game.currentState + '-' + game.status;
+      game.location();
       game.states.load.pack();
       game.states.load.audio();
       game.states.load.images();
@@ -145,6 +145,9 @@ var game = (function () {
           }
         }
       });
+    },
+    location: function () {
+      location.hash = game.currentState + '.' + game.status;
     },
     random: function () {
       if (game.debug) {
@@ -655,7 +658,7 @@ var game = (function () {
         if (damage < 1) {
           return this;
         } else { damage = Math.round(damage); }
-        var source = this, spot, resistance, armor, hp, currentDamage, kills, deaths, damageFx;
+        var source = this, evt, x, y, position, spot, resistance, armor, hp, currentDamage, kills, deaths, damageFx;
         if (!type) { type = game.ui.physical; }
         resistance = 1 - target.data('resistance') / 100;
         if (type === game.ui.magical && resistance) { damage = Math.round(damage * resistance); }
@@ -664,21 +667,24 @@ var game = (function () {
         if (typeof target === 'string') { target = $('#' + target + ' .card'); }
         hp = target.data('currenthp') - damage;
         target.changehp(hp);
-        target.trigger('damage', {
+        position = game.map.getPosition(target);
+        x = game.map.getX(position);
+        y = game.map.getY(position);
+        spot = game.map.getSpot(x, y);
+        evt = {
           source: this,
           target: target,
           spot: spot,
+          x: x,
+          y: y,
+          position: position,
           damage: damage
-        });
+        };
+        target.trigger('damage', evt);
         if (hp < 1) {
-          spot = game.map.getPosition(target);
           target.addClass('dead').removeClass('target done').changehp(0);
           setTimeout(function () {
-            target.trigger('die', {
-              source: this,
-              target: target,
-              spot: spot
-            });
+            target.trigger('die', evt);
             target.die();
           }, 2000);
           if (source.hasClass('hero') && target.hasClass('hero')) {
@@ -687,9 +693,9 @@ var game = (function () {
             source.data('kills', kills);
             source.find('.kills').text(kills);
             game[target.data('side')].deaths += 1;
-            deaths = source.data('deaths') + 1;
+            deaths = target.data('deaths') + 1;
             target.data('deaths', deaths);
-            source.find('.deaths').text(deaths);
+            target.find('.deaths').text(deaths);
           }
         }
         damageFx = target.find('.damaged');
@@ -1014,43 +1020,45 @@ var game = (function () {
           moves = game.currentData.moves.split('|');
         for (m = 0; m < moves.length; m += 1) {
           move = moves[m].split(':');
-          from = game.map.mirrorPosition(move[1]);
-          to = game.map.mirrorPosition(move[2]);
-          if (move[0] === 'M') {
-            target = $('#' + from + ' .card');
-            if (to && !target.hasClass('done') && target.hasClass('enemy') && target.move) {
-              target.move(to);
+          if (move[1] && move[2]) {
+            from = game.map.mirrorPosition(move[1]);
+            to = game.map.mirrorPosition(move[2]);
+            if (move[0] === 'M') {
+              target = $('#' + from + ' .card');
+              if (to && !target.hasClass('done') && target.hasClass('enemy') && target.move) {
+                target.move(to);
+              }
             }
-          }
-          if (move[0] === 'A') {
-            source = $('#' + from + ' .card');
-            if (to && !source.hasClass('done') && source.hasClass('enemy') && source.attack) {
-              source.attack(to);
+            if (move[0] === 'A') {
+              source = $('#' + from + ' .card');
+              if (to && !source.hasClass('done') && source.hasClass('enemy') && source.attack) {
+                source.attack(to);
+              }
             }
-          }
-          if (move[0] === 'C') {
-            skillid = move[3];
-            hero = move[4];
-            source = $('#' + from + ' .card');
-            target = $('#' + to);
-            skill = $('.enemy.skills .' + hero + '-' + skillid).show();
-            if (skill.data('target') === game.ui.enemy || skill.data('target') === game.ui.ally || skill.data('target') === game.ui.self) {
+            if (move[0] === 'C') {
+              skillid = move[3];
+              hero = move[4];
+              source = $('#' + from + ' .card');
+              target = $('#' + to);
+              skill = $('.enemy.skills .' + hero + '-' + skillid).show();
+              if (skill.data('target') === game.ui.enemy || skill.data('target') === game.ui.ally || skill.data('target') === game.ui.self) {
+                target = $('#' + to + ' .card');
+              }
+              if (Skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) {
+                source.cast(skill, target);
+                game.enemy.hand -= 1;
+              }
+            }
+            if (move[0] === 'P') {
+              to = game.map.mirrorPosition(move[1]);
+              skillid = move[2];
+              hero = move[3];
               target = $('#' + to + ' .card');
-            }
-            if (Skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) {
-              source.cast(skill, target);
-              game.enemy.hand -= 1;
-            }
-          }
-          if (move[0] === 'P') {
-            to = game.map.mirrorPosition(move[1]);
-            skillid = move[2];
-            hero = move[3];
-            target = $('#' + to + ' .card');
-            skill = $('.enemy.skills .' + hero + '-' + skillid).show();
-            if (Skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
-              skill.passive(target);
-              game.enemy.hand -= 1;
+              skill = $('.enemy.skills .' + hero + '-' + skillid).show();
+              if (Skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
+                skill.passive(target);
+                game.enemy.hand -= 1;
+              }
             }
           }
         }
@@ -1207,7 +1215,7 @@ var game = (function () {
       },
       start: function () {
         game.status = 'learning';
-        location.hash = game.currentState + '-' + game.status;
+        game.location();
         game.message.text(game.ui.battle);
         game.loader.removeClass('loading');
         game.audio.play('horn');
@@ -1627,7 +1635,7 @@ var game = (function () {
       },
       battle: function (enemy, challenge) {
         game.status = 'picking';
-        location.hash = game.currentState + '-' + game.status;
+        game.location();
         game.loader.removeClass('loading');
         game.states.choose.el.addClass('turn');
         game.enemy.name = enemy;
@@ -1863,7 +1871,7 @@ var game = (function () {
           game.turn.counter = game.timeToPlay;
           game.loader.removeClass('loading');
           setTimeout(game.turn.count, 1000);
-          location.hash = game.currentState + '-' + game.status;
+          game.location();
         }
       },
       count: function () {
@@ -2321,7 +2329,7 @@ var game = (function () {
           newstate.el.append(game.topbar).delay(200).fadeIn(200);
           game.currentState = state;
           game.backState = pre;
-          location.hash = game.currentState + '-' + game.status;
+          game.location();
           if (newstate.start) { newstate.start(); }
         }
       },
@@ -2494,7 +2502,7 @@ var game = (function () {
         },
         progress: function () {
           clearTimeout(game.timeout);
-          if (game.version && game.ui && !game.states.builded) {
+          if (game.version && game.ui && game.skills && !game.states.builded) {
             game.states.build();
             game.states.builded = true;
           }
@@ -2899,7 +2907,7 @@ var game = (function () {
           }.bind({ skill: skill }), 500);
         },
         showResults: function () {
-          location.hash = game.currentState + '-' + game.status;
+          game.location();
           game.states.table.selectedArea.hide();
           game.states.table.camera.hide();
           $('.table .deck').hide();

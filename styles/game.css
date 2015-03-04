@@ -196,7 +196,6 @@ noscript {
 .table .topbar {
   background: rgba(0,0,0,0.5);
 }
-
 .loader {
   width: 16px;
   height: 16px;
@@ -236,7 +235,6 @@ noscript {
   margin-left: 25px;
   border-radius: 4px;
 }
-
 
 .unturn .message {
   text-shadow: 0 0 6px white;
@@ -547,7 +545,7 @@ label span {
 
 .pickbox {
   width: 760px;
-  height: 300px;
+  height: 340px;
   position: absolute;
   top: 35px;
   left: 50%;
@@ -562,7 +560,7 @@ label span {
 .pickbox .deck {
   position: relative;
   left: -50%;
-  height: 300px;
+  height: 340px;
 }
 
 .pickbox .card {
@@ -572,15 +570,15 @@ label span {
 }
 
 .pickbox .card.active {
-  margin: 0 10px;
-  transform: translate(-50%, -50%) scale(1);
+  margin: 0 22px;
+  transform: translate(-50%, -50%) scale(1.16);
 }
 
 .pickedbox {
   width: 540px;
   height: 190px;
   position: absolute;
-  top: 360px;
+  bottom: 5px;
   left: 105px;
   overflow: hidden;
   padding: 2px;
@@ -915,10 +913,6 @@ label span {
   width: 160px;
   left: 10px;
 }
-.table .player.skills.ult.deck {
-  left: 160px;
-  width: 350px;
-}
 .table .player.skills.free.deck {
   left: 175px;
   width: 160px;
@@ -941,19 +935,20 @@ label span {
   right: 5px;
   border-radius: 10px;
   perspective: 600px;
+  z-index: 9;
 }
 
 .table .selectedarea .card {
-  position: absolute;
-  z-index: 9;
+  position: absolute;  
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
   backface-visibility: hidden;
 }
 .table .selectedarea .cardback {
   background: #111;
-  background-image: url(../img/cardback.jpg);
-  background-size: cover;  
+  background-image: url(../img/cardback.png);
+  background-size: 101% 101%;
+  background-position: 50%;
   position: absolute;
   padding: 0;
   width: 200px; height: 300px;

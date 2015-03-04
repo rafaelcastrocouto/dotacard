@@ -1,9 +1,8 @@
 /* by rafælcastrocouto */
 /*jslint browser: true, white: true, sloppy: true, vars: true */
 /*global game, $, alert, console */
-//
-//types: active passive free channel
-//
+
+//Types: Active Passive Free Channel Automatic
 //Damage = lvl15 damage * 0.1
 //HP = lvl15 hp * 0.05
 //Regen = Card HP * 0.03
@@ -30,7 +29,6 @@
 //                                                   ▒          ▒▒▒       ▒▒░▒▒       ▒░░░▒
 //                                                                          ▒          ▒▒▒
 
-
 var Skills = {
 
   cm: {
@@ -41,7 +39,6 @@ var Skills = {
         var side = source.data('side');
         var otherside = (side === 'enemy') ? 'player': 'enemy';
         game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
-          console.log('cm', neighbor);
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
             source.damage(skill.data('damage'), card, skill.data('damageType'));

@@ -5,7 +5,7 @@
 var http = require('http'),
     url = require('url'),
     file = require('static.simple'),
-    host = process.env.HOST,
+    host = process.env.HOST || 'localhost',
     port = process.env.PORT || 5000,
     waiting = {id: 'none'},
     currentData = {},
