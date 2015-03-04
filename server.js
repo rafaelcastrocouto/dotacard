@@ -5,7 +5,7 @@
 var http = require('http'),
     url = require('url'),
     file = require('static.simple'),
-    host = process.env.HOST || 'localhost',
+    host = process.env.HOST,
     port = process.env.PORT || 5000,
     waiting = {id: 'none'},
     currentData = {},
@@ -15,8 +15,6 @@ var http = require('http'),
     },
     chat = [],
     debug = false;
-
-if(host === 'localhost') { debug = true; }
 
 if(debug) { db = require('db.csv'); }
 
