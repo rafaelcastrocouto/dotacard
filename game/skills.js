@@ -38,7 +38,7 @@ var Skills = {
         if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
         var side = source.data('side');
         var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
             source.damage(skill.data('damage'), card, skill.data('damageType'));
@@ -121,7 +121,9 @@ var Skills = {
     ult: {
       cast: function(skill, source){
         var spot = game.map.getPosition(source);
-        if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
+        if(game.status === 'turn') { 
+            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
+        }
         source.on('channel', Skills.cm.ult.channel).data('cm-ult', skill);
         source.trigger('channel', {target: source});
       },
@@ -131,7 +133,7 @@ var Skills = {
         var spot = game.map.getPosition(cm);
         var side = cm.data('side');
         var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('range')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
             cm.damage(skill.data('damage'), card, skill.data('damageType'));
@@ -202,7 +204,58 @@ var Skills = {
       cast: function(skill, source, target){}
     },
     rot: {
-      cast: function(skill, source){}
+      cast: function(skill, source){
+        if(source.data('pud-rot')){
+          //turn off
+          source.off('turnstart.pud-rot');
+          source.data('pud-rot', null);
+          source.removeBuff('pud-rot');
+          skill.removeClass('off');
+        } 
+        else {
+          //turn on
+          var spot = game.map.getPosition(source);
+          if(game.status === 'turn') { 
+            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
+          }
+          var side = source.data('side');
+          var otherside = (side === 'enemy') ? 'player' : 'enemy';
+          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+            var card = neighbor.find('.card.'+otherside);
+            if(card.length){
+              source.damage(skill.data('damage'), card, skill.data('damageType'));
+              if(card.data('pud-rot')){
+                card.data('pud-rot', skill.data('duration'));
+              } else {
+                card.data('pud-rot', skill.data('duration'));
+                source.addBuff(card, skill.data('buff'));
+                var speed = card.data('speed') - 1;
+                card.data('currentspeed', speed);
+                card.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+              }              
+            }
+          });   
+          source.data('pud-rot', skill.data('duration'));
+          source.addBuff(source, skill.data('buff'));
+          source.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+          source.damage(skill.data('damage'), source, skill.data('damageType'));
+          skill.addClass('off');
+        }
+      },
+      turnstart: function(event, eventdata){
+        var target = eventdata.target;
+        var duration = target.data('pud-rot');
+        if(duration > 0) {
+          duration -= 1;
+          target.data('pud-rot', duration);
+        } else {
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.pud-rot');
+          target.data('pud-rot', null);
+          target.removeBuff('pud-rot');
+        }
+      }
     },
     passive: {
       passive: function(skill, source){},
@@ -500,7 +553,9 @@ var Skills = {
         var wk = source;
         var stun = skill.data('stunduration');
         var dot = skill.data('dotduration');
-        if(game.status === 'turn') { game.states.table.animateCast(skill, target, game.states.table.playerCemitery); }
+        if(game.status === 'turn') { 
+            game.states.table.animateCast(skill, target, game.states.table.playerCemitery); 
+        }
         wk.damage(skill.data('damage'), target, skill.data('damageType'));
         wk.addStun(target, stun);
         target.on('turnstart.wk-stun', this.dot).data('wk-stun', {
@@ -631,7 +686,7 @@ var Skills = {
         } else {
           $('#'+spot).removeClass('cript');
           wk.reborn(spot).data('wk-ult', null);
-          game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
+          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
             var otherside = 'enemy';
             if(side === 'enemy') { otherside = 'player'; }
             var card = neighbor.find('.card.'+otherside);
@@ -727,7 +782,7 @@ var Skills = {
         var otherside = (side === 'enemy') ? 'player': 'enemy';
         var damage = game.enemy.maxCards - game.enemy.hand;
         damage *= skill.data('multiplier');
-        game.map.inRange(spot, game.map.getRange(skill.data('aoe')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
             source.damage(damage, card, skill.data('damageType'));

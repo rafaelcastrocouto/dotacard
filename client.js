@@ -2302,9 +2302,9 @@ var game = (function () {
     },
     status: '',//loading, loaded, out, logged, search, picking, turn, unturn, over
     mode: '',//online, tutorial
-    currentState: 'load', //intro, log, menu, options, choose, table
+    currentState: 'load', //log, menu, options, choose, table
     states: {
-      preBuild: [ 'intro', 'log', 'menu', 'options', 'choose', 'table' ],
+      preBuild: [ 'log', 'menu', 'options', 'choose', 'table' ],
       build: function () {
         this.el = $('<div>').addClass('states frame').appendTo(game.container).hide();
         game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
@@ -2510,7 +2510,7 @@ var game = (function () {
           $('.progress').text(load + '%');
           if (game.progress === game.totalLoad) {
             game.status = 'loaded';
-            game.states.changeTo('intro');
+            game.states.changeTo('log');
           } else {
             game.timeout = setTimeout(game.states.load.progress, 500);
           }
@@ -2532,24 +2532,6 @@ var game = (function () {
             alert(game.ui.error);
             location.reload(true);
           }
-        }
-      },
-      intro: {
-        build: function () {
-          this.box = $('<div>').appendTo(this.el).addClass('box').hide();
-          this.text = $('<h1>').appendTo(this.box).addClass('introheader').html('DotaCard <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages">alpha ' + game.version + '</a>');
-          this.el.click(this.skip);
-        },
-        start: function () {
-          this.box.fadeIn(1000);
-          game.timeout = setTimeout(this.skip, 3000);
-        },
-        skip: function () {
-          game.states.changeTo('log');
-        },
-        end: function () {
-          game.status = 'out';
-          clearTimeout(game.timeout);
         }
       },
       log: {
@@ -2598,9 +2580,10 @@ var game = (function () {
           if (rememberedname) { this.input.val(rememberedname); }
         },
         start: function () {
-          game.message.text('');
-          this.input.focus();
           game.loader.removeClass('loading');
+          game.message.html('<b>DotaCard</b> alpha <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">' + game.version + '</small></a>');      
+          $('.logo').removeClass('slide').prependTo(this.menu);
+          this.input.focus();          
           if (game.debug) {
             this.input.val('Bot' + parseInt(Math.random() * 100, 10));
           }

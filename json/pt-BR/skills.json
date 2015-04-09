@@ -307,9 +307,10 @@
       "type": "Livre",
       "targets": ["Próprio"],
       "aoe": "Radial",
-      "aoerange": "Perto",
+      "aoerange": "Perto",      
       "dot": 5,
       "damageType": "Mágico",
+      "duration": 1,
       "cards": 1,
       "display": true,
       "description": "Uma nuvem tóxica que causa dano as unidades inimigas e ao próprio Pudge"

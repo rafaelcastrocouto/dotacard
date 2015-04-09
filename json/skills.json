@@ -41,7 +41,7 @@
       "type": "Channel",
       "targets": ["Self"],
       "range": "Long",
-      "aoe": "Radial",
+      "aoe": "Radial",      
       "aoerange": "Long",
       "duration": 2,
       "damage": 7,
@@ -308,6 +308,7 @@
       "aoerange": "Melee",
       "dot": 5,
       "damageType": "Magical",
+      "duration": 1,
       "cards": 1,
       "display": true,
       "description": "A toxic cloud that deals intense damage to himself and enemies around"
