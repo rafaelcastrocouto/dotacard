@@ -2,7 +2,12 @@
 /*jslint browser: true, white: true, sloppy: true, vars: true */
 /*global game, $, alert, console */
 
-//Types: Active Passive Free Channel Automatic
+//Types: Active (ex. nyx stun, ...)
+//       Passive (ex. cystal aura, ...)
+//       Free (ex. pudge rot, morph agi/str, troll melee/ranged, medusa split, witch doctor heal and leshrac ult) 
+//       Channel (ex. kotl illuminate, pugna ult...)
+//       Automatic (wk ult and abaddon ult)
+//Tatgets: self, player, enemy, spot, free
 //Damage = lvl15 damage * 0.1
 //HP = lvl15 hp * 0.05
 //Regen = Card HP * 0.03
@@ -168,7 +173,9 @@ var Skills = {
 
   ktol: {
     illuminate: {
-      cast: function(skill, source, target){},
+      cast: function(skill, source, target){
+      
+      },
       release: function(){}
     },
     illuminateult: {
@@ -201,7 +208,9 @@ var Skills = {
 
   pud: {
     hook: {
-      cast: function(skill, source, target){}
+      cast: function(skill, source, target){
+      
+      }
     },
     rot: {
       cast: function(skill, source){

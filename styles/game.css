@@ -12,16 +12,15 @@
   font-size: 210px;
   line-height: 200px;
   margin: 0;  
-  position: relative; 7
-  top: 0;
+  position: relative;
+  top: 0px;
 }
 .logo.slide h1 {
-  animation: slideup 5s 1 linear;
-  top: 20px
+  animation: logoslideup 3s 1 linear;
 }
-@keyframes slideup {
-  0% {top: 70px}
-  100% {top: 0}
+@keyframes logoslideup {
+  0% {top: 60px}
+  100% {top: 0px}
 }
 .logo h2 {
   color: white;
@@ -29,16 +28,16 @@
   font-size: 50px;
   line-height: 80px;
   padding-left: -5px;
-  margin: 5px;  
-  
+  margin: 5px;    
   position: relative;
 }
-.logo.slide h2 {
-  animation: slideright 0.8s 1;
+.logo h2 {
+  animation: slideright 6s infinite;
 }
 @keyframes slideright {
-  0% {right: -1000px}
-  100% {right: 0}
+  0% {right: -3000px}
+  5%, 95% {right: 0}
+  100% {right: 3000px}
 }
 @font-face {
   font-family: 'Montserrat';
@@ -181,12 +180,6 @@ noscript {
   margin: 1em;
 }
 
-
-.welcome .message {
-  margin: 0 0 0 30px;
-  line-height: 30px;
-}
-
 .banner {
   border-radius: 5px;
   width: 100%;
@@ -270,8 +263,6 @@ noscript {
   border-bottom: 3px solid white;
   border-radius: 50%;
   visibility: hidden;
-}
-.states .loader {
   position: absolute;
   top: 0; left: 0;
 }
@@ -335,12 +326,6 @@ noscript {
 
 /*LOG*/
 
-.log .box {
-  padding: 25px 100px;
-}
-.log .logo {
-  transform: scale(0.8);
-}
 input {
   border-radius: 3px;
   letter-spacing: -1px;
@@ -417,7 +402,7 @@ label input {
 label span {
   vertical-align: super;
 }
-.log label {
+.welcome label {
   text-align: center;
 }
 

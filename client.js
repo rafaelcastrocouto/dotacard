@@ -927,14 +927,14 @@ var game = (function () {
         }
         var availableSkills = $('.skills.available.player.deck .card'), card = game.deck.randomCard(availableSkills), heroid, hero, to;
         if (card.data('type') === game.ui.free) {
-          card.appendTo(game.player.skills.temp);
+          card.appendTo(game.player.skills.free);
         } else if (card.data('type') === game.ui.automatic) {
           heroid = card.data('hero');
           hero = $('.map .player.heroes.' + heroid);
           to = game.map.getPosition(hero);
           card.passive(to);
           game.currentData.moves.push('P:' + to + ':' + card.data('skill') + ':' + heroid);
-          card.appendTo(game.player.skills.temp);
+          card.appendTo(game.player.skills.free);
         } else {
           card.appendTo(game.player.skills.hand);
         }
@@ -1242,7 +1242,7 @@ var game = (function () {
           name: 'heroes',
           filter: game.player.picks,
           cb: function (deck) {
-            deck.addClass('player').appendTo(game.states.table.el);
+            deck.addClass('player').appendTo(game.states.table.player);
             var x = 0, y = 5;
             $.each(deck.data('cards'), function (i, card) {
               var p = game.player.picks.indexOf(card.data('hero'));
@@ -1259,7 +1259,7 @@ var game = (function () {
           name: 'heroes',
           filter: game.enemy.picks,
           cb: function (deck) {
-            deck.addClass('enemy').hide().appendTo(game.states.table.el);
+            deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
             var x = 0, y = 5;
             $.each(deck.data('cards'), function (i, card) {
               var p = game.enemy.picks.indexOf(card.data('hero'));
@@ -1340,12 +1340,12 @@ var game = (function () {
         game.tutorial.message.html(game.ui.axeselectplayer);
         game.message.text(game.ui.yourturncount + ' 2');
         setTimeout(game.card.unselect);
+        game.status = 'turn';
       },
       move: function () {
         game.tutorial.axebaloon.hide().fadeIn('slow');
         game.tutorial.message.html(game.ui.axemove);
         game.audio.play('tutorial/axemove');
-        game.status = 'turn';
         game.message.text(game.ui.yourturncount + ' 1');
         $('.map .hero.player').on('move', game.tutorial.done);
       },
@@ -1411,14 +1411,14 @@ var game = (function () {
       },
       buildSkills: function () {
         game.player.skills = {};
-        game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills hand');
-        game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
+        game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills hand');
+        game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
         game.player.skills.deck = game.deck.build({
           name: 'skills',
           multi: 'cards',
           filter: game.player.picks,
           cb: function (deck) {
-            deck.addClass('player available').hide().appendTo(game.states.table.el);
+            deck.addClass('player available').hide().appendTo(game.states.table.player);
             $.each(deck.data('cards'), function (i, skill) {
               skill.addClass('player skill').data('side', 'player').on('click.select', game.tutorial.select);
             });
@@ -1429,7 +1429,7 @@ var game = (function () {
           name: 'skills',
           filter: ['am'],
           cb: function (deck) {
-            deck.addClass('enemy hand cemitery free').appendTo(game.states.table.el);
+            deck.addClass('enemy hand cemitery free').appendTo(game.states.table.enemy);
             $.each(deck.data('cards'), function (i, skill) {
               skill.hide().addClass('enemy skill').data('side', 'enemy');
             });
@@ -1672,7 +1672,7 @@ var game = (function () {
             name: 'heroes',
             filter: game.player.picks,
             cb: function (deck) {
-              deck.addClass('player').appendTo(game.states.table.el);
+              deck.addClass('player').appendTo(game.states.table.player);
               var x = 0, y = 5;
               $.each(deck.data('cards'), function (i, card) {
                 var p = game.player.picks.indexOf(card.data('hero'));
@@ -1694,7 +1694,7 @@ var game = (function () {
             name: 'heroes',
             filter: game.enemy.picks,
             cb: function (deck) {
-              deck.addClass('enemy').hide().appendTo(game.states.table.el);
+              deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
               var x = 0, y = 5;
               $.each(deck.data('cards'), function (i, card) {
                 var p = game.enemy.picks.indexOf(card.data('hero'));
@@ -1712,21 +1712,19 @@ var game = (function () {
       buildSkills: function () {
         game.player.manaBuild();
         game.player.skills = {};
-        game.player.skills.hand = $('<div>').appendTo(game.states.table.el).addClass('player deck skills hand');
-        game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills temp');
-        game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills ult');
-        game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.el).addClass('player deck skills cemitery');
+        game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
+        game.player.skills.free = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills free');
+        game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
+        game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
         game.player.skills.deck = game.deck.build({
           name: 'skills',
           multi: 'cards',
           filter: game.player.picks,
           cb: function (deck) {
-            deck.addClass('player available').hide().appendTo(game.states.table.el);
+            deck.addClass('player available').hide().appendTo(game.states.table.player);
             $.each(deck.data('cards'), function (i, skill) {
               skill.addClass('player skill').data('side', 'player').on('click.select', game.card.select);
-              if (skill.data('deck') === game.ui.temp) {
-                skill.appendTo(game.player.skills.temp);
-              } else if (skill.data('type') === 'ult') {
+              if (skill.data('skill') === 'ult') {
                 skill.appendTo(game.player.skills.ult);
               }
             });
@@ -1740,7 +1738,7 @@ var game = (function () {
           name: 'skills',
           filter: game.enemy.picks,
           cb: function (deck) {
-            deck.addClass('enemy hand cemitery free').appendTo(game.states.table.el);
+            deck.addClass('enemy hand cemitery free').appendTo(game.states.table.enemy);
             $.each(deck.data('cards'), function (i, skill) {
               skill.hide().addClass('enemy skill').data('side', 'enemy');
             });
@@ -2318,15 +2316,17 @@ var game = (function () {
           }
         });
       },
-      changeTo: function (state) {
+      changeTo: function (state, keepElements) {
         if (this !== game.currentState) {
           var newstate,
             pre = game.currentState,
             oldstate = game.states[pre];
-          if (oldstate.el) { oldstate.el.fadeOut(200); }
+          if (oldstate.el && !keepElements) { oldstate.el.fadeOut(200); }
           if (oldstate.end) { oldstate.end(); }
           newstate = this[state];
-          newstate.el.append(game.topbar).delay(200).fadeIn(200);
+          if (newstate.el && !keepElements) {
+            newstate.el.append(game.topbar).delay(200).fadeIn(200);
+          }
           game.currentState = state;
           game.backState = pre;
           game.location();
@@ -2510,7 +2510,7 @@ var game = (function () {
           $('.progress').text(load + '%');
           if (game.progress === game.totalLoad) {
             game.status = 'loaded';
-            game.states.changeTo('log');
+            game.states.changeTo('log', true);
           } else {
             game.timeout = setTimeout(game.states.load.progress, 500);
           }
@@ -2522,8 +2522,6 @@ var game = (function () {
               return game.ui.leave;
             };
           }
-          $('.welcome.frame').hide();
-          $('.states.frame').show();
         },
         reset: function () {
           if (game.debug) {
@@ -2537,16 +2535,15 @@ var game = (function () {
       log: {
         remembername: true,
         build: function () {
-          this.menu = $('<div>').appendTo(this.el).addClass('box');
-          this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosename);
-          this.input = $('<input>').appendTo(this.menu).attr({
+          this.title = $('<h1>').appendTo(this.el).text(game.ui.choosename);
+          this.input = $('<input>').appendTo(this.el).attr({
             placeholder: game.ui.logtype,
             type: 'text',
             maxlength: 24
           }).keydown(function (e) {
             if (e.which === 13) { game.states.log.button.click(); }
           });
-          this.button = $('<div>').addClass('button').appendTo(this.menu).text(game.ui.log).attr({
+          this.button = $('<div>').addClass('button').appendTo(this.el).text(game.ui.log).attr({
             placeholder: game.ui.choosename,
             title: game.ui.choosename
           }).click(function () {
@@ -2570,7 +2567,7 @@ var game = (function () {
               game.states.log.input.focus();
             }
           }).append($('<span>').addClass('fa fa-sign-in'));
-          this.rememberlabel = $('<label>').appendTo(this.menu).append($('<span>').text(game.ui.remember));
+          this.rememberlabel = $('<label>').appendTo(this.el).append($('<span>').text(game.ui.remember));
           this.remembercheck = $('<input>').attr({
             type: 'checkbox',
             name: 'remember',
@@ -2580,10 +2577,13 @@ var game = (function () {
           if (rememberedname) { this.input.val(rememberedname); }
         },
         start: function () {
+          this.el.children().appendTo('.welcome .box');
+          $('.loadtext').hide();
+          $('.logo').removeClass('slide');
+          game.topbar.appendTo('.welcome');
           game.loader.removeClass('loading');
-          game.message.html('<b>DotaCard</b> alpha <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">' + game.version + '</small></a>');      
-          $('.logo').removeClass('slide').prependTo(this.menu);
-          this.input.focus();          
+          game.message.html('<b>Alpha</b> version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">' + game.version + '</small></a>');
+          this.input.focus();
           if (game.debug) {
             this.input.val('Bot' + parseInt(Math.random() * 100, 10));
           }
@@ -2592,6 +2592,8 @@ var game = (function () {
         },
         end: function () {
           this.button.attr('disabled', false);
+          $('.welcome.frame').hide();
+          $('.states.frame').show();
         },
         remember: function () {
           game.states.log.remembername = !game.states.log.remembername;
@@ -2823,6 +2825,9 @@ var game = (function () {
           this.turns = $('<p>').appendTo(game.topbar).addClass('turns').text(game.ui.turns + ': 0/0 (0)').hide();
           game.map.start();
           this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea').append($('<div>').addClass('cardback'));
+          this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
+          this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
+          this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
         },
         start: function () {
           if (game.mode === 'tutorial' && !game.tutorial.started) {
@@ -2846,7 +2851,7 @@ var game = (function () {
             name: 'units',
             filter: ['forest'],
             cb: function (deck) {
-              deck.addClass('neutral units cemitery').hide().appendTo(game.states.table.el);
+              deck.addClass('neutral units cemitery').hide().appendTo(game.states.table.neutrals);
               $.each(deck.data('cards'), function (i, card) {
                 card.addClass('neutral unit').data('side', 'neutral').on('click.select', game.card.select);
               });
@@ -2856,7 +2861,7 @@ var game = (function () {
             name: 'units',
             filter: game.player.picks,
             cb: function (deck) {
-              deck.addClass('player units cemitery').hide().appendTo(game.states.table.el);
+              deck.addClass('player units cemitery').hide().appendTo(game.states.table.player);
               $.each(deck.data('cards'), function (i, card) {
                 card.addClass('player unit').data('side', 'player').on('click.select', game.card.select);
               });
@@ -2866,7 +2871,7 @@ var game = (function () {
             name: 'units',
             filter: game.enemy.picks,
             cb: function (deck) {
-              deck.addClass('enemy units cemitery').hide().appendTo(game.states.table.el);
+              deck.addClass('enemy units cemitery').hide().appendTo(game.states.table.enemy);
               $.each(deck.data('cards'), function (i, card) {
                 card.addClass('enemy unit').data('side', 'enemy').on('click.select', game.card.select);
               });
@@ -2874,6 +2879,7 @@ var game = (function () {
           });
         },
         animateCast: function (skill, target) {
+          //todo: remove 'top/left', use only 'transform' to improve performance
           if (typeof target === 'string') { target = $('#' + target); }
           var t = skill.offset(), d = target.offset();
           skill.css({
