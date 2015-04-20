@@ -36,6 +36,77 @@
 
 var Skills = {
 
+  pud: {
+    hook: {
+      cast: function(skill, source, target){
+      
+      }
+    },
+    rot: {
+      cast: function(skill, source){
+        if(skill.hasClass('on')){
+          //turn off
+          source.off('turnstart.pud-rot');
+          source.data('pud-rot', null);
+          source.removeBuff('pud-rot');
+          skill.removeClass('on');
+        } 
+        else {
+          //turn on
+          var spot = game.map.getPosition(source);
+          if(game.status === 'turn') { 
+            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
+          }
+          var side = source.data('side');
+          var otherside = (side === 'enemy') ? 'player' : 'enemy';
+          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+            var card = neighbor.find('.card.'+otherside);
+            if(card.length){
+              source.damage(skill.data('damage'), card, skill.data('damageType'));
+              if(card.data('pud-rot')){
+                card.data('pud-rot', skill.data('duration'));
+              } else {
+                card.data('pud-rot', skill.data('duration'));
+                source.addBuff(card, skill.data('buff'));
+                var speed = card.data('speed') - 1;
+                card.data('currentspeed', speed);
+                card.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+              }              
+            }
+          });   
+          source.data('pud-rot', skill.data('duration'));
+          source.addBuff(source, skill.data('buff'));
+          source.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+          source.damage(skill.data('damage'), source, skill.data('damageType'));
+          skill.addClass('off');
+        }
+      },
+      turnstart: function(event, eventdata){
+        var target = eventdata.target;
+        var duration = target.data('pud-rot');
+        if(duration > 0) {
+          duration -= 1;
+          target.data('pud-rot', duration);
+        } else {
+          var speed = target.data('currentspeed') + 1;
+          target.data('currentspeed', speed);
+          target.off('turnstart.pud-rot');
+          target.data('pud-rot', null);
+          target.removeBuff('pud-rot');
+        }
+      }
+    },
+    passive: {
+      passive: function(skill, source){},
+      damage: function(){},
+      die: function(){}
+    },
+    ult: {
+      cast: function(skill, source, target){},
+      dot: function(){}
+    }
+  },
+
   cm: {
     slow: {
       cast: function(skill, source, target){
@@ -203,77 +274,6 @@ var Skills = {
     recall: {
       cast: function(skill, source, target){},
       damage: function(){}
-    }
-  },
-
-  pud: {
-    hook: {
-      cast: function(skill, source, target){
-      
-      }
-    },
-    rot: {
-      cast: function(skill, source){
-        if(source.data('pud-rot')){
-          //turn off
-          source.off('turnstart.pud-rot');
-          source.data('pud-rot', null);
-          source.removeBuff('pud-rot');
-          skill.removeClass('off');
-        } 
-        else {
-          //turn on
-          var spot = game.map.getPosition(source);
-          if(game.status === 'turn') { 
-            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
-          }
-          var side = source.data('side');
-          var otherside = (side === 'enemy') ? 'player' : 'enemy';
-          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
-            var card = neighbor.find('.card.'+otherside);
-            if(card.length){
-              source.damage(skill.data('damage'), card, skill.data('damageType'));
-              if(card.data('pud-rot')){
-                card.data('pud-rot', skill.data('duration'));
-              } else {
-                card.data('pud-rot', skill.data('duration'));
-                source.addBuff(card, skill.data('buff'));
-                var speed = card.data('speed') - 1;
-                card.data('currentspeed', speed);
-                card.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
-              }              
-            }
-          });   
-          source.data('pud-rot', skill.data('duration'));
-          source.addBuff(source, skill.data('buff'));
-          source.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
-          source.damage(skill.data('damage'), source, skill.data('damageType'));
-          skill.addClass('off');
-        }
-      },
-      turnstart: function(event, eventdata){
-        var target = eventdata.target;
-        var duration = target.data('pud-rot');
-        if(duration > 0) {
-          duration -= 1;
-          target.data('pud-rot', duration);
-        } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
-          target.off('turnstart.pud-rot');
-          target.data('pud-rot', null);
-          target.removeBuff('pud-rot');
-        }
-      }
-    },
-    passive: {
-      passive: function(skill, source){},
-      damage: function(){},
-      die: function(){}
-    },
-    ult: {
-      cast: function(skill, source, target){},
-      dot: function(){}
     }
   },
 

@@ -86,14 +86,14 @@ var game = (function () {
           window.$ &&
           window.JSON &&
           window.btoa && window.atob &&
-          window.AudioContext &&
+          //window.AudioContext &&
           window.XMLHttpRequest &&
           Modernizr.backgroundsize &&
-          Modernizr.cssanimations &&
+          //Modernizr.cssanimations &&
           Modernizr.csstransforms &&
           Modernizr.generatedcontent &&
-          Modernizr.opacity &&
-          Modernizr.rgba) {
+          Modernizr.rgba &&
+          Modernizr.opacity) {
         game.load();
       } else { game.unsupported(); }
     },
@@ -114,7 +114,9 @@ var game = (function () {
       game.status = 'loading';
       game.location();
       game.states.load.pack();
-      game.states.load.audio();
+      if (window.AudioContext) {
+        game.states.load.audio();
+      }
       game.states.load.images();
       game.states.load.language(function () {
         game.states.load.data();
@@ -1917,6 +1919,28 @@ var game = (function () {
         } else { return game.ui.night; }
       }
     },
+    sounds: [
+      'activate',
+      'crit',
+      'horn',
+      'battle',
+      'pick',
+      'tower/attack',
+      'tutorial/axehere',
+      'tutorial/axebattle',
+      'tutorial/axemove',
+      'tutorial/axeattack',
+      'tutorial/axetime',
+      'tutorial/axewait',
+      'tutorial/axeah',
+      'am/attack',
+      'cm/attack',
+      'kotl/attack',
+      'ld/attack',
+      'nyx/attack',
+      'pudge/attack',
+      'wk/attack'
+    ],
     audio: {
       buffsLoaded: 0,
       buffers: {},
@@ -1925,8 +1949,6 @@ var game = (function () {
         ajax.open('GET', '/audio/' + name + '.mp3', true);
         ajax.responseType = 'arraybuffer';
         ajax.onload = function () {
-          var buffer = ajax.response;
-          if (typeof ajax.response === 'string') { buffer = game.audio.str2ab(ajax.response); }
           game.audio.context.decodeAudioData(ajax.response, function (buffer) {
             game.audio.buffers[name] = buffer;
             game.progress += 1;
@@ -2425,30 +2447,9 @@ var game = (function () {
           game.audio.context = new AudioContext();
           game.mute = game.audio.context.createGain();
           game.mute.connect(game.audio.context.destination);
-          var sounds = [
-            'activate',
-            'crit',
-            'horn',
-            'battle',
-            'pick',
-            'tower/attack',
-            'tutorial/axehere',
-            'tutorial/axebattle',
-            'tutorial/axemove',
-            'tutorial/axeattack',
-            'tutorial/axetime',
-            'tutorial/axewait',
-            'tutorial/axeah',
-            'am/attack',
-            'cm/attack',
-            'kotl/attack',
-            'ld/attack',
-            'nyx/attack',
-            'pudge/attack',
-            'wk/attack'
-          ], i;
-          game.totalLoad += sounds.length;
-          for (i = 0; i < sounds.length; i += 1) { game.audio.load(sounds[i]); }
+          game.totalLoad += game.sounds.length;
+          var i;
+          for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
         },
         images: function () {
           var imgUrls, thisSheetRules, baseURL, baseURLarr, csshref, cssPile,  arr, i, j,
@@ -2507,11 +2508,11 @@ var game = (function () {
             game.states.builded = true;
           }
           var load = Number.parseInt(game.progress / game.totalLoad * 100);
-          $('.progress').text(load + '%');
           if (game.progress === game.totalLoad) {
             game.status = 'loaded';
             game.states.changeTo('log', true);
           } else {
+            $('.progress').text(load + '%');
             game.timeout = setTimeout(game.states.load.progress, 500);
           }
         },

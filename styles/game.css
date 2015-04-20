@@ -1005,8 +1005,9 @@ label span {
   transform: translate(-50%, -50%) scale(1.1) rotateY(180deg);
 }
 .table .selectedarea.flip:hover .card {
+  backface-visibility: visible; /* blurry fix */
   z-index: 11;
-  transform: translate(-50%, -50%) scale(1.86) translate(-42px, 62px);
+  transform: translate(-88%, -12%) scale(1.86);
 }
 .table .selectedarea .card .damaged,
 .table .selectedarea .card .heal {
