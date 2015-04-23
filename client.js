@@ -2366,7 +2366,7 @@ var game = (function () {
             game.progress += 1;
             if (data.lang) {
               game.language.detected = data.lang.split(';')[0].split(',')[0];
-              if (game.language.available.indexOf(game.language.detected) >= 0) {
+              if (game.language.available.indexOf(game.language.detected) > 0) {
                 game.language.current = game.language.detected;
                 game.language.dir = game.language.current + '/';
               }
@@ -2389,6 +2389,7 @@ var game = (function () {
           });
         },
         json: function (name, cb) {
+          console.log('json/' + game.language.dir + name + '.json');
           $.ajax({
             type: 'GET',
             url: 'json/' + game.language.dir + name + '.json',
@@ -2583,7 +2584,7 @@ var game = (function () {
           $('.logo').removeClass('slide');
           game.topbar.appendTo('.welcome');
           game.loader.removeClass('loading');
-          game.message.html('<b>Alpha</b> version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">' + game.version + '</small></a>');
+          game.message.html('Version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">alpha ' + game.version + '</small></a> - <b>Warning: </b> Heroes still in development: Pudge, Keeper of the Light and Nyx Assassin');
           this.input.focus();
           if (game.debug) {
             this.input.val('Bot' + parseInt(Math.random() * 100, 10));
