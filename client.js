@@ -392,7 +392,6 @@ var game = (function () {
           pos = game.map.getPosition(source);
         if (hero && range && pos && !source.hasClasses('dead done stunned')) {
           game.map.stroke(pos, range, 'skillcast');
-          //console.log(skill, skill.data('targets'));
           if (skill.data('aoe')) {
             game.castpos = pos;
             game.castrange = range;
@@ -1002,7 +1001,7 @@ var game = (function () {
       }
     },
     enemy: {
-      playtime: 2,
+      playtime: 3,
       buyCard: function () {
         game.enemy.hand += 1;
         game.random();
@@ -1018,10 +1017,11 @@ var game = (function () {
       move: function () {
         game.message.text(game.ui.enemymove);
         game.enemy.skills.deck.addClass('slide');
-        var from, to, m, move, source, target, hero, skillid, skill,
+        var from, to, m, move, source, target, targets, hero, skillid, skill,
           moves = game.currentData.moves.split('|');
         for (m = 0; m < moves.length; m += 1) {
           move = moves[m].split(':');
+          if (game.debug) { console.log(move); }
           if (move[1] && move[2]) {
             from = game.map.mirrorPosition(move[1]);
             to = game.map.mirrorPosition(move[2]);
@@ -1043,9 +1043,10 @@ var game = (function () {
               source = $('#' + from + ' .card');
               target = $('#' + to);
               skill = $('.enemy.skills .' + hero + '-' + skillid).show();
-              if (skill.data('target') === game.ui.enemy || skill.data('target') === game.ui.ally || skill.data('target') === game.ui.self) {
-                target = $('#' + to + ' .card');
-              }
+              targets = skill.data('targets');
+              if (targets.indexOf(game.ui.enemy) >= 0 ||
+                  targets.indexOf(game.ui.ally)  >= 0 ||
+                  targets.indexOf(game.ui.self)  >= 0) { target = $('#' + to + ' .card'); }
               if (Skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) {
                 source.cast(skill, target);
                 game.enemy.hand -= 1;
@@ -1064,18 +1065,14 @@ var game = (function () {
             }
           }
         }
-        $('.card.heroes').each(function () {
-          var hero = $(this);
-          hero.trigger('enemyturnend', { target: hero });
-        });
         if (game.mode !== 'tutorial') { setTimeout(game.enemy.end, game.enemy.playtime * 1000); }
       },
       end: function () {
         if (game.status !== 'over') {
-          game.status = 'turn';
           game.enemy.skills.deck.removeClass('slide');
           $('.card.enemy.heroes').removeClass('done');
           $('.enemy.skills .card').hide();
+          game.status = 'turn';
           game.turn.begin();
           if (game.selectedCard) { game.selectedCard.select(); }
         }
@@ -1358,7 +1355,7 @@ var game = (function () {
         game.message.text(game.ui.enemyturn);
         game.message.addClass('tutorialblink');
         game.status = 'unturn';
-        setTimeout(game.tutorial.wait, 4000);
+        setTimeout(game.tutorial.wait, 5000);
       },
       wait: function () {
         game.tutorial.axebaloon.hide().fadeIn('slow');
@@ -1368,7 +1365,7 @@ var game = (function () {
         game.states.table.time.text(game.ui.time + ': 1:30 ' + game.ui.night);
         game.message.removeClass('tutorialblink');
         game.states.table.time.addClass('tutorialblink');
-        setTimeout(game.tutorial.time, 4000);
+        setTimeout(game.tutorial.time, 5000);
       },
       time: function () {
         game.tutorial.axebaloon.hide().fadeIn('slow');
@@ -1377,7 +1374,7 @@ var game = (function () {
         game.states.table.time.removeClass('tutorialblink');
         game.states.table.turns.addClass('tutorialblink');
         game.states.table.turns.text(game.ui.turns + ': 1/1 (2)');
-        setTimeout(game.tutorial.enemyMove, 4000);
+        setTimeout(game.tutorial.enemyMove, 5000);
         game.tutorial.buildSkills();
       },
       enemyMove: function () {
@@ -1390,7 +1387,7 @@ var game = (function () {
         if ($('#' + game.map.mirrorPosition(to)).hasClass('block')) { to = 'G1'; }
         game.currentData = { moves: 'C:E6:' + to + ':blink:am' };
         game.enemy.move();
-        setTimeout(game.tutorial.attack, 3000);
+        setTimeout(game.tutorial.attack, 5000);
       },
       attack: function () {
         game.tutorial.axe.removeClass('left');
@@ -1663,9 +1660,9 @@ var game = (function () {
         game.tower.place();
         game.tree.place();
         game.states.table.buildUnits();
-        game.turn.build();
         game.match.started = true;
-        setTimeout(game.turn.first, 1000);
+        game.turn.build();
+        setTimeout(game.turn.begin, 3000);
       },
       placePlayerHeroes: function () {
         if (game.player.picks) {
@@ -1747,31 +1744,8 @@ var game = (function () {
           }
         });
       },
-      sendMoves: function () {
-        $('.card.heroes').each(function () {
-          var hero = $(this);
-          hero.trigger('playerturnend', { target: hero });
-        });
-        game.message.text(game.ui.uploadingturn);
-        game.loader.addClass('loading');
-        game.map.unhighlight();
-        $('.card .damaged').remove();
-        $('.card .heal').remove();
-        game.status = 'unturn';
-        setTimeout(function () {
-          game.states.table.el.removeClass('turn');
-        }, 2000);
-        game.match.sendData();
-      },
-      getMoves: function () {
-        game.message.text(game.ui.loadingturn);
-        game.loader.addClass('loading');
-        game.tries = 1;
-        game.states.table.el.removeClass('unturn');
-        setTimeout(game.match.getData, 1000);
-      },
       sendData: function () {
-        game.player.turn += 1;
+        game.message.text(game.ui.uploadingturn);
         game.currentData[game.player.type + 'Turn'] = game.player.turn;
         game.currentData.moves = game.currentData.moves.join('|');
         game.db({
@@ -1782,12 +1756,13 @@ var game = (function () {
         });
       },
       getData: function () {
+        game.message.text(game.ui.loadingturn);
         clearTimeout(game.timeout);
         game.db({ 'get': game.id }, function (data) {
-          if (data[game.enemy.type + 'Turn'] === game.enemy.turn + 1) {
+          if (game.debug) { console.log('Enemy Moves:', data); }
+          if (data[game.enemy.type + 'Turn'] === game.enemy.turn) {
             game.triesCounter.text('');
             game.currentData = data;
-            game.enemy.turn += 1;
             game.enemy.move();
           } else {
             game.tries += 1;
@@ -1800,6 +1775,7 @@ var game = (function () {
       },
       win: function () {
         game.winner = game.player.name;
+        game.states.table.el.removeClass('unturn');
         game.states.table.el.addClass('turn');
         game.message.text(game.ui.win);
         game.match.sendData();
@@ -1808,6 +1784,7 @@ var game = (function () {
       },
       lose: function () {
         game.winner = game.enemy.name;
+        game.states.table.el.removeClass('turn');
         game.states.table.el.addClass('unturn');
         game.message.text(game.ui.lose);
         game.loader.removeClass('loading');
@@ -1819,26 +1796,20 @@ var game = (function () {
       }
     },
     turn: {
-      first: function () {
-        game.currentData = {};
-        game.player.kills = 0;
-        game.enemy.kills = 0;
-        game.turn.begin();
-      },
       build: function () {
         game.time = 0;
         game.player.turn = 0;
         game.enemy.turn = 0;
+        game.player.kills = 0;
+        game.enemy.kills = 0;
         game.currentData.moves = [];
+        game.currentData = {};
         if (game.player.type === 'challenged') { game.status = 'turn'; }
         if (game.player.type === 'challenger') { game.status = 'unturn'; }
       },
       begin: function () {
         if (game.status !== 'over') {
           game.currentData.moves = [];
-          game.states.table.el.addClass(game.status);
-          if (game.status === 'turn') { game.message.text(game.ui.yourturn); }
-          if (game.status === 'unturn') { game.message.text(game.ui.enemyturn); }
           $('.card .damaged').remove();
           $('.card .heal').remove();
           $('.card.dead').each(function () {
@@ -1847,11 +1818,17 @@ var game = (function () {
           });
           if (game.turn === 6) { $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck); }
           if (game.status === 'turn') {
+            game.states.table.el.removeClass('unturn');
+            game.states.table.el.addClass('turn');
+            game.message.text(game.ui.yourturn);
+            game.player.turn += 1;
             $('.map .card.player').removeClass('done');
             game.player.buyHand();
             game.tower.attack();
             game.map.highlight();
           } else {
+            game.message.text(game.ui.enemyturn);
+            game.enemy.turn += 1;
             $('.map .card.enemy').removeClass('done');
             game.enemy.buyHand();
           }
@@ -1869,6 +1846,7 @@ var game = (function () {
           });
           game.time = game.player.turn + game.enemy.turn;
           game.turn.counter = game.timeToPlay;
+          if (game.status === 'unturn') { game.turn.counter += 1; }
           game.loader.removeClass('loading');
           setTimeout(game.turn.count, 1000);
           game.location();
@@ -1883,21 +1861,28 @@ var game = (function () {
         } else if (game.status === 'unturn') {
           game.message.text(game.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.ui.seconds);
         }
-        if (game.turn.counter < 1) {
-          $('.card.heroes').each(function () {
-            var hero = $(this);
-            hero.trigger('turnend', { target: hero });
-          });
-          if (game.status === 'turn') {
-            game.match.sendMoves();
-          } else if (game.status === 'unturn') {
-            game.match.getMoves();
-          }
-        } else {
-          game.timeout = setTimeout(game.turn.count, 1000);
-        }
+        if (game.turn.counter < 1) { game.turn.end(); } else { game.timeout = setTimeout(game.turn.count, 1000); }
         game.time += 0.9 / game.timeToPlay;
         game.turn.counter -= 1;
+      },
+      end: function () {
+        game.message.text(game.ui.turnend);
+        game.map.unhighlight();
+        $('.card .damaged').remove();
+        $('.card .heal').remove();
+        $('.card.heroes').each(function () {
+          var hero = $(this);
+          hero.trigger('turnend', { target: hero });
+        });
+        if (game.status === 'turn') {
+          game.states.table.el.removeClass('turn');
+          game.states.table.el.addClass('unturn');
+          game.status = 'unturn';
+          setTimeout(game.match.sendData, 1000);
+        } else {
+          game.tries = 1;
+          setTimeout(game.match.getData, 1000);
+        }
       },
       hours: function () {
         var convertedMin, intMin, stringMin,
@@ -2389,7 +2374,6 @@ var game = (function () {
           });
         },
         json: function (name, cb) {
-          console.log('json/' + game.language.dir + name + '.json');
           $.ajax({
             type: 'GET',
             url: 'json/' + game.language.dir + name + '.json',
@@ -2604,7 +2588,7 @@ var game = (function () {
       menu: {
         build: function () {
           this.menu = $('<div>').appendTo(this.el).addClass('box');
-          this.title = $('<h1>').appendTo(this.menu).text(game.ui.choosemode);
+          this.title = $('<h1>').appendTo(this.menu).text(game.ui.menu);
           this.tutorial = $('<div>').addClass('button').appendTo(this.menu).attr({
             title: game.ui.tutorial
           }).text(game.ui.tutorial).click(function () {

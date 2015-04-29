@@ -46,7 +46,7 @@ var Skills = {
       cast: function(skill, source){
         if(skill.hasClass('on')){
           //turn off
-          source.off('turnstart.pud-rot');
+          source.off('turnend.pud-rot');
           source.data('pud-rot', null);
           source.removeBuff('pud-rot');
           skill.removeClass('on');
@@ -70,18 +70,18 @@ var Skills = {
                 source.addBuff(card, skill.data('buff'));
                 var speed = card.data('speed') - 1;
                 card.data('currentspeed', speed);
-                card.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+                card.on('turnend.pud-rot', Skills.pud.rot.turnend);
               }              
             }
           });   
           source.data('pud-rot', skill.data('duration'));
           source.addBuff(source, skill.data('buff'));
-          source.on('turnstart.pud-rot', Skills.pud.rot.turnstart);
+          source.on('turnend.pud-rot', Skills.pud.rot.turnend);
           source.damage(skill.data('damage'), source, skill.data('damageType'));
           skill.addClass('off');
         }
       },
-      turnstart: function(event, eventdata){
+      turnend: function(event, eventdata){
         var target = eventdata.target;
         var duration = target.data('pud-rot');
         if(duration > 0) {
@@ -90,7 +90,7 @@ var Skills = {
         } else {
           var speed = target.data('currentspeed') + 1;
           target.data('currentspeed', speed);
-          target.off('turnstart.pud-rot');
+          target.off('turnend.pud-rot');
           target.data('pud-rot', null);
           target.removeBuff('pud-rot');
         }
@@ -173,7 +173,7 @@ var Skills = {
           skill: skill,
           duration: skill.data('duration')
         });
-        target.on('turnstart.cm-freeze', this.dot);
+        target.on('turnend.cm-freeze', this.dot);
       },
       dot: function(event, eventdata){
         var target = eventdata.target;
@@ -189,7 +189,7 @@ var Skills = {
         } else {
           target.removeClass('frozen');
           target.data('cm-freeze', null);
-          target.off('turnstart.cm-freeze');
+          target.off('turnend.cm-freeze');
           target.removeBuff('cm-freeze');
         }
       }
@@ -341,7 +341,7 @@ var Skills = {
             source: source,
             skill: skill
           });
-          target.on('turnstart.ld-entangle', Skills.ld.summon.entangling);
+          target.on('turnend.ld-entangle', Skills.ld.summon.entangling);
         }
       },
       entangling: function(event, eventdata){
@@ -355,7 +355,7 @@ var Skills = {
           source.damage(skill.data('entangledamage'), target, 'Physical');
         } else {
           target.removeClass('entangled');
-          target.off('turnstart.ld-entangle');
+          target.off('turnend.ld-entangle');
           target.data('ld-entangle', null);
           target.removeBuff('ld-entangle');
         }
@@ -567,7 +567,7 @@ var Skills = {
         }
         wk.damage(skill.data('damage'), target, skill.data('damageType'));
         wk.addStun(target, stun);
-        target.on('turnstart.wk-stun', this.dot).data('wk-stun', {
+        target.on('turnend.wk-stun', this.dot).data('wk-stun', {
           duration: stun + dot,
           source: source,
           skill: skill
@@ -594,7 +594,7 @@ var Skills = {
           speed = target.data('speed') + 1;
           target.data('currentspeed', speed);
           target.removeBuff('wk-stun');
-          target.off('turnstart.wk-stun');
+          target.off('turnend.wk-stun');
           target.data('wk-stun', null);
         }
       }
@@ -664,7 +664,7 @@ var Skills = {
         source.data('currentdamage', source.data('damage'));
       }
     },
-    ult: {
+    ult: {//to do slow as soon as born 
       passive: function(skill, source){
         source.on('die.wk-ult', this.die);
         source.data('wk-ult-skill', skill);

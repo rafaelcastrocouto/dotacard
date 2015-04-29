@@ -669,12 +669,22 @@ label span {
   top: 45%;
   transform: translate(-50%, -50%) scale(0.45);
 }
+.pickedbox .card h1,
+.pickedbox .card .current,
+.pickedbox .card .desc,
+.pickedbox .card .buff {
+  opacity: 0;
+}
+.pickedbox .card .portrait .img, 
+.pickedbox .card .portrait .overlay {
+  height: 265px;
+}
 
 .prepickbox {
   width: 206px;
   height: 190px;
   position: absolute;
-  top: 360px;
+  bottom: 5px;
   left: 655px;
   padding: 2px;
   text-align: center;
@@ -966,6 +976,40 @@ label span {
 .table .player.skills.hand .card {
   margin-right: -140px;
 }
+.table .player.skills.hand .card:nth-child(1) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-18deg);
+}
+.table .player.skills.hand .card:nth-child(2) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-14deg);
+}
+.table .player.skills.hand .card:nth-child(3) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-10deg);
+}
+.table .player.skills.hand .card:nth-child(4) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-6deg);
+}
+.table .player.skills.hand .card:nth-child(5) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-2deg);
+}
+.table .player.skills.hand .card:nth-child(6) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(2deg);
+}
+.table .player.skills.hand .card:nth-child(7) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(6deg);
+}
+.table .player.skills.hand .card:nth-child(8) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(10deg);
+}
+.table .player.skills.hand .card:nth-child(9) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-14deg);
+}
+.table .player.skills.hand .card:nth-child(10) {
+  transform: translate(-50%, -50%) scale(0.4) rotate(-18deg);
+}
+.table .deck.player.skills.hand .card:hover {
+  transform: translate(-50%, -50%) scale(0.5);
+  z-index: 8;
+}
 .table .selectedarea {
   width: 220px;
   height: 330px;
@@ -1091,6 +1135,10 @@ label span {
   transform: translate3d(-50%, -50%, 75px) rotateX(-40deg);
 }
 
+.table.unturn .map .player.card {
+  opacity: 0.7;
+}
+
 .map .spot.playerarea {
   background: rgba(100,255,100,0.2);
 }
@@ -1116,6 +1164,32 @@ label span {
   cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
 }
 
+.map .card h1,
+.map .card .desc,
+.map .card .buff {
+  opacity: 0;
+}
+.map .card fieldset {
+  padding: 0;
+}
+.map .card .portrait .img, 
+.map .card .portrait .overlay {
+  height: 265px;
+}
+.map .card .current {
+  top: 35px;
+  right: 30px;
+}
+.map .card .current .damage {
+  display: none;
+}
+.map .card .current .hp span {
+  transform: scale(4);
+}
+.map .card.enemy .current .hp span {
+  background: #ed8c8c;
+  color: white;
+}
 /*TARGETS*/
 
 .movearea:after,
