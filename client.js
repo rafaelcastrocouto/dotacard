@@ -149,7 +149,7 @@ var game = (function () {
       });
     },
     location: function () {
-      location.hash = game.currentState + '.' + game.status;
+      if (game.debug) { location.hash = game.currentState + '.' + game.status; }
     },
     random: function () {
       if (game.debug) {
@@ -1923,7 +1923,7 @@ var game = (function () {
       'kotl/attack',
       'ld/attack',
       'nyx/attack',
-      'pudge/attack',
+      'pud/attack',
       'wk/attack'
     ],
     audio: {
@@ -1934,6 +1934,7 @@ var game = (function () {
         ajax.open('GET', '/audio/' + name + '.mp3', true);
         ajax.responseType = 'arraybuffer';
         ajax.onload = function () {
+          game.audio.buffsLoaded += 1;
           game.audio.context.decodeAudioData(ajax.response, function (buffer) {
             game.audio.buffers[name] = buffer;
             game.progress += 1;
@@ -2443,9 +2444,7 @@ var game = (function () {
             mkImg = function (k, t) {
               allImgs[k] = new Image();
               allImgs[k].src = t[0] === '/' || t.match('http://') ? t : baseURL + t;
-              //allImgs[k].onload = function () {
-              //  game.progress += 1;
-              //};
+              allImgs[k].onload = function () { game.progress += 1; };
             };
           for (i = 0; i < sheets.length; i += 1) {
             cssPile = '';
@@ -2463,7 +2462,7 @@ var game = (function () {
             imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);
             if (imgUrls !== null && imgUrls.length > 0 && imgUrls !== '') {
               arr = $.makeArray(imgUrls);
-              //game.totalLoad += arr.length;
+              game.totalLoad += arr.length;
               $.each(arr, mkImg);
             }
           }

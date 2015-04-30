@@ -1,2 +1,2 @@
 #.
-HOST=localhost PORT=80 node server.js
+PORT=80 node server.js
