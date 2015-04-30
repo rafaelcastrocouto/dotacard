@@ -11,7 +11,7 @@
       "duration": 3,
       "damage": 12,
       "damageType": "Mágico",
-      "cards": 4,
+      "cards": 5,
       "display": true,
       "description": "Uma explosão de gelo que causa dano e diminui a velocidade dos inimigos"
     },
@@ -225,7 +225,7 @@
   "kotl": {
     "illuminate": {
       "name": "Iluminar",
-      "channel": true,
+      "channel": 4,
       "type": "Canalização",
       "targets": ["Local"],
       "aoe": "Linear",
@@ -303,7 +303,6 @@
     },
     "rot": {
       "name": "Rot",
-      "deck": "Permanente",
       "type": "Livre",
       "targets": ["Próprio"],
       "aoe": "Radial",

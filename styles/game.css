@@ -977,16 +977,16 @@ label span {
   margin-right: -140px;
 }
 .table .player.skills.hand .card:nth-child(1) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-18deg);
+  transform: translate(-50%, -36%) scale(0.4) rotate(-18deg);
 }
 .table .player.skills.hand .card:nth-child(2) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-14deg);
+  transform: translate(-50%, -42%) scale(0.4) rotate(-14deg);
 }
 .table .player.skills.hand .card:nth-child(3) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-10deg);
+  transform: translate(-50%, -46%) scale(0.4) rotate(-10deg);
 }
 .table .player.skills.hand .card:nth-child(4) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-6deg);
+  transform: translate(-50%, -49%) scale(0.4) rotate(-6deg);
 }
 .table .player.skills.hand .card:nth-child(5) {
   transform: translate(-50%, -50%) scale(0.4) rotate(-2deg);
@@ -995,16 +995,16 @@ label span {
   transform: translate(-50%, -50%) scale(0.4) rotate(2deg);
 }
 .table .player.skills.hand .card:nth-child(7) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(6deg);
+  transform: translate(-50%, -49%) scale(0.4) rotate(6deg);
 }
 .table .player.skills.hand .card:nth-child(8) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(10deg);
+  transform: translate(-50%, -46%) scale(0.4) rotate(10deg);
 }
 .table .player.skills.hand .card:nth-child(9) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-14deg);
+  transform: translate(-50%, -42%) scale(0.4) rotate(14deg);
 }
 .table .player.skills.hand .card:nth-child(10) {
-  transform: translate(-50%, -50%) scale(0.4) rotate(-18deg);
+  transform: translate(-50%, -36%) scale(0.4) rotate(18deg);
 }
 .table .deck.player.skills.hand .card:hover {
   transform: translate(-50%, -50%) scale(0.5);

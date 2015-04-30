@@ -77,6 +77,7 @@
       "type": "Free",
       "targets": ["Spot", "Free"],
       "range": "Melee",
+      "cards": 1,
       "description": "Teleports the Spirit Bear back to the Lone Druid"
     },
     "rabid": {

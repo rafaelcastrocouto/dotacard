@@ -48,7 +48,7 @@
     "range": "Ranged",
     "hp": 45,
     "mana": 4, 
-    "damage": 4,
+    "damage": 8,
     "armor": 20,
     "resistance": 25,    
     "skills": "Crystal Nova, Frostbite, Freezing Field",

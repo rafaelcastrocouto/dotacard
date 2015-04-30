@@ -20,10 +20,8 @@
       "regen": 2,
       "mana": 3,
       "damage": 5,
-      "skills": "War Stomp",
-      "buffs": "War Stompt Stun"
+      "skills": "War Stomp"
      },
-    
     "golem": {
       "name": "Golem",
       "range": "Melee",
