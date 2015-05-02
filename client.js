@@ -116,6 +116,7 @@ var game = (function () {
       game.states.load.pack();
       if (window.AudioContext) {
         game.states.load.audio();
+        game.states.load.track();
       }
       game.states.load.images();
       game.states.load.language(function () {
@@ -1927,17 +1928,16 @@ var game = (function () {
       'wk/attack'
     ],
     audio: {
-      buffsLoaded: 0,
       buffers: {},
-      load: function (name) {
+      load: function (name, cb) {
         var ajax = new XMLHttpRequest();
         ajax.open('GET', '/audio/' + name + '.mp3', true);
         ajax.responseType = 'arraybuffer';
         ajax.onload = function () {
-          game.audio.buffsLoaded += 1;
           game.audio.context.decodeAudioData(ajax.response, function (buffer) {
             game.audio.buffers[name] = buffer;
             game.progress += 1;
+            if (cb) { cb(); }
           });
         };
         ajax.send();
@@ -2436,6 +2436,12 @@ var game = (function () {
           game.totalLoad += game.sounds.length;
           var i;
           for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
+        },
+        track: function () {
+          var song = 'doomhammer';
+          game.audio.load(song, function () {
+            game.audio.play(song);
+          });
         },
         images: function () {
           var imgUrls, thisSheetRules, baseURL, baseURLarr, csshref, cssPile,  arr, i, j,

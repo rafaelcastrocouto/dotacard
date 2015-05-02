@@ -2,7 +2,7 @@
   "ld":{
     "spiritbear":{
       "name": "Espírito Urso",
-      "hp": 120,
+      "hp": 80,
       "damage": 3,
       "armor": 33,
       "resistance": 25,
