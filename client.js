@@ -94,47 +94,234 @@ var game = (function () {
           Modernizr.generatedcontent &&
           Modernizr.rgba &&
           Modernizr.opacity) {
-        game.load();
-      } else { game.unsupported(); }
+        game.fn();
+        game.load.start();
+      } else { game.load.unsupported(); }
     },
-    unsupported: function () {
-      var welcome = document.getElementsByClassName('welcome')[0],
-        unsupported = document.getElementsByClassName('unsupported')[0];
-      welcome.style.display = 'none';
-      unsupported.style.display = 'block';
-      unsupported.innerHTML = [
-        '<div class="box">',
-        '  <img class="banner" src="img/banner.png" />',
-        '  <h2>DotaCard requires a <i>modern browser</i></h2>',
-        '  <p><a href="http://whatbrowser.org/" target="_blank">How can I get a <i>modern browser?</i></a></p>',
-        '</div>'
-      ].join('\n');
-    },
-    load: function () {
-      game.status = 'loading';
-      game.location();
-      game.states.load.pack();
-      if (window.AudioContext) {
-        game.states.load.audio();
-        game.states.load.track();
-      }
-      game.states.load.images();
-      game.states.load.language(function () {
-        game.states.load.data();
-        game.states.load.progress();
-      });
-      game.states.load.ping(function () {
-        if (!game.offline && !game.debug) {
-          game.states.load.analytics();
+    load: {
+      start: function () {
+        game.status = 'loading';
+        game.location();
+        game.load.pack();
+        game.load.images();
+        game.load.icons();
+        if (window.AudioContext) {
+          game.load.audio();
+          game.load.track();
         }
-      });
-      game.fn();
+        game.load.language(function () {
+          game.load.data();
+          game.load.progress();
+        });
+        game.load.ping(function () {
+          if (!game.offline && !game.debug) {
+            game.load.analytics();
+          }
+        });
+      },
+      unsupported: function () {
+        var welcome = document.getElementsByClassName('welcome')[0],
+          unsupported = document.getElementsByClassName('unsupported')[0];
+        welcome.style.display = 'none';
+        unsupported.style.display = 'block';
+        unsupported.innerHTML = [
+          '<div class="box">',
+          '  <img class="banner" src="img/banner.png" />',
+          '  <h2>DotaCard requires a <i>modern browser</i></h2>',
+          '  <p><a href="http://whatbrowser.org/" target="_blank">How can I get a <i>modern browser?</i></a></p>',
+          '</div>'
+        ].join('\n');
+      },
+      language: function (cb) {
+        game.totalLoad += 1;
+        game.db({ 'get': 'lang' }, function (data) {
+          game.progress += 1;
+          if (data.lang) {
+            game.language.detected = data.lang.split(';')[0].split(',')[0];
+            if (game.language.available.indexOf(game.language.detected) > 0) {
+              game.language.current = game.language.detected;
+              game.language.dir = game.language.current + '/';
+            }
+          }
+          if (cb) { cb(); }
+        });
+      },
+      pack: function () {
+        game.totalLoad += 1;
+        $.ajax({
+          async: true,
+          type: 'GET',
+          url: 'package.json',
+          complete: function (response) {
+            game.progress += 1;
+            var data = JSON.parse(response.responseText);
+            $.each(data, function (name) {
+              game[name] = this;
+            });
+          }
+        });
+      },
+      json: function (name, cb) {
+        $.ajax({
+          async: true,
+          type: 'GET',
+          url: 'json/' + game.language.dir + name + '.json',
+          complete: function (response) {
+            var data = JSON.parse(response.responseText);
+            game[name] = data;
+            if (cb) {
+              cb(data);
+            }
+          }
+        });
+      },
+      data: function () {
+        game.totalLoad += 5;
+        game.load.json('ui', function () {
+          game.progress += 1;
+        });
+        game.load.json('heroes', function () {
+          game.progress += 1;
+        });
+        game.load.json('units', function () {
+          game.progress += 1;
+        });
+        game.load.json('skills', function () {
+          game.progress += 1;
+          var hero, skill;
+          for (hero in game.skills) {
+            if (game.skills.hasOwnProperty(hero)) {
+              for (skill in game.skills[hero]) {
+                if (game.skills[hero].hasOwnProperty(skill)) {
+                  game.skills[hero][skill].buff = hero + '-' + skill;
+                  game.skills[hero][skill].hero = hero;
+                  game.skills[hero][skill].skill = skill;
+                }
+              }
+            }
+          }
+        });
+        game.load.json('buffs', function () {
+          game.progress += 1;
+          var hero, buff;
+          for (hero in game.buffs) {
+            if (game.buffs.hasOwnProperty(hero)) {
+              for (buff in game.buffs[hero]) {
+                if (game.buffs[hero].hasOwnProperty(buff)) {
+                  game.buffs[hero][buff].buff = hero + '-' + buff;
+                  game.buffs[hero][buff].hero = hero;
+                  game.buffs[hero][buff].skill = buff;
+                }
+              }
+            }
+          }
+        });
+      },
+      audio: function () {
+        game.audio.context = new AudioContext();
+        game.mute = game.audio.context.createGain();
+        game.mute.connect(game.audio.context.destination);
+        game.totalLoad += game.sounds.length;
+        var i;
+        for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
+      },
+      track: function () {
+        var song = 'doomhammer';
+        game.audio.load(song, function () {
+          game.audio.play(song);
+        });
+      },
+      images: function () {
+        var imgUrls, thisSheetRules, baseURL, baseURLarr, csshref, cssPile,  arr, i, j,
+          sheets = document.styleSheets,
+          allImgs = [], k = 0,
+          mkImg = function (k, t) {
+            allImgs[k] = new Image();
+            allImgs[k].src = t[0] === '/' || t.match('http://') ? t : baseURL + t;
+            allImgs[k].onload = function () { game.progress += 1; };
+          };
+        for (i = 0; i < sheets.length; i += 1) {
+          cssPile = '';
+          csshref = sheets[i].href || 'window.location.href';
+          baseURLarr = csshref.split('/');
+          baseURLarr.pop();
+          baseURL = baseURLarr.join('/');
+          if (baseURL !== '') { baseURL += '/'; }
+          if (document.styleSheets[i].cssRules) {
+            thisSheetRules = document.styleSheets[i].cssRules;
+            for (j = 0; j < thisSheetRules.length; j += 1) {
+              cssPile += thisSheetRules[j].cssText;
+            }
+          } else { cssPile += document.styleSheets[i].cssText; }
+          imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);
+          if (imgUrls !== null && imgUrls.length > 0 && imgUrls !== '') {
+            arr = $.makeArray(imgUrls);
+            game.totalLoad += arr.length;
+            $.each(arr, mkImg);
+          }
+        }
+        return allImgs;
+      },
+      ping: function (cb) {
+        var start = new Date();
+        $.ajax({
+          async: true,
+          type: 'GET',
+          url: game.homepage,
+          complete: function (response) {
+            game.ping = new Date() - start;
+            if (response.readyState === 4) {
+              game.offline = false;
+            } else { game.offline = true; }
+            if (cb) { cb(); }
+          }
+        });
+      },
+      analytics: function () {
+        if (location.host !== 'localhost') { $('<script src="browser_modules/google.analytics.min.js">').appendTo('body'); }
+      },
+      icons: function () {
+        game.totalLoad += 1;
+        $('<link href="styles/icons.min.css" rel="stylesheet" data-noprefix/>').appendTo('head').load(function () { game.progress += 1; });
+      },
+      progress: function () {
+        clearTimeout(game.timeout);
+        if (game.version && game.ui && game.skills && !game.states.builded) {
+          game.states.build();
+          game.states.builded = true;
+        }
+        var load = Number.parseInt(game.progress / game.totalLoad * 100);
+        if (game.progress === game.totalLoad) {
+          game.status = 'loaded';
+          game.states.changeTo('log', true);
+        } else {
+          $('.progress').text(load + '%');
+          game.timeout = setTimeout(game.load.progress, 500);
+        }
+      },
+      end: function () {
+        if (!game.debug) {
+          window.oncontextmenu = game.nomenu;
+          window.onbeforeunload = function () {
+            return game.ui.leave;
+          };
+        }
+      },
+      reset: function () {
+        if (game.debug) {
+          console.log('Internal error: ', game);
+        } else {
+          alert(game.ui.error);
+          location.reload(true);
+        }
+      }
     },
     db: function (send, cb) {
       if (typeof send.data !== 'string') {
         send.data = JSON.stringify(send.data);
       }
       $.ajax({
+        async: true,
         type: 'GET',
         url: '/db',
         data: send,
@@ -809,7 +996,7 @@ var game = (function () {
           multi = op.multi,
           deck = $('<div>').addClass('deck ' + name);
         if (!game[name]) {
-          game.states.load.json(name, function () {
+          game.load.json(name, function () {
             game.deck.createCards(deck, name, cb, filter, multi);
           });
         } else { game.deck.createCards(deck, name, cb, filter, multi); }
@@ -1543,7 +1730,7 @@ var game = (function () {
             }, function () {
               game.match.battle(found.challenged, 'challenged');
             });
-          } else { game.states.load.reset(); }
+          } else { game.load.reset(); }
         });
       },
       pick: function () {
@@ -1603,7 +1790,7 @@ var game = (function () {
           } else {
             game.triesCounter.text(game.tries += 1);
             if (game.tries > game.connectionLimit) {
-              game.states.load.reset();
+              game.load.reset();
             } else { game.timeout = setTimeout(game.match.getChallengerDeck, 1000); }
           }
         });
@@ -1628,7 +1815,7 @@ var game = (function () {
           } else {
             game.triesCounter.text(game.tries += 1);
             if (game.tries > game.connectionLimit) {
-              game.states.load.reset();
+              game.load.reset();
             } else { game.timeout = setTimeout(game.match.getChallengedDeck, 1000); }
           }
         });
@@ -1769,7 +1956,7 @@ var game = (function () {
             game.tries += 1;
             game.triesCounter.text(game.tries);
             if (game.tries > game.connectionLimit) {
-              game.states.load.reset();
+              game.load.reset();
             } else { game.timeout = setTimeout(game.match.getData, 1000); }
           }
         });
@@ -2329,8 +2516,8 @@ var game = (function () {
           var newstate,
             pre = game.currentState,
             oldstate = game.states[pre];
-          if (oldstate.el && !keepElements) { oldstate.el.fadeOut(200); }
-          if (oldstate.end) { oldstate.end(); }
+          if (oldstate && oldstate.el && !keepElements) { oldstate.el.fadeOut(200); }
+          if (oldstate && oldstate.end) { oldstate.end(); }
           newstate = this[state];
           if (newstate.el && !keepElements) {
             newstate.el.append(game.topbar).delay(200).fadeIn(200);
@@ -2345,184 +2532,6 @@ var game = (function () {
         game.states.changeTo(game.backState);
       },
       //states
-      load: {
-        language: function (cb) {
-          game.totalLoad += 1;
-          game.db({ 'get': 'lang' }, function (data) {
-            game.progress += 1;
-            if (data.lang) {
-              game.language.detected = data.lang.split(';')[0].split(',')[0];
-              if (game.language.available.indexOf(game.language.detected) > 0) {
-                game.language.current = game.language.detected;
-                game.language.dir = game.language.current + '/';
-              }
-            }
-            if (cb) { cb(); }
-          });
-        },
-        pack: function () {
-          game.totalLoad += 1;
-          $.ajax({
-            type: 'GET',
-            url: 'package.json',
-            complete: function (response) {
-              game.progress += 1;
-              var data = JSON.parse(response.responseText);
-              $.each(data, function (name) {
-                game[name] = this;
-              });
-            }
-          });
-        },
-        json: function (name, cb) {
-          $.ajax({
-            type: 'GET',
-            url: 'json/' + game.language.dir + name + '.json',
-            complete: function (response) {
-              var data = JSON.parse(response.responseText);
-              game[name] = data;
-              if (cb) {
-                cb(data);
-              }
-            }
-          });
-        },
-        data: function () {
-          game.totalLoad += 5;
-          game.states.load.json('ui', function () {
-            game.progress += 1;
-          });
-          game.states.load.json('heroes', function () {
-            game.progress += 1;
-          });
-          game.states.load.json('units', function () {
-            game.progress += 1;
-          });
-          game.states.load.json('skills', function () {
-            game.progress += 1;
-            var hero, skill;
-            for (hero in game.skills) {
-              if (game.skills.hasOwnProperty(hero)) {
-                for (skill in game.skills[hero]) {
-                  if (game.skills[hero].hasOwnProperty(skill)) {
-                    game.skills[hero][skill].buff = hero + '-' + skill;
-                    game.skills[hero][skill].hero = hero;
-                    game.skills[hero][skill].skill = skill;
-                  }
-                }
-              }
-            }
-          });
-          game.states.load.json('buffs', function () {
-            game.progress += 1;
-            var hero, buff;
-            for (hero in game.buffs) {
-              if (game.buffs.hasOwnProperty(hero)) {
-                for (buff in game.buffs[hero]) {
-                  if (game.buffs[hero].hasOwnProperty(buff)) {
-                    game.buffs[hero][buff].buff = hero + '-' + buff;
-                    game.buffs[hero][buff].hero = hero;
-                    game.buffs[hero][buff].skill = buff;
-                  }
-                }
-              }
-            }
-          });
-        },
-        audio: function () {
-          game.audio.context = new AudioContext();
-          game.mute = game.audio.context.createGain();
-          game.mute.connect(game.audio.context.destination);
-          game.totalLoad += game.sounds.length;
-          var i;
-          for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
-        },
-        track: function () {
-          var song = 'doomhammer';
-          game.audio.load(song, function () {
-            game.audio.play(song);
-          });
-        },
-        images: function () {
-          var imgUrls, thisSheetRules, baseURL, baseURLarr, csshref, cssPile,  arr, i, j,
-            sheets = document.styleSheets,
-            allImgs = [], k = 0,
-            mkImg = function (k, t) {
-              allImgs[k] = new Image();
-              allImgs[k].src = t[0] === '/' || t.match('http://') ? t : baseURL + t;
-              allImgs[k].onload = function () { game.progress += 1; };
-            };
-          for (i = 0; i < sheets.length; i += 1) {
-            cssPile = '';
-            csshref = sheets[i].href || 'window.location.href';
-            baseURLarr = csshref.split('/');
-            baseURLarr.pop();
-            baseURL = baseURLarr.join('/');
-            if (baseURL !== '') { baseURL += '/'; }
-            if (document.styleSheets[i].cssRules) {
-              thisSheetRules = document.styleSheets[i].cssRules;
-              for (j = 0; j < thisSheetRules.length; j += 1) {
-                cssPile += thisSheetRules[j].cssText;
-              }
-            } else { cssPile += document.styleSheets[i].cssText; }
-            imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);
-            if (imgUrls !== null && imgUrls.length > 0 && imgUrls !== '') {
-              arr = $.makeArray(imgUrls);
-              game.totalLoad += arr.length;
-              $.each(arr, mkImg);
-            }
-          }
-          return allImgs;
-        },
-        ping: function (cb) {
-          var start = new Date();
-          $.ajax({
-            type: 'GET',
-            url: game.homepage,
-            complete: function (response) {
-              game.ping = new Date() - start;
-              if (response.readyState === 4) {
-                game.offline = false;
-              } else { game.offline = true; }
-              if (cb) { cb(); }
-            }
-          });
-        },
-        analytics: function () {
-          if (location.host !== 'localhost') { $('<script src="browser_modules/google.analytics.min.js">').appendTo('body'); }
-        },
-        progress: function () {
-          clearTimeout(game.timeout);
-          if (game.version && game.ui && game.skills && !game.states.builded) {
-            game.states.build();
-            game.states.builded = true;
-          }
-          var load = Number.parseInt(game.progress / game.totalLoad * 100);
-          if (game.progress === game.totalLoad) {
-            game.status = 'loaded';
-            game.states.changeTo('log', true);
-          } else {
-            $('.progress').text(load + '%');
-            game.timeout = setTimeout(game.states.load.progress, 500);
-          }
-        },
-        end: function () {
-          if (!game.debug) {
-            window.oncontextmenu = game.nomenu;
-            window.onbeforeunload = function () {
-              return game.ui.leave;
-            };
-          }
-        },
-        reset: function () {
-          if (game.debug) {
-            console.log('Internal error: ', game);
-          } else {
-            alert(game.ui.error);
-            location.reload(true);
-          }
-        }
-      },
       log: {
         remembername: true,
         build: function () {
@@ -2552,7 +2561,7 @@ var game = (function () {
                 if (server.status === 'online') {
                   game.status = 'logged';
                   game.states.changeTo('menu');
-                } else { game.states.load.reset(); }
+                } else { game.load.reset(); }
               });
             } else {
               game.states.log.input.focus();
