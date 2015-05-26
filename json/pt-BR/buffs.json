@@ -73,6 +73,10 @@
   },
 
   "pud": {
+    "rot": {
+      "name": "Podridão",
+      "description": "Velocidade de movimento reduzida pela nuvem tóxica"
+    },
     "ult": {
       "name": "Desmembrar",
       "description": "Unidade presa e recebendo dano por turno"

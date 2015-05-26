@@ -608,7 +608,7 @@ label span {
   transform: translate(-50%, -50%) scale(0.4);
 }
 
-.pickbox .card.active {
+.pickbox .card.selected {
   margin: 0 22px;
   transform: translate(-50%, -50%) scale(1.16);
 }
@@ -693,8 +693,8 @@ label span {
 }
 
 .choose .card .kd,
-.choode .card .damaged,
-.choode .card .heal {
+.choose .card .damaged,
+.choose .card .heal {
   display: none;
 }
 
@@ -962,12 +962,15 @@ label span {
   width: 160px;
   left: 10px;
 }
-.table .player.skills.free.deck {
+.table .player.skills.toggle.deck {
   left: 175px;
   width: 160px;
 }
-.table .player.skills.free.deck .card {
+.table .player.skills.toggle.deck .card {
   margin-right: -140px;
+}
+.table .player.skills.toggle.deck .card.on {
+  transform: translate(-50%, -50%) scale(0.4) rotate(15deg);
 }
 .table .player.skills.hand {
   right: 10px;
@@ -976,6 +979,7 @@ label span {
 .table .player.skills.hand .card {
   margin-right: -140px;
 }
+/*
 .table .player.skills.hand .card:nth-child(1) {
   transform: translate(-50%, -36%) scale(0.4) rotate(-18deg);
 }
@@ -1006,6 +1010,7 @@ label span {
 .table .player.skills.hand .card:nth-child(10) {
   transform: translate(-50%, -36%) scale(0.4) rotate(18deg);
 }
+*/
 .table .deck.player.skills.hand .card:hover {
   transform: translate(-50%, -50%) scale(0.5);
   z-index: 8;
@@ -1511,6 +1516,9 @@ label span {
 
 .pud {
   background: #b43;
+}
+.pud.rot {
+  box-shadow: 0 0 15px 115px #62a64e;
 }
 .pud.heroes .portrait .img {
   background-image: url("../img/heroes/pudge_full.png");

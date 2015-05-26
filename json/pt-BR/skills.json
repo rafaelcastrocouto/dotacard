@@ -74,7 +74,7 @@
     "return": {
       "name": "Retornar",
       "deck": "Temporária",
-      "type": "Livre",
+      "type": "Alternar",
       "targets": ["Local", "Livre"],
       "range": "Perto",
       "cards": 1,
@@ -103,7 +103,7 @@
     },
     "ult": {
       "name": "Forma Real",
-      "type": "Livre",
+      "type": "Alternar",
       "targets": ["Próprio"],
       "cards": 1,
       "armorbonus": 16,
@@ -125,7 +125,7 @@
     "transform": {
       "name": "Forma de Druida",
       "deck": "Temporária",
-      "type": "Livre",
+      "type": "Alternar",
       "targets": ["Próprio"],
       "cards": 1,
       "description": "O Druida volta a sua forma humana"
@@ -289,7 +289,7 @@
 
   "pud": {
     "hook": {
-      "name": "Meat Hook",
+      "name": "Gancho de Carne",
       "type": "Ativa",
       "target": ["Local"],
       "aoe": "Linear",
@@ -302,12 +302,12 @@
       "description": "Lança um gancho que agarra a primeira unidade que encontrar, arrastando-a de volta e causando dano caso seja uma unidade inimiga"
     },
     "rot": {
-      "name": "Rot",
-      "type": "Livre",
+      "name": "Podridão",
+      "type": "Alternar",
       "targets": ["Próprio"],
       "aoe": "Radial",
       "aoerange": "Perto",      
-      "dot": 5,
+      "damage": 5,
       "damageType": "Mágico",
       "duration": 1,
       "cards": 1,

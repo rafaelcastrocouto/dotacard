@@ -116,6 +116,7 @@
   "global": "Global",
   "death": "Death",
   "free": "Free",
+  "toggle": "Toggle",
   "temp": "Temporary",
   "permanent": "Permanent",
   "automatic": "Automatic",

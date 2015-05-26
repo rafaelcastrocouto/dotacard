@@ -74,7 +74,7 @@
     "return": {
       "name": "Return",
       "deck": "Temporary",
-      "type": "Free",
+      "type": "Toggle",
       "targets": ["Spot", "Free"],
       "range": "Melee",
       "cards": 1,
@@ -103,7 +103,7 @@
     },
     "ult": {
       "name": "True Form",
-      "type": "Free",
+      "type": "Toggle",
       "targets": ["Self"],
       "cards": 1,
       "armorbonus": 16,
@@ -125,7 +125,7 @@
     "transform": {
       "name": "Druid Form",
       "deck": "Temporary",
-      "type": "Free",
+      "type": "Toggle",
       "targets": ["Self"],
       "cards": 1,
       "description": "Syllabear morphs himself back into a druid"
@@ -303,11 +303,11 @@
     },
     "rot": {
       "name": "Rot",
-      "type": "Free",
+      "type": "Toggle",
       "targets": ["Self"],
       "aoe": "Radial",
       "aoerange": "Melee",
-      "dot": 5,
+      "damage": 5,
       "damageType": "Magical",
       "duration": 1,
       "cards": 1,

@@ -73,6 +73,10 @@
   },
 
   "pud": {
+    "rot": {
+      "name": "Rot",
+      "description": "Movement speed reduced by toxic cloud"
+    },
     "ult": {
       "name": "Dismember Hold",
       "description": "Disabled and receiving damage over time by Pudge claws"

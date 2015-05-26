@@ -4,7 +4,7 @@
 
 //Types: Active (ex. nyx stun, ...)
 //       Passive (ex. cystal aura, ...)
-//       Free (ex. pudge rot, morph agi/str, troll melee/ranged, medusa split, witch doctor heal and leshrac ult) 
+//       Toggle (ex. pudge rot, morph agi/str, troll melee/ranged, medusa split, witch doctor heal and leshrac ult) 
 //       Channel (ex. kotl illuminate, pugna ult...)
 //       Automatic (wk ult and abaddon ult)
 //Tatgets: self, player, enemy, spot, free
@@ -43,43 +43,44 @@ var Skills = {
       }
     },
     rot: {
-      cast: function(skill, source){
+      toggle: function(skill, source){
         if(skill.hasClass('on')){
           //turn off
+          skill.removeClass('on');
           source.off('turnend.pud-rot');
           source.data('pud-rot', null);
-          source.removeBuff('pud-rot');
-          skill.removeClass('on');
+          source.removeClass('rot');
         } 
         else {
           //turn on
-          var spot = game.map.getPosition(source);
-          if(game.status === 'turn') { 
-            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
-          }
-          var side = source.data('side');
-          var otherside = (side === 'enemy') ? 'player' : 'enemy';
-          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
-            var card = neighbor.find('.card.'+otherside);
-            if(card.length){
-              source.damage(skill.data('damage'), card, skill.data('damageType'));
-              if(card.data('pud-rot')){
-                card.data('pud-rot', skill.data('duration'));
-              } else {
-                card.data('pud-rot', skill.data('duration'));
-                source.addBuff(card, skill.data('buff'));
-                var speed = card.data('speed') - 1;
-                card.data('currentspeed', speed);
-                card.on('turnend.pud-rot', Skills.pud.rot.turnend);
-              }              
-            }
-          });   
-          source.data('pud-rot', skill.data('duration'));
-          source.addBuff(source, skill.data('buff'));
-          source.on('turnend.pud-rot', Skills.pud.rot.turnend);
-          source.damage(skill.data('damage'), source, skill.data('damageType'));
-          skill.addClass('off');
+          skill.addClass('on');
+          source.on('turnend.pud-rot', Skills.pud.rot.turnendcast);
+          source.data('pud-rot', skill);
+          source.addClass('rot');
         }
+      },
+      turnendcast: function(event, eventdata){
+        var source = eventdata.target;
+        var spot = game.map.getPosition(source);
+        var side = source.data('side');
+        var otherside = (side === 'enemy') ? 'player' : 'enemy';
+        var skill = source.data('pud-rot');
+        source.damage(skill.data('damage'), source, skill.data('damageType'));
+        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+          var card = neighbor.find('.card.'+otherside);
+          if(card.length){
+            source.damage(skill.data('damage'), card, skill.data('damageType'));
+            if(card.data('pud-rot')){
+              card.data('pud-rot', skill.data('duration'));
+            } else {
+              card.data('pud-rot', skill.data('duration'));
+              source.addBuff(card, skill.data('buff'));
+              var speed = card.data('speed') - 1;
+              card.data('currentspeed', speed);
+              card.on('turnend.pud-rot', Skills.pud.rot.turnend);
+            }              
+          }
+        });
       },
       turnend: function(event, eventdata){
         var target = eventdata.target;
