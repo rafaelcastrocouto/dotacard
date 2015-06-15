@@ -102,7 +102,7 @@ var Skills = {
         var resistance = source.data('resistance') + skill.data('resistance bonus');
         source.data('resistance', resistance);
         Skills.pud.passive.kill.call({skill: skill, source: source});
-        source.on('kill', Skills.pud.passive.kill.bind({skill: skill, source: source}))
+        source.on('kill', Skills.pud.passive.kill.bind({skill: skill, source: source}));
       },
       kill: function(){
         var skill = this.skill;
@@ -696,6 +696,7 @@ var Skills = {
         });
         game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
           var otherside = 'enemy';
+          var side = wk.data('side');
           if(side === 'enemy') { otherside = 'player'; }
           var card = neighbor.find('.card.'+otherside);
           if(card.length){

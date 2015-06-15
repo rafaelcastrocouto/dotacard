@@ -11,7 +11,7 @@
   font-family: 'Pathway Gothic One';
   font-size: 210px;
   line-height: 200px;
-  margin: 0;  
+  margin: 0;
   position: relative;
   top: 0px;
 }
@@ -28,7 +28,7 @@
   font-size: 50px;
   line-height: 80px;
   padding-left: -5px;
-  margin: 5px;    
+  margin: 5px;
   position: relative;
 }
 .logo h2 {
@@ -121,7 +121,6 @@ p {
   font-size: 16px;
   line-height: 16px;
   margin: 2px;
-  border: 2px solid transparent;
   padding: 1px 2px;
   display: inline-block;
 }
@@ -210,6 +209,12 @@ noscript {
   z-index: 10;
 }
 
+.welcome .message {
+  margin: 8px;
+  position: relative;
+  bottom: 6px;
+}
+
 /*STATES*/
 
 .states.low {
@@ -255,18 +260,14 @@ noscript {
 .loader {
   width: 16px;
   height: 16px;
-  position: fixed;
-  vertical-align: top;
-  margin: 4px;
+  margin: 2px;
   padding: 0;
   border: 3px solid transparent;
   border-bottom: 3px solid white;
   border-radius: 50%;
+  display: inline-block;
   visibility: hidden;
-  position: absolute;
-  top: 0; left: 0;
 }
-
 .loader.loading {
   visibility: visible;
   animation: rotate 1s linear infinite;
@@ -284,7 +285,6 @@ noscript {
   text-align: center;
 }
 
-.message,
 .topbar .message {
   margin-left: 25px;
   border-radius: 4px;
@@ -675,7 +675,7 @@ label span {
 .pickedbox .card .buff {
   opacity: 0;
 }
-.pickedbox .card .portrait .img, 
+.pickedbox .card .portrait .img,
 .pickedbox .card .portrait .overlay {
   height: 265px;
 }
@@ -1027,7 +1027,7 @@ label span {
 }
 
 .table .selectedarea .card {
-  position: absolute;  
+  position: absolute;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
   backface-visibility: hidden;
@@ -1177,7 +1177,7 @@ label span {
 .map .card fieldset {
   padding: 0;
 }
-.map .card .portrait .img, 
+.map .card .portrait .img,
 .map .card .portrait .overlay {
   height: 265px;
 }

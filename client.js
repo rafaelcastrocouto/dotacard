@@ -4,8 +4,6 @@
 var game = (function () {
   'use strict';
   return {
-    progress: 0,
-    totalLoad: 0,
     debug: (location.host === 'localhost'),
     id: null,
     currentData: {},
@@ -133,9 +131,9 @@ var game = (function () {
         ].join('\n');
       },
       language: function (cb) {
-        game.totalLoad += 1;
+        game.load.totalUpdate += 1;
         game.db({ 'get': 'lang' }, function (data) {
-          game.progress += 1;
+          game.load.updating += 1;
           if (data.lang) {
             game.language.detected = data.lang.split(';')[0].split(',')[0];
             if (game.language.available.indexOf(game.language.detected) > 0) {
@@ -147,13 +145,13 @@ var game = (function () {
         });
       },
       pack: function () {
-        game.totalLoad += 1;
+        game.load.totalUpdate += 1;
         $.ajax({
           async: true,
           type: 'GET',
           url: 'package.json',
           complete: function (response) {
-            game.progress += 1;
+            game.load.updating += 1;
             var data = JSON.parse(response.responseText);
             $.each(data, function (name) {
               game[name] = this;
@@ -176,18 +174,18 @@ var game = (function () {
         });
       },
       data: function () {
-        game.totalLoad += 5;
+        game.load.totalUpdate += 5;
         game.load.json('ui', function () {
-          game.progress += 1;
+          game.load.updating += 1;
         });
         game.load.json('heroes', function () {
-          game.progress += 1;
+          game.load.updating += 1;
         });
         game.load.json('units', function () {
-          game.progress += 1;
+          game.load.updating += 1;
         });
         game.load.json('skills', function () {
-          game.progress += 1;
+          game.load.updating += 1;
           var hero, skill;
           for (hero in game.skills) {
             if (game.skills.hasOwnProperty(hero)) {
@@ -202,7 +200,7 @@ var game = (function () {
           }
         });
         game.load.json('buffs', function () {
-          game.progress += 1;
+          game.load.updating += 1;
           var hero, buff;
           for (hero in game.buffs) {
             if (game.buffs.hasOwnProperty(hero)) {
@@ -221,12 +219,13 @@ var game = (function () {
         game.audio.context = new AudioContext();
         game.mute = game.audio.context.createGain();
         game.mute.connect(game.audio.context.destination);
-        game.totalLoad += game.sounds.length;
+        //game.load.totalUpdate += game.sounds.length;
         var i;
         for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
       },
       track: function () {
         var song = 'doomhammer';
+        //game.load.totalUpdate += 1;
         game.audio.load(song, function () {
           game.audio.play(song);
         });
@@ -238,7 +237,7 @@ var game = (function () {
           mkImg = function (k, t) {
             allImgs[k] = new Image();
             allImgs[k].src = t[0] === '/' || t.match('http://') ? t : baseURL + t;
-            allImgs[k].onload = function () { game.progress += 1; };
+            //allImgs[k].onload = function () { game.load.updating += 1; };
           };
         for (i = 0; i < sheets.length; i += 1) {
           cssPile = '';
@@ -256,7 +255,7 @@ var game = (function () {
           imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);
           if (imgUrls !== null && imgUrls.length > 0 && imgUrls !== '') {
             arr = $.makeArray(imgUrls);
-            game.totalLoad += arr.length;
+            //game.load.totalUpdate += arr.length;
             $.each(arr, mkImg);
           }
         }
@@ -281,22 +280,43 @@ var game = (function () {
         $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
       },
       icons: function () {
-        game.totalLoad += 1;
-        $('<link href="styles/icons.min.css" rel="stylesheet" data-noprefix/>').appendTo('head').load(function () { game.progress += 1; });
+        game.load.totalUpdate += 1;
+        $('<link href="styles/icons.min.css" rel="stylesheet" data-noprefix/>').appendTo('head').load(function () {
+          game.load.updating += 1;
+        });
       },
+      updating: 0,
+      totalUpdate: 0,
+      loading: 0,
+      totalLoad: 0,
       progress: function () {
         clearTimeout(game.timeout);
-        if (game.version && game.ui && game.skills && !game.states.builded) {
-          game.states.build();
-          game.states.builded = true;
-        }
-        var load = Number.parseInt(game.progress / game.totalLoad * 100);
-        if (game.progress === game.totalLoad) {
-          game.status = 'loaded';
-          game.states.changeTo('log', true);
-        } else {
-          $('.progress').text(load + '%');
-          game.timeout = setTimeout(game.load.progress, 500);
+        var loading;
+        if (game.load.updating < game.load.totalUpdate) {
+          // loading
+          game.status = 'loading';
+          loading = Number.parseInt(game.load.updating / game.load.totalUpdate * 100);
+          $('.progress').text(loading + '%');
+          game.timeout = setTimeout(game.load.progress, 100);
+        } else if (game.load.updating === game.load.totalUpdate &&
+            game.version &&
+            game.ui &&
+            game.skills) {
+          if (game.status !== 'building') {
+            // all loaded start build
+            game.status = 'building';
+            game.load.loading = 0;
+            game.states.build();
+            game.load.totalLoad = game.states.preBuild.length;
+            $('span.message').text('Loading');
+          }
+          if (game.load.loading < game.load.totalLoad) {
+            game.timeout = setTimeout(game.load.progress, 100);
+          } else {
+            // all build go to log screen
+            game.states.builded = true;
+            game.states.changeTo('log', true);
+          }
         }
       },
       end: function () {
@@ -2167,17 +2187,19 @@ var game = (function () {
         ajax.onload = function () {
           game.audio.context.decodeAudioData(ajax.response, function (buffer) {
             game.audio.buffers[name] = buffer;
-            game.progress += 1;
+            game.load.updating += 1;
             if (cb) { cb(); }
           });
         };
         ajax.send();
       },
       play: function (name) {
-        var sound = game.audio.context.createBufferSource();
-        sound.buffer = game.audio.buffers[name];
-        sound.connect(game.mute);
-        sound.start();
+        if (game.audio.context && game.audio.context.createBufferSource) {
+          var sound = game.audio.context.createBufferSource();
+          sound.buffer = game.audio.buffers[name];
+          sound.connect(game.mute);
+          sound.start();
+        }
       }
     },
     chat: {
@@ -2545,13 +2567,12 @@ var game = (function () {
       build: function () {
         this.el = $('<div>').addClass('states frame').appendTo(game.container).hide();
         game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
-        game.totalLoad += game.states.preBuild.length;
         $.each(game.states.preBuild, function () {
           game.states[this].el = $('<div>').addClass('state ' + this).appendTo(game.states.el).hide();
           if (game.states[this].build) {
             game.states[this].build();
             game.states[this].builded = true;
-            game.progress += 1;
+            game.load.loading += 1;
           }
         });
       },
