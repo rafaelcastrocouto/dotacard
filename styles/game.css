@@ -210,7 +210,11 @@ noscript {
 }
 
 .welcome .message {
-  margin: 8px;
+  margin-left: 8px;
+}
+
+.welcome .message,
+.welcome .progress {
   position: relative;
   bottom: 6px;
 }
@@ -479,6 +483,7 @@ label span {
   right: 0;
   margin: 10px;
   display: none;
+  font-size: 10px;
 }
 
 .chat .messages {
@@ -525,7 +530,7 @@ label span {
   right: 10px;
   text-align: center;
   margin: 0;
-  padding: 4px 10px 10px 10px;
+  padding: 10px 12px 4px 8px;
 }
 .chat .button:active {
   bottom: -6px;
@@ -643,7 +648,7 @@ label span {
   50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
 }
 .slot.available:after {
-  content: "";
+  content: "▼";
   font-size: 26px;
   position: relative;
   animation: arrowdown 1s infinite;
@@ -1137,7 +1142,7 @@ label span {
 .map .card:hover,
 .map .card.selected,
 .map .card.source {
-  transform: translate3d(-50%, -50%, 75px) rotateX(-40deg);
+  transform: translate3d(-50%, -50%, 100px) rotateX(-40deg);
 }
 
 .table.unturn .map .player.card {
