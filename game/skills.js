@@ -4,7 +4,7 @@
 
 //Types: Active (ex. nyx stun, ...)
 //       Passive (ex. cystal aura, ...)
-//       Toggle (ex. pudge rot, morph agi/str, troll melee/ranged, medusa split, witch doctor heal and leshrac ult) 
+//       Toggle (ex. pudge rot, morph agi/str, troll melee/ranged, medusa split, witch doctor heal and leshrac ult)
 //       Channel (ex. kotl illuminate, pugna ult...)
 //       Automatic (wk ult and abaddon ult)
 //Tatgets: self, player, enemy, spot, free
@@ -39,7 +39,7 @@ var Skills = {
   pud: {
     hook: {
       cast: function(skill, source, target){
-      
+
       }
     },
     rot: {
@@ -47,16 +47,16 @@ var Skills = {
         if(skill.hasClass('on')){
           //turn off
           skill.removeClass('on');
-          source.off('turnend.pud-rot');
+          source.off('turnend.rot');
           source.data('pud-rot', null);
-          source.removeClass('rot');
-        } 
+          source.removeClass('pud-rot');
+        }
         else {
           //turn on
           skill.addClass('on');
-          source.on('turnend.pud-rot', Skills.pud.rot.turnendcast);
+          source.on('turnend.rot', Skills.pud.rot.turnendcast);
           source.data('pud-rot', skill);
-          source.addClass('rot');
+          source.addClass('pud-rot');
         }
       },
       turnendcast: function(event, eventdata){
@@ -65,11 +65,11 @@ var Skills = {
         var side = source.data('side');
         var otherside = (side === 'enemy') ? 'player' : 'enemy';
         var skill = source.data('pud-rot');
-        source.damage(skill.data('damage'), source, skill.data('damageType'));
-        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+        source.damage(skill.data('damage'), source, skill.data('damage type'));
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
-            source.damage(skill.data('damage'), card, skill.data('damageType'));
+            source.damage(skill.data('damage'), card, skill.data('damage type'));
             if(card.data('pud-rot')){
               card.data('pud-rot', skill.data('duration'));
             } else {
@@ -77,8 +77,8 @@ var Skills = {
               source.addBuff(card, skill.data('buff'));
               var speed = card.data('speed') - 1;
               card.data('currentspeed', speed);
-              card.on('turnend.pud-rot', Skills.pud.rot.turnend);
-            }              
+              card.on('turnend.rot', Skills.pud.rot.turnend);
+            }
           }
         });
       },
@@ -89,18 +89,32 @@ var Skills = {
           duration -= 1;
           target.data('pud-rot', duration);
         } else {
-          var speed = target.data('currentspeed') + 1;
+          var speed = target.data('current speed') + 1;
           target.data('currentspeed', speed);
-          target.off('turnend.pud-rot');
+          target.off('turnend.rot');
           target.data('pud-rot', null);
           target.removeBuff('pud-rot');
         }
       }
     },
     passive: {
-      passive: function(skill, source){},
-      damage: function(){},
-      die: function(){}
+      passive: function(skill, source){
+        var resistance = source.data('resistance') + skill.data('resistance bonus');
+        source.data('resistance', resistance);
+        Skills.pud.passive.kill.call({skill: skill, source: source});
+        source.on('kill', Skills.pud.passive.kill.bind({skill: skill, source: source}))
+      },
+      kill: function(){
+        var skill = this.skill;
+        var source = this.source;
+        var kills = source.data('kills');
+        var damage = source.data('damage');
+        var bonusDamage = (skill.data('damage bonus') * kills);
+        source.changedamage(damage + bonusDamage);
+        var hp = source.data('hp');
+        var bonusHp = (skill.data('hp bonus') * kills);
+        source.changehp(hp + bonusHp);
+      }
     },
     ult: {
       cast: function(skill, source, target){},
@@ -115,17 +129,17 @@ var Skills = {
         if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
         var side = source.data('side');
         var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
-            source.damage(skill.data('damage'), card, skill.data('damageType'));
+            source.damage(skill.data('damage'), card, skill.data('damage type'));
             if(card.data('cm-slow')){
               card.data('cm-slow', skill.data('duration'));
             } else {
               card.data('cm-slow', skill.data('duration'));
               source.addBuff(card, skill.data('buff'));
               var speed = card.data('speed') - 1;
-              card.data('currentspeed', speed);
+              card.data('current speed', speed);
               card.on('turnstart.cm-slow', Skills.cm.slow.turnstart);
             }
           }
@@ -138,8 +152,8 @@ var Skills = {
           duration -= 1;
           target.data('cm-slow', duration);
         } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
+          var speed = target.data('current speed') + 1;
+          target.data('current speed', speed);
           target.off('turnstart.cm-slow');
           target.data('cm-slow', null);
           target.removeBuff('cm-slow');
@@ -183,7 +197,7 @@ var Skills = {
         var skill = data.skill;
         var duration = data.duration;
         if(duration > 0) {
-          source.damage(skill.data('dot'), target, skill.data('damageType'));
+          source.damage(skill.data('dot'), target, skill.data('damage type'));
           duration -= 1;
           data.duration = duration;
           target.data('cm-freeze', data);
@@ -198,8 +212,8 @@ var Skills = {
     ult: {
       cast: function(skill, source){
         var spot = game.map.getPosition(source);
-        if(game.status === 'turn') { 
-            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); 
+        if(game.status === 'turn') {
+            game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
         }
         source.on('channel', Skills.cm.ult.channel).data('cm-ult', skill);
         source.trigger('channel', {target: source});
@@ -210,17 +224,17 @@ var Skills = {
         var spot = game.map.getPosition(cm);
         var side = cm.data('side');
         var otherside = (side === 'enemy') ? 'player': 'enemy';
-        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
-            cm.damage(skill.data('damage'), card, skill.data('damageType'));
+            cm.damage(skill.data('damage'), card, skill.data('damage type'));
             if(card.data('cm-ult')){
               card.data('cm-ult', skill.data('duration'));
             } else {
               card.data('cm-ult', skill.data('duration'));
               cm.addBuff(card, skill.data('buff'));
               var speed = card.data('speed') - 1;
-              card.data('currentspeed', speed);
+              card.data('current speed', speed);
               card.on('turnstart.cm-ult', Skills.cm.ult.turnstart);
             }
           }
@@ -233,8 +247,8 @@ var Skills = {
           duration -= 1;
           target.data('cm-ult', duration);
         } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
+          var speed = target.data('current speed') + 1;
+          target.data('current speed', speed);
           target.off('turnstart.cm-ult');
           target.data('cm-ult', null);
           target.removeBuff('cm-ult');
@@ -246,7 +260,7 @@ var Skills = {
   ktol: {
     illuminate: {
       cast: function(skill, source, target){
-      
+
       },
       release: function(){}
     },
@@ -306,12 +320,12 @@ var Skills = {
         if(!bear.hasClass('summoned')){
           source.data('bear', bear);
           bear.addBuff(bear, game.buffs.ld.demolish);
-          bear.data('ld-demolish', skill.data('demolishpercentage'));
+          bear.data('ld-demolish', skill.data('demolish percentage'));
           bear.on('attack', this.demolish);
           bear.addBuff(bear, game.buffs.ld.entangle);
           bear.on('attack', this.entangle);
           bear.data('ld-entangle-skill', skill);
-          bear.data('ld-return-cooldown', skill.data('returncooldown'));
+          bear.data('ld-return-cooldown', skill.data('return cooldown'));
           bear.on('damage', Skills.ld.bearreturn.breakreturn);
           bear.on('death', Skills.ld.summon.death);
         } else { bear.addClass('summoned'); }
@@ -325,7 +339,7 @@ var Skills = {
         var source = eventdata.source;
         var target = eventdata.target;
         if(target.hasClass('tower')){
-          var damage = source.data('currentdamage') * source.data('ld-demolish') / 100;
+          var damage = source.data('current damage') * source.data('ld-demolish') / 100;
           source.damage(damage, target, 'Physical');
         }
       },
@@ -333,12 +347,12 @@ var Skills = {
         var source = eventdata.source;
         var target = eventdata.target;
         var skill = source.data('ld-entangle-skill');
-        var chance = skill.data('entanglechance') / 100;
+        var chance = skill.data('entangle chance') / 100;
         if(game.random() < chance && !target.hasClass('entangled')){
           source.addBuff(target, game.buffs.ld.entangle);
           target.addClass('entangled');
           target.data('ld-entangle', {
-            duration: skill.data('entangleduration'),
+            duration: skill.data('entangle duration'),
             source: source,
             skill: skill
           });
@@ -353,7 +367,7 @@ var Skills = {
         if(data.duration > 0) {
           data.duration -= 1;
           target.data('ld-entangle', data);
-          source.damage(skill.data('entangledamage'), target, 'Physical');
+          source.damage(skill.data('entangle damage'), target, 'Physical');
         } else {
           target.removeClass('entangled');
           target.off('turnend.ld-entangle');
@@ -382,19 +396,19 @@ var Skills = {
         var side = bear.data('side');
         var returnskillcard = $('.'+side+'.skill.ld-return');
         returnskillcard.appendTo(game.states.table.playerTemp);
-        bear.data('currentreturncooldown', bear.data('ld-return-cooldown'));
+        bear.data('current-return-cooldown', bear.data('ld-return-cooldown'));
         bear.on('turnstart.ld-return', Skills.ld.bearreturn.turnstart);
       },
       turnstart: function(event, eventdata){
         var bear = eventdata.target;
         var side = bear.data('side');
         var returnskillcard = $('.'+side+'.skill.ld-return');
-        var duration = bear.data('currentreturncooldown');
+        var duration = bear.data('current-return-cooldown');
         if(duration > 0) {
           duration -= 1;
         } else {
           returnskillcard.appendTo(game.states.table.playerPermanent);
-          bear.data('currentreturncooldown', null);
+          bear.data('current-return-cooldown', null);
           bear.off('turnstart.ld-return');
         }
       }
@@ -404,20 +418,20 @@ var Skills = {
         var side = source.data('side');
         var ld = $('.'+side+'.hero.ld');
         ld.addBuff(ld, skill.data('buff'));
-        var damage = ld.data('currentdamage');
-        ld.changedamage(damage + skill.data('damagebonus'));
-        var speed = ld.data('currentspeed');
-        ld.data('currentspeed', speed + 1);
+        var damage = ld.data('current damage');
+        ld.changedamage(damage + skill.data('damage bonus'));
+        var speed = ld.data('current speed');
+        ld.data('current speed', speed + 1);
         var bear = ld.data('bear');
         if(bear && !bear.hasClass('dead')){
-          var beardamage = bear.data('currentdamage');
-          bear.changedamage(beardamage + skill.data('damagebonus'));
-          var bearspeed = bear.data('currentspeed');
-          bear.data('currentspeed', bearspeed + 1);
+          var beardamage = bear.data('current damage');
+          bear.changedamage(beardamage + skill.data('damage bonus'));
+          var bearspeed = bear.data('current speed');
+          bear.data('current speed', bearspeed + 1);
           ld.addBuff(bear, skill.data('buff'));
         }
         ld.data('ld-rabid', skill.data('duration'));
-        ld.data('ld-rabid-damagebonus', skill.data('damagebonus'));
+        ld.data('ld-rabid-damage-bonus', skill.data('damage bonus'));
         ld.on('turnstart.ld-rabid', Skills.ld.rabid.turnstart);
       },
       turnstart: function(event, eventdata){
@@ -427,19 +441,19 @@ var Skills = {
           duration -= 1;
           target.data('ld-rabid', duration);
         } else {
-          var damage = target.data('currentdamage');
-          target.changedamage(damage - target.data('ld-rabid-damagebonus'));
-          var speed = target.data('currentspeed');
-          target.data('currentspeed', speed - 1);
+          var damage = target.data('current damage');
+          target.changedamage(damage - target.data('ld-rabid-damage-bonus'));
+          var speed = target.data('current speed');
+          target.data('current speed', speed - 1);
           target.off('turnstart.ld-rabid');
           target.data('ld-rabid', null);
           target.removeBuff('ld-rabid');
           var bear = target.data('bear');
           if(bear && bear.hasBuff('ld-rabid')){
-            var beardamage = bear.data('currentdamage');
-            bear.changedamage(beardamage - target.data('ld-rabid-damagebonus'));
-            var bearspeed = bear.data('currentspeed');
-            bear.data('currentspeed', bearspeed - 1);
+            var beardamage = bear.data('current damage');
+            bear.changedamage(beardamage - target.data('ld-rabid-damage-bonus'));
+            var bearspeed = bear.data('current speed');
+            bear.data('current speed', bearspeed - 1);
             bear.removeBuff('ld-rabid');
           }
         }
@@ -452,20 +466,20 @@ var Skills = {
         ld.addBuff(ld, skill.data('buff'));
         var rabids = $('.'+side+'.skill.ld-rabid');
         var duration = rabids.data('duration');
-        rabids.data('duration', duration + skill.data('rabidbonus'));
+        rabids.data('duration', duration + skill.data('rabid bonus'));
         var ults = $('.'+side+'.skill.ld-ult');
-        var hpbonus = ults.data('hpbonus');
-        ults.data('hpbonus', hpbonus + skill.data('ultbonus'));
+        var hpbonus = ults.data('hp bonus');
+        ults.data('hp bonus', hpbonus + skill.data('ult bonus'));
         var bear = ld.data('bear');
         if(bear){
           ld.addBuff(bear, skill.data('buff'));
-          var beardamage = bear.data('currentdamage');
-          bear.changedamage(beardamage + skill.data('bearbonus'));
+          var beardamage = bear.data('current damage');
+          bear.changedamage(beardamage + skill.data('bear bonus'));
           var bearhp = bear.data('hp');
-          var currenthp = bear.data('currenthp');
+          var currenthp = bear.data('current hp');
           var relativehp = currenthp / bearhp;
-          bear.data('hp', bearhp + skill.data('hpbonus'));
-          bear.data('currenthp', bear.data('hp') * relativehp);
+          bear.data('hp', bearhp + skill.data('hp bonus'));
+          bear.data('current hp', bear.data('hp') * relativehp);
         }
       }
     },
@@ -478,12 +492,12 @@ var Skills = {
         cry.appendTo(game.player.skills.permanent);
         skill.appendTo(game.player.skills.temp);
         var ldhp = source.data('hp');
-        var currenthp = source.data('currenthp');
+        var currenthp = source.data('current hp');
         var relativehp = currenthp / ldhp;
-        source.data('hp', ldhp + skill.data('hpbonus'));
-        source.data('currenthp', source.data('hp') * relativehp);
+        source.data('hp', ldhp + skill.data('hp bonus'));
+        source.data('current hp', source.data('hp') * relativehp);
         var armor = source.data('armor');
-        source.data('armor', + skill.data('armorbonus'));
+        source.data('armor', + skill.data('armor bonus'));
         source.data('range', game.ui.melee);
         source.addClass('transformed');
       }
@@ -497,12 +511,12 @@ var Skills = {
         var cry = $('.'+side+'.skill.ld-cry');
         cry.appendTo(game.player.skills.temp);
         var ldhp = source.data('hp');
-        var currenthp = source.data('currenthp');
+        var currenthp = source.data('current hp');
         var relativehp = currenthp / ldhp;
-        source.data('hp', ldhp - skill.data('hpbonus'));
-        source.data('currenthp', source.data('hp') * relativehp);
+        source.data('hp', ldhp - skill.data('hp bonus'));
+        source.data('current hp', source.data('hp') * relativehp);
         var armor = source.data('armor');
-        source.data('armor', - skill.data('armorbonus'));
+        source.data('armor', - skill.data('armor bonus'));
         source.data('range', game.ui.short);
         source.removeClass('transformed');
       }
@@ -511,20 +525,20 @@ var Skills = {
       cast: function(skill, source){
         source.addBuff(source, skill.data('buff'));
         var armor = source.data('armor');
-        source.data('armor', + skill.data('armorbonus'));
-        var damage = source.data('currentdamage');
-        source.changedamage(damage + skill.data('damagebonus'));
+        source.data('armor', + skill.data('armor bonus'));
+        var damage = source.data('current damage');
+        source.changedamage(damage + skill.data('damage bonus'));
         var bear = source.data('bear');
         if(bear){
           source.addBuff(bear, skill.data('buff'));
           var beararmor = bear.data('armor');
-          bear.data('armor', beararmor + skill.data('armorbonus'));
-          var beardamage = bear.data('currentdamage');
-          bear.changedamage(beardamage + skill.data('damagebonus'));
+          bear.data('armor', beararmor + skill.data('armor bonus'));
+          var beardamage = bear.data('current damage');
+          bear.changedamage(beardamage + skill.data('damage bonus'));
         }
         source.data('ld-cry', skill.data('duration'));
-        source.data('ld-cry-damagebonus', skill.data('damagebonus'));
-        source.data('ld-cry-armorbonus', skill.data('armorbonus'));
+        source.data('ld-cry-damage-bonus', skill.data('damage bonus'));
+        source.data('ld-cry-armor-bonus', skill.data('armor bonus'));
         source.on('turnstart.ld-cry', Skills.ld.cry.turnstart);
         skill.appendTo(game.player.skills.temp);
       },
@@ -535,19 +549,19 @@ var Skills = {
           duration -= 1;
           target.data('ld-cry', duration);
         } else {
-          var damage = target.data('currentdamage');
-          target.changedamage(damage - target.data('ld-cry-damagebonus'));
+          var damage = target.data('current damage');
+          target.changedamage(damage - target.data('ld-cry-damage-bonus'));
           var armor = target.data('armor');
-          target.data('armor', armor - target.data('ld-cry-armorbonus'));
+          target.data('armor', armor - target.data('ld-cry-armor-bonus'));
           target.off('turnstart.ld-cry');
           target.data('ld-cry', null);
           target.removeBuff('ld-cry');
           var bear = target.data('bear');
           if(bear && bear.hasBuff('ld-cry')){
-            var beardamage = bear.data('currentdamage');
-            bear.changedamage(beardamage - target.data('ld-cry-damagebonus'));
-            var beararmor = bear.data('armorbonus');
-            bear.data('armorbonus', beararmor - target.data('ld-cry-armorbonus'));
+            var beardamage = bear.data('current damage');
+            bear.changedamage(beardamage - target.data('ld-cry-damage-bonus'));
+            var beararmor = bear.data('armor bonus');
+            bear.data('armor bonus', beararmor - target.data('ld-cry-armor-bonus'));
             bear.removeBuff('ld-rabid');
           }
         }
@@ -561,12 +575,12 @@ var Skills = {
     stun: {
       cast: function(skill, source, target){
         var wk = source;
-        var stun = skill.data('stunduration');
-        var dot = skill.data('dotduration');
-        if(game.status === 'turn') { 
-            game.states.table.animateCast(skill, target, game.states.table.playerCemitery); 
+        var stun = skill.data('stun duration');
+        var dot = skill.data('dot duration');
+        if(game.status === 'turn') {
+            game.states.table.animateCast(skill, target, game.states.table.playerCemitery);
         }
-        wk.damage(skill.data('damage'), target, skill.data('damageType'));
+        wk.damage(skill.data('damage'), target, skill.data('damage type'));
         wk.addStun(target, stun);
         target.on('turnend.wk-stun', this.dot).data('wk-stun', {
           duration: stun + dot,
@@ -579,21 +593,21 @@ var Skills = {
         var data = target.data('wk-stun');
         var source = data.source;
         var skill = data.skill;
-        var dotduration = skill.data('dotduration');
+        var dotduration = skill.data('dot duration');
         var duration = data.duration;
         var speed;
         if(duration > 0){
           if(duration === dotduration) {
             source.addBuff(target, skill.data('buff'), dotduration);
             speed = target.data('speed') - 1;
-            target.data('currentspeed', speed);
+            target.data('current speed', speed);
           }
-          if(duration <= dotduration) { source.damage(skill.data('dot'), target, skill.data('damageType')); }
+          if(duration <= dotduration) { source.damage(skill.data('dot'), target, skill.data('damage type')); }
           data.duration -= 1;
           target.data('wk-stun', data);
         } else {
           speed = target.data('speed') + 1;
-          target.data('currentspeed', speed);
+          target.data('current speed', speed);
           target.removeBuff('wk-stun');
           target.off('turnend.wk-stun');
           target.data('wk-stun', null);
@@ -613,7 +627,7 @@ var Skills = {
       attack: function(event, eventdata){
         var source = eventdata.source;
         var target = eventdata.target;
-        var damage = source.data('currentdamage');
+        var damage = source.data('current damage');
         var skill = source.data('wk-lifesteal');
         var bonus = skill.data('percentage') / 100;
         source.heal(damage * bonus);
@@ -648,7 +662,7 @@ var Skills = {
         var source = eventdata.source;
         var target = eventdata.target;
         var skill = source.data('wk-crit');
-        var damage = source.data('currentdamage');
+        var damage = source.data('current damage');
         var chance = skill.data('chance') / 100;
         var bonus = skill.data('percentage') / 100;
         if(game.random() < chance){
@@ -662,14 +676,13 @@ var Skills = {
       },
       afterattack: function(event, eventdata){
         var source = eventdata.source;
-        source.data('currentdamage', source.data('damage'));
+        source.data('current damage', source.data('damage'));
       }
     },
-    ult: {//to do slow as soon as born 
+    ult: {
       passive: function(skill, source){
         source.on('die.wk-ult', this.die);
         source.data('wk-ult-skill', skill);
-        skill.on('discard', this.discard);
       },
       die: function(event, eventdata){
         var wk = eventdata.target;
@@ -681,7 +694,19 @@ var Skills = {
           spot: spot,
           duration: skill.data('delay')
         });
-        skill.discard();
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
+          var otherside = 'enemy';
+          if(side === 'enemy') { otherside = 'player'; }
+          var card = neighbor.find('.card.'+otherside);
+          if(card.length){
+            wk.addBuff(card, skill.data('buff'));
+            var speed = card.data('speed') - 1;
+            card.data('current speed', speed);
+            card.on('turnstart.wk-ult', Skills.wk.ult.turnstart);
+            card.data('wk-ult', skill.data('duration'));
+          }
+        });
+        wk.off('die.wk-ult');
       },
       resurrect: function(event, eventdata){
         var wk = eventdata.target;
@@ -696,19 +721,6 @@ var Skills = {
         } else {
           $('#'+spot).removeClass('cript');
           wk.reborn(spot).data('wk-ult', null);
-          game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
-            var otherside = 'enemy';
-            if(side === 'enemy') { otherside = 'player'; }
-            var card = neighbor.find('.card.'+otherside);
-            if(card.length){
-              wk.addBuff(card, skill.data('buff'));
-              var speed = card.data('speed') - 1;
-              card.data('currentspeed', speed);
-              card.on('turnstart.wk-ult', Skills.wk.ult.turnstart);
-              card.data('wk-ult', skill.data('duration'));
-            }
-          });
-          game[side].buyCard();
           wk.off('turnstart.wk-ult');
         }
       },
@@ -719,16 +731,12 @@ var Skills = {
           duration -= 1;
           target.data('wk-ult', duration);
         } else {
-          var speed = target.data('currentspeed') + 1;
-          target.data('currentspeed', speed);
+          var speed = target.data('current speed') + 1;
+          target.data('current speed', speed);
           target.off('turnstart.wk-ult');
           target.data('wk-ult', null);
           target.removeBuff('wk-ult');
         }
-      },
-      discard: function(event, eventdata){
-        var target = eventdata.target;
-        target.off('die.wk-ult');
       }
     }
   },
@@ -792,10 +800,10 @@ var Skills = {
         var otherside = (side === 'enemy') ? 'player': 'enemy';
         var damage = game.enemy.maxCards - game.enemy.hand;
         damage *= skill.data('multiplier');
-        game.map.inRange(spot, game.map.getRange(skill.data('aoerange')), function(neighbor){
+        game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function(neighbor){
           var card = neighbor.find('.card.'+otherside);
           if(card.length){
-            source.damage(damage, card, skill.data('damageType'));
+            source.damage(damage, card, skill.data('damage type'));
           }
         });
       }

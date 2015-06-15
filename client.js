@@ -588,11 +588,11 @@ var game = (function () {
           if (skill.data('aoe')) {
             game.castpos = pos;
             game.castrange = range;
-            game.aoerange = game.map.getRange(skill.data('aoerange'));
+            game.aoerange = game.map.getRange(skill.data('aoe range'));
             game.aoe = skill.data('aoe');
             if (game.aoe === 'Linear') {
-              game.aoerange = skill.data('aoerange');
-              game.aoewidth = skill.data('aoewidth');
+              game.aoerange = skill.data('aoe range');
+              game.aoewidth = skill.data('aoe width');
             }
             $('.map .spot, .map .card').hover(function () {
               var spot = $(this);
@@ -615,7 +615,7 @@ var game = (function () {
       highlightMove: function () {
         var card = this, speed;
         if (card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen entangled')) {
-          speed = card.data('currentspeed');
+          speed = card.data('current speed');
           if (speed < 1) { return card; }
           if (speed > 3) { speed = 3; }
           game.map.atMovementRange(card, Math.round(speed), function (neighbor) {
@@ -647,8 +647,8 @@ var game = (function () {
               destiny: destiny
             }), 200);
           }
-          if (card.data('movementBonus')) {
-            card.data('movementBonus', false);
+          if (card.data('movement bonus')) {
+            card.data('movement bonus', false);
           } else { card.addClass('done'); }
           card.trigger('move', {
             card: card,
@@ -842,13 +842,13 @@ var game = (function () {
         var source = this, name,
           from = game.map.getPosition(source),
           to = game.map.getPosition(target);
-        if (source.data('currentdamage') && from !== to && target.data('currenthp')) {
+        if (source.data('current damage') && from !== to && target.data('current hp')) {
           source.data('channeling', false).removeClass('channeling');
           source.trigger('attack', {
             source: source,
             target: target
           });
-          source.damage(source.data('currentdamage'), target, game.ui.physical);
+          source.damage(source.data('current damage'), target, game.ui.physical);
           source.trigger('afterattack', {
             source: source,
             target: target
@@ -874,9 +874,9 @@ var game = (function () {
         armor = 1 - target.data('armor') / 100;
         if (type === game.ui.physical && armor) { damage = Math.round(damage * armor); }
         console.log(type, game.ui.magical, resistance);
-        
+
         if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-        hp = target.data('currenthp') - damage;
+        hp = target.data('current hp') - damage;
         target.changehp(hp);
         position = game.map.getPosition(target);
         x = game.map.getX(position);
@@ -889,12 +889,14 @@ var game = (function () {
           x: x,
           y: y,
           position: position,
-          damage: damage
+          damage: damage,
+          type: type
         };
         target.trigger('damage', evt);
         if (hp < 1) {
           target.addClass('dead').removeClass('target done').changehp(0);
           setTimeout(function () {
+            this.trigger('kill', evt);
             target.trigger('die', evt);
             target.die();
           }, 2000);
@@ -925,14 +927,14 @@ var game = (function () {
       changedamage: function (damage) {
         damage = parseInt(damage, 10);
         this.find('.current .damage span').text(damage);
-        this.data('currentdamage', damage);
+        this.data('current damage', damage);
         if (this.hasClass('selected')) { this.select(); }
         return this;
       },
       heal: function (healhp) {
         healhp = Math.ceil(healhp);
         var target = this, healFx, currentHeal,
-          currenthp = target.data('currenthp'),
+          currenthp = target.data('current hp'),
           maxhp = this.data('hp'),
           hp = currenthp + healhp;
         if (hp > maxhp) {
@@ -955,7 +957,7 @@ var game = (function () {
       changehp: function (hp) {
         if (hp < 1) { hp = 0; }
         this.find('.current .hp span').text(hp);
-        this.data('currenthp', hp);
+        this.data('current hp', hp);
         if (this.hasClass('selected')) { this.select(); }
         return this;
       },
@@ -984,7 +986,7 @@ var game = (function () {
         this.removeClass('dead');
         var hp = this.data('hp'), x, y, freeSpot;
         this.find('.hp').text(hp);
-        this.data('currenthp', hp);
+        this.data('current hp', hp);
         this.data('reborn', null);
         if (!spot) {
           if (this.hasClass('player')) {
@@ -1175,7 +1177,7 @@ var game = (function () {
           source = game.selectedCard,
           from = game.map.getPosition(source),
           to = game.map.getPosition(target);
-        if (game.status === 'turn' && source.data('damage') && from !== to && !source.hasClass('done') && target.data('currenthp')) {
+        if (game.status === 'turn' && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
           source.attack(target);
           if (game.mode !== 'tutorial') { game.currentData.moves.push('A:' + from + ':' + to); }
           game.map.unhighlight();
@@ -1343,7 +1345,7 @@ var game = (function () {
           };
         $('.map .playerarea .card.enemy').each(function () {
           var target = $(this);
-          if (target.data('currenthp') < lowestHp.data('currenthp')) {
+          if (target.data('currenthp') < lowestHp.data('current hp')) {
             lowestHp = target;
           }
         });
@@ -2944,7 +2946,7 @@ var game = (function () {
           $('.table .deck').hide();
           game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
           $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.ui.victory);
-          $('<h1>').appendTo(this.resultsbox).text(game.ui.towers + ' HP: ' + game.player.tower.data('currenthp') + ' / ' + game.enemy.tower.data('currenthp'));
+          $('<h1>').appendTo(this.resultsbox).text(game.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));
           $('<h1>').appendTo(this.resultsbox).text(game.ui.heroes + ' ' + game.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
           game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');
           game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');

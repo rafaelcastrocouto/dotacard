@@ -54,12 +54,6 @@
   font-style: normal;
   transform: scaleX(0.95);
 }
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
-}
 .logo h2 i:last-child:after {
   content: "";
   width: 6px;
@@ -69,6 +63,12 @@
   position: absolute;
   top: 0;
   right: -12px;
+}
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
 }
 body, p, noscript, .card h1 {
   font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
