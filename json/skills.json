@@ -1,5 +1,4 @@
 {
-
   "cm": {
     "slow": {
       "name": "Crystal Nova",
@@ -74,8 +73,8 @@
     "return": {
       "name": "Return",
       "deck": "Temporary",
-      "type": "Toggle",
-      "targets": ["Spot", "Free"],
+      "type": "Active",
+      "targets": ["Lone", "Spot", "Free"],
       "range": "Melee",
       "cards": 1,
       "description": "Teleports the Spirit Bear back to the Lone Druid"
@@ -229,8 +228,8 @@
       "type": "Channel",
       "targets": ["Spot"],
       "aoe": "Linear",
-      "aoe width": 3,
-      "aoe range": 8,
+      "aoe width": 1,
+      "aoe range": 5,
       "damage": 5,
       "damage type": "Magical",
       "cards": 4,
@@ -293,8 +292,8 @@
       "type": "Active",
       "targets": ["Spot"],
       "aoe": "Linear",
-      "aoe width": 1,
-      "aoe range": 6,
+      "aoe width": 0,
+      "aoe range": 4,
       "damage": 18,
       "damage type": "Pure",
       "cards": 6,
@@ -312,7 +311,7 @@
       "duration": 1,
       "cards": 1,
       "display": true,
-      "description": "A toxic cloud that deals intense damage to himself and enemies around"
+      "description": "A toxic cloud that deals intense damage to himself and enemies around. Damage is dealt at the turn end"
     },
     "passive": {
       "name": "Flesh Heap",
@@ -346,7 +345,7 @@
       "type": "Active",
       "targets": ["Spot"],
       "aoe": "Linear",
-      "aoewidth": 1,
+      "aoewidth": 0,
       "aoerange": 3,
       "cards": 4,
       "display": true,

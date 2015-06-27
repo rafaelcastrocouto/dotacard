@@ -1,30 +1,45 @@
 {
-  "kotl":{
-    "name": "Keeper of the Light",
+
+  "am":{
+    "name": "Anti Mage",
+    "attribute": "Agilidade",
+    "range": "Perto",
+    "hp": 42,
+    "mana": 3,
+    "damage": 9,
+    "armor": 34,
+    "resistance": 25,
+    "skills": "Blink, Mana Burn, Mana Void",
+    "passive": "Mana Break, Spell Shield"
+  },
+
+  "cm":{
+    "name": "Crystal Maiden",
     "attribute": "Inteligência",
     "range": "Distante",
     "hp": 45,
     "mana": 4,
-    "damage": 9,
+    "damage": 8,
     "armor": 20,
     "resistance": 25,
-    "skills": "Iluminar, Vazamento de Mana, Magia do Chakra, Forma Espiritual",
-    "temporary": "Blinding Light, Recall",
-    "buffs": "Mana Leak, Blinded, Recall"
+    "skills": "Crystal Nova, Frostbite, Freezing Field",
+    "passive": "Arcane Aura",
+    "buffs": "Crystal Nova, Frostbitte, Freezing Field"
   },
 
-  "wk":{
-    "name": "Wraith King",
-    "attribute": "Força",
-    "range": "Perto",
-    "hp": 66,
-    "mana": 3,
-    "damage": 10,
-    "armor": 25,
+  "ld":{
+    "name": "Lone Druid",
+    "attribute": "Agilidade",
+    "range": "Médio",
+    "hp": 51,
+    "mana": 2,
+    "damage": 9,
+    "armor": 34,
     "resistance": 25,
-    "skills": "Wraithfire Blast, Reincarnation",
-    "passive": "Mortal Strike, Vampiric Aura",
-    "buffs": "Wraithfire Blast, Wraithfire Blast, Vampiric Aura, Reincarnation"
+    "skills": "Spirit Bear, Rabid, True Form",
+    "passive": "Synergy",
+    "temporary": "Battle Cry",
+    "buffs": "Rabid, Battle Cry, True Form"
   },
 
   "pud":{
@@ -42,21 +57,37 @@
     "buffs": "Dismember"
   },
 
-  "cm":{
-    "name": "Crystal Maiden",
+  "wk":{
+    "name": "Wraith King",
+    "attribute": "Força",
+    "range": "Perto",
+    "hp": 66,
+    "mana": 3,
+    "damage": 10,
+    "armor": 25,
+    "resistance": 25,
+    "skills": "Wraithfire Blast, Reincarnation",
+    "passive": "Mortal Strike, Vampiric Aura",
+    "buffs": "Wraithfire Blast, Wraithfire Blast, Vampiric Aura, Reincarnation"
+  },
+
+  "kotl":{
+    "disable": true,
+    "name": "Keeper of the Light",
     "attribute": "Inteligência",
     "range": "Distante",
     "hp": 45,
     "mana": 4,
-    "damage": 8,
+    "damage": 9,
     "armor": 20,
     "resistance": 25,
-    "skills": "Crystal Nova, Frostbite, Freezing Field",
-    "passive": "Arcane Aura",
-    "buffs": "Crystal Nova, Frostbitte, Freezing Field"
+    "skills": "Iluminar, Vazamento de Mana, Magia do Chakra, Forma Espiritual",
+    "temporary": "Blinding Light, Recall",
+    "buffs": "Mana Leak, Blinded, Recall"
   },
 
   "nyx":{
+    "disable": true,
     "name": "Nyx Assassin",
     "attribute": "Agilidade",
     "range": "Perto",
@@ -68,34 +99,6 @@
     "skills": "Impale, Mana Burn, Spiked Carapace, Vendetta",
     "passive": "Arcane Aura",
     "buffs": "Impale, Spike, Vendetta"
-  },
-
-  "am":{
-    "name": "Anti Mage",
-    "attribute": "Agilidade",
-    "range": "Perto",
-    "hp": 42,
-    "mana": 3,
-    "damage": 9,
-    "armor": 34,
-    "resistance": 25,
-    "skills": "Blink, Mana Burn, Mana Void",
-    "passive": "Mana Break, Spell Shield"
-  },
-
-  "ld":{
-    "name": "Lone Druid",
-    "attribute": "Agilidade",
-    "range": "Médio",
-    "hp": 51,
-    "mana": 2,
-    "damage": 9,
-    "armor": 34,
-    "resistance": 25,
-    "skills": "Spirit Bear, Rabid, True Form",
-    "passive": "Synergy",
-    "temporary": "Battle Cry",
-    "buffs": "Rabid, Battle Cry, True Form"
   }
 
 }

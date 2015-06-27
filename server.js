@@ -75,5 +75,5 @@ console.log(new Date()
             + '\n' //<br>
             + '\x1B[1m' //style:bright
             + '\x1B[33m' //color:yellow
-            + 'HTTP server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
+            + 'DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
             + '\x1B[0m'); //style:reset

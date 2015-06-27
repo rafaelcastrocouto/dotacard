@@ -1,10 +1,9 @@
 /* by rafælcastrocouto */
 /*jslint browser: true, regexp: true */
-/*global AudioContext, Skills, btoa, atob, $, Modernizr, alert, console*/
+/*global AudioContext, Skills, btoa, atob, $, Modernizr, alert, confirm, prompt, console*/
 var game = (function () {
   'use strict';
   return {
-    debug: (location.host === 'localhost'),
     id: null,
     currentData: {},
     scrollspeed: 0.4,
@@ -20,7 +19,7 @@ var game = (function () {
     dayLength: 12,
     deadLength: 10,
     width: 12,
-    height: 6,
+    height: 8,
     skills: null,
     heroes: null,
     buffs: null,
@@ -99,24 +98,20 @@ var game = (function () {
     load: {
       start: function () {
         game.status = 'loading';
-        $('span.message').text('Updating: ');
+        $('.loadtext .message').text('Updating: ');
         $('.progress').text('0%');
-        game.location();
         game.load.pack();
-        game.load.images();
         if (window.AudioContext) {
-          game.load.audio();
+          game.audio.build();
           game.load.track();
         }
         game.load.language(function () {
           game.load.data();
-          game.load.progress();
         });
         game.load.ping(function () {
-          if (!game.offline && !game.debug) {
-            game.load.analytics();
-          }
+          if (!game.offline && location.host !== 'localhost') { game.load.analytics(); }
         });
+        setTimeout(game.load.progress);
       },
       unsupported: function () {
         var welcome = document.getElementsByClassName('welcome')[0],
@@ -131,10 +126,78 @@ var game = (function () {
           '</div>'
         ].join('\n');
       },
+      updating: 0,
+      totalUpdate: 7,
+      loading: 0,
+      totalLoad: 0,
+      images: {
+        array: [
+          'tutorial/axe.jpg',
+          'bkg/polygon-dark.jpg',
+          'heroes/crystal_maiden_full.jpg',
+          'heroes/keeper_of_the_light_full.jpg',
+          'heroes/skeleton_king_full.jpg',
+          'heroes/lone_druid_full.jpg',
+          'heroes/antimage_full.jpg',
+          'heroes/nyx_assassin_full.jpg',
+          'heroes/pudge_full.jpg',
+          'bkg/map_vectorized.jpg',
+          'cardback.jpg'
+        ],
+        preload: function () {
+          $(game.load.images.array).each(function () {
+            $('<img/>').attr('src', 'img/' + this);
+          });
+        }
+      },
+      progress: function () {
+        clearTimeout(game.timeout);
+        var loading;
+        if (game.load.updating < game.load.totalUpdate) {
+          // loading
+          game.status = 'loading';
+          loading = Number.parseInt(game.load.updating / game.load.totalUpdate * 100);
+          $('.progress').text(loading + '%');
+          game.timeout = setTimeout(game.load.progress, 10);
+        } else if (game.load.updating === game.load.totalUpdate &&
+            game.version &&
+            game.ui &&
+            game.skills) {
+          if (game.status !== 'building') {
+            // all loaded start build
+            game.status = 'building';
+            game.states.build();
+            game.load.totalLoad = game.states.preBuild.length;
+            $('.loadtext .message').text('Loading');
+          }
+          if (game.load.loading < game.load.totalLoad) {
+            game.timeout = setTimeout(game.load.progress, 10);
+          } else {
+            // all build go to log screen
+            game.states.builded = true;
+            game.states.changeTo('log', true);
+            game.load.images.preload();
+            if (window.AudioContext) { game.load.sounds(); }
+          }
+        }
+      },
+      json: function (name, cb) {
+        $.ajax({
+          async: true,
+          type: 'GET',
+          url: 'json/' + game.language.dir + name + '.json',
+          complete: function (response) {
+            game.load.updating += 1;
+            var data = JSON.parse(response.responseText);
+            game[name] = data;
+            if (cb) {
+              cb(data);
+            }
+          }
+        });
+      },
       language: function (cb) {
-        game.load.totalUpdate += 1;
         game.db({ 'get': 'lang' }, function (data) {
-          console.log('loaded language');
           game.load.updating += 1;
           if (data.lang) {
             game.language.detected = data.lang.split(';')[0].split(',')[0];
@@ -147,13 +210,11 @@ var game = (function () {
         });
       },
       pack: function () {
-        game.load.totalUpdate += 1;
         $.ajax({
           async: true,
           type: 'GET',
           url: 'package.json',
           complete: function (response) {
-            console.log('loaded pack');
             game.load.updating += 1;
             var data = JSON.parse(response.responseText);
             $.each(data, function (name) {
@@ -162,37 +223,11 @@ var game = (function () {
           }
         });
       },
-      json: function (name, cb) {
-        $.ajax({
-          async: true,
-          type: 'GET',
-          url: 'json/' + game.language.dir + name + '.json',
-          complete: function (response) {
-            var data = JSON.parse(response.responseText);
-            game[name] = data;
-            if (cb) {
-              cb(data);
-            }
-          }
-        });
-      },
       data: function () {
-        game.load.totalUpdate += 5;
-        game.load.json('ui', function () {
-          console.log('loaded ui');
-          game.load.updating += 1;
-        });
-        game.load.json('heroes', function () {
-          console.log('loaded heroes');
-          game.load.updating += 1;
-        });
-        game.load.json('units', function () {
-          console.log('loaded units');
-          game.load.updating += 1;
-        });
+        game.load.json('ui');
+        game.load.json('heroes');
+        game.load.json('units');
         game.load.json('skills', function () {
-          console.log('loaded skills');
-          game.load.updating += 1;
           var hero, skill;
           for (hero in game.skills) {
             if (game.skills.hasOwnProperty(hero)) {
@@ -207,8 +242,6 @@ var game = (function () {
           }
         });
         game.load.json('buffs', function () {
-          console.log('loaded buffs');
-          game.load.updating += 1;
           var hero, buff;
           for (hero in game.buffs) {
             if (game.buffs.hasOwnProperty(hero)) {
@@ -223,51 +256,34 @@ var game = (function () {
           }
         });
       },
-      audio: function () {
-        game.audio.context = new AudioContext();
-        game.mute = game.audio.context.createGain();
-        game.mute.connect(game.audio.context.destination);
-        //game.load.totalUpdate += game.sounds.length;
-        var i;
-        for (i = 0; i < game.sounds.length; i += 1) { game.audio.load(game.sounds[i]); }
+      audio: function (name, cb) {
+        var ajax = new XMLHttpRequest();
+        ajax.open('GET', '/audio/' + name + '.mp3', true);
+        ajax.responseType = 'arraybuffer';
+        ajax.onload = function () {
+          game.audio.context.decodeAudioData(ajax.response, function (buffer) {
+            game.audio.buffers[name] = buffer;
+            //game.load.updating += 1;
+            if (cb) { cb(); }
+          });
+        };
+        ajax.send();
       },
-      track: function () {
-        var song = 'doomhammer';
-        //game.load.totalUpdate += 1;
-        game.audio.load(song, function () {
-          game.audio.play(song);
+      sounds: function () {
+        //game.load.totalUpdate += game.sounds.length;
+        $(game.sounds).each(function () {
+          game.load.audio(this);
         });
       },
-      images: function () {
-        var imgUrls, thisSheetRules, baseURL, baseURLarr, csshref, cssPile,  arr, i, j,
-          sheets = document.styleSheets,
-          allImgs = [], k = 0,
-          mkImg = function (k, t) {
-            allImgs[k] = new Image();
-            allImgs[k].src = t[0] === '/' || t.match('http://') ? t : baseURL + t;
-            //allImgs[k].onload = function () { game.load.updating += 1; };
-          };
-        for (i = 0; i < sheets.length; i += 1) {
-          cssPile = '';
-          csshref = sheets[i].href || 'window.location.href';
-          baseURLarr = csshref.split('/');
-          baseURLarr.pop();
-          baseURL = baseURLarr.join('/');
-          if (baseURL !== '') { baseURL += '/'; }
-          if (document.styleSheets[i].cssRules) {
-            thisSheetRules = document.styleSheets[i].cssRules;
-            for (j = 0; j < thisSheetRules.length; j += 1) {
-              cssPile += thisSheetRules[j].cssText;
-            }
-          } else { cssPile += document.styleSheets[i].cssText; }
-          imgUrls = cssPile.match(/[^(]+.(gif|jpg|jpeg|png)/g);
-          if (imgUrls !== null && imgUrls.length > 0 && imgUrls !== '') {
-            arr = $.makeArray(imgUrls);
-            //game.load.totalUpdate += arr.length;
-            $.each(arr, mkImg);
-          }
-        }
-        return allImgs;
+      track: function () {
+        game.song = 'doomhammer';
+        //game.load.totalUpdate += 1;
+        game.load.audio(game.song, function () {
+          game.audio.play(game.song);
+          setInterval(function () {
+            game.audio.play(game.song);
+          }, game.audio.buffers[game.song].duration * 1000);
+        });
       },
       ping: function (cb) {
         var start = new Date();
@@ -287,55 +303,16 @@ var game = (function () {
       analytics: function () {
         $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
       },
-      updating: 0,
-      totalUpdate: 0,
-      loading: 0,
-      totalLoad: 0,
-      progress: function () {
-        clearTimeout(game.timeout);
-        var loading;
-        if (game.load.updating < game.load.totalUpdate) {
-          // loading
-          game.status = 'loading';
-          loading = Number.parseInt(game.load.updating / game.load.totalUpdate * 100);
-          $('.progress').text(loading + '%');
-          game.timeout = setTimeout(game.load.progress, 100);
-        } else if (game.load.updating === game.load.totalUpdate &&
-            game.version &&
-            game.ui &&
-            game.skills) {
-          if (game.status !== 'building') {
-            // all loaded start build
-            game.status = 'building';
-            game.load.loading = 0;
-            game.states.build();
-            game.load.totalLoad = game.states.preBuild.length;
-            $('span.message').text('Loading');
-          }
-          if (game.load.loading < game.load.totalLoad) {
-            game.timeout = setTimeout(game.load.progress, 100);
-          } else {
-            // all build go to log screen
-            game.states.builded = true;
-            game.states.changeTo('log', true);
-          }
-        }
-      },
       end: function () {
-        if (!game.debug) {
-          window.oncontextmenu = game.nomenu;
-          window.onbeforeunload = function () {
-            return game.ui.leave;
-          };
-        }
+        window.oncontextmenu = game.nomenu;
+        window.onbeforeunload = function () {
+          return game.ui.leave;
+        };
       },
       reset: function () {
-        if (game.debug) {
-          console.log('Internal error: ', game);
-        } else {
-          alert(game.ui.error);
-          location.reload(true);
-        }
+        console.log('Internal error: ', game);
+        var r = confirm(game.ui.error);
+        if (r) { location.reload(true); }
       }
     },
     db: function (send, cb) {
@@ -358,13 +335,7 @@ var game = (function () {
         }
       });
     },
-    location: function () {
-      if (game.debug) { location.hash = game.currentState + '.' + game.status; }
-    },
     random: function () {
-      if (game.debug) {
-        return 0;
-      }
       game.seed += 1;
       return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
     },
@@ -385,6 +356,7 @@ var game = (function () {
         $.fn.move = game.card.move;
         $.fn.animateMove = game.card.animateMove;
         $.fn.cast = game.card.cast;
+        $.fn.stopChanneling = game.card.stopChanneling;
         $.fn.passive = game.card.passive;
         $.fn.toggle = game.card.toggle;
         $.fn.addBuff = game.card.addBuff;
@@ -422,8 +394,8 @@ var game = (function () {
         desc = $('<div>').addClass('desc').appendTo(fieldset);
         if (data.hp) {
           $('<p>').addClass('hp').appendTo(desc).text(game.ui.hp + ': ' + data.hp);
-          data.currenthp = data.hp;
-          $('<p>').addClass('hp').appendTo(current).html('HP <span>' + data.currenthp + '</span>');
+          data['current hp'] = data.hp;
+          $('<p>').addClass('hp').appendTo(current).html('HP <span>' + data.hp + '</span>');
         }
         if (data.mana) {
           $('<p>').appendTo(desc).text(game.ui.mana + ': ' + data.mana);
@@ -434,8 +406,8 @@ var game = (function () {
             range = ' (' + data.range + ')';
           }
           $('<p>').addClass('damage').appendTo(desc).text(game.ui.damage + ': ' + data.damage + range);
-          data.currentdamage = data.damage;
-          $('<p>').addClass('damage').appendTo(current).html('DMG <span>' + data.currentdamage + '</span>');
+          data['current damage'] = data.damage;
+          $('<p>').addClass('damage').appendTo(current).html('DMG <span>' + data.damage + '</span>');
         }
         if (data.range && !range) {
           $('<p>').appendTo(desc).text(game.ui.range + ': ' + data.range);
@@ -493,6 +465,7 @@ var game = (function () {
         }
         this.closest('spot.block').removeClass('block').addClass('free');
         this.appendTo(target.removeClass('free').addClass('block'));
+        if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
         return this;
       },
       select: function (event) {
@@ -534,12 +507,13 @@ var game = (function () {
       },
       highlightTargets: function () {
         var skill = this, hero = skill.data('hero'),
-          source, pos, range, targets;
+          source, pos, range, targets, aoe;
         if (hero) {
           source = $('.map .source');
           if (source.hasClasses('hero unit')) {
             pos = game.map.getPosition(source);
             range = game.map.getRange(skill.data('range'));
+            aoe = skill.data('aoe');
             targets = skill.data('targets');
             if (skill.data('type') === game.ui.passive) {
               if (!source.hasClass('dead')) {
@@ -549,7 +523,7 @@ var game = (function () {
               if (!source.hasClass('dead')) {
                 source.addClass('casttarget').on('contextmenu.toggle', game.player.toggle);
               }
-            } else if (!source.hasClasses('dead done stunned frozen entangled')) {
+            } else if (!source.hasClasses('dead done stunned frozen silenced hexed disabled sleeping cycloned taunted')) {
               if (targets.indexOf(game.ui.self) >= 0) {
                 source.addClass('casttarget').on('contextmenu.cast', game.player.cast);
               }
@@ -577,6 +551,15 @@ var game = (function () {
                   });
                 }
               }
+              if (targets.indexOf('Lone') >= 0) {
+                pos = game.map.getPosition(source.data('ld'));
+                game.map.around(pos, range, function (neighbor) {
+                  if (neighbor.hasClass('free')) {
+                    neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                  }
+                });
+                return skill;
+              }
               if (targets.indexOf(game.ui.spot) >= 0) {
                 if (targets.indexOf(game.ui.free) >= 0) {
                   game.map.around(pos, range, function (neighbor) {
@@ -585,13 +568,23 @@ var game = (function () {
                     }
                   });
                 } else {
-                  game.map.around(pos, range, function (neighbor) {
-                    neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
-                    if (neighbor.hasClass('block')) {
-                      var card = $('.card', neighbor);
-                      card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
-                    }
-                  });
+                  if (aoe === 'Radial') {
+                    game.map.around(pos, range, function (neighbor) {
+                      neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                      if (neighbor.hasClass('block')) {
+                        var card = $('.card', neighbor);
+                        card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
+                      }
+                    });
+                  } else if (aoe === 'Linear') {
+                    game.map.atCross(pos, skill.data('aoe range'), skill.data('aoe width'), function (neighbor) {
+                      neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                      if (neighbor.hasClass('block')) {
+                        var card = $('.card', neighbor);
+                        card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
+                      }
+                    });
+                  }
                 }
               }
             }
@@ -603,31 +596,36 @@ var game = (function () {
         var skill = this,
           hero = skill.data('hero'),
           source = $('.map .source'),
-          range = game.map.getRange(skill.data('range')),
+          range,
           pos = game.map.getPosition(source);
-        if (hero && range && pos && !source.hasClasses('dead done stunned')) {
-          game.map.stroke(pos, range, 'skillcast');
+        if (hero && pos && !source.hasClasses('dead done stunned')) {
           if (skill.data('aoe')) {
             game.castpos = pos;
-            game.castrange = range;
-            game.aoerange = game.map.getRange(skill.data('aoe range'));
             game.aoe = skill.data('aoe');
             if (game.aoe === 'Linear') {
-              game.aoerange = skill.data('aoe range');
               game.aoewidth = skill.data('aoe width');
+              game.aoerange = skill.data('aoe range');
+              game.map.crossStroke(pos, game.aoerange, game.aoewidth, 'skillarea');
+            } else if (game.aoe === 'Radial') {
+              game.aoerange = game.map.getRange(skill.data('range'));
+              game.aoecastrange = game.map.getRange(skill.data('aoe range'));
+              game.map.radialStroke(pos, game.aoerange, 'skillarea');
             }
             $('.map .spot, .map .card').hover(function () {
               var spot = $(this);
+              $('.map .spot').removeClass('skillarea skillcast top right left bottom');
               if (spot.hasClass('targetarea')) {
-                $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-                if (game.aoe === 'Radial') {
-                  game.map.stroke(game.map.getPosition($(this)), game.aoerange, 'skillarea');
-                } else if (game.aoe === 'Linear') {
-                  game.map.linear(game.map.getPosition($(this)), game.aoerange, 'skillarea');
+                if (game.aoe === 'Linear') {
+                  game.map.linearStroke(game.map.getPosition($(this)), game.aoerange, game.aoewidth, 'skillcast');
+                } else if (game.aoe === 'Radial') {
+                  game.map.radialStroke(game.map.getPosition($(this)), game.aoecastrange, 'skillcast');
                 }
               } else {
-                $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-                game.map.stroke(game.castpos, game.castrange, 'skillcast');
+                if (game.aoe === 'Linear') {
+                  game.map.crossStroke(game.castpos, game.aoerange, game.aoewidth, 'skillarea');
+                } else if (game.aoe === 'Radial') {
+                  game.map.radialStroke(game.castpos, game.aoerange, 'skillarea');
+                }
               }
             });
           }
@@ -636,7 +634,7 @@ var game = (function () {
       },
       highlightMove: function () {
         var card = this, speed;
-        if (card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen entangled')) {
+        if (card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen entangled disabled sleeping cycloned taunted')) {
           speed = card.data('current speed');
           if (speed < 1) { return card; }
           if (speed > 3) { speed = 3; }
@@ -653,7 +651,7 @@ var game = (function () {
           to = game.map.getPosition(destiny);
         if (destiny.hasClass('free') && from !== to) {
           game.map.unhighlight();
-          card.data('channeling', false).removeClass('channeling');
+          card.stopChanneling();
           card.closest('.spot').removeClass('block').addClass('free');
           destiny.removeClass('free').addClass('block');
           t = card.offset();
@@ -678,6 +676,9 @@ var game = (function () {
           });
           setTimeout(function () {
             $(this.card).css({ transform: '' }).appendTo(this.destiny);
+            if (this.card.data('fx') && this.card.data('fx').canvas) {
+              this.card.data('fx').canvas.appendTo(this.destiny);
+            }
             $('.map .spot').data('detour', false);
             game.map.highlight();
           }.bind({
@@ -695,7 +696,7 @@ var game = (function () {
         this.css({ transform: 'translate3d(' + (dx - 50) + '%, ' + (dy - 50) + '%, 100px) rotateX(-30deg)' });
       },
       cast: function (skill, target) {
-        var source = this, targets, duration, channeler, channelduration,
+        var source = this, targets, duration, channeler, channelDuration,
           hero = skill.data('hero'),
           skillid = skill.data('skill');
         if (skillid && hero && source.data('hero') === hero) {
@@ -706,25 +707,27 @@ var game = (function () {
             } else {target = $('#' + target + ' .card'); }
           }
           if (target.length) {
-            source.data('channeling', false).removeClass('channeling');
+            source.stopChanneling();
             source.trigger('cast', {
               skill: skill,
               source: source,
               target: target
             });
             Skills[hero][skillid].cast(skill, source, target);
-            channelduration = skill.data('channel');
-            if (channelduration) {
-              source.data('channeling', channelduration).addClass('channeling');
-              source.on('turnstart.channel', function (event, eventdata) {
-                channeler = eventdata.target;
+            if (game.sounds.indexOf(hero + '/' + skillid) >= 0) {
+              game.audio.play(hero + '/' + skillid);
+            }
+            channelDuration = skill.data('channel');
+            if (channelDuration) {
+              source.data('channeling', channelDuration).addClass('channeling');
+              source.on('channel', function (event, eventdata) {
+                channeler = eventdata.source;
                 duration = channeler.data('channeling');
                 if (duration) {
                   duration -= 1;
                   channeler.data('channeling', duration);
                 } else {
-                  channeler.data('channeling', false);
-                  channeler.off('channel turnstart.channel');
+                  channeler.stopChanneling();
                 }
               });
             }
@@ -737,11 +740,14 @@ var game = (function () {
             }
             source.addClass('done');
             setTimeout(function () {
-              skill.discard();
-            }, 400);
+              this.discard();
+            }.bind(skill), 400);
           }
         }
         return this;
+      },
+      stopChanneling: function () {
+        this.data('channeling', false).removeClass('channeling').off('channel');
       },
       passive: function (target) {
         var skill = this,
@@ -806,7 +812,7 @@ var game = (function () {
           var currentstun = target.data('stun');
           if (!currentstun || stun > currentstun) { target.data('stun', stun); }
         } else {
-          target.data('channeling', false).removeClass('channeling');
+          target.stopChanneling();
           this.addBuff(target, {
             name: 'Stun',
             buff: 'stun',
@@ -831,7 +837,11 @@ var game = (function () {
         if (this.hasClass('skill')) {
           this.trigger('discard', {target: this});
           if (this.hasClass('player')) {
-            this.appendTo(game.player.skills.cemitery);
+            if (this.data('deck') === game.ui.temp) {
+              this.appendTo(game.player.skills.temp);
+            } else {
+              this.appendTo(game.player.skills.cemitery);
+            }
           } else {
             this.appendTo(game.enemy.skills.deck);
             game.enemy.hand -= 1;
@@ -840,10 +850,10 @@ var game = (function () {
       },
       strokeAttack: function () {
         var card = this, pos, range;
-        if (!card.hasClasses('done dead stunned')) {
+        if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
           pos = game.map.getPosition(card);
           range = game.map.getRange(card.data('range'));
-          game.map.stroke(pos, range, card.data('side') + 'attack');
+          game.map.radialStroke(pos, range, card.data('side') + 'attack');
         }
         return card;
       },
@@ -865,7 +875,7 @@ var game = (function () {
           from = game.map.getPosition(source),
           to = game.map.getPosition(target);
         if (source.data('current damage') && from !== to && target.data('current hp')) {
-          source.data('channeling', false).removeClass('channeling');
+          source.stopChanneling();
           source.trigger('attack', {
             source: source,
             target: target
@@ -895,8 +905,6 @@ var game = (function () {
         if (type === game.ui.magical && resistance) { damage = Math.round(damage * resistance); }
         armor = 1 - target.data('armor') / 100;
         if (type === game.ui.physical && armor) { damage = Math.round(damage * armor); }
-        console.log(type, game.ui.magical, resistance);
-
         if (typeof target === 'string') { target = $('#' + target + ' .card'); }
         hp = target.data('current hp') - damage;
         target.changehp(hp);
@@ -1055,7 +1063,8 @@ var game = (function () {
       },
       createHeroesCards: function (deck, name, cb, filter) {
         var deckData = game[name],
-          cards = [];
+          cards = [],
+          card;
         $.each(deckData, function (heroid, herodata) {
           var found = false;
           if (filter) {
@@ -1066,14 +1075,16 @@ var game = (function () {
           if (found || !filter) {
             herodata.hero = heroid;
             herodata.speed = 2;
-            herodata.currentspeed = 2;
+            herodata['current speed'] = 2;
             herodata.kd = true;
             herodata.buffs = true;
             herodata.className = [
               heroid,
               name
             ].join(' ');
-            cards.push(game.card.build(herodata).appendTo(deck));
+            card = game.card.build(herodata).appendTo(deck);
+            game.fx.build(card);
+            cards.push(card);
           }
         });
         deck.data('cards', cards);
@@ -1132,7 +1143,7 @@ var game = (function () {
               ].join(' ');
               unitdata.hero = groupid;
               unitdata.speed = 2;
-              unitdata.currentspeed = 2;
+              unitdata['current speed'] = 2;
               unitdata.buffs = true;
               cards.push(game.card.build(unitdata).appendTo(deck));
             });
@@ -1160,16 +1171,23 @@ var game = (function () {
         if (game.player.turn === 6) {
           $('.player.deck.skills.ult .card').appendTo(game.player.skills.deck);
         }
-        var availableSkills = $('.skills.available.player.deck .card'), card = game.deck.randomCard(availableSkills), heroid, hero, to;
+        var availableSkills = $('.skills.available.player.deck .card'),
+          card = game.deck.randomCard(availableSkills),
+          heroid,
+          hero,
+          to;
+        if (availableSkills.length === 0) {
+          $('.player.deck.skills.cemitery .card').appendTo(game.player.skills.deck);
+        }
         if (card.data('type') === game.ui.toggle) {
-          card.appendTo(game.player.skills.toggle);
+          card.appendTo(game.player.skills.sidehand);
         } else if (card.data('type') === game.ui.automatic) {
           heroid = card.data('hero');
           hero = $('.map .player.heroes.' + heroid);
           to = game.map.getPosition(hero);
           card.passive(to);
           game.currentData.moves.push('P:' + to + ':' + card.data('skill') + ':' + heroid);
-          card.appendTo(game.player.skills.toggle);
+          card.appendTo(game.player.skills.sidehand);
         } else {
           card.appendTo(game.player.skills.hand);
         }
@@ -1356,8 +1374,12 @@ var game = (function () {
         return tower;
       },
       place: function () {
-        game.player.tower = game.tower.build('player', 'C5');
-        game.enemy.tower = game.tower.build('enemy', 'J2');
+        var p = 'C6';
+        game.player.tower = game.tower.build('player', p);
+        game.enemy.tower = game.tower.build('enemy', game.map.mirrorPosition(p));
+        p = 'A8';
+        $('#' + p).addClass('fountain player').attr({title: 'Fountain'});
+        $('#' + game.map.mirrorPosition(p)).addClass('fountain enemy').attr({title: 'Fountain'});
       },
       attack: function () {
         var from, to,
@@ -1367,7 +1389,7 @@ var game = (function () {
           };
         $('.map .playerarea .card.enemy').each(function () {
           var target = $(this);
-          if (target.data('currenthp') < lowestHp.data('current hp')) {
+          if (target.data('current hp') < lowestHp.data('current hp')) {
             lowestHp = target;
           }
         });
@@ -1390,7 +1412,7 @@ var game = (function () {
         return tree;
       },
       place: function () {
-        var treeSpots = 'A2 A3 B3';
+        var treeSpots = 'A2 A3 A4 B3';
         $.each(treeSpots.split(' '), function () {
           game.tree.build(this);
           game.tree.build(game.map.mirrorPosition(this));
@@ -1453,12 +1475,12 @@ var game = (function () {
           game.audio.play('tutorial/axebattle');
           game.tutorial.message.html(game.ui.axebattle);
           setTimeout(function () {
-            game.tutorial.deck();
+            game.tutorial.heroesdeck();
           }, 2000);
         }
         game.tutorial.oldAvailableSlots = availableSlots;
       },
-      deck: function () {
+      heroesdeck: function () {
         game.player.picks = [];
         $('.slot').each(function () {
           var slot = $(this), card = slot.find('.card');
@@ -1471,7 +1493,6 @@ var game = (function () {
       },
       start: function () {
         game.status = 'learning';
-        game.location();
         game.message.text(game.ui.battle);
         game.loader.removeClass('loading');
         game.audio.play('horn');
@@ -1499,7 +1520,7 @@ var game = (function () {
           filter: game.player.picks,
           cb: function (deck) {
             deck.addClass('player').appendTo(game.states.table.player);
-            var x = 0, y = 5;
+            var x = 0, y = 6;
             $.each(deck.data('cards'), function (i, card) {
               var p = game.player.picks.indexOf(card.data('hero'));
               card.addClass('player hero').data('side', 'player').on('click.select', game.tutorial.select);
@@ -1516,7 +1537,7 @@ var game = (function () {
           filter: game.enemy.picks,
           cb: function (deck) {
             deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
-            var x = 0, y = 5;
+            var x = 0, y = 6;
             $.each(deck.data('cards'), function (i, card) {
               var p = game.enemy.picks.indexOf(card.data('hero'));
               card.addClass('enemy hero').data('side', 'enemy').on('click.select', game.tutorial.select);
@@ -1668,13 +1689,13 @@ var game = (function () {
       buildSkills: function () {
         game.player.skills = {};
         game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills hand');
-        game.player.skills.toggle = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills toggle');
+        game.player.skills.sidehand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills sidehand');
+        game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
         game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
         game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
         game.player.skills.deck = game.deck.build({
           name: 'skills',
-          multi: 'cards',
-          filter: game.player.picks,
+          filter: [game.player.picks[3], game.player.picks[4]],
           cb: function (deck) {
             deck.addClass('player available').hide().appendTo(game.states.table.player);
             $.each(deck.data('cards'), function (i, skill) {
@@ -1701,7 +1722,7 @@ var game = (function () {
         game.tutorial.message.html(game.ui.axeskillselect);
         game.player.buyHand();
         game.player.skills.hand.show();
-        game.player.skills.toggle.show();
+        game.player.skills.sidehand.show();
         $('.player.hero').removeClass('tutorialblink');
         $('.player.skill').addClass('tutorialblink');
         setTimeout(function () {
@@ -1895,7 +1916,6 @@ var game = (function () {
       },
       battle: function (enemy, challenge) {
         game.status = 'picking';
-        game.location();
         game.loader.removeClass('loading');
         game.states.choose.el.addClass('turn');
         game.enemy.name = enemy;
@@ -1933,7 +1953,7 @@ var game = (function () {
             filter: game.player.picks,
             cb: function (deck) {
               deck.addClass('player').appendTo(game.states.table.player);
-              var x = 0, y = 5;
+              var x = 0, y = 6;
               $.each(deck.data('cards'), function (i, card) {
                 var p = game.player.picks.indexOf(card.data('hero'));
                 card.addClass('player hero').data('side', 'player').on('click.select', game.card.select);
@@ -1952,7 +1972,7 @@ var game = (function () {
             filter: game.enemy.picks,
             cb: function (deck) {
               deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
-              var x = 0, y = 5;
+              var x = 0, y = 6;
               $.each(deck.data('cards'), function (i, card) {
                 var p = game.enemy.picks.indexOf(card.data('hero'));
                 card.addClass('enemy hero').data('side', 'enemy').on('click.select', game.card.select);
@@ -1963,16 +1983,17 @@ var game = (function () {
           });
         }
       },
-      buildSkills: function () {
+      buildSkills: function (single) {
         game.player.manaBuild();
         game.player.skills = {};
         game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
-        game.player.skills.toggle = $('<div>').appendTo(game.states.table.player).addClass('player deck skills toggle');
+        game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
+        game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
         game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
         game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
         game.player.skills.deck = game.deck.build({
           name: 'skills',
-          multi: 'cards',
+          multi: single ? false : 'cards',
           filter: game.player.picks,
           cb: function (deck) {
             deck.addClass('player available').hide().appendTo(game.states.table.player);
@@ -1980,6 +2001,8 @@ var game = (function () {
               skill.addClass('player skill').data('side', 'player').on('click.select', game.card.select);
               if (skill.data('skill') === 'ult') {
                 skill.appendTo(game.player.skills.ult);
+              } else if (skill.data('deck') === game.ui.temp) {
+                skill.appendTo(game.player.skills.temp);
               }
             });
           }
@@ -2072,8 +2095,7 @@ var game = (function () {
           });
           if (game.turn === 6) { $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck); }
           if (game.status === 'turn') {
-            game.states.table.el.removeClass('unturn');
-            game.states.table.el.addClass('turn');
+            game.states.table.el.removeClass('unturn').addClass('turn');
             game.message.text(game.ui.yourturn);
             game.player.turn += 1;
             $('.map .card.player').removeClass('done');
@@ -2086,10 +2108,6 @@ var game = (function () {
             $('.map .card.enemy').removeClass('done');
             game.enemy.buyHand();
           }
-          $('.card.heroes').each(function () {
-            var hero = $(this);
-            if (hero.data('channeling')) { hero.trigger('channel', { target: hero }); }
-          });
           $('.card').each(function () {
             var card = $(this);
             card.trigger('turnstart', { target: card });
@@ -2103,7 +2121,6 @@ var game = (function () {
           if (game.status === 'unturn') { game.turn.counter += 1; }
           game.loader.removeClass('loading');
           setTimeout(game.turn.count, 1000);
-          game.location();
         }
       },
       count: function () {
@@ -2126,6 +2143,7 @@ var game = (function () {
         $('.card .heal').remove();
         $('.card.heroes').each(function () {
           var hero = $(this);
+          if (hero.data('channeling')) { hero.trigger('channel', { source: hero }); }
           hero.trigger('turnend', { target: hero });
         });
         if (game.status === 'turn') {
@@ -2173,34 +2191,52 @@ var game = (function () {
       'tutorial/axewait',
       'tutorial/axeah',
       'am/attack',
+      'am/burn',
+      'am/blink',
+      'am/ult',
       'cm/attack',
-      'kotl/attack',
+      'cm/freeze',
+      'cm/slow',
+      'cm/ult',
       'ld/attack',
-      'nyx/attack',
+      'ld/bear',
+      'ld/cry',
+      'ld/entangle',
+      'ld/rabid',
+      'ld/return',
+      'ld/transform',
+      'ld/ult',
       'pud/attack',
-      'wk/attack'
+      'pud/hook',
+      'pud/rot',
+      'pud/ult',
+      'wk/attack',
+      'wk/stun',
+      'wk/ult',
+      'crit'
     ],
     audio: {
       buffers: {},
-      load: function (name, cb) {
-        var ajax = new XMLHttpRequest();
-        ajax.open('GET', '/audio/' + name + '.mp3', true);
-        ajax.responseType = 'arraybuffer';
-        ajax.onload = function () {
-          game.audio.context.decodeAudioData(ajax.response, function (buffer) {
-            game.audio.buffers[name] = buffer;
-            //game.load.updating += 1;
-            if (cb) { cb(); }
-          });
-        };
-        ajax.send();
+      build: function () {
+        game.audio.context = new AudioContext();
+        game.mute = game.audio.context.createGain();
+        game.mute.connect(game.audio.context.destination);
+        game.audio.sounds = game.audio.context.createGain();
+        game.audio.sounds.connect(game.mute);
+        game.audio.track = game.audio.context.createGain();
+        game.audio.track.connect(game.mute);
+        game.mute.gain.value = 0.6;
       },
       play: function (name) {
         if (game.audio.context && game.audio.context.createBufferSource) {
-          var sound = game.audio.context.createBufferSource();
-          sound.buffer = game.audio.buffers[name];
-          sound.connect(game.mute);
-          sound.start();
+          var audio = game.audio.context.createBufferSource();
+          audio.buffer = game.audio.buffers[name];
+          if (name === game.song) {
+            audio.connect(game.audio.track);
+          } else {
+            audio.connect(game.audio.sounds);
+          }
+          audio.start();
         }
       }
     },
@@ -2249,6 +2285,15 @@ var game = (function () {
           game.chat.update(chat);
         });
         game.chat.el.appendTo(game.states.menu.el);
+        $(document.body).on('keypress', function (e) {
+          if (e.which === 13) {
+            if (game.currentState === 'choose' ||
+                game.currentState === 'options' ||
+                game.currentState === 'table') {
+              game.chat.el.toggleClass('hover');
+            }
+          }
+        });
         game.chat.builded = true;
       },
       update: function (chat) {
@@ -2264,15 +2309,17 @@ var game = (function () {
     },
     map: {
       lettersStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+      width: 2544,
+      height: 2500,
       build: function (opt) {
         game.map.letters = game.map.lettersStr.split('');
         game.spot = [];
-        var map = $('<div>').addClass('map'), w, h, tr;
+        var map = $('<div>').addClass('map').css({width: game.map.width, height: game.map.height}), w, h, tr;
         for (h = 0; h < opt.height; h += 1) {
           game.spot[h] = [];
           tr = $('<div>').addClass('row').appendTo(map);
           for (w = 0; w < opt.width; w += 1) {
-            game.spot[h][w] = $('<div>').attr({ id: game.map.toId(w, h) }).addClass('free spot').appendTo(tr).on('contextmenu', game.nomenu);
+            game.spot[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.nomenu);
           }
         }
         game.map.builded = true;
@@ -2280,30 +2327,36 @@ var game = (function () {
       },
       start: function () {
         game.scrollX = 40;
+        game.scrollY = 60;
         game.states.table.camera = $('<div>').appendTo(game.states.table.el).addClass('camera').mousemove(function (event) {
           var offset = game.states.table.camera.offset(),
-            x = event.clientX - offset.left;
-          if (x < 40) {
-            game.scrollingX = -1;
-          } else if (x > 680) {
-            game.scrollingX = 1;
-          } else { game.scrollingX = 0; }
+            x = event.clientX - offset.left,
+            y = event.clientY - offset.top;
+          if (x < 50) { game.scrollingX = -1; } else if (x > 690) { game.scrollingX = 1; } else { game.scrollingX = 0; }
+          if (y < 50) { game.scrollingY = -1; } else if (y > 400) { game.scrollingY = 1; } else { game.scrollingY = 0; }
         }).hover(function () {
           game.scrollingX = 0;
+          game.scrollingY = 0;
         });
-        game.states.table.map = game.map.build({
-          'width': game.width,
-          'height': game.height,
-          'class': 'map'
-        }).appendTo(game.states.table.camera);
+        game.states.table.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(game.states.table.camera);
         setInterval(game.map.scroll, 16);
       },
       scroll: function () {
         if (game.scrollingX) {
           game.scrollX += game.scrollspeed * game.scrollingX;
-          if (game.scrollX < 40) { game.scrollX = 40; }
-          if (game.scrollX > 43.5) { game.scrollX = 43.5; }
-          game.states.table.map.css({ transform: 'rotateX(40deg) translate(-' + game.scrollX + '%, -58%)  scale3d(0.5,0.5,0.5)' });
+          if (game.scrollX < 39) { game.scrollX = 39; }
+          if (game.scrollX > 45) { game.scrollX = 45; }
+          game.states.table.map.css({
+            transform: 'rotateX(40deg) translate(-' + game.scrollX + '%, -' + game.scrollY + '%)  scale3d(0.6,0.6,0.6)'
+          });
+        }
+        if (game.scrollingY) {
+          game.scrollY += game.scrollspeed * game.scrollingY;
+          if (game.scrollY < 54) { game.scrollY = 54; }
+          if (game.scrollY > 65) { game.scrollY = 65; }
+          game.states.table.map.css({
+            transform: 'rotateX(40deg) translate(-' + game.scrollX + '%, -' + game.scrollY + '%)  scale3d(0.6,0.6,0.6)'
+          });
         }
       },
       toId: function (w, h) {
@@ -2386,6 +2439,31 @@ var game = (function () {
           }
         }
       },
+      atCross: function (spot, range, width, cb, filter) {
+        if (range >= 0) {
+          var x, y, r,
+            fil = function (x, y) {
+              var spot = game.map.getSpot(x, y);
+              if (spot) {
+                if (filter) {
+                  if (!spot.hasClasses(filter)) { cb(spot); }
+                } else { cb(spot); }
+              }
+            },
+            w = game.map.getX(spot),
+            h = game.map.getY(spot);
+          if (range === 0) {
+            fil(w, h);
+          } else {
+            for (r = 1; r <= range; r += 1) {
+              fil(w, h + r);
+              fil(w, h - r);
+              fil(w - r, h);
+              fil(w + r, h);
+            }
+          }
+        }
+      },
       atMovementRange: function (card, range, cb, filter) {
         if (range >= 0 && range <= game.map.rangeArray.length) {
           var radius, x, y, r, r2, l, a, i, o, m, s,
@@ -2460,7 +2538,7 @@ var game = (function () {
           game.map.atRange(spot, 3, cb);
         }
       },
-      stroke: function (spot, range, cl) {
+      radialStroke: function (spot, range, cl) {
         var radius, x, y, r, r2, l,
           fil = function (x, y, border) {
             var spot = game.map.getSpot(x, y);
@@ -2528,6 +2606,78 @@ var game = (function () {
           fil(w + 2, h - 3, 'right');
         }
       },
+      crossStroke: function (spot, range, width, cl) {
+        var radius, x, y, r,
+          fil = function (x, y, border) {
+            var spot = game.map.getSpot(x, y);
+            if (spot) { spot.addClass(cl + ' stroke ' + border); }
+          },
+          w = game.map.getX(spot),
+          h = game.map.getY(spot);
+        if (range === 0) { return fil(w, h, 'left right top bottom'); }
+
+        fil(w, h + range, 'bottom');
+        fil(w, h - range, 'top');
+        fil(w - range, h, 'left');
+        fil(w + range, h, 'right');
+
+        for (r = 1; r <= range; r += 1) {
+          fil(w - width, h + r, 'left');
+          fil(w + width, h + r, 'right');
+        }
+        for (r = 1; r <= range; r += 1) {
+          fil(w - width, h - r, 'left');
+          fil(w + width, h - r, 'right');
+        }
+        for (r = 1; r <= range; r += 1) {
+          fil(w + r, h - width, 'top');
+          fil(w + r, h + width, 'bottom');
+        }
+        for (r = 1; r <= range; r += 1) {
+          fil(w - r, h - width, 'top');
+          fil(w - r, h - width, 'bottom');
+        }
+
+      },
+      linearStroke: function (spot, range, width, cl) {
+        var radius, x, y, r,
+          fil = function (x, y, border) {
+            var spot = game.map.getSpot(x, y);
+            if (spot) { spot.addClass(cl + ' stroke ' + border); }
+          },
+          cw = game.map.getX(spot),
+          ch = game.map.getY(spot),
+          w = game.map.getX(game.castpos),
+          h = game.map.getY(game.castpos);
+        if (ch - h > 0) {
+          fil(w, h + range, 'bottom');
+          for (r = 1; r <= range; r += 1) {
+            fil(w - width, h + r, 'left');
+            fil(w + width, h + r, 'right');
+          }
+        }
+        if (ch - h < 0) {
+          fil(w, h - range, 'top');
+          for (r = 1; r <= range; r += 1) {
+            fil(w - width, h - r, 'left');
+            fil(w + width, h - r, 'right');
+          }
+        }
+        if (cw - w > 0) {
+          fil(w + range, h, 'right');
+          for (r = 1; r <= range; r += 1) {
+            fil(w + r, h - width, 'top');
+            fil(w + r, h + width, 'bottom');
+          }
+        }
+        if (cw - w < 0) {
+          fil(w - range, h, 'left');
+          for (r = 1; r <= range; r += 1) {
+            fil(w - r, h - width, 'top');
+            fil(w - r, h - width, 'bottom');
+          }
+        }
+      },
       getRange: function (att) {
         var range = att;
         if (att === game.ui.ortho) { range = 1; }
@@ -2561,7 +2711,85 @@ var game = (function () {
         $('.map .spot').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
       }
     },
-    status: '',//loading, loaded, out, logged, search, picking, turn, unturn, over
+    fx: {
+      width: 2200,
+      height: 2300,
+      build: function (card) {
+        var canvas = $('<canvas>').addClass('fx'), ctx;
+        canvas[0].width = game.fx.width;
+        canvas[0].height = game.fx.height;
+        ctx = canvas[0].getContext('2d');
+        card.data('fx', {canvas: canvas, ctx: ctx, width: game.fx.width, height: game.fx.height});
+        //ctx.fillRect(0, 0, game.fx.width, game.fx.height);
+      },
+      particles: function (fx) {
+        return {
+          array: [],
+          create: function (n, o) {
+            var i;
+            for (i = 0; i < n; i += 1) {
+              this.array.push({
+                x: o.x(),
+                ox: o.x,
+                y: o.y(),
+                oy: o.y,
+                speed: o.speed(),
+                os: o.speed,
+                radius: o.radius(),
+                or: o.radius,
+                dir: o.dir(),
+                od: o.dir,
+                color: o.color(),
+                oc: o.color
+              });
+            }
+          },
+          animate: function () {
+            var i, p;
+            fx.ctx.clearRect(0, 0, fx.width, fx.height);
+            for (i = 0; i < this.array.length; i += 1) {
+              p = this.array[i];
+              p = this.move(p);
+              this.circle(p.x, p.y, p.radius, p.color);
+            }
+            this.timeout = setTimeout(this.animate.bind(this), 20);
+          },
+          move: function (p) {
+            p.x += Math.cos(p.dir) * p.speed;
+            p.y += Math.sin(p.dir) * p.speed;
+            p.radius -= 0.5;
+            if (p.radius < 1) {
+              p.x = p.ox();
+              p.y = p.oy();
+              p.speed = p.os();
+              p.radius = p.or();
+              p.dir = p.od();
+              p.color = p.oc();
+            }
+            return p;
+          },
+          circle : function (x, y, r, c) {
+            var gradient = fx.ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
+            gradient.addColorStop(0, c || 'white');
+            gradient.addColorStop(1, 'transparent');
+            fx.ctx.fillStyle = gradient;
+            fx.ctx.beginPath();
+            fx.ctx.arc(x, y, r, 0, Math.PI * 2);
+            fx.ctx.fill();
+            fx.ctx.closePath();
+          },
+          stop: function () {
+            fx.ctx.clearRect(0, 0, fx.width, fx.height);
+            clearTimeout(this.timeout);
+          },
+          reset: function () {
+            this.array = [];
+            this.stop();
+          }
+        };
+      }
+    },
+    status: '',//updating, loading, loaded, out, logged, search, picking, turn, unturn, over
     mode: '',//online, tutorial
     currentState: 'load', //log, menu, options, choose, table
     states: {
@@ -2579,7 +2807,7 @@ var game = (function () {
         });
       },
       changeTo: function (state, keepElements) {
-        if (this !== game.currentState) {
+        if (state !== game.currentState) {
           var newstate,
             pre = game.currentState,
             oldstate = game.states[pre];
@@ -2591,7 +2819,6 @@ var game = (function () {
           }
           game.currentState = state;
           game.backState = pre;
-          game.location();
           if (newstate.start) { newstate.start(); }
         }
       },
@@ -2608,32 +2835,11 @@ var game = (function () {
             type: 'text',
             maxlength: 24
           }).keydown(function (e) {
-            if (e.which === 13) { game.states.log.button.click(); }
+            if (e.which === 13) { game.states.log.login(); }
           });
           this.button = $('<div>').addClass('button').appendTo(this.el).text(game.ui.log).attr({
-            placeholder: game.ui.choosename,
             title: game.ui.choosename
-          }).click(function () {
-            var name = game.states.log.input.val();
-            if (name) {
-              game.player.name = name;
-              if (game.states.log.remembername) {
-                $.cookie('name', name);
-              } else {
-                $.removeCookie('name');
-              }
-              game.states.log.button.attr('disabled', true);
-              game.loader.addClass('loading');
-              game.db({ 'get': 'server' }, function (server) {
-                if (server.status === 'online') {
-                  game.status = 'logged';
-                  game.states.changeTo('menu');
-                } else { game.load.reset(); }
-              });
-            } else {
-              game.states.log.input.focus();
-            }
-          });
+          }).click(this.login);
           this.rememberlabel = $('<label>').appendTo(this.el).append($('<span>').text(game.ui.remember));
           this.remembercheck = $('<input>').attr({
             type: 'checkbox',
@@ -2649,13 +2855,31 @@ var game = (function () {
           $('.logo').removeClass('slide');
           game.topbar.appendTo('.welcome');
           game.loader.removeClass('loading');
-          game.message.html('Version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">alpha ' + game.version + '</small></a> - <b>Warning: </b> Heroes still in development: Pudge, Keeper of the Light and Nyx Assassin');
+          game.message.html('Version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">alpha ' + game.version + '</small></a>');
           this.input.focus();
-          if (game.debug) {
-            this.input.val('Bot' + parseInt(Math.random() * 100, 10));
-          }
           game.states.options.opt.hide();
           $('.forklink').show();
+        },
+        login: function () {
+          var name = game.states.log.input.val();
+          if (name) {
+            game.player.name = name;
+            if (game.states.log.remembername) {
+              $.cookie('name', name);
+            } else {
+              $.removeCookie('name');
+            }
+            game.states.log.button.attr('disabled', true);
+            game.loader.addClass('loading');
+            game.db({ 'get': 'server' }, function (server) {
+              if (server.status === 'online') {
+                game.status = 'logged';
+                game.states.changeTo('menu');
+              } else { game.load.reset(); }
+            });
+          } else {
+            game.states.log.input.focus();
+          }
         },
         end: function () {
           this.button.attr('disabled', false);
@@ -2664,6 +2888,7 @@ var game = (function () {
         },
         remember: function () {
           game.states.log.remembername = !game.states.log.remembername;
+          if (!game.states.log.remembername) { $.removeCookie('name'); }
         }
       },
       menu: {
@@ -2728,17 +2953,23 @@ var game = (function () {
             type: 'radio',
             name: 'resolution',
             value: 'high'
-          }).change(this.changeResolution)).append($('<span>').text(game.ui.high));
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.high + ' 1920x1080'));
           $('<label>').appendTo(this.resolution).append($('<input>').attr({
             type: 'radio',
             name: 'resolution',
-            checked: true
-          }).change(this.changeResolution)).append($('<span>').text(game.ui.medium));
+            value: 'medium'
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.medium + ' 1366x768'));
+          $('<label>').appendTo(this.resolution).append($('<input>').attr({
+            type: 'radio',
+            name: 'resolution',
+            checked: true,
+            value: 'default'
+          }).change(this.changeResolution)).append($('<span>').text(game.ui['default'] + ' 1024x768'));
           this.low = $('<label>').appendTo(this.resolution).append($('<input>').attr({
             type: 'radio',
             name: 'resolution',
             value: 'low'
-          }).change(this.changeResolution)).append($('<span>').text(game.ui.low));
+          }).change(this.changeResolution)).append($('<span>').text(game.ui.low + ' 800x600'));
           var rememberedvol, vol,
             rememberedres = $.cookie('resolution');
           if (rememberedres && this[rememberedres]) { this[rememberedres].click(); }
@@ -2751,9 +2982,18 @@ var game = (function () {
             name: 'mute'
           }).change(this.mute);
           $('<label>').appendTo(this.audio).append(this.muteinput).append($('<span>').text(game.ui.mute));
+          //main volume
           this.volumecontrol = $('<div>').addClass('volumecontrol');
-          this.volumeinput = $('<div>').addClass('volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
+          this.volumeinput = $('<div>').addClass('volume').data('volume', 'volume').on('mousedown.volume', this.volumedown).append(this.volumecontrol);
           $('<label>').appendTo(this.audio).append($('<span>').text(game.ui.volume)).append(this.volumeinput);
+          //music volume
+          this.musiccontrol = $('<div>').addClass('volumecontrol');
+          this.musicinput = $('<div>').addClass('volume').data('volume', 'music').on('mousedown.volume', this.volumedown).append(this.musiccontrol);
+          $('<label>').appendTo(this.audio).append($('<span>').text(game.ui.music)).append(this.musicinput);
+          //sounds volume
+          this.soundscontrol = $('<div>').addClass('volumecontrol');
+          this.soundsinput = $('<div>').addClass('volume').data('volume', 'sounds').on('mousedown.volume', this.volumedown).append(this.soundscontrol);
+          $('<label>').appendTo(this.audio).append($('<span>').text(game.ui.sounds)).append(this.soundsinput);
           $(document).on('mouseup.volume', game.states.options.volumeup);
           rememberedvol = $.cookie('volume');
           if (rememberedvol) {
@@ -2765,9 +3005,9 @@ var game = (function () {
           this.back = $('<div>').addClass('button').text(game.ui.back).appendTo(this.menu).attr({
             title: game.ui.back
           }).click(game.states.backState);
-          this.opt = $('<span>').appendTo(game.topbar).text('Options').hide().on('click.opt', function () {
+          this.opt = $('<span>').addClass('opt').text('Options').hide().on('click.opt', function () {
             game.states.changeTo('options');
-          });
+          }).appendTo(game.topbar);
         },
         start: function () {
           $('.forklink').show();
@@ -2775,34 +3015,51 @@ var game = (function () {
           game.chat.el.appendTo(this.el);
         },
         mute: function () {
-          var vol = game.unmutedvolume || 1;
+          var vol = game.unmutedvolume || game.mute.gain.value || 0.6;
           if (this.checked) { vol = 0; }
           $.cookie('volume', vol);
           game.mute.gain.value = vol;
           game.states.options.volumecontrol.css('transform', 'scale(' + vol + ')');
         },
         volumedown: function (event) {
+          var target = $(event.target).data('volume');
+          if (!target) { target = $(event.target).parent().data('volume'); }
+          game.audio.volumetarget = target;
           game.states.options.volumechange(event);
-          game.states.options.volumeinput.on('mousemove.volume', game.states.options.volumechange);
+          game.states.options[target + 'input'].on('mousemove.volume', game.states.options.volumechange);
         },
         volumeup: function () {
-          game.states.options.volumeinput.off('mousemove.volume');
+          if (game.audio.volumetarget) {
+            game.states.options[game.audio.volumetarget + 'input'].off('mousemove.volume');
+            game.audio.volumetarget = false;
+          }
         },
         volumechange: function (event) {
           var volume = parseInt((event.clientX - game.states.options.volumecontrol.offset().left) / 4.8, 10) / 10;
           if (volume > 1) { volume = 1; }
           if (volume <= 0) {
             volume = 0;
-            game.states.options.muteinput.prop('checked', true);
-          } else { game.states.options.muteinput.prop('checked', false); }
-          game.states.options.volumecontrol.css('transform', 'scale(' + volume + ')');
-          game.mute.gain.value = volume;
-          game.unmutedvolume = volume;
-          $.cookie('volume', volume);
+            if (game.audio.volumetarget === 'volume') {
+              game.states.options.muteinput.prop('checked', true);
+            }
+          } else if (game.audio.volumetarget === 'volume') {
+            game.states.options.muteinput.prop('checked', false);
+          }
+          console.log(game.audio.volumetarget, game.states.options[game.audio.volumetarget + 'control']);
+          game.states.options[game.audio.volumetarget + 'control'].css('transform', 'scale(' + volume + ')');
+          if (game.audio.volumetarget === 'volume') {
+            game.mute.gain.value = volume;
+            $.cookie('volume', volume);
+            game.unmutedvolume = volume;
+          } else if (game.audio.volumetarget === 'music') {
+            game.audio.track.gain.value = volume;
+          } else if (game.audio.volumetarget === 'sounds') {
+            game.audio.sounds.gain.value = volume;
+          }
         },
         changeResolution: function () {
           var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
-          game.states.el.removeClass('low high').addClass(resolution);
+          game.states.el.removeClass('low high medium default').addClass(resolution);
           $.cookie('resolution', resolution);
         }
       },
@@ -2822,6 +3079,9 @@ var game = (function () {
               pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
               game.states.choose.size = 100;
               $.each(pickDeck.data('cards'), function (id, card) {
+                if (card.data('disable')) {
+                  card.addClass('dead');
+                }
                 card.on('click.select', game.states.choose.select);
                 $.each(game.skills[card.data('hero')], function () {
                   if (this.display) { card.addBuff(card, this); }
@@ -2834,7 +3094,8 @@ var game = (function () {
         start: function () {
           game.loader.addClass('loading');
           game.states.options.opt.show();
-          if (game.mode !== 'tutorial') { game.chat.el.appendTo(this.el); }
+          if (game.mode === 'tutorial') { this.pickedbox.show(); }
+          game.chat.el.appendTo(this.el);
           $('.forklink').hide();
           if ($('.choose .card.selected').length === 0) { this.pickDeck.children().first().click(); }
         },
@@ -2853,27 +3114,29 @@ var game = (function () {
           $('.slot').off('contextmenu.pick', game.states.choose.pick);
         },
         pick: function () {
-          game.audio.play('activate');
           var card,
             slot = $(this).closest('.slot'),
             pick = $('.pickbox .card.selected');
-          if (slot.hasClass('available')) {
-            slot.removeClass('available');
-            if (pick.next().length) {
-              card = pick.next();
-            } else { card = pick.prev(); }
-          } else {
-            card = slot.children('.card');
-            card.on('click.select', game.states.choose.select).insertBefore(pick);
+          if (!pick.data('disable')) {
+            game.audio.play('activate');
+            if (slot.hasClass('available')) {
+              slot.removeClass('available');
+              if (pick.prev().length) {
+                card = pick.prev();
+              } else { card = pick.next(); }
+            } else {
+              card = slot.children('.card');
+              card.on('click.select', game.states.choose.select).insertBefore(pick);
+            }
+            card.addClass('selected');
+            game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+            pick.removeClass('selected').appendTo(slot).off('click.select');
+            game.player.picks[slot.data('slot')] = pick.data('hero');
+            game.player.manaBuild();
+            if (game.mode === 'tutorial') {
+              game.tutorial.pick();
+            } else { game.match.pick(); }
           }
-          card.addClass('selected');
-          game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
-          pick.removeClass('selected').appendTo(slot).off('click.select');
-          game.player.picks[slot.data('slot')] = pick.data('hero');
-          game.player.manaBuild();
-          if (game.mode === 'tutorial') {
-            game.tutorial.pick();
-          } else { game.match.pick(); }
           return false;
         },
         reset: function () {
@@ -2911,8 +3174,9 @@ var game = (function () {
           game.states.options.opt.show();
         },
         buildUnits: function () {
-          $('#A1').addClass('camp');
-          $('#L6').addClass('camp');
+          var j = 'A1';
+          $('#' + j).addClass('jungle').attr({title: 'Jungle'});
+          $('#' + game.map.mirrorPosition(j)).addClass('jungle').attr({title: 'Jungle'});
           game.neutrals = {};
           game.neutrals.unitsDeck = game.deck.build({
             name: 'units',
@@ -2963,7 +3227,6 @@ var game = (function () {
           }.bind({ skill: skill }), 500);
         },
         showResults: function () {
-          game.location();
           game.states.table.selectedArea.hide();
           game.states.table.camera.hide();
           $('.table .deck').hide();
@@ -3004,7 +3267,22 @@ var game = (function () {
           this.turns.hide();
         }
       }
+    },
+    test: function () {
+      game.states.log.input.val('TestBot');
+      setTimeout(function () { game.states.log.button.click(); });
+      setTimeout(function () { game.states.menu.tutorial.click(); }, 1000);
+      setTimeout(function () { $('.pickedbox div:nth-child(1)').contextmenu(); }, 2000);
+      setTimeout(function () { $('.pickedbox div:nth-child(2)').contextmenu(); }, 2100);
+      setTimeout(function () { $('.pickedbox div:nth-child(3)').contextmenu(); }, 2200);
+      setTimeout(function () { $('.pickedbox div:nth-child(4)').contextmenu(); }, 2300);
+      setTimeout(function () { $('.pickedbox div:nth-child(5)').contextmenu(); }, 2400);
+      setTimeout(function () { game.tutorial.axe.css({opacity: 0}); }, 2500);
+      setTimeout(function () { game.match.buildSkills('single'); }, 3000);
+      setTimeout(function () { $('.pud-hook.skills').appendTo('.player.hand'); }, 4000);
+      setTimeout(function () { $('.map .hero.pud.player').place('H5'); game.status = 'turn';  }, 5000);
     }
   };
 }());
-game.start();
+
+$(game.start);

@@ -1,105 +1,43 @@
 /*FONTS*/
-@font-face {
-  font-family: 'Pathway Gothic One';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Pathway Gothic One'), local('PathwayGothicOne-Regular'), url(http://fonts.gstatic.com/s/pathwaygothicone/v4/Lqv9ztoTUV8Q0FmQZzPqaL4J1CEROx9mnpUAGKYKzuk.woff2) format('woff2');
-}
-.logo h1 {
-  color: white;
-  text-align: center;
-  font-family: 'Pathway Gothic One';
-  font-size: 210px;
-  line-height: 200px;
-  margin: 0;
-  position: relative;
-  top: 0px;
-}
-.logo.slide h1 {
-  animation: logoslideup 3s 1 linear;
-}
-@keyframes logoslideup {
-  0% {top: 60px}
-  100% {top: 0px}
-}
-.logo h2 {
-  color: white;
-  text-align: center;
-  font-size: 50px;
-  line-height: 80px;
-  padding-left: -5px;
-  margin: 5px;
-  position: relative;
-}
-.logo h2 {
-  animation: slideright 6s infinite;
-}
-@keyframes slideright {
-  0% {right: -3000px}
-  5%, 95% {right: 0}
-  100% {right: 3000px}
-}
-@font-face {
-  font-family: 'Montserrat';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Montserrat-Regular'), url(http://fonts.gstatic.com/s/montserrat/v6/zhcz-_WihjSQC0oHJ9TCYPk_vArhqVIZ0nv9q090hN8.woff2) format('woff2');
-}
-.logo h2 i {
-  font-family: 'Montserrat';
-  background: rgb(255,53,76);
-  display: inline-block;
-  margin: 15px;
-  padding: 0 8px;
-  font-style: normal;
-  transform: scaleX(0.95);
-}
-.logo h2 i:last-child:after {
-  content: "";
-  width: 6px;
-  height: 100%;
-  display: block;
-  background: rgb(255,53,76);
-  position: absolute;
-  top: 0;
-  right: -12px;
-}
+
+/*Open San*/
 @font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(fonts/open-latin.woff2) format('woff2');
+  src: local('Open Sans'), local('OpenSans'), url(fonts/Open-Sans.woff2) format('woff2'), url(fonts/Open-Sans.woff) format('woff');
 }
 body, p, noscript, .card h1 {
   font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
+/*Julius Sans One*/
 @font-face {
   font-family: 'Julius Sans One';
   font-style: normal;
   font-weight: 400;
-  src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(fonts/julius-latin.woff2) format('woff2');
+  src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(fonts/Julius-Sans-One.woff2) format('woff2'), url(fonts/Julius-Sans-One.woff) format('woff');
 }
 h1, h2, .button {
   font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
+/*Sansita One*/
 @font-face {
   font-family: 'Sansita One';
   font-style: normal;
   font-weight: 400;
-  src: local('Sansita One'), local('SansitaOne'), url('fonts/sansita-latin.woff2') format('woff2');
+  src: local('Sansita One'), local('SansitaOne'), url('fonts/Sansita-One.woff2') format('woff2'), url('fonts/Sansita-One.woff') format('woff');
 }
 .tutorial .battle,
 .card .damaged,
 .card .heal {
   font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 }
-.slot.available:after {
-  font-family: "FontAwesome"
-}
+
 input[type="text"] {
   font-family: monospace;
 }
 
+/*TAGS*/
 html, body {
   user-select: none;
   margin: 0;
@@ -209,24 +147,42 @@ noscript {
   z-index: 10;
 }
 
-.welcome .message {
+.logo .h1 {
+  position: relative;
+  top: 0px;
+}
+.logo.slide .h1 {
+  animation: logoslideup 1s 1 linear;
+}
+@keyframes logoslideup {
+  0% {top: 60px}
+  100% {top: 0px}
+}
+.logo .h2 {
+  margin: 16px;
+  position: relative;
+}
+.logo .h2 {
+  animation: slideright 6s infinite;
+}
+@keyframes slideright {
+  0% {right: -3000px}
+  5%, 95% {right: 0}
+  100% {right: 3000px}
+}
+
+.loadtext .message {
   margin-left: 8px;
 }
 
-.welcome .message,
-.welcome .progress {
+.loadtext .message,
+.loadtext .progress {
   position: relative;
   bottom: 6px;
 }
 
 /*STATES*/
 
-.states.low {
-  transform: scale(0.6);
-}
-.states.high {
-  transform: scale(1.25);
-}
 .states > div {
   width: 100%; height: 100%;
   position: relative;
@@ -254,7 +210,8 @@ noscript {
 
 .topbar p {
   display: inline-block;
-  margin: 4px;
+  margin: 6px;
+  vertical-align: top;
 }
 
 .choose .topbar,
@@ -290,7 +247,6 @@ noscript {
 }
 
 .topbar .message {
-  margin-left: 25px;
   border-radius: 4px;
 }
 
@@ -315,7 +271,7 @@ noscript {
 
 .turns {
   position: absolute;
-  top: 0; right: 30px;
+  top: 0; right: 72px;
   border-radius: 4px;
 }
 
@@ -324,7 +280,7 @@ noscript {
   height: 20px;
   position: absolute;
   top: 0; right: 0;
-  margin: 7px;
+  margin: 4px;
   color: white;
 }
 
@@ -365,6 +321,7 @@ input:focus {
   position: relative;
   top: -3px;
   transition: all 0.2s;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
 }
 .button:hover {
   background: lightgray;
@@ -440,17 +397,29 @@ label span {
   height: 26px;
 }
 
+.states .chat-icon {
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  display: none;
+  font-size: 11px;
+}
+
 .options .chat,
 .choose .chat,
 .table .chat {
   padding-right: 12px;
-  left: -419px;
+  top: 560px;
+  left: -410px;
   height: 20px;
   background: rgba(0,0,0,0.4);
 }
-.options .chat:hover,
-.choose .chat:hover,
-.table .chat:hover {
+.options .chat:hover, .options .chat.hover,
+.choose .chat:hover, .choose .chat.hover,
+.table .chat:hover, .table .chat.hover {
+  top: 90px;
   left: 0px;
   height: 494px;
   background: rgba(240,250,255,0.5);
@@ -461,29 +430,20 @@ label span {
 .table .chat > * {
   display: none
 }
-.options .chat:hover > *,
-.choose .chat:hover > *,
-.table .chat:hover > * {
+.options .chat:hover > *, .options .chat.hover > *,
+.choose .chat:hover > *, .choose .chat.hover > *,
+.table .chat:hover > *, .table .chat.hover > * {
   display: block;
 }
-.options .chat:hover .chat-icon,
-.choose .chat:hover .chat-icon,
-.table .chat:hover .chat-icon {
+.options .chat:hover .chat-icon, .options .chat.hover .chat-icon,
+.choose .chat:hover .chat-icon, .choose .chat.hover .chat-icon,
+.table .chat:hover .chat-icon, .table .chat.hover .chat-icon {
   display: none;
 }
 .options .chat .chat-icon,
 .choose .chat .chat-icon,
 .table .chat .chat-icon {
   display: inline-block;
-}
-.states .chat-icon {
-  color: white;
-  position: absolute;
-  top: 0;
-  right: 0;
-  margin: 10px;
-  display: none;
-  font-size: 10px;
 }
 
 .chat .messages {
@@ -517,6 +477,7 @@ label span {
   height: 22px;
   position: absolute;
   bottom: 6px;
+  box-shadow: inset 0 0 3px gray;
 }
 
 .chat .button {
@@ -549,6 +510,20 @@ label span {
   vertical-align: top;
 }
 
+.states.low {
+  transform: scale(0.8);
+}
+.states.high {
+  transform: scale(1.7);
+}
+.states.medium {
+  transform: scale(1.2);
+}
+
+.options label {
+  position: relative;
+}
+
 .volume {
   cursor: pointer;
   position: relative;
@@ -557,7 +532,9 @@ label span {
   border-top: 20px solid transparent;
   border-right: 50px solid rgba(255,255,255,0.2);
   display: inline-block;
-  margin: 5px 10px;
+  position: absolute;
+  right: 80px;
+  bottom: 11px;
 }
 
 .volumecontrol {
@@ -568,7 +545,7 @@ label span {
   border-top: 20px solid transparent;
   border-right: 50px solid rgba(255,255,255,0.8);
   transform-origin: 0 100%;
-  transform: scale(1);
+  transform: scale(0.6);
 }
 
 /*CHOOSE*/
@@ -638,6 +615,7 @@ label span {
   height: 150px;
   margin: 4px;
   box-shadow: inset 0 0 40px rgba(255,255,255,0.1);
+  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
 }
 
 .slot.available {
@@ -648,13 +626,18 @@ label span {
   50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
 }
 .slot.available:after {
-  content: "▼";
-  font-size: 26px;
+  content: "";
   position: relative;
+  left: 40px;
+  width: 24px;
+  height: 40px;
+  display: block;
+  background-image: url('../img/rightclick.png');
+  background-size: cover;
   animation: arrowdown 1s infinite;
 }
 @keyframes arrowdown {
-  0%, 100% {top: 40px;}
+  0%, 100% {top: 50px;}
   50% {top: 60px;}
 }
 .slot:hover {
@@ -683,6 +666,7 @@ label span {
 .pickedbox .card .portrait .img,
 .pickedbox .card .portrait .overlay {
   height: 265px;
+  background-size: cover;
 }
 
 .prepickbox {
@@ -741,9 +725,14 @@ label span {
 .card .img {
   display: block;
   border-radius: 3px;
-  background-size: cover;
+  background-size: 100%;
   background-position: 50% 50%;
+  transition: background-size 0.5s;
 }
+.card:hover .img {
+  background-size: 120%;
+}
+
 .card .overlay {
   box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
   border-radius: 3px;
@@ -845,9 +834,6 @@ label span {
 }
 .card.tree.selected {
   box-shadow: 0 0 0 10px palegreen;
-}
-.card.heroes.dead.selected {
-  box-shadow: 0 0 0 6px gray;
 }
 .card.enemy.attacktarget {
   box-shadow: 0 0 0 10px red;
@@ -962,19 +948,21 @@ label span {
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
 }
-
+.table .deck .card.selected:hover .img {
+  background-size: 100%;
+}
 .table .player.heroes.deck {
   width: 160px;
   left: 10px;
 }
-.table .player.skills.toggle.deck {
+.table .player.skills.sidehand.deck {
   left: 175px;
   width: 160px;
 }
-.table .player.skills.toggle.deck .card {
+.table .player.skills.sidehand.deck .card {
   margin-right: -140px;
 }
-.table .player.skills.toggle.deck .card.on {
+.table .player.skills.sidehand.deck .card.on {
   transform: translate(-50%, -50%) scale(0.4) rotate(15deg);
 }
 .table .player.skills.hand {
@@ -1039,7 +1027,7 @@ label span {
 }
 .table .selectedarea .cardback {
   background: #111;
-  background-image: url(../img/cardback.png);
+  background-image: url(../img/cardback.jpg);
   background-size: 101% 101%;
   background-position: 50%;
   position: absolute;
@@ -1100,20 +1088,20 @@ label span {
   display: block;
   position: absolute;
   top: 0; left: 0;
-  width: 740px; height: 456px;
+  width: 740px; height: 450px;
   box-shadow: inset 0 0 20px 5px black;
   pointer-events: none;
 }
 
 .map {
   z-index: 1;
-  background-size: 80% 70%;
-  background-position: 340px 300px;
+  background-size: 105%;
+  background-position: 50% 50%;
   background-image: url("../img/bkg/map_vectorized.jpg");
-  transform: rotateX(40deg) translate(-40%, -58%) scale3d(0.5,0.5,0.5);
+  transform: rotateX(40deg) translate(-40%, -60%) scale3d(0.6,0.6,0.6);
   transform-style: preserve-3d;
   padding: 1000px;
-  width: 2544px; height: 1870px;
+/*  width: 2544px; height: 2500px;*/
 }
 
 .map .row {
@@ -1145,10 +1133,6 @@ label span {
   transform: translate3d(-50%, -50%, 100px) rotateX(-40deg);
 }
 
-.table.unturn .map .player.card {
-  opacity: 0.7;
-}
-
 .map .spot.playerarea {
   background: rgba(100,255,100,0.2);
 }
@@ -1163,15 +1147,33 @@ label span {
   background: rgba(255,100,100,0.3);
 }
 
-.map .spot.camp {
+.map .spot.fountain.player {
+  background: rgba(150,255,150,0.3);
+}
+.map .spot.fountain.player:hover {
+  background: rgba(150,255,150,0.35);
+}
+.map .spot.fountain.enemy {
+  background: rgba(255,150,150,0.3);
+}
+.map .spot.fountain.enemy:hover {
+  background: rgba(255,150,150,0.35);
+}
+
+.map .spot.jungle {
   background: rgba(255,255,100,0.15);
 }
-.map .spot.camp:hover {
+.map .spot.jungle:hover {
   background: rgba(255,255,100,0.25);
 }
 
 .map .spot.movearea {
   cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
+}
+
+.map .card legend {
+  opacity: 0;
+  height: 12px;
 }
 
 .map .card h1,
@@ -1185,6 +1187,7 @@ label span {
 .map .card .portrait .img,
 .map .card .portrait .overlay {
   height: 265px;
+  background-size: cover;
 }
 .map .card .current {
   top: 35px;
@@ -1200,6 +1203,13 @@ label span {
   background: #ed8c8c;
   color: white;
 }
+
+.map canvas.fx {
+  pointer-events: none;
+  position: absolute;
+  top: -1000px; left: -1000px;
+}
+
 /*TARGETS*/
 
 .movearea:after,
@@ -1526,19 +1536,19 @@ label span {
   box-shadow: 0 0 15px 115px #62a64e;
 }
 .pud.heroes .portrait .img {
-  background-image: url("../img/heroes/pudge_full.png");
+  background-image: url("../img/heroes/pudge_full.jpg");
 }
 .pud-hook .img {
-  background-image: url("../img/skills/pudge_meat_hook.png");
+  background-image: url("../img/skills/pudge_meat_hook.jpg");
 }
 .pud-rot .img {
-  background-image: url("../img/skills/pudge_rot.png");
+  background-image: url("../img/skills/pudge_rot.jpg");
 }
 .pud-passive .img {
-  background-image: url("../img/skills/pudge_flesh_heap.png");
+  background-image: url("../img/skills/pudge_flesh_heap.jpg");
 }
 .pud-ult .img {
-  background-image: url("../img/skills/pudge_dismember.png");
+  background-image: url("../img/skills/pudge_dismember.jpg");
 }
 
 
@@ -1546,19 +1556,19 @@ label span {
   background: #145;
 }
 .nyx.heroes .portrait .img {
-  background-image: url("../img/heroes/nyx_assassin_full.png");
+  background-image: url("../img/heroes/nyx_assassin_full.jpg");
 }
 .nyx-stun .img {
-  background-image: url("../img/skills/nyx_assassin_impale.png");
+  background-image: url("../img/skills/nyx_assassin_impale.jpg");
 }
 .nyx-burn .img {
-  background-image: url("../img/skills/nyx_assassin_mana_burn.png");
+  background-image: url("../img/skills/nyx_assassin_mana_burn.jpg");
 }
 .nyx-spike .img {
-  background-image: url("../img/skills/nyx_assassin_spiked_carapace.png");
+  background-image: url("../img/skills/nyx_assassin_spiked_carapace.jpg");
 }
 .nyx-ult .img {
-  background-image: url("../img/skills/nyx_assassin_vendetta.png");
+  background-image: url("../img/skills/nyx_assassin_vendetta.jpg");
 }
 
 
@@ -1566,19 +1576,19 @@ label span {
   background: #674f80;
 }
 .am.heroes .portrait .img {
-  background-image: url("../img/heroes/antimage_full.png");
+  background-image: url("../img/heroes/antimage_full.jpg");
 }
 .am-burn .img {
-  background-image: url("../img/skills/antimage_mana_break.png");
+  background-image: url("../img/skills/antimage_mana_break.jpg");
 }
 .am-blink .img {
-  background-image: url("../img/skills/antimage_blink.png");
+  background-image: url("../img/skills/antimage_blink.jpg");
 }
 .am-passive .img {
-  background-image: url("../img/skills/antimage_spell_shield.png");
+  background-image: url("../img/skills/antimage_spell_shield.jpg");
 }
 .am-ult .img {
-  background-image: url("../img/skills/antimage_mana_void.png");
+  background-image: url("../img/skills/antimage_mana_void.jpg");
 }
 
 
@@ -1587,33 +1597,33 @@ label span {
 }
 .ld.heroes .portrait .img,
 .ld-transform .img {
-  background-image: url("../img/heroes/lone_druid_full.png");
+  background-image: url("../img/heroes/lone_druid_full.jpg");
 }
 .ld.transformed.heroes .portrait .img,
 .ld-ult .img {
-  background-image: url("../img/heroes/lone_druid_transf.png");
+  background-image: url("../img/heroes/lone_druid_transf.jpg");
 }
 .ld-summon .img,
 .spiritbear .img {
-  background-image: url("../img/skills/lone_druid_spirit_bear.png");
+  background-image: url("../img/skills/lone_druid_spirit_bear.jpg");
 }
 .ld-return .img {
-  background-image: url("../img/skills/lone_druid_return.png");
+  background-image: url("../img/skills/lone_druid_return.jpg");
 }
 .ld-rabid .img {
-  background-image: url("../img/skills/lone_druid_rabid.png");
+  background-image: url("../img/skills/lone_druid_rabid.jpg");
 }
 .ld-passive .img {
-  background-image: url("../img/skills/lone_druid_synergy.png");
+  background-image: url("../img/skills/lone_druid_synergy.jpg");
 }
 .ld-cry .img {
-  background-image: url("../img/skills/lone_druid_battle_cry.png");
+  background-image: url("../img/skills/lone_druid_battle_cry.jpg");
 }
 .ld-entangle .img {
-  background-image: url("../img/skills/lone_druid_entangle.png");
+  background-image: url("../img/skills/lone_druid_entangle.jpg");
 }
 .ld-demolish .img {
-  background-image: url("../img/skills/lone_druid_demolish.png");
+  background-image: url("../img/skills/lone_druid_demolish.jpg");
 }
 
 
@@ -1621,20 +1631,20 @@ label span {
   background: #6db090;
 }
 .wk.heroes .portrait .img {
-  background-image: url("../img/heroes/skeleton_king_full.png");
+  background-image: url("../img/heroes/skeleton_king_full.jpg");
 }
 .wk-stun .img,
 .wk-dot .img {
-  background-image: url("../img/skills/skeleton_king_hellfire_blast.png");
+  background-image: url("../img/skills/skeleton_king_hellfire_blast.jpg");
 }
 .wk-lifesteal .img {
-  background-image: url("../img/skills/skeleton_king_vampiric_aura.png");
+  background-image: url("../img/skills/skeleton_king_vampiric_aura.jpg");
 }
 .wk-crit .img {
-  background-image: url("../img/skills/skeleton_king_mortal_strike.png");
+  background-image: url("../img/skills/skeleton_king_mortal_strike.jpg");
 }
 .wk-ult .img {
-  background-image: url("../img/skills/skeleton_king_reincarnation.png");
+  background-image: url("../img/skills/skeleton_king_reincarnation.jpg");
 }
 
 
@@ -1642,31 +1652,28 @@ label span {
   background: #E5BC53;
 }
 .kotl.heroes .portrait .img {
-  background-image: url("../img/heroes/keeper_of_the_light_full.png");
+  background-image: url("../img/heroes/keeper_of_the_light_full.jpg");
 }
 .kotl-illuminate .img {
-  background-image: url("../img/skills/keeper_of_the_light_illuminate.png");
-}
-.kotl-illuminate-end .img {
-  background-image: url("../img/skills/keeper_of_the_light_illuminate_end.png");
+  background-image: url("../img/skills/keeper_of_the_light_illuminate.jpg");
 }
 .kotl-leak .img {
-  background-image: url("../img/skills/keeper_of_the_light_mana_leak.png");
+  background-image: url("../img/skills/keeper_of_the_light_mana_leak.jpg");
 }
 .kotl-mana .img {
-  background-image: url("../img/skills/keeper_of_the_light_chakra_magic.png");
+  background-image: url("../img/skills/keeper_of_the_light_chakra_magic.jpg");
 }
 .kotl-ult .img {
-  background-image: url("../img/skills/keeper_of_the_light_spirit_form.png");
+  background-image: url("../img/skills/keeper_of_the_light_spirit_form.jpg");
 }
 .kotl-illuminate-ult .img {
-  background-image: url("../img/skills/keeper_of_the_light_spirit_form_illuminate.png");
+  background-image: url("../img/skills/keeper_of_the_light_spirit_form_illuminate.jpg");
 }
 .kotl-blind .img {
-  background-image: url("../img/skills/keeper_of_the_light_blinding_light.png");
+  background-image: url("../img/skills/keeper_of_the_light_blinding_light.jpg");
 }
 .kotl-recall .img {
-  background-image: url("../img/skills/keeper_of_the_light_recall.png");
+  background-image: url("../img/skills/keeper_of_the_light_recall.jpg");
 }
 
 
@@ -1674,29 +1681,29 @@ label span {
   background: #54a0e3;
 }
 .cm.heroes .portrait .img {
-  background-image: url("../img/heroes/crystal_maiden_full.png");
+  background-image: url("../img/heroes/crystal_maiden_full.jpg");
 }
 .cm-slow .img {
-  background-image: url("../img/skills/crystal_maiden_crystal_nova.png");
+  background-image: url("../img/skills/crystal_maiden_crystal_nova.jpg");
 }
 .cm-aura .img {
-  background-image: url("../img/skills/crystal_maiden_brilliance_aura.png");
+  background-image: url("../img/skills/crystal_maiden_brilliance_aura.jpg");
 }
 .cm-freeze .img {
-  background-image: url("../img/skills/crystal_maiden_frostbite.png");
+  background-image: url("../img/skills/crystal_maiden_frostbite.jpg");
 }
 .cm-ult .img {
-  background-image: url("../img/skills/crystal_maiden_freezing_field.png");
+  background-image: url("../img/skills/crystal_maiden_freezing_field.jpg");
 }
 
 
 /*TOWERS*/
 
 .card.player.towers .img {
-  background-image: url("../img/towers/tower-player.vec.png");
+  background-image: url("../img/towers/tower-player.jpg");
 }
 .card.enemy.towers .img {
-  background-image: url("../img/towers/tower-enemy.vec.png");
+  background-image: url("../img/towers/tower-enemy.jpg");
 }
 
 /*UNITS*/
@@ -1706,23 +1713,23 @@ label span {
 }
 
 .tree .img {
-  background-image: url("../img/units/tree.png");
+  background-image: url("../img/units/tree.jpg");
 }
 
 /*BUFFS*/
 
 .stun .img {
-   background-image: url("../img/skills/stun.png");
+   background-image: url("../img/skills/stun.jpg");
 }
+/*
 .silence .img {
    background-image: url("../img/skills/silence.jpg");
 }
 .magicimmune .img {
-   background-image: url("../img/skills/magicimmune.gif");
+   background-image: url("../img/skills/magicimmune.jpg");
 }
-/*
 .ethereal .img {
-   background-image: url("../img/skills/ethereal.png")
+   background-image: url("../img/skills/ethereal.jpg")
 }
 */
 
@@ -1730,7 +1737,7 @@ label span {
 
 .tutorial.axe {
   z-index: 10;
-  width: 375px;
+  width: 340px;
   height: 250px;
   position: absolute;
   right: -25px;
@@ -1817,18 +1824,30 @@ label span {
   box-shadow: 0 0 0 10px gold;
   animation: tutorialblink 1s infinite;
 }
+
 @keyframes tutorialblink {
   0%, 100% {box-shadow: 0 0 1px 1px gold;}
   50% {box-shadow: 0 0 10px 10px gold;}
 }
 
+.map .tutorialblink {
+  box-shadow: 0 0 0 25px gold;
+  animation: maptutorialblink 1s infinite;
+}
+
+@keyframes maptutorialblink {
+  0%, 100% {box-shadow: 0 0 1px 1px gold;}
+  50% {box-shadow: 0 0 10px 25px gold;}
+}
+
 .markdown {
   max-width: 800px;
   min-width: 240px;
-  margin: 20px auto;
+  margin: 0 auto;
   padding: 10px;
-  background: #f7f7ff;
+  background: #d7d7ef;
   color: rgb(51, 51, 51);
+  transform: translateY(20px);
 }
 
 .markdown h1,
