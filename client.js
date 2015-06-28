@@ -178,6 +178,7 @@ var game = (function () {
             game.states.changeTo('log', true);
             game.load.images.preload();
             if (window.AudioContext) { game.load.sounds(); }
+            game.load.end();
           }
         }
       },
@@ -963,23 +964,23 @@ var game = (function () {
       },
       heal: function (healhp) {
         healhp = Math.ceil(healhp);
-        var target = this, healFx, currentHeal,
-          currenthp = target.data('current hp'),
+        var healFx, currentHeal,
+          currenthp = this.data('current hp'),
           maxhp = this.data('hp'),
           hp = currenthp + healhp;
         if (hp > maxhp) {
           healhp = maxhp - currenthp;
-          target.changehp(maxhp);
+          this.changehp(maxhp);
         } else {
-          target.changehp(hp);
+          this.changehp(hp);
         }
         if (healhp > 0) {
-          healFx = target.find('.heal');
+          healFx = this.find('.heal');
           if (healFx.length) {
             currentHeal = parseInt(healFx.text(), 10);
             healFx.text(currentHeal + healhp);
           } else {
-            healFx = $('<span>').addClass('heal').text(healhp).appendTo(target);
+            healFx = $('<span>').addClass('heal').text(healhp).appendTo(this);
           }
         }
         return this;
@@ -2141,6 +2142,11 @@ var game = (function () {
         game.map.unhighlight();
         $('.card .damaged').remove();
         $('.card .heal').remove();
+        $('.spot.fountain').find('.card').each(function () {
+          var card = $(this);
+          var heal  = card.data('hp') * 0.1;
+          card.heal(heal);
+        });
         $('.card.heroes').each(function () {
           var hero = $(this);
           if (hero.data('channeling')) { hero.trigger('channel', { source: hero }); }
@@ -2707,7 +2713,7 @@ var game = (function () {
         }
       },
       unhighlight: function () {
-        $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.passive contextmenu.toggle mouseenter mouseleave').removeClass('attacktarget casttarget targetarea');
+        $('.map .card').off('contextmenu.attack contextmenu.cast contextmenu.passive contextmenu.toggle mouseenter mouseleave').removeClass('attacktarget source casttarget targetarea');
         $('.map .spot').off('contextmenu.movearea contextmenu.castarea mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
       }
     },
@@ -3280,7 +3286,7 @@ var game = (function () {
       setTimeout(function () { game.tutorial.axe.css({opacity: 0}); }, 2500);
       setTimeout(function () { game.match.buildSkills('single'); }, 3000);
       setTimeout(function () { $('.pud-hook.skills').appendTo('.player.hand'); }, 4000);
-      setTimeout(function () { $('.map .hero.pud.player').place('H5'); game.status = 'turn';  }, 5000);
+      setTimeout(function () { $('.map .hero.pud.player').place('A8'); game.status = 'turn';  }, 5000);
     }
   };
 }());

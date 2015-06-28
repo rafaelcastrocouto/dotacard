@@ -653,10 +653,6 @@ label span {
   0% {top: 0;}
   100% {top: 50%;}
 }
-.pickedbox .card:hover {
-  top: 45%;
-  transform: translate(-50%, -50%) scale(0.45);
-}
 .pickedbox .card h1,
 .pickedbox .card .current,
 .pickedbox .card .desc,
@@ -666,7 +662,10 @@ label span {
 .pickedbox .card .portrait .img,
 .pickedbox .card .portrait .overlay {
   height: 265px;
-  background-size: cover;
+  background-size: 225%;
+}
+.pickedbox .card:hover .portrait .img {
+  background-size: 260%;
 }
 
 .prepickbox {
@@ -729,7 +728,7 @@ label span {
   background-position: 50% 50%;
   transition: background-size 0.5s;
 }
-.card:hover .img {
+.card:hover .portrait .img {
   background-size: 120%;
 }
 
@@ -948,9 +947,6 @@ label span {
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
 }
-.table .deck .card.selected:hover .img {
-  background-size: 100%;
-}
 .table .player.heroes.deck {
   width: 160px;
   left: 10px;
@@ -1024,6 +1020,9 @@ label span {
   top: 50%; left: 50%;
   transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
   backface-visibility: hidden;
+}
+.table .selectedarea .card:hover .img {
+  background-size: 100%;
 }
 .table .selectedarea .cardback {
   background: #111;
@@ -1127,7 +1126,7 @@ label span {
   top: 50%; left: 50%;
   transform: translate3d(-50%, -50%, 0);
 }
-.map .card:hover,
+
 .map .card.selected,
 .map .card.source {
   transform: translate3d(-50%, -50%, 100px) rotateX(-40deg);
@@ -1187,7 +1186,10 @@ label span {
 .map .card .portrait .img,
 .map .card .portrait .overlay {
   height: 265px;
-  background-size: cover;
+  background-size: 225%;
+}
+.map .card:hover .portrait .img {
+  background-size: 260%;
 }
 .map .card .current {
   top: 35px;
