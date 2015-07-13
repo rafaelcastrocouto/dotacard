@@ -39,7 +39,6 @@ var Skills = {
   pud: {
     hook: {
       cast: function (skill, source, target) {
-        console.log('hook', skill, source, target);
         var cw = game.map.getX(source.parent()),
           ch = game.map.getY(source.parent()),
           w = game.map.getX(target),
@@ -47,7 +46,9 @@ var Skills = {
           range = skill.data('aoe range'),
           x = 0, y = 0,
           hooked,
-          r;
+          r,
+          dx,
+          dy;
         if (ch - h > 0) { y = -1; }
         if (ch - h < 0) { y = 1; }
         if (cw - w > 0) { x = -1; }
@@ -63,14 +64,34 @@ var Skills = {
             }
           }
         }
-        if(hooked.hasClasses('hero unit')) {
+        if(hooked && hooked.hasClasses('hero unit')) {
           source.damage(skill.data('damage'), hooked, skill.data('damage type'));
-          hooked.css({top: 'calc(50% + ' + (-110 * y) + 'px)', left: 'calc(50% + ' + (-110 * x) + 'px'});
+          w = game.map.getX(hooked.parent());
+          h = game.map.getY(hooked.parent());
+          dx = -212 * x * (Math.abs(cw - w) - 1);
+          dy = -313 * y * (Math.abs(ch - h) - 1);
+          if (!source.data('hook fx')) { Skills.pud.hook.fx(source, dx, dy); }
           setTimeout(function () {
-            this.hooked.place(this.target).css({top: '50%', left: '50%'});
+            if (x) {
+              hooked.css({left: 'calc(50% + ' + dx + 'px)'});
+            } else if (y) {
+              hooked.css({top: 'calc(50% + ' + dy + 'px)'});
+            }
+          }.bind({hooked: hooked, dx: dx, dy: dy, x: x, y: y}), 600);
+          setTimeout(function () {
+            this.hooked.place(this.target).css({
+              transition: 'all 0.4s',
+              top: '50%',
+              left: '50%'
+            });
             this.source.select();
-          }.bind({source: source, hooked: hooked, target: target}), 400);
+          }.bind({source: source, hooked: hooked, target: target}), 1200);
         }
+      },
+      fx: function (card, x, y) {
+        var fx = game.fx.build(card, 'hook fx');
+        game.fx.image(fx);
+        fx.create('hook.png', 1200, 1000, x, y);
       }
     },
     rot: {
@@ -131,8 +152,9 @@ var Skills = {
         }
       },
       fx: function (card) {
-        var fx = game.fx.particles(card.data('fx'));
-        fx.create(200, {
+        var fx = game.fx.build(card, 'rot fx');
+        game.fx.particles(fx);
+        fx.create(100, {
           radius: function () { return 10 + Math.random() * 30; },
           speed: function () { return 4 + Math.random() * 2; },
           x: function () { return 1100; },
@@ -140,7 +162,6 @@ var Skills = {
           color: function () { return 'yellowgreen'; },
           dir: function () { return Math.random() * Math.PI * 2; }
         });
-        card.data('rot fx', fx);
       }
     },
     passive: {

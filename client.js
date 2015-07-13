@@ -132,7 +132,7 @@ var game = (function () {
       totalLoad: 0,
       images: {
         array: [
-          'tutorial/axe.jpg',
+          'tutorial/axe.png',
           'bkg/polygon-dark.jpg',
           'heroes/crystal_maiden_full.jpg',
           'heroes/keeper_of_the_light_full.jpg',
@@ -141,12 +141,14 @@ var game = (function () {
           'heroes/antimage_full.jpg',
           'heroes/nyx_assassin_full.jpg',
           'heroes/pudge_full.jpg',
+          'fx/hook.png',
           'bkg/map_vectorized.jpg',
           'cardback.jpg'
         ],
         preload: function () {
+          var pre = $('<div>').hide().appendTo(document.body);
           $(game.load.images.array).each(function () {
-            $('<img/>').attr('src', 'img/' + this);
+            $('<img/>').attr('src', 'img/' + this).appendTo(pre);
           });
         }
       },
@@ -465,6 +467,9 @@ var game = (function () {
           target = $('#' + target);
         }
         this.closest('spot.block').removeClass('block').addClass('free');
+        this.parent().find('.fx').each(function () {
+          $(this).appendTo(target);
+        });
         this.appendTo(target.removeClass('free').addClass('block'));
         if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
         return this;
@@ -472,19 +477,20 @@ var game = (function () {
       select: function (event) {
         var card = $(this);
         if (!game.selectedCard || card[0] !== game.selectedCard[0]) {
-          $('.card.selected').removeClass('selected');
-          $('.card.source').removeClass('source');
           game.card.unselect();
           game.selectedCard = card;
           game.map.highlight();
           card.clone().appendTo(game.states.table.selectedArea).addClass('zoom');
           card.addClass('selected');
+          game.states.table.selectedArea.trigger('select');
           setTimeout(function () {
             game.states.table.selectedArea.addClass('flip');
           });
           if (event && event.stopPropagation) {
             event.stopPropagation();
           }
+        } else if (card[0] === game.selectedCard[0]) {
+          game.card.unselect();
         }
         return card;
       },
@@ -676,10 +682,10 @@ var game = (function () {
             target: to
           });
           setTimeout(function () {
-            $(this.card).css({ transform: '' }).appendTo(this.destiny);
-            if (this.card.data('fx') && this.card.data('fx').canvas) {
-              this.card.data('fx').canvas.appendTo(this.destiny);
-            }
+            this.card.parent().find('.fx').each(function () {
+              $(this).appendTo(this.destiny);
+            });
+            $(this.card).css({ transform: '' }).prependTo(this.destiny);
             $('.map .spot').data('detour', false);
             game.map.highlight();
           }.bind({
@@ -1084,7 +1090,6 @@ var game = (function () {
               name
             ].join(' ');
             card = game.card.build(herodata).appendTo(deck);
-            game.fx.build(card);
             cards.push(card);
           }
         });
@@ -1366,8 +1371,10 @@ var game = (function () {
           hp: 80
         });
         if (game.mode === 'tutorial') {
-          tower.on('click.select', game.tutorial.select).place(pos);
-        } else { tower.on('click.select', game.card.select); }
+          tower.on('click.select', game.tutorial.select);
+        } else {
+          tower.on('click.select', game.card.select);
+        }
         tower.place(pos);
         game.map.around(pos, game.map.getRange(game.ui.ranged), function (spot) {
           spot.addClass(side + 'area');
@@ -1409,7 +1416,12 @@ var game = (function () {
           name: game.ui.tree,
           attribute: game.ui.forest
         });
-        tree.on('click.select', game.card.select).place(spot);
+        if (game.mode === 'tutorial') {
+          tree.on('click.select', game.tutorial.select);
+        } else {
+          tree.on('click.select', game.card.select);
+        }
+        tree.place(spot);
         return tree;
       },
       place: function () {
@@ -1551,10 +1563,10 @@ var game = (function () {
         game.tutorial.axebaloon.fadeIn('slow');
         game.tutorial.message.html(game.ui.axeselectenemy);
         game.message.text(game.ui.yourturncount + ' 5');
-        $('.map .enemy.tower').addClass('tutorialblink').on('click.select', game.tutorial.select);
+        $('.map .enemy.tower').addClass('tutorialblink').on('click.tutorialselect', game.card.select);
       },
       select: function () {
-        var card = $(this).removeClass('tutorialblink').select();
+        var card = $(this).removeClass('tutorialblink');
         if (game.tutorial.lessonSelectEnemy) {
           if (card.hasAllClasses('tower enemy')) {
             $('.map .enemy.tower').removeClass('tutorialblink');
@@ -1584,6 +1596,8 @@ var game = (function () {
         game.message.text(game.ui.yourturncount + ' 4');
         game.states.table.selectedArea.addClass('tutorialblink');
         game.states.table.selectedArea.on('mouseover.tutorial', '.card', game.tutorial.over);
+        $('.map .enemy.tower').off('click.tutorialselect');
+        $('.map .card').on('click.select', game.card.select);
       },
       over: function () {
         if (game.tutorial.lessonZoom) {
@@ -2143,8 +2157,8 @@ var game = (function () {
         $('.card .damaged').remove();
         $('.card .heal').remove();
         $('.spot.fountain').find('.card').each(function () {
-          var card = $(this);
-          var heal  = card.data('hp') * 0.1;
+          var card = $(this),
+            heal  = card.data('hp') * 0.1;
           card.heal(heal);
         });
         $('.card.heroes').each(function () {
@@ -2720,79 +2734,137 @@ var game = (function () {
     fx: {
       width: 2200,
       height: 2300,
-      build: function (card) {
-        var canvas = $('<canvas>').addClass('fx'), ctx;
+      build: function (card, fxname) {
+        var canvas = $('<canvas>').addClass('fx'), ctx, fx;
         canvas[0].width = game.fx.width;
         canvas[0].height = game.fx.height;
         ctx = canvas[0].getContext('2d');
-        card.data('fx', {canvas: canvas, ctx: ctx, width: game.fx.width, height: game.fx.height});
+        fx = {canvas: canvas, ctx: ctx, width: game.fx.width, height: game.fx.height};
+        card.data(fxname, fx);
+        card.parent().append(canvas);
+        return fx;
         //ctx.fillRect(0, 0, game.fx.width, game.fx.height);
       },
       particles: function (fx) {
-        return {
-          array: [],
-          create: function (n, o) {
-            var i;
-            for (i = 0; i < n; i += 1) {
-              this.array.push({
-                x: o.x(),
-                ox: o.x,
-                y: o.y(),
-                oy: o.y,
-                speed: o.speed(),
-                os: o.speed,
-                radius: o.radius(),
-                or: o.radius,
-                dir: o.dir(),
-                od: o.dir,
-                color: o.color(),
-                oc: o.color
-              });
-            }
-          },
-          animate: function () {
-            var i, p;
-            fx.ctx.clearRect(0, 0, fx.width, fx.height);
-            for (i = 0; i < this.array.length; i += 1) {
-              p = this.array[i];
-              p = this.move(p);
-              this.circle(p.x, p.y, p.radius, p.color);
-            }
-            this.timeout = setTimeout(this.animate.bind(this), 20);
-          },
-          move: function (p) {
-            p.x += Math.cos(p.dir) * p.speed;
-            p.y += Math.sin(p.dir) * p.speed;
-            p.radius -= 0.5;
-            if (p.radius < 1) {
-              p.x = p.ox();
-              p.y = p.oy();
-              p.speed = p.os();
-              p.radius = p.or();
-              p.dir = p.od();
-              p.color = p.oc();
-            }
-            return p;
-          },
-          circle : function (x, y, r, c) {
-            var gradient = fx.ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
-            gradient.addColorStop(0, c || 'white');
-            gradient.addColorStop(1, 'transparent');
-            fx.ctx.fillStyle = gradient;
-            fx.ctx.beginPath();
-            fx.ctx.arc(x, y, r, 0, Math.PI * 2);
-            fx.ctx.fill();
-            fx.ctx.closePath();
-          },
-          stop: function () {
-            fx.ctx.clearRect(0, 0, fx.width, fx.height);
-            clearTimeout(this.timeout);
-          },
-          reset: function () {
-            this.array = [];
-            this.stop();
+        fx.array = [];
+        fx.create = function (n, o) {
+          var i;
+          for (i = 0; i < n; i += 1) {
+            this.array.push({
+              x: o.x(),
+              ox: o.x,
+              y: o.y(),
+              oy: o.y,
+              speed: o.speed(),
+              os: o.speed,
+              radius: o.radius(),
+              or: o.radius,
+              dir: o.dir(),
+              od: o.dir,
+              color: o.color(),
+              oc: o.color
+            });
           }
         };
+        fx.animate = function () {
+          var i, p;
+          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+          for (i = 0; i < this.array.length; i += 1) {
+            p = this.array[i];
+            p = this.move(p);
+            this.circle(p.x, p.y, p.radius, p.color);
+          }
+          this.timeout = setTimeout(this.animate.bind(this), 20);
+        };
+        fx.move = function (p) {
+          p.x += Math.cos(p.dir) * p.speed;
+          p.y += Math.sin(p.dir) * p.speed;
+          p.radius -= 0.5;
+          if (p.radius < 1) {
+            p.x = p.ox();
+            p.y = p.oy();
+            p.speed = p.os();
+            p.radius = p.or();
+            p.dir = p.od();
+            p.color = p.oc();
+          }
+          return p;
+        };
+        fx.circle = function (x, y, r, c) {
+          var gradient = fx.ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
+          gradient.addColorStop(0, c || 'white');
+          gradient.addColorStop(1, 'transparent');
+          fx.ctx.fillStyle = gradient;
+          fx.ctx.beginPath();
+          fx.ctx.arc(x, y, r, 0, Math.PI * 2);
+          fx.ctx.fill();
+          fx.ctx.closePath();
+        };
+        fx.stop = function () {
+          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+          clearTimeout(this.timeout);
+        };
+        fx.reset = function () {
+          this.array = [];
+          this.stop();
+        };
+        return fx;
+      },
+      image: function (fx) {
+        fx.create = function (name, x, y, dx, dy) {
+          this.l = 0;
+          this.x = x;
+          this.y = y;
+          this.cx = 0;
+          this.cy = 0;
+          this.dx = dx;
+          this.dy = dy;
+          this.img = new Image();
+          this.img.src = 'img/fx/' + name;
+          this.img.onload = this.load.bind(this);
+        };
+        fx.load = function () {
+          //fx.ctx.drawImage(this.img, this.x, this.y);
+          if (fx.dx) {
+            fx.ctx.translate(fx.x, fx.y);
+            if (fx.dx > 0) {
+              fx.ctx.translate(-200, 0);
+              fx.ctx.scale(-1, 1);
+            }
+          } else if (fx.dy) {
+            fx.ctx.translate(fx.x - 220, fx.y);
+            if (fx.dy < 0) {
+              fx.ctx.translate(0, 300);
+              fx.ctx.scale(1, -1);
+            }
+            fx.ctx.rotate(-Math.PI / 2);
+          }
+          fx.animate();
+        };
+        fx.animate = function () {
+          var t = 25,
+            i = fx.img.width / t;
+          if (fx.dy) { i *= 1.2; }
+          fx.l += 1;
+          if (fx.l < t) {
+            fx.cx += i;
+          } else {
+            fx.cx -= i;
+          }
+          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+          fx.ctx.drawImage(fx.img, fx.img.width - fx.cx, 0,
+                           fx.cx, fx.img.height,
+                           0, 0,
+                           fx.cx, fx.img.height);
+          if (this.l < t * 2) {
+            fx.timeout = setTimeout(this.animate.bind(this), 20);
+          } else { fx.stop(); }
+        };
+        fx.stop = function () {
+          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+          clearTimeout(this.timeout);
+        };
+        return fx;
       }
     },
     status: '',//updating, loading, loaded, out, logged, search, picking, turn, unturn, over
@@ -3051,7 +3123,6 @@ var game = (function () {
           } else if (game.audio.volumetarget === 'volume') {
             game.states.options.muteinput.prop('checked', false);
           }
-          console.log(game.audio.volumetarget, game.states.options[game.audio.volumetarget + 'control']);
           game.states.options[game.audio.volumetarget + 'control'].css('transform', 'scale(' + volume + ')');
           if (game.audio.volumetarget === 'volume') {
             game.mute.gain.value = volume;
@@ -3138,6 +3209,7 @@ var game = (function () {
             game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
             pick.removeClass('selected').appendTo(slot).off('click.select');
             game.player.picks[slot.data('slot')] = pick.data('hero');
+            pick.trigger('pick');
             game.player.manaBuild();
             if (game.mode === 'tutorial') {
               game.tutorial.pick();
@@ -3286,7 +3358,20 @@ var game = (function () {
       setTimeout(function () { game.tutorial.axe.css({opacity: 0}); }, 2500);
       setTimeout(function () { game.match.buildSkills('single'); }, 3000);
       setTimeout(function () { $('.pud-hook.skills').appendTo('.player.hand'); }, 4000);
-      setTimeout(function () { $('.map .hero.pud.player').place('A8'); game.status = 'turn';  }, 5000);
+      setTimeout(function () { $('.pud-rot.skills').appendTo('.player.hand'); }, 4000);
+      setTimeout(function () {
+
+        $('.map .hero.pud.player').place('D2'); //>
+
+//        $('.map .hero.pud.player').place('H6');   //^
+
+//        $('.map .hero.pud.player').place('G2');  //v
+//        $('.map .hero.am.enemy').place('G6');
+
+//        $('.map .hero.pud.player').place('G1');  //<
+//        $('.map .hero.am.enemy').place('C1');
+        game.status = 'turn';
+      }, 5000);
     }
   };
 }());

@@ -693,7 +693,7 @@ label span {
   display: inline-block;
   cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
   text-align: left;
-  transition: all 0.4s;
+  transition: all 0.4s, top 0.6s linear, left 0.6s linear;
   padding: 0;
   width: 200px; height: 300px;
   border-radius: 8px;
@@ -726,7 +726,7 @@ label span {
   border-radius: 3px;
   background-size: 100%;
   background-position: 50% 50%;
-  transition: background-size 0.5s;
+  transition: background-size 0.4s;
 }
 .card:hover .portrait .img {
   background-size: 120%;
