@@ -1108,8 +1108,6 @@ label span {
 }
 
 .map .spot {
-  transform-style: preserve-3d;
-  transform: translateZ(2px);
   width: 200px; height: 300px;
   position: relative;
   border: 6px solid rgba(0,0,0,0.1);

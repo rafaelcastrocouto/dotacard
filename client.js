@@ -1,6 +1,11 @@
 /* by rafælcastrocouto */
 /*jslint browser: true, regexp: true */
 /*global AudioContext, Skills, btoa, atob, $, Modernizr, alert, confirm, prompt, console*/
+
+//todo
+//wk stun targets
+//pudge dismember targets
+
 var game = (function () {
   'use strict';
   return {
@@ -13,9 +18,9 @@ var game = (function () {
     tries: 0,
     triesCounter: $('<small>').addClass('triescounter'),
     timeToPick: 30,
-    timeToPlay: 15,
+    timeToPlay: 30,
     waitLimit: 90,
-    connectionLimit: 30,
+    connectionLimit: 60,
     dayLength: 12,
     deadLength: 10,
     width: 12,
@@ -1676,9 +1681,9 @@ var game = (function () {
         game.message.html(game.ui.enemymove);
         game.audio.play('tutorial/axewait');
         game.states.table.turns.removeClass('tutorialblink');
-        var to = 'G2';
+        var from = 'E7', to = 'G2';
         if ($('#' + game.map.mirrorPosition(to)).hasClass('block')) { to = 'G1'; }
-        game.currentData = { moves: 'C:E6:' + to + ':blink:am' };
+        game.currentData = { moves: 'C:' + from + ':' + to + ':blink:am' };
         game.enemy.move();
         setTimeout(game.tutorial.attack, 5000);
       },
@@ -1714,7 +1719,7 @@ var game = (function () {
           cb: function (deck) {
             deck.addClass('player available').hide().appendTo(game.states.table.player);
             $.each(deck.data('cards'), function (i, skill) {
-              skill.addClass('player skill').data('side', 'player').on('click.select', game.tutorial.select);
+              skill.addClass('player skill').data('side', 'player').on('click.tutorial', game.tutorial.select).on('click.select', game.card.select);
             });
           }
         });
@@ -1862,7 +1867,7 @@ var game = (function () {
         $('.slot').each(function () {
           var slot = $(this), card;
           if (slot.hasClass('available')) {
-            card = game.deck.randomCard($('.pickbox .card'), 'noseed');
+            card = game.deck.randomCard($('.pickbox .card').not('.dead'), 'noseed');
             slot.append(card).removeClass('available selected');
             game.player.picks[slot.data('slot')] = card.data('hero');
           }
@@ -2270,7 +2275,9 @@ var game = (function () {
           type: 'text',
           maxlength: 42
         }).keydown(function (e) {
-          if (e.which === 13) { game.chat.button.click(); }
+          if (e.which === 13) {
+            game.chat.button.click();
+          }
         });
         game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).click(function () {
           var msg = game.chat.input.val();
@@ -2300,31 +2307,24 @@ var game = (function () {
         }, 5000);
         game.db({
           'set': 'chat',
-          'data': ':bust_in_silhouette:' + game.player.name + ' ' + game.ui.joined
+          'data': game.player.name + ' ' + game.ui.joined
         }, function (chat) {
           game.chat.update(chat);
         });
         game.chat.el.appendTo(game.states.menu.el);
-        $(document.body).on('keypress', function (e) {
-          if (e.which === 13) {
-            if (game.currentState === 'choose' ||
-                game.currentState === 'options' ||
-                game.currentState === 'table') {
-              game.chat.el.toggleClass('hover');
-            }
-          }
-        });
         game.chat.builded = true;
       },
       update: function (chat) {
         var down = false,
-          height = game.chat.messages[0].scrollHeight - game.chat.messages.height();
-        if (game.chat.messages.scrollTop() === height) { down = true; }
+          height = game.chat.messages[0].scrollHeight - game.chat.messages.height(),
+          scroll = game.chat.messages.scrollTop();
+        if (scroll > height * 0.9 || height < 80) { down = true; }
         game.chat.messages.empty();
         $.each(chat.messages, function () {
-          var msg = $('<p>').text(this).prependTo(game.chat.messages).emojify();
+          var msg = $('<p>').text(this).prependTo(game.chat.messages);
         });
         if (down) { game.chat.messages.scrollTop(game.chat.messages[0].scrollHeight); }
+
       }
     },
     map: {
@@ -2732,140 +2732,139 @@ var game = (function () {
       }
     },
     fx: {
-      width: 2200,
-      height: 2300,
-      build: function (card, fxname) {
-        var canvas = $('<canvas>').addClass('fx'), ctx, fx;
-        canvas[0].width = game.fx.width;
-        canvas[0].height = game.fx.height;
-        ctx = canvas[0].getContext('2d');
-        fx = {canvas: canvas, ctx: ctx, width: game.fx.width, height: game.fx.height};
-        card.data(fxname, fx);
-        card.parent().append(canvas);
-        return fx;
-        //ctx.fillRect(0, 0, game.fx.width, game.fx.height);
-      },
-      particles: function (fx) {
-        fx.array = [];
-        fx.create = function (n, o) {
-          var i;
-          for (i = 0; i < n; i += 1) {
-            this.array.push({
-              x: o.x(),
-              ox: o.x,
-              y: o.y(),
-              oy: o.y,
-              speed: o.speed(),
-              os: o.speed,
-              radius: o.radius(),
-              or: o.radius,
-              dir: o.dir(),
-              od: o.dir,
-              color: o.color(),
-              oc: o.color
-            });
-          }
-        };
-        fx.animate = function () {
-          var i, p;
-          fx.ctx.clearRect(0, 0, fx.width, fx.height);
-          for (i = 0; i < this.array.length; i += 1) {
-            p = this.array[i];
-            p = this.move(p);
-            this.circle(p.x, p.y, p.radius, p.color);
-          }
-          this.timeout = setTimeout(this.animate.bind(this), 20);
-        };
-        fx.move = function (p) {
-          p.x += Math.cos(p.dir) * p.speed;
-          p.y += Math.sin(p.dir) * p.speed;
-          p.radius -= 0.5;
-          if (p.radius < 1) {
-            p.x = p.ox();
-            p.y = p.oy();
-            p.speed = p.os();
-            p.radius = p.or();
-            p.dir = p.od();
-            p.color = p.oc();
-          }
-          return p;
-        };
-        fx.circle = function (x, y, r, c) {
-          var gradient = fx.ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
-          gradient.addColorStop(0, c || 'white');
-          gradient.addColorStop(1, 'transparent');
-          fx.ctx.fillStyle = gradient;
-          fx.ctx.beginPath();
-          fx.ctx.arc(x, y, r, 0, Math.PI * 2);
-          fx.ctx.fill();
-          fx.ctx.closePath();
-        };
-        fx.stop = function () {
-          fx.ctx.clearRect(0, 0, fx.width, fx.height);
-          clearTimeout(this.timeout);
-        };
-        fx.reset = function () {
-          this.array = [];
-          this.stop();
-        };
-        return fx;
-      },
-      image: function (fx) {
-        fx.create = function (name, x, y, dx, dy) {
-          this.l = 0;
-          this.x = x;
-          this.y = y;
-          this.cx = 0;
-          this.cy = 0;
-          this.dx = dx;
-          this.dy = dy;
-          this.img = new Image();
-          this.img.src = 'img/fx/' + name;
-          this.img.onload = this.load.bind(this);
-        };
-        fx.load = function () {
-          //fx.ctx.drawImage(this.img, this.x, this.y);
-          if (fx.dx) {
-            fx.ctx.translate(fx.x, fx.y);
-            if (fx.dx > 0) {
-              fx.ctx.translate(-200, 0);
-              fx.ctx.scale(-1, 1);
-            }
-          } else if (fx.dy) {
-            fx.ctx.translate(fx.x - 220, fx.y);
-            if (fx.dy < 0) {
-              fx.ctx.translate(0, 300);
-              fx.ctx.scale(1, -1);
-            }
-            fx.ctx.rotate(-Math.PI / 2);
-          }
-          fx.animate();
-        };
-        fx.animate = function () {
-          var t = 25,
-            i = fx.img.width / t;
-          if (fx.dy) { i *= 1.2; }
-          fx.l += 1;
-          if (fx.l < t) {
-            fx.cx += i;
-          } else {
-            fx.cx -= i;
-          }
-          fx.ctx.clearRect(0, 0, fx.width, fx.height);
-          fx.ctx.drawImage(fx.img, fx.img.width - fx.cx, 0,
-                           fx.cx, fx.img.height,
-                           0, 0,
-                           fx.cx, fx.img.height);
-          if (this.l < t * 2) {
-            fx.timeout = setTimeout(this.animate.bind(this), 20);
-          } else { fx.stop(); }
-        };
-        fx.stop = function () {
-          fx.ctx.clearRect(0, 0, fx.width, fx.height);
-          clearTimeout(this.timeout);
-        };
-        return fx;
-      }
+//      width: 2200,
+//      height: 2300,
+//      build: function (card, fxname) {
+//        var canvas = $('<canvas>').addClass('fx'), ctx, fx;
+//        canvas[0].width = game.fx.width;
+//        canvas[0].height = game.fx.height;
+//        ctx = canvas[0].getContext('2d');
+//        fx = {canvas: canvas, ctx: ctx, width: game.fx.width, height: game.fx.height};
+//        card.data(fxname, fx);
+//        card.parent().append(canvas);
+//        return fx;
+//      },
+//      particles: function (fx) {
+//        fx.array = [];
+//        fx.create = function (n, o) {
+//          var i;
+//          for (i = 0; i < n; i += 1) {
+//            this.array.push({
+//              x: o.x(),
+//              ox: o.x,
+//              y: o.y(),
+//              oy: o.y,
+//              speed: o.speed(),
+//              os: o.speed,
+//              radius: o.radius(),
+//              or: o.radius,
+//              dir: o.dir(),
+//              od: o.dir,
+//              color: o.color(),
+//              oc: o.color
+//            });
+//          }
+//        };
+//        fx.animate = function () {
+//          var i, p;
+//          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+//          for (i = 0; i < this.array.length; i += 1) {
+//            p = this.array[i];
+//            p = this.move(p);
+//            this.circle(p.x, p.y, p.radius, p.color);
+//          }
+//          this.timeout = setTimeout(this.animate.bind(this), 20);
+//        };
+//        fx.move = function (p) {
+//          p.x += Math.cos(p.dir) * p.speed;
+//          p.y += Math.sin(p.dir) * p.speed;
+//          p.radius -= 0.5;
+//          if (p.radius < 1) {
+//            p.x = p.ox();
+//            p.y = p.oy();
+//            p.speed = p.os();
+//            p.radius = p.or();
+//            p.dir = p.od();
+//            p.color = p.oc();
+//          }
+//          return p;
+//        };
+//        fx.circle = function (x, y, r, c) {
+//          var gradient = fx.ctx.createRadialGradient(x, y, 0, x, y, r * 1.5);
+//          gradient.addColorStop(0, c || 'white');
+//          gradient.addColorStop(1, 'transparent');
+//          fx.ctx.fillStyle = gradient;
+//          fx.ctx.beginPath();
+//          fx.ctx.arc(x, y, r, 0, Math.PI * 2);
+//          fx.ctx.fill();
+//          fx.ctx.closePath();
+//        };
+//        fx.stop = function () {
+//          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+//          clearTimeout(this.timeout);
+//        };
+//        fx.reset = function () {
+//          this.array = [];
+//          this.stop();
+//        };
+//        return fx;
+//      },
+//      image: function (fx) {
+//        fx.create = function (name, x, y, dx, dy) {
+//          this.l = 0;
+//          this.x = x;
+//          this.y = y;
+//          this.cx = 0;
+//          this.cy = 0;
+//          this.dx = dx;
+//          this.dy = dy;
+//          this.img = new Image();
+//          this.img.src = 'img/fx/' + name;
+//          this.img.onload = this.load.bind(this);
+//        };
+//        fx.load = function () {
+//          //fx.ctx.drawImage(this.img, this.x, this.y);
+//          if (fx.dx) {
+//            fx.ctx.translate(fx.x, fx.y);
+//            if (fx.dx > 0) {
+//              fx.ctx.translate(-200, 0);
+//              fx.ctx.scale(-1, 1);
+//            }
+//          } else if (fx.dy) {
+//            fx.ctx.translate(fx.x - 220, fx.y);
+//            if (fx.dy < 0) {
+//              fx.ctx.translate(0, 300);
+//              fx.ctx.scale(1, -1);
+//            }
+//            fx.ctx.rotate(-Math.PI / 2);
+//          }
+//          fx.animate();
+//        };
+//        fx.animate = function () {
+//          var t = 25,
+//            i = fx.img.width / t;
+//          if (fx.dy) { i *= 1.2; }
+//          fx.l += 1;
+//          if (fx.l < t) {
+//            fx.cx += i;
+//          } else {
+//            fx.cx -= i;
+//          }
+//          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+//          fx.ctx.drawImage(fx.img, fx.img.width - fx.cx, 0,
+//                           fx.cx, fx.img.height,
+//                           0, 0,
+//                           fx.cx, fx.img.height);
+//          if (this.l < t * 2) {
+//            fx.timeout = setTimeout(this.animate.bind(this), 20);
+//          } else { fx.stop(); }
+//        };
+//        fx.stop = function () {
+//          fx.ctx.clearRect(0, 0, fx.width, fx.height);
+//          clearTimeout(this.timeout);
+//        };
+//        return fx;
+//      }
     },
     status: '',//updating, loading, loaded, out, logged, search, picking, turn, unturn, over
     mode: '',//online, tutorial
@@ -2933,7 +2932,7 @@ var game = (function () {
           $('.logo').removeClass('slide');
           game.topbar.appendTo('.welcome');
           game.loader.removeClass('loading');
-          game.message.html('Version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">alpha ' + game.version + '</small></a>');
+          game.message.html('Version <a target="_blank" href="https://github.com/rafaelcastrocouto/dotacard/commits/gh-pages"><small class="version">alpha ' + game.version + '</small> <b>ALERT</b>: This game is in development and bugs may (will) happen. </a>');
           this.input.focus();
           game.states.options.opt.hide();
           $('.forklink').show();

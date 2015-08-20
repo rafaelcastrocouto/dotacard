@@ -70,7 +70,7 @@ var Skills = {
           h = game.map.getY(hooked.parent());
           dx = -212 * x * (Math.abs(cw - w) - 1);
           dy = -313 * y * (Math.abs(ch - h) - 1);
-          if (!source.data('hook fx')) { Skills.pud.hook.fx(source, dx, dy); }
+          //if (!source.data('hook fx')) { Skills.pud.hook.fx(source, dx, dy); }
           setTimeout(function () {
             if (x) {
               hooked.css({left: 'calc(50% + ' + dx + 'px)'});
@@ -89,9 +89,9 @@ var Skills = {
         }
       },
       fx: function (card, x, y) {
-        var fx = game.fx.build(card, 'hook fx');
-        game.fx.image(fx);
-        fx.create('hook.png', 1200, 1000, x, y);
+//        var fx = game.fx.build(card, 'hook fx');
+//        game.fx.image(fx);
+//        fx.create('hook.png', 1200, 1000, x, y);
       }
     },
     rot: {
@@ -102,7 +102,7 @@ var Skills = {
           source.off('turnend.rot');
           source.data('pud-rot', null);
           source.removeClass('pud-rot');
-          source.data('rot fx').stop();
+          //source.data('rot fx').stop();
         }
         else {
           //turn on
@@ -110,8 +110,8 @@ var Skills = {
           source.on('turnend.rot', Skills.pud.rot.turnendcast);
           source.data('pud-rot', skill);
           source.addClass('pud-rot');
-          if (!source.data('rot fx')) { Skills.pud.rot.fx(source); }
-          source.data('rot fx').animate();
+          //if (!source.data('rot fx')) { Skills.pud.rot.fx(source); }
+          //source.data('rot fx').animate();
         }
       },
       turnendcast: function (event, eventdata) {
@@ -152,16 +152,16 @@ var Skills = {
         }
       },
       fx: function (card) {
-        var fx = game.fx.build(card, 'rot fx');
-        game.fx.particles(fx);
-        fx.create(100, {
-          radius: function () { return 10 + Math.random() * 30; },
-          speed: function () { return 4 + Math.random() * 2; },
-          x: function () { return 1100; },
-          y: function () { return 1150; },
-          color: function () { return 'yellowgreen'; },
-          dir: function () { return Math.random() * Math.PI * 2; }
-        });
+//        var fx = game.fx.build(card, 'rot fx');
+//        game.fx.particles(fx);
+//        fx.create(100, {
+//          radius: function () { return 10 + Math.random() * 30; },
+//          speed: function () { return 4 + Math.random() * 2; },
+//          x: function () { return 1100; },
+//          y: function () { return 1150; },
+//          color: function () { return 'yellowgreen'; },
+//          dir: function () { return Math.random() * Math.PI * 2; }
+//        });
       }
     },
     passive: {
