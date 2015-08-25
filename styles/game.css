@@ -275,6 +275,25 @@ noscript {
   border-radius: 4px;
 }
 
+.turntitle {
+  z-index: 15;
+  opacity: 0;
+  position: absolute;
+  left: -970px;
+  width: 970px;
+  top: 230px;
+  font-weight: bold;
+  color: white;
+  font-size: 120px;
+  text-align: center;
+  transition: all 0.4s;
+  text-shadow: 0 0 3px #aaa, 0 0 20px #FFF, 0 0 40px #FFF, 0 0 60px #FFF;
+}
+.turntitle.show {
+ left: 0;
+  opacity: 1;
+}
+
 .topbar .opt {
   cursor: pointer;
   height: 20px;
@@ -391,6 +410,7 @@ label span {
   padding: 8px;
   color: #4d4843;
   transition: all 1s;
+  z-index: 10;
 }
 .chat h1 {
   color: white;
@@ -1550,7 +1570,22 @@ label span {
 .pud-ult .img {
   background-image: url("../img/skills/pudge_dismember.jpg");
 }
-
+.map .pud-rot fieldset:before {
+  width: 220px;
+  height: 320px;
+  top: -10px;
+  left: -10px;
+  display: block;
+  content: "";
+  position: absolute;
+  box-shadow: 0 0 60px 20px yellowgreen;
+  border-radius: 20px;
+  animation: rot 0.8s infinite;
+}
+@keyframes rot {
+  0%, 100% {box-shadow: 0 0 60px 20px yellowgreen;}
+  50% {box-shadow: 0 0 60px 0px yellowgreen;}
+}
 
 .nyx {
   background: #145;

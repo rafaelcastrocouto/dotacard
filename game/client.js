@@ -3,8 +3,9 @@
 /*global AudioContext, Skills, btoa, atob, $, Modernizr, alert, confirm, prompt, console*/
 
 //todo
-//wk stun targets
-//pudge dismember targets
+//projectiles
+//your/enemy turn title
+//end turn button
 
 var game = (function () {
   'use strict';
@@ -17,7 +18,7 @@ var game = (function () {
     message: $('<p>').addClass('message'),
     tries: 0,
     triesCounter: $('<small>').addClass('triescounter'),
-    timeToPick: 30,
+    timeToPick: 25,
     timeToPlay: 30,
     waitLimit: 90,
     connectionLimit: 60,
@@ -30,6 +31,9 @@ var game = (function () {
     buffs: null,
     units: null,
     seed: null,
+    status: '', //updating, loading, loaded, out, logged, search, picking, turn, unturn, over
+    mode: '', //online, tutorial
+    currentState: 'load', //log, menu, options, choose, table
     nomenu: function () {
       return false;
     },
@@ -99,6 +103,35 @@ var game = (function () {
         game.fn();
         game.load.start();
       } else { game.load.unsupported(); }
+    },
+    db: function (send, cb) {
+      if (typeof send.data !== 'string') {
+        send.data = JSON.stringify(send.data);
+      }
+      $.ajax({
+        async: true,
+        type: 'GET',
+        url: '/db',
+        data: send,
+        complete: function (receive) {
+          var data;
+          if (receive.responseText) {
+            data = JSON.parse(receive.responseText);
+          }
+          if (cb) {
+            cb(data || {});
+          }
+        }
+      });
+    },
+    random: function () {
+      game.seed += 1;
+      return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
+    },
+    language: {
+      current: 'en-US',
+      available: ['en-US', 'pt-BR'],
+      dir: ''
     },
     load: {
       start: function () {
@@ -309,12 +342,14 @@ var game = (function () {
         });
       },
       analytics: function () {
-        $('<script src="browser_modules/google.analytics.min.js">').appendTo('body');
+        $('<script src="browser_modules/analytics/google.analytics.min.js">').appendTo('body');
       },
       end: function () {
         window.oncontextmenu = game.nomenu;
         window.onbeforeunload = function () {
-          return game.ui.leave;
+          if (game.mode == 'online') {
+            return game.ui.leave;
+          }
         };
       },
       reset: function () {
@@ -322,35 +357,6 @@ var game = (function () {
         var r = confirm(game.ui.error);
         if (r) { location.reload(true); }
       }
-    },
-    db: function (send, cb) {
-      if (typeof send.data !== 'string') {
-        send.data = JSON.stringify(send.data);
-      }
-      $.ajax({
-        async: true,
-        type: 'GET',
-        url: '/db',
-        data: send,
-        complete: function (receive) {
-          var data;
-          if (receive.responseText) {
-            data = JSON.parse(receive.responseText);
-          }
-          if (cb) {
-            cb(data || {});
-          }
-        }
-      });
-    },
-    random: function () {
-      game.seed += 1;
-      return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
-    },
-    language: {
-      current: 'en-US',
-      available: ['en-US', 'pt-BR'],
-      dir: ''
     },
     card: {
       fn: function () {
@@ -518,6 +524,7 @@ var game = (function () {
         return skill;
       },
       highlightTargets: function () {
+        console.log('h');
         var skill = this, hero = skill.data('hero'),
           source, pos, range, targets, aoe;
         if (hero) {
@@ -532,70 +539,76 @@ var game = (function () {
                 source.addClass('casttarget').on('contextmenu.passive', game.player.passive);
               }
             } else if (skill.data('type') === game.ui.toggle) {
-              if (!source.hasClass('dead')) {
+              if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
                 source.addClass('casttarget').on('contextmenu.toggle', game.player.toggle);
               }
-            } else if (!source.hasClasses('dead done stunned frozen silenced hexed disabled sleeping cycloned taunted')) {
-              if (targets.indexOf(game.ui.self) >= 0) {
-                source.addClass('casttarget').on('contextmenu.cast', game.player.cast);
-              }
-              if (targets.indexOf(game.ui.ally) >= 0) {
-                if (range === game.ui.global) {
-                  $('.map .player').addClass('casttarget').on('contextmenu.cast', game.player.cast);
-                } else {
-                  game.map.inRange(pos, range, function (neighbor) {
-                    var card = $('.card', neighbor);
-                    if (card.hasClass('player')) {
-                      card.addClass('casttarget').on('contextmenu.cast', game.player.cast);
-                    }
-                  });
+            } else if (skill.data('type') === game.ui.active) {
+              console.log('a');
+              if (!source.hasClasses('dead done stunned frozen silenced hexed disabled sleeping cycloned taunted')) {
+                console.log('s');
+                if (targets.indexOf(game.ui.self) >= 0) {
+                  source.addClass('casttarget').on('contextmenu.cast', game.player.cast);
                 }
-              }
-              if (targets.indexOf(game.ui.enemy) >= 0) {
-                if (range === game.ui.global) {
-                  $('.map .enemy').addClass('casttarget').on('contextmenu.cast', game.player.cast);
-                } else {
-                  game.map.inRange(pos, range, function (neighbor) {
-                    var card = $('.card', neighbor);
-                    if (card.hasClass('enemy')) {
-                      card.addClass('casttarget').on('contextmenu.cast', game.player.cast);
-                    }
-                  });
-                }
-              }
-              if (targets.indexOf('Lone') >= 0) {
-                pos = game.map.getPosition(source.data('ld'));
-                game.map.around(pos, range, function (neighbor) {
-                  if (neighbor.hasClass('free')) {
-                    neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                if (targets.indexOf(game.ui.ally) >= 0) {
+                  if (range === game.ui.global) {
+                    $('.map .player').addClass('casttarget').on('contextmenu.cast', game.player.cast);
+                  } else {
+                    game.map.inRange(pos, range, function (neighbor) {
+                      var card = $('.card', neighbor);
+                      if (card.hasClass('player')) {
+                        card.addClass('casttarget').on('contextmenu.cast', game.player.cast);
+                      }
+                    });
                   }
-                });
-                return skill;
-              }
-              if (targets.indexOf(game.ui.spot) >= 0) {
-                if (targets.indexOf(game.ui.free) >= 0) {
+                }
+                console.log(targets, game.ui.enemy);
+                if (targets.indexOf(game.ui.enemy) >= 0) {
+                  console.log('e');
+                  if (range === game.ui.global) {
+                    $('.map .enemy').addClass('casttarget').on('contextmenu.cast', game.player.cast);
+                  } else {
+                    game.map.inRange(pos, range, function (neighbor) {
+                      var card = $('.card', neighbor);
+                      if (card.hasClass('enemy')) {
+                        card.addClass('casttarget').on('contextmenu.cast', game.player.cast);
+                      }
+                    });
+                  }
+                }
+                if (targets.indexOf('Lone') >= 0) {
+                  pos = game.map.getPosition(source.data('ld'));
                   game.map.around(pos, range, function (neighbor) {
                     if (neighbor.hasClass('free')) {
                       neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
                     }
                   });
-                } else {
-                  if (aoe === 'Radial') {
+                  return skill;
+                }
+                if (targets.indexOf(game.ui.spot) >= 0) {
+                  if (targets.indexOf(game.ui.free) >= 0) {
                     game.map.around(pos, range, function (neighbor) {
-                      neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
-                      if (neighbor.hasClass('block')) {
-                        var card = $('.card', neighbor);
-                        card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
+                      if (neighbor.hasClass('free')) {
+                        neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
                       }
                     });
-                  } else if (aoe === 'Linear') {
-                    game.map.atCross(pos, skill.data('aoe range'), skill.data('aoe width'), function (neighbor) {
-                      neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
-                      if (neighbor.hasClass('block')) {
-                        var card = $('.card', neighbor);
-                        card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
-                      }
-                    });
+                  } else {
+                    if (aoe === 'Radial') {
+                      game.map.around(pos, range, function (neighbor) {
+                        neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                        if (neighbor.hasClass('block')) {
+                          var card = $('.card', neighbor);
+                          card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
+                        }
+                      });
+                    } else if (aoe === 'Linear') {
+                      game.map.atCross(pos, skill.data('aoe range'), skill.data('aoe width'), function (neighbor) {
+                        neighbor.addClass('targetarea').on('contextmenu.castarea', game.player.cast);
+                        if (neighbor.hasClass('block')) {
+                          var card = $('.card', neighbor);
+                          card.addClass('targetarea').on('contextmenu.cast', game.player.cast);
+                        }
+                      });
+                    }
                   }
                 }
               }
@@ -621,7 +634,6 @@ var game = (function () {
             } else if (game.aoe === 'Radial') {
               game.aoerange = game.map.getRange(skill.data('range'));
               game.aoecastrange = game.map.getRange(skill.data('aoe range'));
-              game.map.radialStroke(pos, game.aoerange, 'skillarea');
             }
             $('.map .spot, .map .card').hover(function () {
               var spot = $(this);
@@ -640,6 +652,9 @@ var game = (function () {
                 }
               }
             });
+          }
+          if (skill.data('range')) {
+            game.map.radialStroke(pos, game.map.getRange(skill.data('range')), 'skillarea');
           }
         }
         return skill;
@@ -1647,13 +1662,23 @@ var game = (function () {
         $('.map .hero.player').on('move', game.tutorial.done);
       },
       done: function () {
-        game.tutorial.axe.addClass('left');
-        game.tutorial.axebaloon.hide().fadeIn('slow');
-        game.tutorial.message.html(game.ui.axedone);
-        game.message.text(game.ui.enemyturn);
-        game.message.addClass('tutorialblink');
-        game.status = 'unturn';
-        setTimeout(game.tutorial.wait, 5000);
+        if (!game.turn.el) {
+          game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
+        }
+        setTimeout(function () {
+          game.turn.el.text(game.ui.enemyturn);
+          game.turn.el.addClass('show');
+        }, 1000);
+        setTimeout(function () {
+          game.turn.el.removeClass('show');
+          game.tutorial.axe.addClass('left');
+          game.tutorial.axebaloon.hide().fadeIn('slow');
+          game.tutorial.message.html(game.ui.axedone);
+          game.message.text(game.ui.enemyturn);
+          game.message.addClass('tutorialblink');
+          game.status = 'unturn';
+          setTimeout(game.tutorial.wait, 5000);
+        }, 4000);
       },
       wait: function () {
         game.tutorial.axebaloon.hide().fadeIn('slow');
@@ -1685,9 +1710,15 @@ var game = (function () {
         if ($('#' + game.map.mirrorPosition(to)).hasClass('block')) { to = 'G1'; }
         game.currentData = { moves: 'C:' + from + ':' + to + ':blink:am' };
         game.enemy.move();
+        setTimeout(function () {
+          game.turn.el.text(game.ui.yourturn);
+          game.turn.el.addClass('show');
+        }, 2000);
         setTimeout(game.tutorial.attack, 5000);
+
       },
       attack: function () {
+        game.turn.el.removeClass('show');
         game.tutorial.axe.removeClass('left');
         game.enemy.skills.deck.removeClass('slide');
         $('.enemy.skills .card').fadeOut(400);
@@ -1774,7 +1805,7 @@ var game = (function () {
         game.tutorial.axebaloon.hide();
         game.db({
           'set': 'chat',
-          'data': game.player.name + ' ' + game.ui.completedtutorial + ':+1:'
+          'data': game.player.name + ' ' + game.ui.completedtutorial
         }, function (chat) {
           game.chat.update(chat);
         });
@@ -2101,47 +2132,61 @@ var game = (function () {
         game.enemy.kills = 0;
         game.currentData.moves = [];
         game.currentData = {};
+        game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
         if (game.player.type === 'challenged') { game.status = 'turn'; }
         if (game.player.type === 'challenger') { game.status = 'unturn'; }
       },
+      reset: function () {
+        game.currentData.moves = [];
+        $('.card .damaged').remove();
+        $('.card .heal').remove();
+      },
       begin: function () {
         if (game.status !== 'over') {
-          game.currentData.moves = [];
-          $('.card .damaged').remove();
-          $('.card .heal').remove();
+          game.turn.reset();
           $('.card.dead').each(function () {
             var dead = $(this);
             if (game.time > dead.data('reborn')) { dead.reborn(); }
           });
           if (game.turn === 6) { $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck); }
-          if (game.status === 'turn') {
-            game.states.table.el.removeClass('unturn').addClass('turn');
-            game.message.text(game.ui.yourturn);
-            game.player.turn += 1;
-            $('.map .card.player').removeClass('done');
-            game.player.buyHand();
-            game.tower.attack();
-            game.map.highlight();
-          } else {
-            game.message.text(game.ui.enemyturn);
-            game.enemy.turn += 1;
-            $('.map .card.enemy').removeClass('done');
-            game.enemy.buyHand();
-          }
-          $('.card').each(function () {
-            var card = $(this);
-            card.trigger('turnstart', { target: card });
-            if (game.status === 'turn') {
-              card.trigger('playerturnstart', { target: card });
-            } else { card.trigger('enemyturnstart', { target: card }); }
-            card.reduceStun();
-          });
           game.time = game.player.turn + game.enemy.turn;
           game.turn.counter = game.timeToPlay;
-          if (game.status === 'unturn') { game.turn.counter += 1; }
+          if (game.status === 'turn') {
+            game.turn.el.text(game.ui.yourturn);
+          } else if (game.status === 'unturn') {
+            game.turn.el.text(game.ui.enemyturn);
+            game.turn.counter += 1;
+          }
           game.loader.removeClass('loading');
-          setTimeout(game.turn.count, 1000);
+          game.turn.el.addClass('show');
+          setTimeout(game.turn.start, 3000);
         }
+      },
+      start: function () {
+        if (game.status === 'turn') {
+          game.states.table.el.removeClass('unturn').addClass('turn');
+          game.message.text(game.ui.yourturn);
+          game.player.turn += 1;
+          $('.map .card.player').removeClass('done');
+          game.tower.attack();
+          game.map.highlight();
+          game.player.buyHand();
+        } else {
+          game.message.text(game.ui.enemyturn);
+          game.enemy.turn += 1;
+          $('.map .card.enemy').removeClass('done');
+          game.enemy.buyHand();
+        }
+        $('.card').each(function () {
+          var card = $(this);
+          card.trigger('turnstart', { target: card });
+          if (game.status === 'turn') {
+            card.trigger('playerturnstart', { target: card });
+          } else { card.trigger('enemyturnstart', { target: card }); }
+          card.reduceStun();
+        });
+        game.turn.el.removeClass('show');
+        setTimeout(game.turn.count, 1000);
       },
       count: function () {
         clearTimeout(game.timeout);
@@ -2255,6 +2300,7 @@ var game = (function () {
       play: function (name) {
         if (game.audio.context && game.audio.context.createBufferSource) {
           var audio = game.audio.context.createBufferSource();
+          console.log(name, game.audio.buffers[name]);
           audio.buffer = game.audio.buffers[name];
           if (name === game.song) {
             audio.connect(game.audio.track);
@@ -2866,9 +2912,6 @@ var game = (function () {
 //        return fx;
 //      }
     },
-    status: '',//updating, loading, loaded, out, logged, search, picking, turn, unturn, over
-    mode: '',//online, tutorial
-    currentState: 'load', //log, menu, options, choose, table
     states: {
       preBuild: [ 'log', 'menu', 'options', 'choose', 'table' ],
       build: function () {
@@ -3217,7 +3260,7 @@ var game = (function () {
           return false;
         },
         reset: function () {
-          $('.pickedbox .card').appendTo(this.pickDeck).on('click.select', game.states.choose.select);
+          $('.pickedbox .card').prependTo(this.pickDeck).on('click.select', game.states.choose.select);
           $('.slot').addClass('available');
           game.states.choose.counter.hide();
         },
@@ -3356,21 +3399,8 @@ var game = (function () {
       setTimeout(function () { $('.pickedbox div:nth-child(5)').contextmenu(); }, 2400);
       setTimeout(function () { game.tutorial.axe.css({opacity: 0}); }, 2500);
       setTimeout(function () { game.match.buildSkills('single'); }, 3000);
-      setTimeout(function () { $('.pud-hook.skills').appendTo('.player.hand'); }, 4000);
-      setTimeout(function () { $('.pud-rot.skills').appendTo('.player.hand'); }, 4000);
-      setTimeout(function () {
-
-        $('.map .hero.pud.player').place('D2'); //>
-
-//        $('.map .hero.pud.player').place('H6');   //^
-
-//        $('.map .hero.pud.player').place('G2');  //v
-//        $('.map .hero.am.enemy').place('G6');
-
-//        $('.map .hero.pud.player').place('G1');  //<
-//        $('.map .hero.am.enemy').place('C1');
-        game.status = 'turn';
-      }, 5000);
+      setTimeout(function () { $('.wk-stun.skills').appendTo('.player.hand'); }, 4000);
+      setTimeout(function () {$('.map .hero.wk.player').place('G2'); game.status = 'turn'; }, 5000);
     }
   };
 }());

@@ -65,12 +65,14 @@ var Skills = {
           }
         }
         if(hooked && hooked.hasClasses('hero unit')) {
-          source.damage(skill.data('damage'), hooked, skill.data('damage type'));
+          if (hooked.hasClass('enemy')) {
+            source.damage(skill.data('damage'), hooked, skill.data('damage type'));
+          }
           w = game.map.getX(hooked.parent());
           h = game.map.getY(hooked.parent());
           dx = -212 * x * (Math.abs(cw - w) - 1);
           dy = -313 * y * (Math.abs(ch - h) - 1);
-          //if (!source.data('hook fx')) { Skills.pud.hook.fx(source, dx, dy); }
+          if (!source.data('hook fx')) { Skills.pud.hook.fx(source, dx, dy); }
           setTimeout(function () {
             if (x) {
               hooked.css({left: 'calc(50% + ' + dx + 'px)'});
@@ -89,9 +91,9 @@ var Skills = {
         }
       },
       fx: function (card, x, y) {
-//        var fx = game.fx.build(card, 'hook fx');
-//        game.fx.image(fx);
-//        fx.create('hook.png', 1200, 1000, x, y);
+        var fx = game.fx.build(card, 'hook fx');
+        game.fx.image(fx);
+        fx.create('hook.png', 1200, 1000, x, y);
       }
     },
     rot: {
