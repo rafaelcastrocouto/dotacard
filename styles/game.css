@@ -119,7 +119,7 @@ noscript {
 
 .banner {
   border-radius: 5px;
-  width: 100%;
+  width: 80%;
 }
 
 .hidden, .unsupported {
@@ -129,9 +129,9 @@ noscript {
 .box {
   position: absolute;
   top: 50%; left: 50%;
-  width: 45%;
+  width: 728px;
   transform: translate(-50%, -50%);
-  padding: 50px 100px;
+  padding: 20px 60px;
   text-align: center;
   border-radius: 5px;
   background: rgba(0,0,0,0.5);
@@ -303,6 +303,29 @@ noscript {
   color: white;
 }
 
+
+/*WELCOME*/
+
+.welcome {
+  display: none;
+}
+
+.welcome .box {
+  top: 52%;
+}
+
+.welcome label {
+  text-align: center;
+}
+/*ADSENSE*/
+
+.adsbygoogle  {
+  width: 728px;
+  height: 90px;
+  background-color: rgba(255,255,255,0.5);
+  background-image: url("../img/banner-github-ninja.jpg")
+}
+
 /*LOG*/
 
 input {
@@ -381,9 +404,6 @@ label input {
 
 label span {
   vertical-align: super;
-}
-.welcome label {
-  text-align: center;
 }
 
 /*MENU*/

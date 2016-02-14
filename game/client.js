@@ -88,6 +88,7 @@ var game = (function () {
       };
     },
     start: function () {
+      $('.welcome').css('display', 'block');
       if (Skills &&
           window.$ &&
           window.JSON &&
@@ -161,6 +162,7 @@ var game = (function () {
           '  <img class="banner" src="img/banner.png" />',
           '  <h2>DotaCard requires a <i>modern browser</i></h2>',
           '  <p><a href="http://whatbrowser.org/" target="_blank">How can I get a <i>modern browser?</i></a></p>',
+          '  <div class="adsense"></div>',
           '</div>'
         ].join('\n');
       },
@@ -2970,7 +2972,7 @@ var game = (function () {
           if (rememberedname) { this.input.val(rememberedname); }
         },
         start: function () {
-          this.el.children().appendTo('.welcome .box');
+          this.el.children().insertAfter('.loadtext');
           $('.loadtext').hide();
           $('.logo').removeClass('slide');
           game.topbar.appendTo('.welcome');
