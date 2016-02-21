@@ -4,7 +4,10 @@
 
 var http = require('http'),
     url = require('url'),
-    file = require('static.simple'),
+    fs = require('fs'),    
+    serveStatic = require('serve-static'),
+    clientServer = serveStatic('client', {'index': ['index.html', 'index.htm']}),
+    rootServer = serveStatic(__dirname),
     host = process.env.HOST,
     port = process.env.PORT || 5000,
     waiting = {id: 'none'},
@@ -14,13 +17,12 @@ var http = require('http'),
       set: function(name, val, cb){currentData[name] = val; cb(true);}
     },
     chat = [],
-    debug = false;
-
-var send = function(response, data){
-  response.writeHead(200, {
-    'Content-Type': 'application/json'//,'Access-Control-Allow-Origin': '*'
-  });
-  response.end(String(data));
+    debug = false,
+    send = function(response, data){
+      response.writeHead(200, {
+        'Content-Type': 'application/json'
+      });
+      response.end(String(data));
 };
 
 http.createServer(function(request, response){
@@ -53,7 +55,6 @@ http.createServer(function(request, response){
         chat = chat.slice(0, 240);
         send(response, JSON.stringify({messages: chat}));
       } //DEFAULT SET
-
       else { db.set(query.set, query.data, function(data){send(response, data);}); }
     } else if (query.get){
       console.log('get: '+ query.get);
@@ -65,15 +66,22 @@ http.createServer(function(request, response){
       else if(query.get === 'lang') { send(response, JSON.stringify({lang: request.headers['accept-language']})); }
       //DEFAULT GET
       else { db.get(query.get, function(data){ send(response, data); }); }
+      //DB CHECK
     } else { send(response, 'Db works!'); }
+  }  
+  else { //STATIC
+    clientServer(request, response, function onNext(err) {
+      rootServer(request, response, function onNext(err) {
+        response.statusCode = 404; 
+        response.setHeader('Content-Type', 'text/html; charset=UTF-8');        
+        fs.createReadStream('client/404.html').pipe(response);
+      });
+    });
   }
-  //STATIC
-  else { file.read(request, response, pathname || 'index.html'); }
 }).listen(port, host);
 
-console.log(new Date()
-            + '\n' //<br>
-            + '\x1B[1m' //style:bright
-            + '\x1B[33m' //color:yellow
-            + 'DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
-            + '\x1B[0m'); //style:reset
+var d = new Date();
+console.log(
+  d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + ' ' + 
+  'DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
+);
