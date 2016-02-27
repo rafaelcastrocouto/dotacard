@@ -9,8 +9,9 @@
 var game = {
   container: $('.container').first(),
   loader: $('<span>').addClass('loader'),
-  message: $('<span>').addClass('message'),  
+  message: $('<span>').addClass('message'),
   triesCounter: $('<small>').addClass('triescounter'),
+  fork: $('.forklink'),
   scrollspeed: 0.4,
   timeToPick: 25,
   timeToPlay: 30,
@@ -23,10 +24,11 @@ var game = {
   tries: 0,
   id: null,
   seed: null,
+  skills: {}, //bundle from /skills
   data: {}, //json {buffs, heroes, skills, ui, units}
-  currentData: {}, 
-  mode: '', //online, tutorial
-  status: '', //search, picking, turn, unturn, over
+  currentData: {}, // match moves data
+  mode: '', //match, tutorial
+  status: '', //turn, unturn, over
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   start: function () {
     game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
@@ -68,55 +70,6 @@ var game = {
       }
     });
   },
-  utils: function () {
-    if (!Number.prototype.map) { Number.prototype.map = function (a, b, c, d) { return c + (d - c) * ((this - a) / (b - a)); }; }
-    if (!Number.prototype.limit) { Number.prototype.limit = function (a, b) { return Math.min(b, Math.max(a, this)); }; }
-    if (!Number.prototype.round) { Number.prototype.round = function (a) { return Math.round(this); }; }
-    if (!Number.prototype.floor) { Number.prototype.floor = function () { return Math.floor(this); }; }
-    if (!Number.prototype.ceil) { Number.prototype.ceil = function () { return Math.ceil(this); }; }
-    if (!Number.prototype.toInt) { Number.prototype.toInt = function () { return Number.parseInt(this); }; }
-    if (!Number.prototype.toRad) { Number.prototype.toRad = function () { return this / 180 * Math.PI; }; }
-    if (!Number.prototype.toDeg) { Number.prototype.toDeg = function () { return 180 * this / Math.PI; }; }
-    if (!Array.prototype.random) { Array.prototype.random = function () { return this[Math.floor(Math.random() * this.length)]; }; }
-    if (!Array.prototype.erase) {
-      Array.prototype.erase = function (a) {
-        var b;
-        for (b = this.length - 1; b > -1; b -= 1) {
-          if (this[b] === a) {
-            this.splice(b, 1);
-          }
-        }
-        return this;
-      };
-    }
-    if (!Function.prototype.bind) {
-      Function.prototype.bind = Function.prototype.bind || function (a) {
-        var b = this;
-        return function () {
-          var c = Array.prototype.slice.call(arguments);
-          return b.apply(a || null, c);
-        };
-      };
-    }
-    $.fn.hasClasses = function (list) {
-      var classes = list.split(' '), i;
-      for (i = 0; i < classes.length; i += 1) {
-        if (this.hasClass(classes[i])) {
-          return true;
-        }
-      }
-      return false;
-    };
-    $.fn.hasAllClasses = function (list) {
-      var classes = list.split(' '), i;
-      for (i = 0; i < classes.length; i += 1) {
-        if (!this.hasClass(classes[i])) {
-          return false;
-        }
-      }
-      return true;
-    };
-  },
   random: function () {
     game.seed += 1;
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
@@ -127,13 +80,49 @@ var game = {
   },
   events: function () {
     game.card.bindJquery();
-    window.ontouchstart = game.cancelEvent;
+    $.fn.leftClickEvent = game.leftClickEvent;
+    $.fn.rightClickEvent = game.rightClickEvent; 
+    window.ontouchstart = function (e) {
+     var t = $(e.target);
+     if (t.is('input[type=text]')) t.focus();
+     if (t.is('input[type=radio], input[type=checkbox], a')) t.click();
+     if (e.preventDefault) e.preventDefault();
+     return false;
+    };
     window.oncontextmenu = game.cancelEvent;
     window.onbeforeunload = function () {
-      if (game.mode == 'online') {
+      if (game.mode == 'match') {
         return game.data.ui.leave;
       }
     };
+  },
+  leftClickEvent: function (cb) {
+    this.on('click touchstart', cb);
+    return this;
+  },
+  rightClickEvent: function (cb) {
+    this.on('contextmenu taphold drop dragdrop', cb).on('dragenter dragover', game.cancelEvent);
+    return this;
+  },
+  timeoutArray: [],
+  timeout: function (ms, cb, arg) {
+    var t = setTimeout(function (arg) {
+        cb(arg);
+        game.timeoutArray.erase(t);
+    }, ms, arg);
+    game.timeoutArray.push(t);
+    return t;
+  },
+  clearTimeouts: function () {
+    for (var i=0; i < game.timeoutArray.length; i++) {
+      clearTimeout(game.timeoutArray[i]);
+    }
+    game.timeoutArray = [];
+  },
+  reset: function () {
+    console.error('Internal error: ', game);
+    var r = confirm(game.data.ui.error);
+    if (r) { location.reload(true); }
   },
   test: function () {
     game.states.log.input.val('TestBot');

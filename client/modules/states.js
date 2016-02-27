@@ -1,16 +1,17 @@
 game.states = {
   el: $('.states').first(),
-  build: function () {    
-    $.each(['menu', 'options', 'choose', 'table'], function (a, b) {
-      game.states.buildState(b);
-    });
+  build: function () {
+    var preBuild = ['menu', 'options', 'choose', 'table'];
+    for (var i=0; i<preBuild.length; i++) {
+      game.states.buildState(preBuild[i]);
+    }
   },
   buildState: function (name) {
     var state = game.states[name];
-    if (state.build && !state.builded) {
-      state.el = $('<div>').addClass('state ' + name).hide().appendTo(game.states.el);
-      state.build();
+    if (state && !state.builded) {
       state.builded = true;
+      state.el = $('<div>').addClass('state ' + name).hide().appendTo(game.states.el);
+      if (state.build) state.build();
     }
   },
   changeTo: function (state) {
@@ -22,10 +23,10 @@ game.states = {
       if (oldstate && oldstate.el) { oldstate.el.fadeOut(100); }
       if (oldstate && oldstate.end) { oldstate.end(); }
       newstate = game.states[state];
-      if (newstate.el) { 
+      if (newstate.el) {
         setTimeout(function () {
           newstate.el.append(game.topbar).fadeIn(100);
-        }, 120); 
+        }, 120);
       }
       game.currentState = state;
       game.backState = pre;
@@ -37,8 +38,8 @@ game.states = {
   },
   //states
   unsupported: {
-    build: function () { 
-      this.box = $('<div>').appendTo(this.el).addClass('box'); 
+    build: function () {
+      this.box = $('<div>').appendTo(this.el).addClass('box');
       this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
       this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
       this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
@@ -48,7 +49,7 @@ game.states = {
   },
   loading: {
     build: function () {
-      this.box = $('<div>').appendTo(this.el).addClass('box');      
+      this.box = $('<div>').appendTo(this.el).addClass('box');
       this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
       this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
       this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
@@ -76,7 +77,7 @@ game.states = {
       });
       this.button = $('<div>').addClass('button').appendTo(this.box).text(game.data.ui.log).attr({
         title: game.data.ui.choosename
-      }).click(this.login);
+      }).leftClickEvent(this.login);
       this.rememberlabel = $('<label>').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
       this.remembercheck = $('<input>').attr({
         type: 'checkbox',
@@ -85,13 +86,10 @@ game.states = {
       }).change(this.remember).appendTo(this.rememberlabel);
       var rememberedname = $.cookie('name');
       if (rememberedname) { this.input.val(rememberedname); }
-      game.states.log.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).click(function () {
-        game.states.changeTo('log');
-      });
+      this.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).leftClickEvent(this.logout);
     },
     start: function () {
       game.message.html('Version <small class="version">' + game.version + '</small>');
-      $('.forklink').show();
       game.states.log.out.hide();
       this.input.focus();
       game.states.options.opt.show();
@@ -109,15 +107,21 @@ game.states = {
         game.loader.addClass('loading');
         game.db({ 'get': 'server' }, function (server) {
           if (server.status === 'online') {
-            game.status = 'logged';
-            game.message.text(game.data.ui.welcome + '!');
-            game.states.log.out.text(game.player.name + ' logout').show();
+            game.states.log.out.show();
             game.states.changeTo('menu');
-          } else { game.load.reset(); }
+          } else { game.reset(); }
         });
       } else {
         game.states.log.input.focus();
       }
+    },
+    logout:function () {
+      if (game.mode) {
+        if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+        game[game.mode].clear();
+        game.clearTimeouts();
+      }
+      game.states.changeTo('log');
     },
     end: function () {
       this.button.attr('disabled', false);
@@ -133,9 +137,8 @@ game.states = {
       this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.menu);
       this.tutorial = $('<div>').addClass('button').appendTo(this.menu).attr({
         title: game.data.ui.tutorial
-      }).text(game.data.ui.tutorial).click(function () {
-        game.tutorial.build();
-        game.status = 'picking';
+      }).text(game.data.ui.tutorial).leftClickEvent(function () {
+        game.mode = 'tutorial';
         game.states.changeTo('choose');
       });
       this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({
@@ -144,9 +147,8 @@ game.states = {
       }).text(game.data.ui.campain);
       this.online = $('<div>').addClass('button').appendTo(this.menu).attr({
         title: game.data.ui.chooseonline
-      }).text(game.data.ui.online).click(function () {
-        game.match.online();
-        game.status = 'search';
+      }).text(game.data.ui.online).leftClickEvent(function () {
+        game.mode = 'choose';
         game.states.changeTo('choose');
       });
       this.friend = $('<div>').addClass('button').appendTo(this.menu).attr({
@@ -155,7 +157,7 @@ game.states = {
       }).text(game.data.ui.friend);
       this.options = $('<div>').addClass('button').appendTo(this.menu).attr({
         title: game.data.ui.chooseoptions
-      }).text(game.data.ui.options).click(function () {
+      }).text(game.data.ui.options).leftClickEvent(function () {
         game.states.changeTo('options');
       });
       this.credits = $('<a>').addClass('button').appendTo(this.menu).attr({
@@ -165,11 +167,9 @@ game.states = {
       }).text(game.data.ui.credits);
     },
     start: function () {
-      game.states.log.out.show();
-      game.states.options.opt.hide();
-      $('.forklink').show();
       game.loader.removeClass('loading');
-      game.triesCounter.text('');      
+      game.triesCounter.text('');
+      game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');
       if (!game.chat.builded) { game.chat.build(); }
       game.chat.el.appendTo(this.el);
     }
@@ -205,7 +205,7 @@ game.states = {
       }).change(this.changeResolution)).append($('<span>').text(game.data.ui.low + ' 800x600'));
       var rememberedvol, vol,
         rememberedres = $.cookie('resolution');
-      if (rememberedres && this[rememberedres]) { this[rememberedres].click(); }
+      if (rememberedres && this[rememberedres]) { this.changeResolution.call(this[rememberedres]); }
       this.audio = $('<div>').appendTo(this.menu).addClass('audioconfig').attr({
         title: game.data.ui.audioconfig
       });
@@ -237,13 +237,12 @@ game.states = {
       }
       this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({
         title: game.data.ui.back
-      }).click(game.states.backState);
+      }).leftClickEvent(game.states.backState);
       this.opt = $('<small>').addClass('opt').text('Options').hide().on('click.opt', function () {
         game.states.changeTo('options');
       }).appendTo(game.topbar);
     },
     start: function () {
-      $('.forklink').show();
       game.states.options.opt.hide();
       game.chat.el.appendTo(this.el);
     },
@@ -251,6 +250,9 @@ game.states = {
       var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
       game.states.el.removeClass('low high medium default').addClass(resolution);
       $.cookie('resolution', resolution);
+    },
+    end: function () {
+      game.states.options.opt.show();
     }
   },
   choose: {
@@ -286,13 +288,10 @@ game.states = {
     },
     start: function () {
       game.loader.addClass('loading');
-      game.states.options.opt.show();
-      if (game.mode === 'tutorial') { this.pickedbox.show(); }
+      game[game.mode].build();
       game.chat.el.appendTo(this.el);
-      $('.forklink').hide();
-      if ($('.choose .card.selected').length === 0) { 
-        game.states.choose.select.call(this.pickDeck.children().first()); 
-      }
+      game.fork.hide();
+      game.states.choose.selectFirst();
     },
     select: function () {
       var card = $(this);
@@ -308,7 +307,7 @@ game.states = {
       if (game.mode !== 'tutorial') { game.states.choose.prepickbox.show(); }
     },
     disablePick: function () {
-      game.states.choose.pickEnabled = false;      
+      game.states.choose.pickEnabled = false;
     },
     pick: function () {//console.log(this);
       var card,
@@ -327,16 +326,19 @@ game.states = {
         }
         card.addClass('selected');
         card.attr('draggable', 'true');
-        game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
         pick.removeClass('selected').appendTo(slot).off('mousedown.select').attr('draggable', 'false');
+        game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
         game.player.picks[slot.data('slot')] = pick.data('hero');
         pick.trigger('pick');
         game.player.manaBuild();
-        if (game.mode === 'tutorial') {
-          game.tutorial.pick();
-        } else { game.match.pick(); }
+        game[game.mode].pick();
       }
       return false;
+    },
+    selectFirst: function () {
+      game.states.choose.select.call(
+        game.states.choose.pickDeck.children().first()
+      );
     },
     reset: function () {
       $('.pickedbox .card').prependTo(this.pickDeck).on('mousedown.select', game.states.choose.select);
@@ -346,6 +348,7 @@ game.states = {
     end: function () {
       this.pickedbox.hide();
       this.prepickbox.hide();
+      game.fork.show();
     }
   },
   table: {
@@ -357,21 +360,19 @@ game.states = {
       this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
       this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
       this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
+      this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).leftClickEvent(game.turn.skip).text(game.data.ui.skip);
+      this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).leftClickEvent(function () {
+        if(confirm(game.data.ui.leave)) game[game.mode].surrender();
+      });
     },
     start: function () {
-      if (game.mode === 'tutorial' && !game.tutorial.started) {
-        game.tutorial.start();
-      } else if (game.mode === 'online' && !game.match.started) {
-        game.match.start();
-      }
-      $('.forklink').hide();
+      game[game.mode].setTable();
+      game.fork.hide();
       game.chat.el.appendTo(this.el);
-      game.states.log.out.hide();
       this.time.show();
       this.turns.show();
       this.camera.show();
       this.selectedArea.show();
-      game.states.options.opt.show();
     },
     buildUnits: function () {
       var j = 'A1';
@@ -429,6 +430,7 @@ game.states = {
     showResults: function () {
       game.states.table.selectedArea.hide();
       game.states.table.camera.hide();
+      $('.table > .button').hide();
       $('.table .deck').hide();
       game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
       $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
@@ -448,23 +450,22 @@ game.states = {
           text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
         $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
       });
-      $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).click(function () {
-        game.states.table.clear();
-        if (game.mode === 'tutorial') { game.tutorial.clear(); }
-        game.states.changeTo('menu');
-      });
+      $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).leftClickEvent(game.states.table.clear);
     },
     clear: function () {
+      game[game.mode].clear();
+      game.map.clear();
       $('.table .card').remove();
       $('.table .deck').remove();
-      game.states.table.time.hide();
-      game.states.table.turns.hide();
-      game.states.table.resultsbox.remove();
-      game.match.end();
+      $('.table .resultsbox').remove();
+      game.clearTimeouts();
+      game.mode = '';
+      game.states.changeTo('menu');
     },
     end: function () {
       this.time.hide();
       this.turns.hide();
+      game.fork.show();
     }
   }
 };

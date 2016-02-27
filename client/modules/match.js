@@ -1,22 +1,25 @@
 game.match = {
-  online: function () {
-    game.mode = 'online';
-    game.seed = new Date().valueOf();
-    game.id = btoa(game.seed);
-    game.db({
-      'set': 'waiting',
-      'data': { id: game.id }
-    }, function (waiting) {
-      if (game.id === waiting.id) {
-        game.player.type = 'challenged';
-        game.match.wait();
-      } else {
-        game.id = waiting.id;
-        game.seed = parseInt(atob(game.id), 10);
-        game.player.type = 'challenger';
-        game.match.found();
-      }
-    });
+  build: function () {
+    if (!game.match.builded) {
+      game.match.builded = true;
+      game.mode = 'match';
+      game.seed = new Date().valueOf();
+      game.id = btoa(game.seed);
+      game.db({
+        'set': 'waiting',
+        'data': { id: game.id }
+      }, function (waiting) {
+        if (game.id === waiting.id) {
+          game.player.type = 'challenged';
+          game.match.wait();
+        } else {
+          game.id = waiting.id;
+          game.seed = parseInt(atob(game.id), 10);
+          game.player.type = 'challenger';
+          game.match.found();
+        }
+      });
+    }
   },
   wait: function () {
     game.loader.addClass('loading');
@@ -27,24 +30,21 @@ game.match = {
     }, function () {
       game.message.text(game.data.ui.waiting);
       game.tries = 1;
-      game.match.search();
+      game.match.searching();
     });
   },
-  search: function () {
-    clearTimeout(game.timeout);
+  searching: function () {
     game.db({ 'get': game.id }, function (found) {
       if (found.challenger) {
         game.triesCounter.text('');
         game.currentData = found;
-        game.match.battle.call(game.states.choose, found.challenger, 'challenger');
+        game.match.battle(found.challenger, 'challenger');
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.waitLimit) {
           game.message.text(game.data.ui.noenemy);
-          setTimeout(function () {
-            game.states.changeTo('menu');
-          }, 2000);
-        } else { game.timeout = setTimeout(game.match.search, 1000); }
+          game.timeout(2000, game.states.changeTo ,'menu');
+        } else { game.timeout(1000, game.match.searching); }
       }
     });
   },
@@ -62,8 +62,20 @@ game.match = {
         }, function () {
           game.match.battle(found.challenged, 'challenged');
         });
-      } else { game.load.reset(); }
+      } else { game.reset(); }
     });
+  },
+  battle: function (enemy, challenge) {
+    game.loader.removeClass('loading');
+    game.states.choose.el.addClass('turn');
+    game.enemy.name = enemy;
+    game.enemy.type = challenge;
+    game.message.html(game.data.ui.battlefound + ' <b>' + game.player.name + '</b> vs <b class="enemy">' + game.enemy.name + '</b>');
+    game.states.choose.counter.show();
+    game.audio.play('battle');
+    game.states.choose.count = game.timeToPick;
+    game.states.choose.enablePick();
+    game.timeout(1000, game.match.pickCount);
   },
   pick: function () {
     if ($('.slot.available').length === 0) {
@@ -79,7 +91,7 @@ game.match = {
       game.states.choose.counter.text(game.data.ui.getready);
       game.states.choose.disablePick();
       game.match.fillDeck();
-    } else { setTimeout(game.match.pickCount, 1000); }
+    } else { game.timeout(1000, game.match.pickCount); }
   },
   fillDeck: function () {
     $('.slot').each(function () {
@@ -89,7 +101,7 @@ game.match = {
         slot.append(card).removeClass('available selected');
         game.player.picks[slot.data('slot')] = card.data('hero');
       }
-      if ($('.choose .card.selected').length === 0) { game.states.choose.pickDeck.children().first().click(); }
+      if ($('.choose .card.selected').length === 0) { game.states.choose.selectFirst(); }
       if (game.player.picks.length === 5) { game.match.sendDeck(); }
     });
   },
@@ -109,7 +121,6 @@ game.match = {
     if (game.player.type === 'challenger') { game.match.getChallengedDeck(); }
   },
   getChallengerDeck: function () {
-    clearTimeout(game.timeout);
     game.message.text(game.data.ui.loadingdeck);
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
@@ -122,13 +133,12 @@ game.match = {
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.connectionLimit) {
-          game.load.reset();
-        } else { game.timeout = setTimeout(game.match.getChallengerDeck, 1000); }
+          game.reset();
+        } else { game.timeout(1000, game.match.getChallengerDeck); }
       }
     });
   },
   getChallengedDeck: function () {
-    clearTimeout(game.timeout);
     game.message.text(game.data.ui.loadingdeck);
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
@@ -147,41 +157,30 @@ game.match = {
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.connectionLimit) {
-          game.load.reset();
-        } else { game.timeout = setTimeout(game.match.getChallengedDeck, 1000); }
+          game.reset();
+        } else { game.timeout(1000, game.match.getChallengedDeck); }
       }
     });
   },
-  battle: function (enemy, challenge) {
-    game.status = 'picking';
-    game.loader.removeClass('loading');
-    game.states.choose.el.addClass('turn');
-    game.enemy.name = enemy;
-    game.enemy.type = challenge;
-    game.message.html(game.data.ui.battlefound + ' <b>' + game.player.name + '</b> vs <b class="enemy">' + game.enemy.name + '</b>');
-    game.states.choose.counter.show();
-    game.audio.play('battle');
-    game.states.choose.count = game.timeToPick;
-    game.states.choose.enablePick();
-    setTimeout(game.match.pickCount, 1000);
-  },
-  start: function () {
-    game.states.table.el.click(function (event) {
-      var target = $(event.target);
-      if (!target.closest('.selected').length && !target.closest('.selectedarea').length) { game.card.unselect(); }
-    });
-    game.loader.addClass('loading');
-    game.message.text(game.data.ui.battle);
-    game.audio.play('horn');
-    game.match.placePlayerHeroes();
-    game.match.placeEnemyHeroes();
-    game.match.buildSkills();
-    game.tower.place();
-    game.tree.place();
-    game.states.table.buildUnits();
-    game.match.started = true;
-    game.turn.build();
-    setTimeout(game.turn.begin, 3000);
+  setTable: function () {
+    if (!game.match.started) {
+      game.match.started = true;
+      game.states.table.el.leftClickEvent(function (event) {
+        var target = $(event.target);
+        if (!target.closest('.selected').length && !target.closest('.selectedarea').length) { game.card.unselect(); }
+      });
+      game.loader.addClass('loading');
+      game.message.text(game.data.ui.battle);
+      game.audio.play('horn');
+      game.match.placePlayerHeroes();
+      game.match.placeEnemyHeroes();
+      game.match.buildSkills();
+      game.tower.place();
+      game.tree.place();
+      game.states.table.buildUnits();
+      game.turn.build();
+      game.timeout(3000, game.turn.begin);
+    }
   },
   placePlayerHeroes: function () {
     if (game.player.picks) {
@@ -268,12 +267,11 @@ game.match = {
       'set': game.id,
       'data': game.currentData
     }, function () {
-      setTimeout(game.turn.begin, 1000);
+      game.timeout(1000, game.turn.begin);
     });
   },
   getData: function () {
     game.message.text(game.data.ui.loadingturn);
-    clearTimeout(game.timeout);
     game.db({ 'get': game.id }, function (data) {
       if (data[game.enemy.type + 'Turn'] === game.enemy.turn) {
         game.triesCounter.text('');
@@ -283,8 +281,8 @@ game.match = {
         game.tries += 1;
         game.triesCounter.text(game.tries);
         if (game.tries > game.connectionLimit) {
-          game.load.reset();
-        } else { game.timeout = setTimeout(game.match.getData, 1000); }
+          game.reset();
+        } else { game.timeout(1000, game.match.getData); }
       }
     });
   },
@@ -297,6 +295,9 @@ game.match = {
     game.status = 'over';
     game.states.table.showResults();
   },
+  surrender: function () {
+    game.match.lose();
+  },
   lose: function () {
     game.winner = game.enemy.name;
     game.states.table.el.removeClass('turn');
@@ -306,7 +307,7 @@ game.match = {
     game.status = 'over';
     game.states.table.showResults();
   },
-  end: function () {
+  clear: function () {
     game.match.started = false;
   }
 };

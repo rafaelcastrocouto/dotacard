@@ -25,6 +25,12 @@ module.exports = function(grunt) {
           ext: '.min.js'
         },{
           expand: true,
+          cwd: 'client/skills',
+          src: ['*.js'],
+          dest: 'client/bundle/js/skills',
+          ext: '.min.js'
+        },{
+          expand: true,
           cwd: 'client',
           src: ['*.js'],
           dest: 'client/bundle/js',
@@ -40,21 +46,22 @@ module.exports = function(grunt) {
         src: ['browser_modules/*/*.min.css',
               'client/bundle/css/*.min.css'],
         dest: 'client/bundle/game.min.css',
-      },           
+      },
       lib: {
         src: ['browser_modules/*/*.min.js'],
         dest: 'client/bundle/lib/libraries.min.js'
-      },           
+      },
       js: {
         src: ['browser_modules/*/*.min.js',
               'client/bundle/js/*.min.js',
-              'client/bundle/js/modules/*.min.js'],
+              'client/bundle/js/modules/*.min.js',
+              'client/bundle/js/skills/*.min.js'],
         dest: 'client/bundle/game.min.js'
       }
     }
   });
   grunt.loadNpmTasks('grunt-contrib-jshint');
-  grunt.loadNpmTasks('grunt-contrib-cssmin');  
+  grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
   grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'concat']);

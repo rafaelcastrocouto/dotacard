@@ -14,16 +14,18 @@
 
 [<h2>**DOTACARD** alpha</h2>][1]
 
-A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates.
+A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
 
-You are free to [fork][2] and help to build the game, you can even [make a hero and win real cash][4]!
+You are free to [fork][2] and help to build the game, you can even [make a hero and win real cash!][4]
 
-Please report any [sugestion or issue](https://github.com/rafaelcastrocouto/dotacard/issues)*.
+Please report any [sugestion or issue](https://github.com/rafaelcastrocouto/dotacard/issues)
 
-More information on our [Wiki page][5].
+More information on our [Wiki page][5]
 
 __[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
 
 **DotA**, and **Defense of the Ancients** are trademarks and/or registered trademarks of [Valve Corporation](http://www.valvesoftware.com/).
+
+---
 
 [![Github Ninja](http://rafaelcastrocouto.github.io/dotacard/client/img/banner-github-ninja.jpg)][1]

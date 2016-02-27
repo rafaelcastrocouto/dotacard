@@ -2,8 +2,10 @@ game.player = {
   manaBuild: function () {
     game.player.mana = 0;
     $(game.player.picks).each(function (a, b) {
-      var card = $('.card.' + b);
-      game.player.mana += card.data('mana');
+      if (b) {
+        var card = $('.pickedbox .card.' + b);
+        game.player.mana += card.data('mana');
+      }
     });
     game.player.cardsPerTurn = 1 + Math.round(game.player.mana / 10);
     game.player.maxCards = Math.round(game.player.mana / 2);    

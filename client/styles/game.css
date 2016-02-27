@@ -51,6 +51,7 @@ body {
   background-size: 100% 20%;
   background-repeat: no-repeat;
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
+  image-rendering: pixelated;
 }
 
 p {
@@ -116,13 +117,13 @@ noscript {
   display: block;
 }
 
-.fork {
+.forklink {
   position: absolute;
   top: 0; right: 0;
   opacity: 0.55;
-  z-index: 10;
+  z-index: -1;
 }
-.fork:hover {
+.forklink:hover {
   opacity: 1;
 }
 
@@ -164,13 +165,13 @@ noscript {
 
 .states {
   background-image: url("../img/bkg/polygon-light.jpg");
+  background-size: cover;
 }
 
 .state {
   margin: 0 auto;
   width: 970px;
   height: 600px;
-  background-color: #c2beb2;
   position: relative;
   overflow: hidden;
   border-radius: 4px;
@@ -252,6 +253,7 @@ noscript {
 .topbar .message {
   position: static;
   padding-left: 26px;
+  border-radius: 4px;
 }
 .topbar .message * {
   position: static;
@@ -263,7 +265,7 @@ noscript {
 
 .logout {
   position: absolute;
-  right: 50px;
+  right: 55px;
 }
 
 .logout, .version {
@@ -282,7 +284,8 @@ noscript {
 
 .turns {
   position: absolute;
-  top: 2px; right: 50px;
+  top: 2px; right: 100px;
+  border-radius: 4px;
 }
 
 .turntitle {
@@ -1034,7 +1037,7 @@ label span {
   width: 220px;
   height: 330px;
   position: absolute;
-  top: 34px;
+  top: 30px;
   right: 5px;
   border-radius: 10px;
   perspective: 600px;
@@ -1079,6 +1082,21 @@ label span {
 .table .selectedarea .card .damaged,
 .table .selectedarea .card .heal {
   display: none;
+}
+
+.table .button {
+  position: absolute;
+  right: 5px;
+  top: auto;
+  width: 175px;
+}
+
+.table .skip {
+  bottom: 125px;
+}
+
+.table .surrender {
+  bottom: 180px;
 }
 
 .table .deck.skills.enemy {
@@ -1558,6 +1576,7 @@ label span {
   width: 60px;
   display: block;
   margin: 20px auto 0;
+  position: static;
 }
 
 /*HEROES*/

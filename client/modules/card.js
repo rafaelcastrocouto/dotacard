@@ -3,7 +3,6 @@ game.card = {
     $.fn.place = game.card.place;
     $.fn.select = game.card.select;
     $.fn.unselect = game.card.unselect;
-    $.fn.rightClickEvent = game.card.rightClickEvent;
     $.fn.highlightSource = game.card.highlightSource;
     $.fn.highlightTargets = game.card.highlightTargets;
     $.fn.strokeSkill = game.card.strokeSkill;
@@ -132,7 +131,7 @@ game.card = {
       game.card.unselect();
       game.selectedCard = card;
       game.map.highlight();
-      card.clone().appendTo(game.states.table.selectedArea).addClass('zoom');
+      card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink');
       card.addClass('selected');
       card.attr('draggable', 'true');
       game.states.table.selectedArea.trigger('select');
@@ -160,11 +159,6 @@ game.card = {
     setTimeout(function () {
       $(this).remove();
     }.bind(del), 400);
-  },
-  rightClickEvent: function (cb) {
-    var disable = function (e) {e.preventDefault();};
-    this.on('contextmenu taphold drop dragdrop', cb).on('dragenter dragover', disable);
-    return this;
   },
   highlightSource: function () {
     var skill = this, hero = skill.data('hero');

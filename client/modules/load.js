@@ -2,7 +2,6 @@ game.load = {
   updating: 0,
   totalUpdate: 7, // 5 json + lang + pack
   start: function () {
-    game.status = 'loading';
     $('.loadtext .message').text('Updating: ');
     $('.loadtext .progress').text('0%');
     game.load.images.preload();
@@ -16,23 +15,20 @@ game.load = {
       game.load.data();
     });
     game.load.ping(function () {
-      if (!game.offline && location.host !== 'localhost') { game.load.analytics(); }
+      if (!game.offline && location.host.search('localhost') < 0) { 
+        game.load.analytics(); 
+      }
     });
-    setTimeout(game.load.progress);
+    game.load.progress();
   },
   progress: function () {
-    clearTimeout(game.timeout);
     var loading = Number.parseInt(game.load.updating / game.load.totalUpdate * 100);
     $('.progress').text(loading + '%');
     if (game.load.updating < game.load.totalUpdate) {
-      // loading
-      game.status = 'loading';            
-      game.timeout = setTimeout(game.load.progress, 10);
+      game.timeout(35, game.load.progress);
     } else if (game.version && game.load.updating === game.load.totalUpdate) {
       game.states.build();
-      setTimeout(function () {
-        game.states.changeTo('log');
-      }, 1000);
+      game.timeout(800, game.states.changeTo, 'log');
     }
   },
   images: {
@@ -59,7 +55,6 @@ game.load = {
   },
   json: function (name, cb) {
     $.ajax({
-      async: true,
       type: 'GET',
       url: 'json/' + game.language.dir + name + '.json',
       complete: function (response) {
@@ -87,7 +82,6 @@ game.load = {
   },
   pack: function () {
     $.ajax({
-      async: true,
       type: 'GET',
       url: 'package.json',
       complete: function (response) {
@@ -134,7 +128,7 @@ game.load = {
   },
   audio: function (name, cb) {
     var ajax = new XMLHttpRequest();
-    ajax.open('GET', '/audio/' + name + '.mp3', true);
+    ajax.open('GET', '/audio/' + name + '.mp3', /*async*/true);
     ajax.responseType = 'arraybuffer';
     ajax.onload = function () {
       game.audio.context.decodeAudioData(ajax.response, function (buffer) {
@@ -164,7 +158,6 @@ game.load = {
   ping: function (cb) {
     var start = new Date();
     $.ajax({
-      async: true,
       type: 'GET',
       url: game.homepage,
       complete: function (response) {
@@ -178,10 +171,5 @@ game.load = {
   },
   analytics: function () {
     $('<script src="analytics/google.analytics.min.js">').appendTo('body');
-  },
-  reset: function () {
-    console.log('Internal error: ', game);
-    var r = confirm(game.data.ui.error);
-    if (r) { location.reload(true); }
   }
 };

@@ -39,6 +39,7 @@ game.turn = {
   },
   start: function () {
     if (game.status === 'turn') {
+      game.states.table.skip.attr({disabled: false});
       game.states.table.el.removeClass('unturn').addClass('turn');
       game.message.text(game.data.ui.yourturn);
       game.player.turn += 1;
@@ -76,6 +77,12 @@ game.turn = {
     game.time += 0.9 / game.timeToPlay;
     game.turn.counter -= 1;
   },
+  skip: function (e) {console.log(e, this);
+    if (!this.attr('disabled')) {
+      game.turn.counter = 0;
+      console.log('skip');
+    }
+  },
   end: function () {
     game.message.text(game.data.ui.turnend);
     game.map.unhighlight();
@@ -92,6 +99,7 @@ game.turn = {
       hero.trigger('turnend', { target: hero });
     });
     if (game.status === 'turn') {
+      game.states.table.skip.attr({disabled: true});
       game.states.table.el.removeClass('turn');
       game.states.table.el.addClass('unturn');
       game.status = 'unturn';

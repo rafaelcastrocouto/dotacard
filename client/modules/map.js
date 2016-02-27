@@ -400,5 +400,9 @@ game.map = {
   unhighlight: function () {
     $('.map .card').off('contextmenu taphold mouseenter mouseleave').removeClass('attacktarget source casttarget targetarea');
     $('.map .spot').off('contextmenu taphold mouseenter mouseleave').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
+  },
+  clear: function () {
+    game.map.unhighlight();
+    $('.map .spot').removeClass('block');
   }
 };
