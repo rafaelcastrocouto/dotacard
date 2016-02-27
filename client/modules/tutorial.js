@@ -1,27 +1,25 @@
 game.tutorial = {
   build: function () {
-    game.states.choose.pickedbox.show();
     if (!game.tutorial.builded) {
       game.tutorial.builded = true;
-      game.mode = 'tutorial';
-      game.seed = new Date().valueOf();
-      game.id = btoa(game.seed);
-      game.message.text(game.data.ui.waiting);
-      game.states.choose.counter.show().text(game.data.ui.rightpick);
-      game.enemy.name = 'axe';
-      game.enemy.type = 'challenged';
-      game.player.type = 'challenger';
-      game.states.choose.enablePick();
-      if (!game.tutorial.axe) {
-        game.tutorial.axe = $('<div>').addClass('axe tutorial');
-        game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
-        game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
-        game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon);
-      }
-      game.tutorial.message.html(game.data.ui.axepick);
+      game.tutorial.axe = $('<div>').addClass('axe tutorial');
+      game.tutorial.axeimg = $('<div>').addClass('img').appendTo(game.tutorial.axe);
+      game.tutorial.axebaloon = $('<div>').addClass('baloon').appendTo(game.tutorial.axe);
+      game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon);
       game.tutorial.axe.appendTo(game.states.choose.el);
-      game.tutorial.axeshow();
     }
+    game.mode = 'tutorial';
+    game.seed = new Date().valueOf();
+    game.id = btoa(game.seed);
+    game.message.text(game.data.ui.waiting);
+    game.tutorial.message.html(game.data.ui.axepick);
+    game.states.choose.counter.show().text(game.data.ui.rightpick);
+    game.enemy.name = 'axe';
+    game.enemy.type = 'challenged';
+    game.player.type = 'challenger';
+    game.states.choose.pickedbox.show();
+    game.tutorial.axeshow();
+    game.states.choose.enablePick();
   },
   axeshow: function () {
     game.timeout(2000, function () {
@@ -100,7 +98,7 @@ game.tutorial = {
         var x = 0, y = 6;
         $.each(deck.data('cards'), function (i, card) {
           var p = game.player.picks.indexOf(card.data('hero'));
-          card.addClass('player hero').data('side', 'player').on('click.select', game.tutorial.select);
+          card.addClass('player hero').data('side', 'player').leftClickEvent(game.tutorial.select);
           card.place(game.map.toId(x + p, y));
           game.player.mana += card.data('mana');
         });
@@ -117,7 +115,7 @@ game.tutorial = {
         var x = 0, y = 6;
         $.each(deck.data('cards'), function (i, card) {
           var p = game.enemy.picks.indexOf(card.data('hero'));
-          card.addClass('enemy hero').data('side', 'enemy').on('click.select', game.tutorial.select);
+          card.addClass('enemy hero').data('side', 'enemy').leftClickEvent(game.tutorial.select);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
         });
       }
@@ -128,7 +126,7 @@ game.tutorial = {
     game.tutorial.axebaloon.fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectenemy);
     game.message.text(game.data.ui.yourturncount + ' 9');
-    $('.map .enemy.tower').addClass('tutorialblink').on('click.tutorialselect', game.card.select);
+    $('.map .enemy.tower').addClass('tutorialblink').leftClickEvent(game.card.select);
   },
   select: function () {
     var card = $(this);
@@ -159,8 +157,8 @@ game.tutorial = {
     game.message.text(game.data.ui.yourturncount + ' 8');
     game.states.table.selectedArea.addClass('tutorialblink');
     game.states.table.selectedArea.on('mouseover.tutorial', '.card', game.tutorial.over);
-    $('.map .enemy.tower').off('click.tutorialselect');
-    $('.map .card').on('click.select', game.card.select);
+    $('.map .enemy.tower').clearEvents();
+    $('.map .card').leftClickEvent(game.card.select);
   },
   over: function () {
     if (game.tutorial.lesson === 'Zoom') {
@@ -303,7 +301,10 @@ game.tutorial = {
       cb: function (deck) {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').on('click.tutorial', game.tutorial.select).on('click.select', game.card.select);
+          skill.addClass('player skill').data('side', 'player').leftClickEvent(function () {
+            game.tutorial.select.call(this)
+            game.card.select.call(this);
+          });
         });
       }
     });

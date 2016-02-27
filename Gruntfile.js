@@ -2,7 +2,14 @@ module.exports = function(grunt) {
   grunt.initConfig({
     'pkg': grunt.file.readJSON('package.json'),
     'jshint': {
-      all: ['Gruntfile.js', 'server.js', 'client/*.js', 'client/modules/*.js']
+      all: [
+        'Gruntfile.js',
+        'server.js',
+        'client/*.js',
+        'client/modules/*.js',
+        'client/states/*.js',
+        'client/skills/*.js'
+      ]
     },
     'cssmin': {
       target: {
@@ -22,6 +29,12 @@ module.exports = function(grunt) {
           cwd: 'client/modules',
           src: ['*.js', '!*.min.js'],
           dest: 'client/bundle/js/modules',
+          ext: '.min.js'
+        },{
+          expand: true,
+          cwd: 'client/states',
+          src: ['*.js'],
+          dest: 'client/bundle/js/states',
           ext: '.min.js'
         },{
           expand: true,
@@ -55,6 +68,7 @@ module.exports = function(grunt) {
         src: ['browser_modules/*/*.min.js',
               'client/bundle/js/*.min.js',
               'client/bundle/js/modules/*.min.js',
+              'client/bundle/js/states/*.min.js',
               'client/bundle/js/skills/*.min.js'],
         dest: 'client/bundle/game.min.js'
       }

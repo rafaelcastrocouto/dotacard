@@ -193,7 +193,7 @@ game.match = {
           var x = 0, y = 6;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
-            card.addClass('player hero').data('side', 'player').on('click.select', game.card.select);
+            card.addClass('player hero').data('side', 'player').leftClickEvent(game.card.select);
             card.place(game.map.toId(x + p, y));
             game.player.mana += card.data('mana');
           });
@@ -212,7 +212,7 @@ game.match = {
           var x = 0, y = 6;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.enemy.picks.indexOf(card.data('hero'));
-            card.addClass('enemy hero').data('side', 'enemy').on('click.select', game.card.select);
+            card.addClass('enemy hero').data('side', 'enemy').leftClickEvent(game.card.select);
             card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
             game.enemy.mana += card.data('mana');
           });
@@ -235,7 +235,7 @@ game.match = {
       cb: function (deck) {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').on('click.select', game.card.select);
+          skill.addClass('player skill').data('side', 'player').leftClickEvent(game.card.select);
           if (skill.data('skill') === 'ult') {
             skill.appendTo(game.player.skills.ult);
           } else if (skill.data('deck') === game.data.ui.temp) {

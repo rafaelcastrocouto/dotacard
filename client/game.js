@@ -7,7 +7,21 @@
 //end turn button
 
 var game = {
-  container: $('.container').first(),
+  start: function () {
+    game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
+    if (window.$ &&
+        window.JSON &&
+        window.btoa && window.atob &&
+        window.XMLHttpRequest &&
+        Modernizr.backgroundsize &&
+        Modernizr.csstransforms &&
+        Modernizr.generatedcontent &&
+        Modernizr.rgba &&
+        Modernizr.opacity) {
+      game.states.changeTo('loading');
+    } else game.states.changeTo('unsupported');
+  },
+  container: $('.container'),
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message'),
   triesCounter: $('<small>').addClass('triescounter'),
@@ -24,31 +38,17 @@ var game = {
   tries: 0,
   id: null,
   seed: null,
-  skills: {}, //bundle from /skills
+  skills: {}, //bundle from ./skills
   data: {}, //json {buffs, heroes, skills, ui, units}
-  currentData: {}, // match moves data
   mode: '', //match, tutorial
-  status: '', //turn, unturn, over
-  currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
-  start: function () {
-    game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
-    if (window.$ &&
-        window.JSON &&
-        window.btoa && window.atob &&
-        window.XMLHttpRequest &&
-        Modernizr.backgroundsize &&
-        Modernizr.csstransforms &&
-        Modernizr.generatedcontent &&
-        Modernizr.rgba &&
-        Modernizr.opacity) {
-      game.states.changeTo('loading');
-    } else game.states.changeTo('unsupported');
-  },
+  status: '', //turn, unturn, over  
+  currentData: {}, // match moves data  
   language: {
     current: 'en-US',
     available: ['en-US', 'pt-BR'],
-    dir: ''
+    dir: ''// ./json
   },
+  currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   db: function (send, cb) {
     if (typeof send.data !== 'string') {
       send.data = JSON.stringify(send.data);
@@ -82,6 +82,7 @@ var game = {
     game.card.bindJquery();
     $.fn.leftClickEvent = game.leftClickEvent;
     $.fn.rightClickEvent = game.rightClickEvent; 
+    $.fn.clearEvents = game.clearEvents; 
     window.ontouchstart = function (e) {
      var t = $(e.target);
      if (t.is('input[type=text]')) t.focus();
@@ -103,6 +104,10 @@ var game = {
   rightClickEvent: function (cb) {
     this.on('contextmenu taphold drop dragdrop', cb).on('dragenter dragover', game.cancelEvent);
     return this;
+  },
+  clearEvents: function () {
+    this.off('click touchstart');
+    this.off('contextmenu taphold drop dragdrop');
   },
   timeoutArray: [],
   timeout: function (ms, cb, arg) {
