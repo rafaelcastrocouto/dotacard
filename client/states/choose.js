@@ -1,13 +1,13 @@
-game.states.choose =  {
+game.states.choose = {
   build: function () {
     this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.data.ui.chooseheroes);
-    this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide().rightClickEvent(game.cancelEvent);
+    this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide().onrightClick(game.events.cancel);
     var slot;
     for (slot = 0; slot < 5; slot += 1) {
       $('<div>').appendTo(this.pickedbox)
       .attr({ title: game.data.ui.rightpick })
       .data('slot', slot).addClass('slot available')
-      .rightClickEvent(game.states.choose.pick);
+      .onrightClick(game.states.choose.pick);
     }
     this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.data.ui.customdecks).hide();
     this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
@@ -33,7 +33,6 @@ game.states.choose =  {
     game.loader.addClass('loading');
     game[game.mode].build();
     game.chat.el.appendTo(this.el);
-    game.fork.hide();
     game.states.choose.selectFirst();
   },
   select: function () {
@@ -91,6 +90,5 @@ game.states.choose =  {
   end: function () {
     this.pickedbox.hide();
     this.prepickbox.hide();
-    game.fork.show();
   }
 };

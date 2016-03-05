@@ -6,12 +6,8 @@ game.load = {
     $('.loadtext .progress').text('0%');
     game.load.images.preload();
     game.load.pack();
-    if (window.AudioContext) {
-      game.audio.build();
-      game.load.track();
-      game.load.sounds();
-    }
-    game.load.language(function () {
+    if (window.AudioContext) game.audio.build();
+    game.language.load(function () {
       game.load.data();
     });
     game.load.ping(function () {
@@ -67,19 +63,6 @@ game.load = {
       }
     });
   },
-  language: function (cb) {
-    game.db({ 'get': 'lang' }, function (data) {
-      game.load.updating += 1;
-      if (data.lang) {
-        game.language.detected = data.lang.split(';')[0].split(',')[0];
-        if (game.language.available.indexOf(game.language.detected) > 0) {
-          game.language.current = game.language.detected;
-          game.language.dir = game.language.current + '/';
-        }
-      }
-      if (cb) { cb(); }
-    });
-  },
   pack: function () {
     $.ajax({
       type: 'GET',
@@ -124,35 +107,6 @@ game.load = {
           }
         }
       }
-    });
-  },
-  audio: function (name, cb) {
-    var ajax = new XMLHttpRequest();
-    ajax.open('GET', '/audio/' + name + '.mp3', /*async*/true);
-    ajax.responseType = 'arraybuffer';
-    ajax.onload = function () {
-      game.audio.context.decodeAudioData(ajax.response, function (buffer) {
-        game.audio.buffers[name] = buffer;
-        //game.load.updating += 1;
-        if (cb) { cb(); }
-      });
-    };
-    ajax.send();
-  },
-  sounds: function () {
-    //game.load.totalUpdate += game.audio.sounds.length;
-    $(game.audio.sounds).each(function (a, b) {
-      game.load.audio(b);
-    });
-  },
-  track: function () {
-    game.song = 'doomhammer';
-    //game.load.totalUpdate += 1;
-    game.load.audio(game.song, function () {
-      game.audio.play(game.song);
-      setInterval(function () {
-        game.audio.play(game.song);
-      }, game.audio.buffers[game.song].duration * 1000);
     });
   },
   ping: function (cb) {

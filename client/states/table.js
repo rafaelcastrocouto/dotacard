@@ -7,14 +7,13 @@ game.states.table = {
     this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
     this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
-    this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).leftClickEvent(game.turn.skip).text(game.data.ui.skip);
-    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).leftClickEvent(function () {
+    this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).onLeftClick(game.turn.skip).text(game.data.ui.skip);
+    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).onLeftClick(function () {
       if(confirm(game.data.ui.leave)) game[game.mode].surrender();
     });
   },
   start: function () {
     game[game.mode].setTable();
-    game.fork.hide();
     game.chat.el.appendTo(this.el);
     this.time.show();
     this.turns.show();
@@ -97,7 +96,7 @@ game.states.table = {
         text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
-    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).leftClickEvent(game.states.table.clear);
+    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).onLeftClick(game.states.table.clear);
   },
   clear: function () {
     game[game.mode].clear();
@@ -112,6 +111,5 @@ game.states.table = {
   end: function () {
     this.time.hide();
     this.turns.hide();
-    game.fork.show();
   }
 };

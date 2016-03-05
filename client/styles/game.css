@@ -38,6 +38,7 @@ input[type="text"] {
 }
 
 /*TAGS*/
+
 html, body {
   user-select: none;
   margin: 0;
@@ -92,10 +93,21 @@ noscript {
 
 /*CLASSES*/
 
+.forklink {
+  position: absolute;
+  top: 0; right: 0;
+  opacity: 0.55;
+  z-index: 1;
+}
+.forklink:hover {
+  opacity: 1;
+}
+
 .container {
   position: absolute;
   top: 50%; left: 50%;
-  transform: translate(-50%, -50%)
+  transform: translate(-50%, -50%);
+  z-index: 2;
 }
 
 .hidden {
@@ -115,16 +127,6 @@ noscript {
 }
 .box div p {
   display: block;
-}
-
-.forklink {
-  position: absolute;
-  top: 0; right: 0;
-  opacity: 0.55;
-  z-index: -1;
-}
-.forklink:hover {
-  opacity: 1;
 }
 
 .logo .h1 {
@@ -166,6 +168,7 @@ noscript {
 .states {
   background-image: url("../img/bkg/polygon-light.jpg");
   background-size: cover;
+  border-radius: 4px;
 }
 
 .state {

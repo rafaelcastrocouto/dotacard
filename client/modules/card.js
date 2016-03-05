@@ -180,27 +180,27 @@ game.card = {
         targets = skill.data('targets');
         if (skill.data('type') === game.data.ui.passive) {
           if (!source.hasClass('dead')) {
-            source.addClass('casttarget').rightClickEvent(game.player.passive);
+            source.addClass('casttarget').onrightClick(game.player.passive);
           }
         } else if (skill.data('type') === game.data.ui.toggle) {
           if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
-            source.addClass('casttarget').rightClickEvent(game.player.toggle);
+            source.addClass('casttarget').onrightClick(game.player.toggle);
           }
         } else if (skill.data('type') === game.data.ui.active) {
           //console.log('a');
           if (!source.hasClasses('dead done stunned frozen silenced hexed disabled sleeping cycloned taunted')) {
             //console.log('s');
             if (targets.indexOf(game.data.ui.self) >= 0) {
-              source.addClass('casttarget').rightClickEvent(game.player.cast);
+              source.addClass('casttarget').onrightClick(game.player.cast);
             }
             if (targets.indexOf(game.data.ui.ally) >= 0) {
               if (range === game.data.ui.global) {
-                $('.map .player').addClass('casttarget').rightClickEvent(game.player.cast);
+                $('.map .player').addClass('casttarget').onrightClick(game.player.cast);
               } else {
                 game.map.inRange(pos, range, function (neighbor) {
                   var card = $('.card', neighbor);
                   if (card.hasClass('player')) {
-                    card.addClass('casttarget').rightClickEvent(game.player.cast);
+                    card.addClass('casttarget').onrightClick(game.player.cast);
                   }
                 });
               }
@@ -209,12 +209,12 @@ game.card = {
             if (targets.indexOf(game.data.ui.enemy) >= 0) {
               //console.log('e');
               if (range === game.data.ui.global) {
-                $('.map .enemy').addClass('casttarget').rightClickEvent(game.player.cast);
+                $('.map .enemy').addClass('casttarget').onrightClick(game.player.cast);
               } else {
                 game.map.inRange(pos, range, function (neighbor) {
                   var card = $('.card', neighbor);
                   if (card.hasClass('enemy')) {
-                    card.addClass('casttarget').rightClickEvent(game.player.cast);
+                    card.addClass('casttarget').onrightClick(game.player.cast);
                   }
                 });
               }
@@ -223,7 +223,7 @@ game.card = {
               pos = game.map.getPosition(source.data('ld'));
               game.map.around(pos, range, function (neighbor) {
                 if (neighbor.hasClass('free')) {
-                  neighbor.addClass('targetarea').rightClickEvent(game.player.cast);
+                  neighbor.addClass('targetarea').onrightClick(game.player.cast);
                 }
               });
               return skill;
@@ -232,24 +232,24 @@ game.card = {
               if (targets.indexOf(game.data.ui.free) >= 0) {
                 game.map.around(pos, range, function (neighbor) {
                   if (neighbor.hasClass('free')) {
-                    neighbor.addClass('targetarea').rightClickEvent(game.player.cast);
+                    neighbor.addClass('targetarea').onrightClick(game.player.cast);
                   }
                 });
               } else {
                 if (aoe === 'Radial') {
                   game.map.around(pos, range, function (neighbor) {
-                    neighbor.addClass('targetarea').rightClickEvent(game.player.cast);
+                    neighbor.addClass('targetarea').onrightClick(game.player.cast);
                     if (neighbor.hasClass('block')) {
                       var card = $('.card', neighbor);
-                      card.addClass('targetarea').rightClickEvent(game.player.cast);
+                      card.addClass('targetarea').onrightClick(game.player.cast);
                     }
                   });
                 } else if (aoe === 'Linear') {
                   game.map.atCross(pos, skill.data('aoe range'), skill.data('aoe width'), function (neighbor) {
-                    neighbor.addClass('targetarea').rightClickEvent(game.player.cast);
+                    neighbor.addClass('targetarea').onrightClick(game.player.cast);
                     if (neighbor.hasClass('block')) {
                       var card = $('.card', neighbor);
-                      card.addClass('targetarea').rightClickEvent(game.player.cast);
+                      card.addClass('targetarea').onrightClick(game.player.cast);
                     }
                   });
                 }
@@ -310,7 +310,7 @@ game.card = {
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
       game.map.atMovementRange(card, Math.round(speed), function (neighbor) {
-        if (!neighbor.hasClass('block')) { neighbor.addClass('movearea').rightClickEvent(game.player.move); }
+        if (!neighbor.hasClass('block')) { neighbor.addClass('movearea').onrightClick(game.player.move); }
       });
     }
     return card;
@@ -535,7 +535,7 @@ game.card = {
       range = game.map.getRange(card.data('range'));
       game.map.inRange(pos, range, function (neighbor) {
         var card = $('.card', neighbor);
-        if (card.hasClass('enemy')) { card.addClass('attacktarget').rightClickEvent(game.player.attack); }
+        if (card.hasClass('enemy')) { card.addClass('attacktarget').onrightClick(game.player.attack); }
       });
     }
     return card;

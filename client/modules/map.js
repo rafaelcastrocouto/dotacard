@@ -10,7 +10,7 @@ game.map = {
       game.spot[h] = [];
       tr = $('<div>').addClass('row').appendTo(map);
       for (w = 0; w < opt.width; w += 1) {
-        game.spot[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.cancelEvent);
+        game.spot[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.events.cancel);
       }
     }
     game.map.builded = true;

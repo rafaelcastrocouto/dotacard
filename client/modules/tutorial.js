@@ -98,7 +98,7 @@ game.tutorial = {
         var x = 0, y = 6;
         $.each(deck.data('cards'), function (i, card) {
           var p = game.player.picks.indexOf(card.data('hero'));
-          card.addClass('player hero').data('side', 'player').leftClickEvent(game.tutorial.select);
+          card.addClass('player hero').data('side', 'player').onLeftClick(game.tutorial.select);
           card.place(game.map.toId(x + p, y));
           game.player.mana += card.data('mana');
         });
@@ -115,7 +115,7 @@ game.tutorial = {
         var x = 0, y = 6;
         $.each(deck.data('cards'), function (i, card) {
           var p = game.enemy.picks.indexOf(card.data('hero'));
-          card.addClass('enemy hero').data('side', 'enemy').leftClickEvent(game.tutorial.select);
+          card.addClass('enemy hero').data('side', 'enemy').onLeftClick(game.tutorial.select);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
         });
       }
@@ -126,7 +126,7 @@ game.tutorial = {
     game.tutorial.axebaloon.fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectenemy);
     game.message.text(game.data.ui.yourturncount + ' 9');
-    $('.map .enemy.tower').addClass('tutorialblink').leftClickEvent(game.card.select);
+    $('.map .enemy.tower').addClass('tutorialblink').onLeftClick(game.card.select);
   },
   select: function () {
     var card = $(this);
@@ -158,7 +158,7 @@ game.tutorial = {
     game.states.table.selectedArea.addClass('tutorialblink');
     game.states.table.selectedArea.on('mouseover.tutorial', '.card', game.tutorial.over);
     $('.map .enemy.tower').clearEvents();
-    $('.map .card').leftClickEvent(game.card.select);
+    $('.map .card').onLeftClick(game.card.select);
   },
   over: function () {
     if (game.tutorial.lesson === 'Zoom') {
@@ -170,7 +170,7 @@ game.tutorial = {
     }
   },
   unselect: function () {
-    game.states.table.el.leftClickEvent(function (event) {
+    game.states.table.el.onLeftClick(function (event) {
       var target = $(event.target);
       if (!target.closest('.selected').length && !target.closest('.selectedarea').length) { game.card.unselect(); }
     });
@@ -301,8 +301,8 @@ game.tutorial = {
       cb: function (deck) {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').leftClickEvent(function () {
-            game.tutorial.select.call(this)
+          skill.addClass('player skill').data('side', 'player').onLeftClick(function () {
+            game.tutorial.select.call(this);
             game.card.select.call(this);
           });
         });

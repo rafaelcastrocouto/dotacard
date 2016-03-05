@@ -8,9 +8,11 @@
 
 var game = {
   start: function () {
+    game.events.build();
     game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
     if (window.$ &&
         window.JSON &&
+        window.localStorage &&
         window.btoa && window.atob &&
         window.XMLHttpRequest &&
         Modernizr.backgroundsize &&
@@ -25,7 +27,6 @@ var game = {
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message'),
   triesCounter: $('<small>').addClass('triescounter'),
-  fork: $('.forklink'),
   scrollspeed: 0.4,
   timeToPick: 25,
   timeToPlay: 30,
@@ -43,11 +44,6 @@ var game = {
   mode: '', //match, tutorial
   status: '', //turn, unturn, over  
   currentData: {}, // match moves data  
-  language: {
-    current: 'en-US',
-    available: ['en-US', 'pt-BR'],
-    dir: ''// ./json
-  },
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   db: function (send, cb) {
     if (typeof send.data !== 'string') {
@@ -73,56 +69,6 @@ var game = {
   random: function () {
     game.seed += 1;
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
-  },
-  cancelEvent: function (e) {
-    if (e && e.preventDefault) e.preventDefault();
-    return false;
-  },
-  events: function () {
-    game.card.bindJquery();
-    $.fn.leftClickEvent = game.leftClickEvent;
-    $.fn.rightClickEvent = game.rightClickEvent; 
-    $.fn.clearEvents = game.clearEvents; 
-    window.ontouchstart = function (e) {
-     var t = $(e.target);
-     if (t.is('input[type=text]')) t.focus();
-     if (t.is('input[type=radio], input[type=checkbox], a')) t.click();
-     if (e.preventDefault) e.preventDefault();
-     return false;
-    };
-    window.oncontextmenu = game.cancelEvent;
-    window.onbeforeunload = function () {
-      if (game.mode == 'match') {
-        return game.data.ui.leave;
-      }
-    };
-  },
-  leftClickEvent: function (cb) {
-    this.on('click touchstart', cb);
-    return this;
-  },
-  rightClickEvent: function (cb) {
-    this.on('contextmenu taphold drop dragdrop', cb).on('dragenter dragover', game.cancelEvent);
-    return this;
-  },
-  clearEvents: function () {
-    this.off('click touchstart');
-    this.off('contextmenu taphold drop dragdrop');
-  },
-  timeoutArray: [],
-  timeout: function (ms, cb, arg) {
-    var t = setTimeout(function (arg) {
-        cb(arg);
-        game.timeoutArray.erase(t);
-    }, ms, arg);
-    game.timeoutArray.push(t);
-    return t;
-  },
-  clearTimeouts: function () {
-    for (var i=0; i < game.timeoutArray.length; i++) {
-      clearTimeout(game.timeoutArray[i]);
-    }
-    game.timeoutArray = [];
   },
   reset: function () {
     console.error('Internal error: ', game);

@@ -13,16 +13,16 @@ game.states.log = {
     });
     this.button = $('<div>').addClass('button').appendTo(this.box).text(game.data.ui.log).attr({
       title: game.data.ui.choosename
-    }).leftClickEvent(this.login);
+    }).onLeftClick(this.login);
     this.rememberlabel = $('<label>').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
     this.remembercheck = $('<input>').attr({
       type: 'checkbox',
       name: 'remember',
       checked: true
     }).change(this.remember).appendTo(this.rememberlabel);
-    var rememberedname = $.cookie('name');
+    var rememberedname = localStorage.getItem('name');
     if (rememberedname) { this.input.val(rememberedname); }
-    this.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).leftClickEvent(this.logout);
+    this.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).onLeftClick(this.logout);
   },
   start: function () {
     game.message.html('Version <small class="version">' + game.version + '</small>');
@@ -35,9 +35,9 @@ game.states.log = {
     if (name) {
       game.player.name = name;
       if (game.states.log.remembername) {
-        $.cookie('name', name);
+        localStorage.setItem('name', name);
       } else {
-        $.removeCookie('name');
+        localStorage.removeItem('name');
       }
       game.states.log.button.attr('disabled', true);
       game.loader.addClass('loading');
@@ -64,6 +64,6 @@ game.states.log = {
   },
   remember: function () {
     game.states.log.remembername = !game.states.log.remembername;
-    if (!game.states.log.remembername) { $.removeCookie('name'); }
+    if (!game.states.log.remembername) { localStorage.getItem('name'); }
   }
 };

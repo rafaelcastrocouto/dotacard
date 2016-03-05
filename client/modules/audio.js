@@ -39,6 +39,19 @@ game.audio = {
     'crit'
   ],
   buffers: {},
+  load: function (name, cb) {
+    var ajax = new XMLHttpRequest();
+    ajax.open('GET', '/audio/' + name + '.mp3', /*async*/true);
+    ajax.responseType = 'arraybuffer';
+    ajax.onload = function () {
+      game.audio.context.decodeAudioData(ajax.response, function (buffer) {
+        game.audio.buffers[name] = buffer;
+        //game.load.updating += 1;
+        if (cb) { cb(); }
+      });
+    };
+    ajax.send();
+  },
   build: function () {
     game.audio.context = new AudioContext();
     game.mute = game.audio.context.createGain();
@@ -48,6 +61,22 @@ game.audio = {
     game.audio.trackNode = game.audio.context.createGain();
     game.audio.trackNode.connect(game.mute);
     game.mute.gain.value = 0.6;
+    game.audio.loadTrack();
+    game.audio.loadSounds();
+  },
+  loadSounds: function () {
+    $(game.audio.sounds).each(function (a, b) {
+      game.audio.load(b);
+    });
+  },
+  loadTrack: function () {
+    game.song = 'doomhammer';
+    game.audio.load(game.song, function () {
+      game.audio.play(game.song);
+      setInterval(function () {
+        game.audio.play(game.song);
+      }, game.audio.buffers[game.song].duration * 1000);
+    });
   },
   play: function (name) {
     if (game.audio.context && game.audio.context.createBufferSource) {
@@ -65,9 +94,18 @@ game.audio = {
   mute: function () {
     var vol = game.unmutedvolume || game.mute.gain.value || 0.6;
     if (this.checked) { vol = 0; }
-    $.cookie('volume', vol);
+    localStorage.setItem('volume', vol);
     game.mute.gain.value = vol;
     game.states.options.volumecontrol.css('transform', 'scale(' + vol + ')');
+  },
+  setVolume: function () {
+    var vol, rememberedvol = localStorage.getItem('volume');
+    if (rememberedvol) {
+      vol = parseFloat(rememberedvol);
+      if (vol === 0) { this.muteinput.prop('checked', true); }
+      game.mute.gain.value = vol;
+      game.states.options.volumecontrol.css('transform', 'scale(' + rememberedvol + ')');
+    }
   },
   volumedown: function (event) {
     var target = $(event.target).data('volume');
@@ -96,7 +134,7 @@ game.audio = {
     game.states.options[game.audio.volumetarget + 'control'].css('transform', 'scale(' + volume + ')');
     if (game.audio.volumetarget === 'volume') {
       game.mute.gain.value = volume;
-      $.cookie('volume', volume);
+      localStorage.setItem('volume', volume);
       game.unmutedvolume = volume;
     } else if (game.audio.volumetarget === 'music') {
       game.audio.trackNode.gain.value = volume;

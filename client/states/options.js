@@ -27,9 +27,7 @@ game.states.options = {
       name: 'resolution',
       value: 'low'
     }).change(this.changeResolution)).append($('<span>').text(game.data.ui.low + ' 800x600'));
-    var rememberedvol, vol,
-      rememberedres = $.cookie('resolution');
-    if (rememberedres && this[rememberedres]) { this.changeResolution.call(this[rememberedres]); }
+    this.setResolution();
     this.audio = $('<div>').appendTo(this.menu).addClass('audioconfig').attr({
       title: game.data.ui.audioconfig
     });
@@ -52,26 +50,30 @@ game.states.options = {
     this.soundsinput = $('<div>').addClass('volume').data('volume', 'sounds').on('mousedown.volume', game.audio.volumedown).append(this.soundscontrol);
     $('<label>').appendTo(this.audio).append($('<span>').text(game.data.ui.sounds)).append(this.soundsinput);
     $(document).on('mouseup.volume', game.audio.volumeup);
-    rememberedvol = $.cookie('volume');
-    if (rememberedvol) {
-      vol = parseFloat(rememberedvol);
-      if (vol === 0) { this.muteinput.prop('checked', true); }
-      game.mute.gain.value = vol;
-      game.states.options.volumecontrol.css('transform', 'scale(' + rememberedvol + ')');
-    }
+    game.audio.setVolume();
     this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({
       title: game.data.ui.back
-    }).leftClickEvent(game.states.backState);
-    this.opt = $('<small>').addClass('opt').text('Options').hide().leftClickEvent(game.states.changeTo, 'options').appendTo(game.topbar);
+    }).onLeftClick(game.states.backState);
+    this.opt = $('<small>').addClass('opt').text('Options').hide().onLeftClick(game.states.changeTo, 'options').appendTo(game.topbar);
   },
   start: function () {
     game.states.options.opt.hide();
     game.chat.el.appendTo(this.el);
   },
-  changeResolution: function () {
-    var resolution = $('input[name=resolution]:checked', '.screenresolution').val();
+  setResolution: function () {
+    var res, rememberedres = localStorage.getItem('resolution');
+    if (rememberedres && this[rememberedres]) 
+      res = rememberedres;
+    else if (window.innerWidth < 970) {
+      res = 'low';
+    }
+    this.changeResolution(res);
+  },
+  changeResolution: function (resolution) {
+    if (!resolution || resolution.constructor.name !== 'String') 
+      resolution = $('input[name=resolution]:checked', '.screenresolution').val();
     game.states.el.removeClass('low high medium default').addClass(resolution);
-    $.cookie('resolution', resolution);
+    localStorage.setItem('resolution', resolution);
   },
   end: function () {
     game.states.options.opt.show();
