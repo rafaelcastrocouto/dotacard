@@ -5,16 +5,17 @@
       "hp": 80,
       "damage": 3,
       "armor": 33,
-      "resistance": 25,      
+      "resistance": 25,
       "type": "Summon",
       "range": "Melee",
       "passive": "Entangling Claws, Demolish",
       "permanent": "Return"
     }
   },
-  "forest":{  
+  "forest":{
     "cent": {
       "name": "Centaur",
+      "attribute": "Creep",
       "range": "Melee",
       "hp": 135,
       "regen": 2,
@@ -24,11 +25,12 @@
      },
     "golem": {
       "name": "Golem",
+      "attribute": "Creep",
       "range": "Melee",
       "hp": 135,
       "regen": 1,
       "damage": 5,
       "passive": "Spell Immunity"
-    }    
+    }
   }
 }

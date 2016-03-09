@@ -53,6 +53,7 @@ body {
   background-repeat: no-repeat;
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
   image-rendering: pixelated;
+  overflow: hidden;
 }
 
 p {
@@ -178,7 +179,7 @@ noscript {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: 0 0 6px black;  
+  box-shadow: 0 0 6px black;
   background-size: cover;
 }
 
@@ -241,7 +242,7 @@ noscript {
   top: 2px;
 }
 .triescounter {
-  font-size: 8px;  
+  font-size: 8px;
   left: 7px;
   top: 4px;
   width: 12px;
@@ -713,6 +714,7 @@ label span {
 }
 
 .choose .card .kd,
+.card.dragTargetClone.choose .kd,
 .choose .card .damaged,
 .choose .card .heal {
   display: none;
@@ -732,7 +734,22 @@ label span {
   z-index: 1;
   color: #4d4843;
 }
-
+.card.dragTarget {
+  transition: all 0s;
+  visibility: hidden;
+  pointer-events: none;
+}
+.card.dragTargetClone {
+  transition: all 0s;
+  position: absolute;
+  opacity: 0.9;
+  z-index: 25;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+.card.dragTargetClone.choose {
+  transform: scale(1.16);
+}
 .card:hover {
   z-index: 2;
 }
@@ -1141,13 +1158,15 @@ label span {
 
 .map {
   z-index: 1;
-  background-size: 105%;
+  background-size: 125%;
   background-position: 50% 50%;
   background-image: url("../img/bkg/map_vectorized.jpg");
-  transform: rotateX(40deg) translate(-40%, -60%) scale3d(0.6,0.6,0.6);
+  transform: translate(-50%,-50.3%) rotateX(40deg) scale3d(.27,.27,.27);
   transform-style: preserve-3d;
-  padding: 1000px;
-/*  width: 2544px; height: 2500px;*/
+  padding: 50%;
+  position: absolute;
+  top: 50%;
+  left: 50%;
 }
 
 .map .row {
@@ -1244,7 +1263,7 @@ label span {
   display: none;
 }
 .map .card .current .hp span {
-  transform: scale(4);
+  transform: scale(4.5);
 }
 .map .card.enemy .current .hp span {
   background: #ed8c8c;

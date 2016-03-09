@@ -27,10 +27,11 @@
   },
   "devDependencies": {
     "grunt": "~0.4.5",
+    "grunt-contrib-clean": "^1.0.0",
     "grunt-contrib-concat": "~0.5.0",
     "grunt-contrib-cssmin": "~0.14.0",
     "grunt-contrib-jshint": "~0.10.0",
-    "grunt-contrib-uglify": "~0.5.0"    
+    "grunt-contrib-uglify": "~0.5.0"
   },
   "readmeFilename": "Readme.md",
   "engine": "node >= 0.10.x",

@@ -3,12 +3,13 @@ module.exports = function(grunt) {
     'pkg': grunt.file.readJSON('package.json'),
     'jshint': {
       all: [
+        'package.json',
         'Gruntfile.js',
         'server.js',
-        'client/*.js',
-        'client/modules/*.js',
-        'client/states/*.js',
-        'client/skills/*.js'
+        'client/json/*.json',
+        'client/json/**/*.json',
+        'client/js/*.js',
+        'client/js/**/*.js'
       ]
     },
     'cssmin': {
@@ -17,7 +18,7 @@ module.exports = function(grunt) {
           expand: true,
           cwd: 'client/styles',
           src: ['*.css', '!*.min.css'],
-          dest: 'client/bundle/css',
+          dest: 'client/bundle',
           ext: '.min.css'
         }]
       }
@@ -25,29 +26,11 @@ module.exports = function(grunt) {
     'uglify': {
       target: {
         files: [{
-          expand: true,
-          cwd: 'client/modules',
-          src: ['*.js', '!*.min.js'],
-          dest: 'client/bundle/js/modules',
-          ext: '.min.js'
+          src: 'client/js/game.js',
+          dest: 'client/bundle/js/game.min.js',
         },{
-          expand: true,
-          cwd: 'client/states',
-          src: ['*.js'],
-          dest: 'client/bundle/js/states',
-          ext: '.min.js'
-        },{
-          expand: true,
-          cwd: 'client/skills',
-          src: ['*.js'],
-          dest: 'client/bundle/js/skills',
-          ext: '.min.js'
-        },{
-          expand: true,
-          cwd: 'client',
-          src: ['*.js'],
-          dest: 'client/bundle/js',
-          ext: '.min.js'
+          src: 'client/js/**/*.js',
+          dest: 'client/bundle/js/after.min.js'
         }]
       }
     },
@@ -55,28 +38,21 @@ module.exports = function(grunt) {
       options: {
         banner: '/*! <%= pkg.name %> grunt <%= grunt.template.today("yyyy-mm-dd h:MM:ss TT") %> */\n'
       },
-      css: {
-        src: ['browser_modules/*/*.min.css',
-              'client/bundle/css/*.min.css'],
-        dest: 'client/bundle/game.min.css',
-      },
-      lib: {
-        src: ['browser_modules/*/*.min.js'],
-        dest: 'client/bundle/lib/libraries.min.js'
-      },
       js: {
-        src: ['browser_modules/*/*.min.js',
-              'client/bundle/js/*.min.js',
-              'client/bundle/js/modules/*.min.js',
-              'client/bundle/js/states/*.min.js',
-              'client/bundle/js/skills/*.min.js'],
+        src: ['browser_modules/**/*.min.js',
+              'client/bundle/js/game.min.js',
+              'client/bundle/js/after.min.js'],
         dest: 'client/bundle/game.min.js'
       }
-    }
+    },
+    'clean':  ['client/bundle/js']
   });
+
   grunt.loadNpmTasks('grunt-contrib-jshint');
   grunt.loadNpmTasks('grunt-contrib-cssmin');
   grunt.loadNpmTasks('grunt-contrib-uglify');
   grunt.loadNpmTasks('grunt-contrib-concat');
-  grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'concat']);
+  grunt.loadNpmTasks('grunt-contrib-clean');
+
+  grunt.registerTask('default', ['jshint', 'cssmin', 'uglify', 'concat', 'clean']);
 };

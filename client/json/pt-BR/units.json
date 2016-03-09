@@ -15,6 +15,7 @@
   "forest":{
     "cent": {
       "name": "Centauro",
+      "attribute": "Creep",
       "range": "Perto",
       "hp": 135,
       "regen": 2,
@@ -24,6 +25,7 @@
      },
     "golem": {
       "name": "Golem",
+      "attribute": "Creep",
       "range": "Perto",
       "hp": 135,
       "regen": 1,

@@ -55,7 +55,7 @@
     "summon": {
       "name": "Spirit Bear",
       "type": "Active",
-      "targets": ["Spot", "Free"],
+      "targets": ["Summoner", "Spot", "Free"],
       "range": "Melee",
       "hp": 135,
       "damage": 2,
@@ -74,7 +74,7 @@
       "name": "Return",
       "deck": "Temporary",
       "type": "Active",
-      "targets": ["Lone", "Spot", "Free"],
+      "targets": ["Summoner", "Spot", "Free"],
       "range": "Melee",
       "cards": 1,
       "description": "Teleports the Spirit Bear back to the Lone Druid"

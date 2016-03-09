@@ -56,7 +56,7 @@
     "summon": {
       "name": "Espírito Urso",
       "type": "Ativa",
-      "targets": ["Local", "Livre"],
+      "targets": ["Invocador", "Local", "Livre"],
       "range": "Perto",
       "hp": 135,
       "damage": 2,
@@ -75,7 +75,7 @@
       "name": "Retornar",
       "deck": "Temporária",
       "type": "Ativa",
-      "targets": ["Lone", "Local", "Livre"],
+      "targets": ["Invocador", "Local", "Livre"],
       "range": "Perto",
       "cards": 1,
       "description": "Teleporta o Espírito Urso de volta para o Druida"
