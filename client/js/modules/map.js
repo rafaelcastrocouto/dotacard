@@ -362,8 +362,8 @@ game.map = {
     }
   },
   unhighlight: function () {
-    $('.map .card').clearEvents().removeClass('attacktarget source casttarget targetarea');
-    $('.map .spot').clearEvents().removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
+    $('.map .card').clearEvents('highlight').removeClass('attacktarget source casttarget targetarea');
+    $('.map .spot').clearEvents('highlight').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
   },
   clear: function () {
     game.map.unhighlight();

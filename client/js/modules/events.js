@@ -1,11 +1,13 @@
 game.events = {
   build: function () {
     game.card.bindJquery();
-    $.fn.onClickEvent = game.events.onClickEvent;
-    $.fn.onEventStart = game.events.onEventStart;
     $.fn.clearEvents = game.events.clearEvents;
     game.container.on('mousedown touchstart', game.events.hit)
-                  .on('mousemove touchmove', game.events.move)
+                  .on('mousemove', game.events.move)
+                  .on('touchmove', function (event) {
+                    game.events.move.call(this, event);
+                    if (event.preventDefault) event.preventDefault(); //prevent scroll
+                  })
                   .on('mouseup touchend', game.events.end)
                   .on('contextmenu', game.events.cancel)
                   .on('beforeunload ', game.events.leave);
@@ -15,15 +17,15 @@ game.events = {
       left: event.clientX,
       top: event.clientY
     };
-    if (event.originalEvent.changedTouches) {
+    if (event.originalEvent && event.originalEvent.changedTouches) {
       position.left = event.originalEvent.changedTouches[0].clientX;
       position.top = event.originalEvent.changedTouches[0].clientY;
     }
     return position;
   },
-  hit: function (event) {
+  hit: function (event) { 
    var target = $(event.target),
-       card = target.closest('.card');
+       card = target.closest('.card'); //console.log('hit', card[0] || event.target);
    if (card && card.hasClass('draggable')) {
      game.events.dragging = card;
      card.clone().removeClass('dragTarget').hide().addClass('dragTargetClone ' + game.currentState).appendTo(game.container);
@@ -37,7 +39,6 @@ game.events = {
    }
   },
   move: function (event) {
-    if (event.preventDefault) event.preventDefault();
     if (game.events.dragging) {
       game.events.dragging.addClass('dragTarget');
       var position = game.events.getCoordinates(event);
@@ -47,31 +48,24 @@ game.events = {
       });
     }
   },
-  end: function (event) {
-    if  (event.type === 'touchend') { // fix touchend target
+  end: function (event) { //console.log('end');
+    if  (event && event.type === 'touchend') { // fix touchend target
       var position = game.events.getCoordinates(event),
           target = $(document.elementFromPoint(position.left, position.top));
-      target.trigger('mouseup');
-    } else if (game.events.dragging) {
+      target.mouseup();
+    } else if (game.events.dragging) { 
       game.events.dragging = false;
       $('.dragTarget').removeClass('dragTarget');
       $('.dragTargetClone').remove();
     }
   },
-  onEventStart: function (cb) {
-    this.on('mousedown touchstart', cb);
+  clearEvents: function (name) { //console.trace('clear', name);
+    if (name) this.off('mousedown.'+name+' mouseup.'+name+' touchstart.'+name+' touchend.'+name);
+    else this.off('mousedown mouseup touchstart touchend');
     return this;
   },
-  onClickEvent: function (cb) {
-    this.on('mouseup touchend', cb);
-    return this;
-  },
-  clearEvents: function () {
-    this.off('mousedown mouseup touchstart touchend');
-    return this;
-  },
-  cancel: function (e) {
-    if (e && e.preventDefault) e.preventDefault();
+  cancel: function (event) {
+    if (event && event.preventDefault) event.preventDefault();
     return false;
   },
   leave: function () {

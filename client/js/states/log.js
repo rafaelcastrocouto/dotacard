@@ -13,7 +13,7 @@ game.states.log = {
     });
     this.button = $('<div>').addClass('button').appendTo(this.box).text(game.data.ui.log).attr({
       title: game.data.ui.choosename
-    }).onClickEvent(this.login);
+    }).on('mouseup touchend', this.login);
     this.rememberlabel = $('<label>').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
     this.remembercheck = $('<input>').attr({
       type: 'checkbox',
@@ -22,7 +22,7 @@ game.states.log = {
     }).change(this.remember).appendTo(this.rememberlabel);
     var rememberedname = localStorage.getItem('name');
     if (rememberedname) { this.input.val(rememberedname); }
-    this.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).onClickEvent(this.logout);
+    this.out = $('<small>').addClass('logout').insertAfter(game.message).text(game.data.ui.logout).on('mouseup touchend', this.logout);
   },
   start: function () {
     game.message.html('Version <small class="version">' + game.version + '</small>');

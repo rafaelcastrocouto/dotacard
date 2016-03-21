@@ -6,7 +6,7 @@ game.tree = {
       attribute: game.data.ui.forest + game.data.ui.tree
     });
     if (game.mode === 'match') {
-      tree.onClickEvent(game.card.select);
+      tree.on('mousedown touchstart', game.card.select);
     }
     tree.place(spot);
     return tree;

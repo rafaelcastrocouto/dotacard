@@ -53,8 +53,8 @@ game.states.options = {
     game.audio.rememberVolume();
     this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({
       title: game.data.ui.back
-    }).onClickEvent(game.states.backState);
-    this.opt = $('<small>').addClass('opt').text('Options').hide().appendTo(game.topbar).onClickEvent(function () {
+    }).on('mouseup touchend', game.states.backState);
+    this.opt = $('<small>').addClass('opt').text('Options').hide().appendTo(game.topbar).on('mouseup touchend', function () {
       game.states.changeTo('options');
     });
   },

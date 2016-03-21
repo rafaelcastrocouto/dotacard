@@ -123,21 +123,20 @@ game.card = {
     if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
-  select: function (event) {
-    var card = $(this);
+  select: function (event) { 
+    var card = $(this).closest('.card'); //console.log('card select', card[0]);
     if (!game.selectedCard || card[0] !== game.selectedCard[0]) {
-      game.card.unselect();
-      game.selectedCard = card;
-      game.map.highlight();
-      card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink');
-      card.addClass('selected draggable');
-      card.trigger('select', { card: card });
-      game.states.table.selectedArea.trigger('select');
-      setTimeout(function () {
-        game.states.table.selectedArea.addClass('flip');
-      });
-    } else if (card[0] === game.selectedCard[0]) {
-      game.card.unselect();
+      if (!card.hasClasses('attacktarget casttarget')) {
+        game.card.unselect();
+        game.selectedCard = card;
+        game.map.highlight();
+        card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
+        card.addClass('selected draggable');
+        card.trigger('select', { card: card });
+        setTimeout(function () {
+          game.states.table.selectedArea.addClass('flip');
+        });
+      }
     }
     return card;
   },
@@ -148,7 +147,7 @@ game.card = {
     }
     game.selectedCard = null;
     game.states.table.selectedArea.removeClass('flip');
-    game.states.table.selectedArea.trigger('unselect');
+    //game.states.table.selectedArea.trigger('unselect');
     var del = $('.selectedarea .card')[0];
     if (del) setTimeout(function () { $(this).remove(); }.bind(del), 400);
   },
@@ -175,27 +174,27 @@ game.card = {
   },
   highlightPassive: function (source) {
     if (!source.hasClass('dead')) {
-      source.addClass('casttarget').onClickEvent(game.player.passive);
+      source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.passive);
     }
   },
   highlightToggle: function (source) {
     if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
-      source.addClass('casttarget').onClickEvent(game.player.toggle);
+      source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.toggle);
     }
   },
   highlightSelf: function (source) {
-    source.addClass('casttarget').onClickEvent(game.player.cast);
+    source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
   },
   hightlightAlly: function (source, skill) {
     var range = game.map.getRange(skill.data('range'));
     if (range === game.data.ui.global) {
-      $('.map .player').addClass('casttarget').onClickEvent(game.player.cast);
+      $('.map .player').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
       var pos = game.map.getPosition(source);
       game.map.inRange(pos, range, function (neighbor) {
         var card = $('.card', neighbor);
         if (card.hasClass('player')) {
-          card.addClass('casttarget').onClickEvent(game.player.cast);
+          card.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
         }
       });
     }
@@ -203,13 +202,13 @@ game.card = {
   highlightEnemy: function (source, skill) {
     var range = game.map.getRange(skill.data('range'));
     if (range === game.data.ui.global) {
-      $('.map .enemy').addClass('casttarget').onClickEvent(game.player.cast);
+      $('.map .enemy').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
       var pos = game.map.getPosition(source);
       game.map.inRange(pos, range, function (neighbor) {
         var card = $('.card', neighbor);
         if (card.hasClass('enemy')) {
-          card.addClass('casttarget').onClickEvent(game.player.cast);
+          card.addClass('casttarget').on('mouseup.highlight touchend.highlightd', game.player.cast);
         }
       });
     }
@@ -219,7 +218,7 @@ game.card = {
         range = game.map.getRange(skill.data('range'));
     game.map.around(pos, range, function (neighbor) {
       if (neighbor.hasClass('free')) {
-        neighbor.addClass('targetarea').onClickEvent(game.player.cast);
+        neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       }
     });
   },
@@ -228,7 +227,7 @@ game.card = {
         range = game.map.getRange(skill.data('range'));
     game.map.around(pos, range, function (neighbor) {
       if (neighbor.hasClass('free')) {
-        neighbor.addClass('targetarea').onClickEvent(game.player.cast);
+        neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       }
     });
   },
@@ -236,10 +235,10 @@ game.card = {
     var pos = game.map.getPosition(source),
         range = game.map.getRange(skill.data('range'));
     game.map.around(pos, range, function (neighbor) {
-      neighbor.addClass('targetarea').onClickEvent(game.player.cast);
+      neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       if (neighbor.hasClass('block')) {
         var card = $('.card', neighbor);
-        card.addClass('targetarea').onClickEvent(game.player.cast);
+        card.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       }
     });
   },
@@ -248,10 +247,10 @@ game.card = {
         range = skill.data('aoe range'),
         width = skill.data('aoe width');
     game.map.atCross(pos, range, width, function (neighbor) {
-      neighbor.addClass('targetarea').onClickEvent(game.player.cast);
+      neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       if (neighbor.hasClass('block')) {
         var card = $('.card', neighbor);
-        card.addClass('targetarea').onClickEvent(game.player.cast);
+        card.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
       }
     });
   },
@@ -279,7 +278,9 @@ game.card = {
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
       game.map.atMovementRange(card, Math.round(speed), function (neighbor) {
-        if (!neighbor.hasClass('block')) { neighbor.addClass('movearea').onClickEvent(game.player.move); }
+        if (!neighbor.hasClass('block')) { 
+          neighbor.addClass('movearea').on('mouseup.highlight touchend.highlight', game.player.move); 
+        }
       });
     }
     return card;
@@ -352,17 +353,15 @@ game.card = {
       if (card.data('movement bonus')) {
         card.data('movement bonus', false);
       } else { card.addClass('done'); }
-      card.trigger('move', {
-        card: card,
-        target: to
-      });
+      card.trigger('move', { card: card, target: to });
       setTimeout(function () {
-        this.card.parent().find('.fx').each(function () {
-          $(this).appendTo(this.destiny);
-        });
+//         this.card.parent().find('.fx').each(function () {
+//           $(this).appendTo(this.destiny);
+//         });
         $(this.card).css({ transform: '' }).prependTo(this.destiny);
         $('.map .spot').data('detour', false);
         game.map.highlight();
+        //if (game.events.dragging) game.events.end();
       }.bind({
         card: card,
         destiny: destiny
@@ -546,7 +545,7 @@ game.card = {
       range = game.map.getRange(card.data('range'));
       game.map.inRange(pos, range, function (neighbor) {
         var card = $('.card', neighbor);
-        if (card.hasClass('enemy')) { card.addClass('attacktarget').onClickEvent(game.player.attack); }
+        if (card.hasClass('enemy')) { card.addClass('attacktarget').on('mouseup.highlight touchend.highlight', game.player.attack); }
       });
     }
     return card;

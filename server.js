@@ -1,10 +1,6 @@
-/* by rafælcastrocouto */
-/*jslint node: true, white: true, sloppy: true, vars: true */
-/*global console */
-
 var http = require('http'),
     url = require('url'),
-    fs = require('fs'),    
+    fs = require('fs'),
     serveStatic = require('serve-static'),
     clientServer = serveStatic('client', {'index': ['index.html', 'index.htm']}),
     rootServer = serveStatic(__dirname),
@@ -68,12 +64,12 @@ http.createServer(function(request, response){
       else { db.get(query.get, function(data){ send(response, data); }); }
       //DB CHECK
     } else { send(response, 'Db works!'); }
-  }  
+  }
   else { //STATIC
     clientServer(request, response, function onNext(err) {
       rootServer(request, response, function onNext(err) {
-        response.statusCode = 404; 
-        response.setHeader('Content-Type', 'text/html; charset=UTF-8');        
+        response.statusCode = 404;
+        response.setHeader('Content-Type', 'text/html; charset=UTF-8');
         fs.createReadStream('client/404.html').pipe(response);
       });
     });
@@ -82,6 +78,6 @@ http.createServer(function(request, response){
 
 var d = new Date();
 console.log(
-  d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + ' ' + 
+  d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + ' ' +
   'DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
 );

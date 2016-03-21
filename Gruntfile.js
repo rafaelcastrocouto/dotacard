@@ -6,46 +6,49 @@ module.exports = function(grunt) {
         'package.json',
         'Gruntfile.js',
         'server.js',
-        'client/json/*.json',
         'client/json/**/*.json',
-        'client/js/*.js',
         'client/js/**/*.js'
       ]
     },
-    'cssmin': {
+    'cssmin': { 
       target: {
         files: [{
           expand: true,
-          cwd: 'client/styles',
-          src: ['*.css', '!*.min.css'],
-          dest: 'client/bundle',
+          cwd: 'client/css',
+          src: ['*.css'],
+          dest: 'client/bundle/css',
           ext: '.min.css'
         }]
       }
     },
     'uglify': {
+      options: {
+        banner: '// <%= pkg.name %> grunt <%= grunt.template.today("yyyy-mm-dd h:MM:ss TT") %> */\n'
+      },
       target: {
         files: [{
           src: 'client/js/game.js',
           dest: 'client/bundle/js/game.min.js',
         },{
-          src: 'client/js/**/*.js',
+          src: 'client/js/*/*.js',
           dest: 'client/bundle/js/after.min.js'
         }]
       }
     },
     'concat': {
-      options: {
-        banner: '/*! <%= pkg.name %> grunt <%= grunt.template.today("yyyy-mm-dd h:MM:ss TT") %> */\n'
+      css: {
+        src: ['client/browser_modules/**/*.min.css',
+              'client/bundle/css/*.min.css'],
+        dest: 'client/bundle/game.min.css'
       },
       js: {
-        src: ['browser_modules/**/*.min.js',
+        src: ['client/browser_modules/**/*.min.js',
               'client/bundle/js/game.min.js',
               'client/bundle/js/after.min.js'],
         dest: 'client/bundle/game.min.js'
       }
     },
-    'clean':  ['client/bundle/js']
+    'clean':  ['client/bundle/js', 'client/bundle/css']
   });
 
   grunt.loadNpmTasks('grunt-contrib-jshint');

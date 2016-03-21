@@ -1,0 +1,72 @@
+.choose .counter {
+  width: 100%;
+  position: absolute;
+  bottom: -8px;
+}
+
+.choose .pickbox {
+  width: 760px;
+  height: 340px;
+  position: absolute;
+  top: 35px;
+  left: 50%;
+  transform: translateX(-50%);
+  overflow: hidden;
+  padding: 10px 0;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+}
+
+.choose .pickbox .deck {
+  position: relative;
+  left: -50%;
+  height: 340px;
+}
+
+.choose .pickedbox {
+  width: 540px;
+  height: 190px;
+  position: absolute;
+  bottom: 5px;
+  left: 105px;
+  overflow: hidden;
+  padding: 2px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+}
+
+.choose .slot {
+  position: relative;
+  border-radius: 4px;
+  float: left;
+  width: 100px;
+  height: 150px;
+  margin: 4px;
+  box-shadow: inset 0 0 40px rgba(255,255,255,0.1);
+  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
+}
+
+.choose .slot.available {
+  animation: innerlight 0.5s infinite;
+}
+@keyframes innerlight {
+  0%, 100% {box-shadow: inset 0 0 40px rgba(255,255,255,0.2);}
+  50% {box-shadow: inset 0 0 40px rgba(255,255,255,0.1);}
+}
+.choose .slot:hover {
+  background: rgba(255,255,255,0.1);
+}
+
+.choose .prepickbox {
+  width: 206px;
+  height: 190px;
+  position: absolute;
+  bottom: 5px;
+  left: 655px;
+  padding: 2px;
+  text-align: center;
+  border-radius: 4px;
+  background: rgba(0,0,0,0.4);
+}

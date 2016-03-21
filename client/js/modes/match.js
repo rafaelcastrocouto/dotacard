@@ -165,10 +165,7 @@ game.match = {
   setTable: function () {
     if (!game.match.started) {
       game.match.started = true;
-      game.states.table.el.onClickEvent(function (event) {
-        var target = $(event.target);
-        if (!target.closest('.selected').length && !target.closest('.selectedarea').length) { game.card.unselect(); }
-      });
+      game.states.table.enableUnselect();
       game.loader.addClass('loading');
       game.message.text(game.data.ui.battle);
       game.audio.play('horn');
@@ -190,10 +187,10 @@ game.match = {
         filter: game.player.picks,
         cb: function (deck) {
           deck.addClass('player').appendTo(game.states.table.player);
-          var x = 0, y = 6;
+          var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
-            card.addClass('player hero').data('side', 'player').onClickEvent(game.card.select);
+            card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
             card.place(game.map.toId(x + p, y));
             game.player.mana += card.data('mana');
           });
@@ -209,10 +206,10 @@ game.match = {
         filter: game.enemy.picks,
         cb: function (deck) {
           deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
-          var x = 0, y = 6;
+          var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.enemy.picks.indexOf(card.data('hero'));
-            card.addClass('enemy hero').data('side', 'enemy').onClickEvent(game.card.select);
+            card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select);
             card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
             game.enemy.mana += card.data('mana');
           });
@@ -235,7 +232,7 @@ game.match = {
       cb: function (deck) {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').onClickEvent(game.card.select);
+          skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select);
           if (skill.data('skill') === 'ult') {
             skill.appendTo(game.player.skills.ult);
           } else if (skill.data('deck') === game.data.ui.temp) {

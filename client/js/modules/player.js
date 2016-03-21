@@ -53,7 +53,6 @@ game.player = {
       if (game.mode !== 'tutorial') { game.currentData.moves.push('M:' + from + ':' + to); }
       game.map.unhighlight();
     }
-    return false;
   },
   attack: function () {
     var target = $(this),
@@ -65,7 +64,6 @@ game.player = {
       if (game.mode !== 'tutorial') { game.currentData.moves.push('A:' + from + ':' + to); }
       game.map.unhighlight();
     }
-    return false;
   },
   passive: function () {
     var target = $(this),

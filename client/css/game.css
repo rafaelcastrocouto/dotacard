@@ -1,0 +1,300 @@
+/*FONTS*/
+
+/*Open San*/
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans'), local('OpenSans'), url(../fonts/Open-Sans.woff2) format('woff2'), url(../fonts/Open-Sans.woff) format('woff');
+}
+body, p, noscript {
+  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+/*Julius Sans One*/
+@font-face {
+  font-family: 'Julius Sans One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(../fonts/Julius-Sans-One.woff2) format('woff2'), url(../fonts/Julius-Sans-One.woff) format('woff');
+}
+h1, h2, .button {
+  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+/*Sansita One*/
+@font-face {
+  font-family: 'Sansita One';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Sansita One'), local('SansitaOne'), url('../fonts/Sansita-One.woff2') format('woff2'), url('../fonts/Sansita-One.woff') format('woff');
+}
+.tutorial .battle {
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+
+input[type="text"] {
+  font-family: monospace;
+}
+
+html, body {
+  user-select: none;
+  margin: 0;
+  width: 100%; height: 100%;
+}
+body {
+  background-attachment: fixed;
+  background-color: #22272c;
+  background: radial-gradient(ellipse farthest-corner at center top, #6e7a66 0%, #343b43 30%, #22272c 60%, #22272c 100%), #22272c;
+  color: white;
+  background-size: 100% 20%;
+  background-repeat: no-repeat;
+  box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
+  overflow: hidden;
+  tap-highlight-color: rgba(0,0,0,0);
+}
+
+p {
+  cursor: default;
+  word-spacing: -1px;
+  padding: 1px 2px;
+}
+
+a, a:visited {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1, h2 {
+  padding: 1px 2px;
+  margin: 0;
+  font-weight: normal;
+}
+h1 {
+  font-size: 22px;
+  cursor: default;
+}
+h2 {
+  font-size: 19px;
+  cursor: default;
+  margin: 10px 0;
+}
+img {
+  border: 0;
+}
+small {
+  cursor: default;
+  font-size: 70%;
+}
+noscript {
+  display: block;
+}
+
+.forklink {
+  position: absolute;
+  top: 0; right: 0;
+  opacity: 0.55;
+  z-index: 1;
+}
+.forklink:hover {
+  opacity: 1;
+}
+
+.container {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+}
+
+.hidden {
+  display: none;
+}
+
+.box {
+  position: absolute;
+  box-sizing: border-box;
+  top: 50%; left: 50%;
+  width: 728px;
+  transform: translate(-50%, -50%);
+  padding: 40px 80px;
+  text-align: center;
+  border-radius: 5px;
+  background: rgba(0,0,0,0.5);
+}
+.box div p {
+  display: block;
+}
+
+.logo .h1 {
+  position: relative;
+  top: 0px;
+}
+.logo.slide .h1 {
+  animation: logoslideup 1s 1 linear;
+}
+@keyframes logoslideup {
+  0% {top: 60px}
+  100% {top: 0px}
+}
+.logo .h2 {
+  margin: 16px;
+  position: relative;
+}
+.logo .h2 {
+  animation: slideright 6s infinite;
+}
+@keyframes slideright {
+  0% {right: -3000px}
+  5%, 95% {right: 0}
+  100% {right: 3000px}
+}
+
+.loadtext .message {
+  margin-left: 8px;
+}
+
+.loadtext .message,
+.loadtext .progress {
+  position: relative;
+  bottom: 6px;
+}
+
+.states {
+  background-image: url("../img/bkg/polygon-light.jpg");
+}
+
+.states, .state {
+  background-size: cover;
+  border-radius: 4px;  
+  width: 970px;
+  height: 600px;
+}
+
+.state {
+  margin: 0 auto;
+  position: relative;
+  overflow: hidden;
+  border-radius: 4px;
+  box-shadow: 0 0 6px black;
+}
+
+.state p {
+  display: block;
+  margin: 1em;
+}
+
+.state.table,
+.state.choose {
+  background-image: url("../img/bkg/polygon-dark.jpg");
+}
+
+input {
+  border-radius: 3px;
+  letter-spacing: -1px;
+  word-spacing: -1px;
+  font-size: 16px;
+  color: #4d4843;
+  outline: 0;
+  border: 0;
+  padding: 5px;
+  margin: 1px;
+  height: 22px;
+}
+input:focus {
+  animation: shade 0.5s;
+}
+@keyframes shade {
+  50% {opacity: 0.5;}
+}
+.button {
+  display: inline-block;
+  text-align: center;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 12px 16px;
+  border: 0;
+  border-radius: 3px;
+  margin: 6px;
+  outline: 0;
+  background: #bfbfb0;
+  color: white;
+  text-shadow: 0 1px 0 #9b9c89;
+  box-shadow: 0 4px 0 #9b9c89;
+  opacity: 0.9;
+  position: relative;
+  top: -3px;
+  transition: all 0.2s;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+}
+.button:hover {
+  background: lightgray;
+}
+.button:active {
+  top: 0;
+  box-shadow: 0 1px 0 #9b9c89;
+}
+.button[disabled] {
+  background: darkgray;
+  color: gray;
+  text-shadow: none;
+  box-shadow: 0 4px 0 gray;
+}
+.button[disabled]:hover {
+  background: darkgray;
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  cursor: pointer;
+}
+
+label {
+  display: block;
+  padding: 1px 2px;
+  margin: 2px;
+  text-align: left;
+  height: 28px;
+}
+label input {
+  margin: 0 5px;
+}
+
+label span {
+  vertical-align: super;
+}
+
+.log label {
+  text-align: center;
+}
+
+.menu .box {
+  transform: translate(0%,-50%);
+  width: 450px;
+  height: 450px;
+}
+.menu  .button {
+  display: block;
+  margin: 12px auto;
+  width: 216px;
+}
+
+.deck {
+  transition: all 0.4s;
+}
+
+/*BUFFS*/
+
+.stun .img {
+   background-image: url("../img/skills/stun.jpg");
+}
+/*
+.silence .img {
+   background-image: url("../img/skills/silence.jpg");
+}
+.magicimmune .img {
+   background-image: url("../img/skills/magicimmune.jpg");
+}
+.ethereal .img {
+   background-image: url("../img/skills/ethereal.jpg")
+}
+*/
+

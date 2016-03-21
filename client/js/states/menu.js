@@ -4,17 +4,17 @@ game.states.menu = {
     this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.menu);
     this.tutorial = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.tutorial
-    }).text(game.data.ui.tutorial).onClickEvent(function () {
+    }).text(game.data.ui.tutorial).on('mouseup touchend', function () {
       game.mode = 'tutorial';
       game.states.changeTo('choose');
     });
-    this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({
-      title: game.data.ui.choosecampain,
+    this.single = $('<div>').addClass('button').appendTo(this.menu).attr({
+      title: game.data.ui.choosesingle,
       disabled: true
-    }).text(game.data.ui.campain);
+    }).text(game.data.ui.single);
     this.online = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.chooseonline
-    }).text(game.data.ui.online).onClickEvent(function () {
+    }).text(game.data.ui.online).on('mouseup touchend', function () {
       game.mode = 'choose';
       game.states.changeTo('choose');
     });
@@ -24,7 +24,7 @@ game.states.menu = {
     }).text(game.data.ui.library);
     this.options = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.chooseoptions
-    }).text(game.data.ui.options).onClickEvent(function () {
+    }).text(game.data.ui.options).on('mouseup touchend', function () {
       game.states.changeTo('options');
     });
     this.credits = $('<a>').addClass('button').appendTo(this.menu).attr({

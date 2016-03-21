@@ -1,0 +1,51 @@
+
+.audioconfig,
+.screenresolution {
+  display: inline-block;
+  padding: 20px 10px;
+  vertical-align: top;
+}
+
+.states.low {
+  transform: scale(0.8);
+}
+.states.high {
+  transform: scale(1.7);
+}
+.states.medium {
+  transform: scale(1.2);
+}
+
+.options label {
+  position: relative;
+}
+
+.volume {
+  cursor: pointer;
+  position: relative;
+  width: 0; height: 0;
+  border: 0 solid transparent;
+  border-top: 20px solid transparent;
+  border-right: 50px solid rgba(255,255,255,0.2);
+  display: inline-block;
+  position: absolute;
+  right: 80px;
+  bottom: 11px;
+}
+
+.volumecontrol {
+  position: absolute;
+  top: -20px; left: 0;
+  width: 0; height: 0;
+  border: 0 solid transparent;
+  border-top: 20px solid transparent;
+  border-right: 50px solid rgba(255,255,255,0.8);
+  transform-origin: 0 100%;
+  transform: scale(0.6);
+}
+
+.options .back.button {
+  display: block;
+  width: 50px;
+  margin: 0 auto;
+}

@@ -1,0 +1,113 @@
+
+.chat {
+  background: rgba(240,250,255,0.5);
+  position: absolute;
+  left: 50%; top: 50%;
+  width: 450px; height: 450px;
+  border-radius: 4px;
+  padding: 8px;
+  color: #4d4843;
+  transition: all 1s;
+  z-index: 10;
+  box-sizing: border-box;
+  transform: translate(-102%,-50%);
+}
+.chat h1 {
+  color: white;
+  height: 26px;
+}
+
+.states .chat-icon {
+  color: white;
+  position: absolute;
+  top: 0;
+  right: 0;
+  margin: 10px;
+  display: none;
+  font-size: 11px;
+}
+
+.options .chat,
+.choose .chat,
+.table .chat {
+  padding-right: 12px;
+  top: 560px;
+  left: -410px;
+  height: 20px;
+  background: rgba(0,0,0,0.4);
+}
+.options .chat:hover, .options .chat.hover,
+.choose .chat:hover, .choose .chat.hover,
+.table .chat:hover, .table .chat.hover {
+  top: 90px;
+  left: 0px;
+  height: 494px;
+  background: rgba(240,250,255,0.5);
+  z-index: 12;
+}
+.options .chat > *,
+.choose .chat > *,
+.table .chat > * {
+  display: none
+}
+.options .chat:hover > *, .options .chat.hover > *,
+.choose .chat:hover > *, .choose .chat.hover > *,
+.table .chat:hover > *, .table .chat.hover > * {
+  display: block;
+}
+.options .chat:hover .chat-icon, .options .chat.hover .chat-icon,
+.choose .chat:hover .chat-icon, .choose .chat.hover .chat-icon,
+.table .chat:hover .chat-icon, .table .chat.hover .chat-icon {
+  display: none;
+}
+.options .chat .chat-icon,
+.choose .chat .chat-icon,
+.table .chat .chat-icon {
+  display: inline-block;
+}
+
+.chat .messages {
+  height: calc(100% - 95px);
+  overflow-y: scroll;
+  padding: 4px;
+  background: rgba(0,0,0,0.1);
+  margin: 4px 2px;
+  word-break: break-word;
+  border: rgba(250,250,255,0.5);
+  user-select: text;
+}
+
+.chat .messages p {
+  margin: 8px 2px;
+  background: rgba(250,250,255,0.9);
+  box-shadow: 4px 5px 0 rgba(0,0,0,0.2);
+  float: left;
+  clear: both;
+  padding: 6px 9px;
+  line-height: 1.5em;
+}
+.chat .messages p { transform: rotate(2deg); }
+.chat .messages p:nth-child(2n) { transform: rotate(-0.8deg); }
+.chat .messages p:nth-child(3n) { transform: rotate(-1.6deg); }
+.chat .messages p:nth-child(5n) { transform: rotate(0); }
+
+.chat input {
+  width: 330px;
+  margin: 0 5px 0 1px;
+  height: 26px;
+  position: absolute;
+  bottom: 14px;
+  box-shadow: inset 0 0 3px gray;
+}
+
+.state .chat .button {
+  width: 50px;
+  position: absolute;
+  top: auto;
+  bottom: 12px;
+  right: 10px;
+  margin: 0;
+}
+.chat .button:active {
+  bottom: -6px;
+}

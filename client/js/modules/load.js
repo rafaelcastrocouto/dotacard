@@ -11,8 +11,8 @@ game.load = {
       game.load.data();
     });
     game.load.ping(function () {
-      if (!game.offline && location.host.search('localhost') < 0) { 
-        game.load.analytics(); 
+      if (!game.offline && location.host.search('localhost') < 0) {
+        game.load.analytics();
       }
     });
     game.load.progress();

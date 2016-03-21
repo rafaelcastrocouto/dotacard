@@ -8,8 +8,8 @@ game.states.table = {
     this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
     this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
-    this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).onClickEvent(game.turn.skip).text(game.data.ui.skip);
-    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).onClickEvent(function () {
+    this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
+    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', function () {
       if(confirm(game.data.ui.leave)) game[game.mode].surrender();
     });
   },
@@ -20,6 +20,16 @@ game.states.table = {
     this.turns.show();
     this.camera.show();
     this.selectedArea.show();
+  },
+  enableUnselect: function () {
+    game.states.table.el.on('mouseup touchend', function (event) { 
+      var target = $(event.target); 
+      if (!target.closest('.selected').length && !target.closest('.selectedarea').length && !game.events.dragging) {
+        //console.log('table unselect');
+        game.card.unselect(); 
+        if (game.mode === 'tutorial') game.tutorial.unselected();
+      }
+    });
   },
   buildUnits: function () {
     var j = 'A1';
@@ -32,7 +42,7 @@ game.states.table = {
       cb: function (deck) {
         deck.addClass('neutral units cemitery').hide().appendTo(game.states.table.neutrals);
         $.each(deck.data('cards'), function (i, card) {
-          card.addClass('neutral unit').data('side', 'neutral').onEventStart(game.card.select);
+          card.addClass('neutral unit').data('side', 'neutral').on('mousedown touchstart', game.card.select);
         });
       }
     });
@@ -42,7 +52,7 @@ game.states.table = {
       cb: function (deck) {
         deck.addClass('player units cemitery').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, card) {
-          card.addClass('player unit').data('side', 'player').onEventStart(game.card.select);
+          card.addClass('player unit').data('side', 'player').on('mousedown touchstart', game.card.select);
         });
       }
     });
@@ -52,7 +62,7 @@ game.states.table = {
       cb: function (deck) {
         deck.addClass('enemy units cemitery').hide().appendTo(game.states.table.enemy);
         $.each(deck.data('cards'), function (i, card) {
-          card.addClass('enemy unit').data('side', 'enemy').onEventStart(game.card.select);
+          card.addClass('enemy unit').data('side', 'enemy').on('mousedown touchstart', game.card.select);
         });
       }
     });
@@ -97,7 +107,7 @@ game.states.table = {
         text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
-    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).onClickEvent(game.states.table.clear);
+    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', game.states.table.clear);
   },
   clear: function () {
     game[game.mode].clear();

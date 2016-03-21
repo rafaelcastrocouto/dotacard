@@ -319,11 +319,10 @@
       "targets": ["Self"],
       "percentage": 12,
       "hp bonus": 3,
-      "regen bonus": 1,
       "damage bonus": 1,
       "cards": 1,
       "display": true,
-      "description": "Reduces magic damage and gives Pudge bonus HP, damage and regen on every kill"
+      "description": "Reduces magic damage and gives Pudge bonus HP and damage on every kill"
     },
     "ult": {
       "name": "Dismember",

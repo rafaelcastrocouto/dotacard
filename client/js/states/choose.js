@@ -7,7 +7,7 @@ game.states.choose = {
       $('<div>').appendTo(this.pickedbox)
       .attr({ title: game.data.ui.rightpick })
       .data('slot', slot).addClass('slot available')
-      .onClickEvent(game.states.choose.pick);
+      .on('mouseup touchend', game.states.choose.pick);
     }
     this.prepickbox = $('<div>').appendTo(this.el).addClass('prepickbox').html(game.data.ui.customdecks).hide();
     this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
@@ -20,7 +20,7 @@ game.states.choose = {
           if (card.data('disable')) {
             card.addClass('dead');
           }
-          card.onEventStart(game.states.choose.select);
+          card.on('mousedown.choose touchstart.choose', game.states.choose.select);
           $.each(game.data.skills[card.data('hero')], function () {
             if (this.display) { card.addBuff(card, this); }
           });
@@ -63,10 +63,10 @@ game.states.choose = {
         } else { card = pick.next(); }
       } else {
         card = slot.children('.card');
-        card.onEventStart(game.states.choose.select).insertBefore(pick);
+        card.on('mousedown.choose touchstart.choose', game.states.choose.select).insertBefore(pick);
       }
       card.addClass('selected draggable');
-      pick.removeClass('selected draggable').appendTo(slot).clearEvents();
+      pick.removeClass('selected draggable').appendTo(slot).clearEvents('choose');
       game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
       game.player.picks[slot.data('slot')] = pick.data('hero');
       pick.trigger('pick');
@@ -75,12 +75,10 @@ game.states.choose = {
     }
   },
   selectFirst: function () {
-    game.states.choose.select.call(
-      game.states.choose.pickDeck.children().first()
-    );
+    game.states.choose.pickDeck.children().first().mousedown();
   },
   reset: function () {
-    $('.pickedbox .card').prependTo(this.pickDeck).onEventStart(game.states.choose.select);
+    $('.pickedbox .card').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);
     $('.slot').addClass('available');
     game.states.choose.counter.hide();
   },

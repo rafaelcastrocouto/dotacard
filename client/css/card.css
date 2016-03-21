@@ -1,0 +1,497 @@
+.card h1 {
+  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
+}
+.card .damaged,
+.card .heal {
+  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
+}
+
+.deck .card {
+  float: left;
+}
+
+.pickbox .card {
+  margin: 0 -50px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+}
+
+.pickbox .card.selected {
+  margin: 0 22px;
+  transform: translate(-50%, -50%) scale(1.16);
+}
+
+
+.pickedbox .card {
+  animation: pickedboxslidedown 0.5s;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+}
+@keyframes pickedboxslidedown {
+  0% {top: 36%;}
+  100% {top: 50%;}
+}
+.pickedbox .card h1,
+.pickedbox .card .current,
+.pickedbox .card .desc,
+.pickedbox .card .buff {
+  opacity: 0;
+}
+.pickedbox .card .portrait .img,
+.pickedbox .card .portrait .overlay {
+  height: 265px;
+  background-size: 225%;
+}
+.pickedbox .card:hover .portrait .img {
+  background-size: 260%;
+}
+
+.card.dragTargetClone.choose {
+  transform: scale(1.16);
+}
+
+.choose .card .kd,
+.card.dragTargetClone.choose .kd,
+.choose .card .damaged,
+.choose .card .heal {
+  display: none;
+}
+.card.dragTarget {
+  transition: all 0s;
+  visibility: hidden;
+  pointer-events: none;
+}
+.card.dragTargetClone {
+  transition: all 0s;
+  position: absolute;
+  opacity: 0.9;
+  z-index: 25;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.card {
+  image-rendering: pixelated;
+  position: relative;
+  display: inline-block;
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+  text-align: left;
+  transition: all 0.4s, top 0.6s linear, left 0.6s linear;
+  padding: 0;
+  width: 200px; height: 300px;
+  border-radius: 8px;
+  z-index: 1;
+  color: #4d4843;
+}
+
+.card:hover {
+  z-index: 2;
+}
+
+.card legend {
+  color: white;
+  font-size: 14px;
+  text-transform: uppercase;
+  margin: 5px 0 0 10px;
+}
+
+.card fieldset {
+  border-radius: 4px;
+  padding: 3px;
+  margin: 0 5px;
+  height: 265px;
+  background: #f7fae3;
+  border: 0;
+}
+
+.card .img {
+  display: block;
+  border-radius: 3px;
+  background-size: 100%;
+  background-position: 50% 50%;
+  transition: background-size 0.4s;
+}
+.card:hover .portrait .img {
+  background-size: 120%;
+}
+
+.card .overlay {
+  box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
+  border-radius: 3px;
+  position: absolute;
+  top: 0;
+}
+
+.card .portrait {
+  position: relative;
+}
+
+.card .portrait .img,
+.card .portrait .overlay {
+  height: 112px;
+}
+.card .portrait .overlay {
+  width: 100%;
+}
+
+.card h1 {
+  cursor: inherit;
+  margin: 4px 0 2px;
+  font-size: 12px;
+  font-weight: bold;
+  float: left;
+}
+.card .current {
+  margin: 1px;
+  position: absolute;
+  right: 5px;
+}
+.card .current p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: bold;
+  display: inline-block;
+}
+.card .current span {
+  text-align: center;
+  display: inline-block;
+  border-radius: 50%;
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  padding-top: 4px;
+}
+.card .current .hp span {
+  background: #ceeb71;
+}
+.card .current .damage span {
+  background: #ed8c8c;
+  color: white;
+}
+
+.card .desc {
+  clear: left;
+}
+
+.card div p {
+  cursor: inherit;
+  text-align: justify;
+  margin: 0;
+  border: 0;
+  font-size: 11px;
+  line-height: 13px;
+  display: block;
+}
+
+.card .description {
+  font-style: italic;
+  font-size: 10px;
+}
+
+.card.player {
+  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
+  background: #74c47b;
+}
+.card.enemy {
+  cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer;
+  background: #c23636;
+}
+.card.skills {
+  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+  background: #54a0e3;
+}
+.card.player.heroes.selected,
+.card.player.towers.selected {
+  box-shadow: 0 0 0 10px springgreen;
+  z-index: 5;
+}
+.card.enemy.heroes.selected,
+.card.enemy.towers.selected {
+  box-shadow: 0 0 0 10px orangered;
+  z-index: 5;
+}
+.card.skills.selected {
+  box-shadow: 0 0 0 6px skyblue;
+  z-index: 6;
+}
+.card.tree.selected {
+  box-shadow: 0 0 0 10px palegreen;
+}
+.card.enemy.attacktarget {
+  box-shadow: 0 0 0 10px red;
+}
+.card.source {
+  box-shadow: 0 0 0 10px skyblue;
+}
+.card.targetarea,
+.card.casttarget{
+  box-shadow: 0 0 0 10px dodgerblue;
+}
+.card.player.done {
+  background: silver;
+}
+.map .card.player.done.selected {
+  box-shadow: 0 0 0 10px gray;
+}
+.map .card.enemy.heroes.done,
+.map .card.enemy.heroes.done.selected {
+  box-shadow: 0 0 0 10px gold;
+}
+
+.card .damaged {
+  z-index: 6;
+  color: gold;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  font-size: 150px;
+  animation: slideup 2s linear;
+  text-shadow:
+     10px   0   white,
+    -10px   0   white,
+      0    10px white,
+      0   -10px white,
+     10px  10px white,
+    -10px  10px white,
+     10px -10px white,
+    -10px -10px white;
+}
+.card .damaged.critical {
+  color: orangered;
+}
+.card .heal {
+  z-index: 7;
+  color: springgreen;
+  position: absolute;
+  opacity: 0;
+  top: 0;
+  left: 0;
+  font-size: 150px;
+  animation: slideup 2s linear;
+  text-shadow:
+     10px   0   white,
+    -10px   0   white,
+      0    10px white,
+      0   -10px white,
+     10px  10px white,
+    -10px  10px white,
+     10px -10px white,
+    -10px -10px white;
+}
+@keyframes slideup {
+  0% {top: 0;opacity: 1;}
+  80% {opacity: 1;}
+  100% {top: -100px;opacity: 0;}
+}
+.card.dead {
+  background: silver;
+  -webkit-filter: grayscale(0.9);
+  filter: grayscale(0.9);
+}
+.card.dead .damaged {
+  display: none;
+}
+.card .buffs {
+  position: absolute;
+  bottom: 4px;
+  left: 9px;
+}
+.card .buffs .buff {
+  display: inline-block;
+  margin-right: 3px;
+  position: relative;
+}
+.card .buffs .buff .img ,
+.card .buffs .buff .overlay {
+  box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;
+  width: 34px; height: 34px;
+}
+
+
+.table .deck .card {
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(0.4);
+  margin-right: -190px;
+  left: 40px;
+}
+.table .deck .card:hover {
+  transform: translate(-50%, -50%) scale(0.5);
+  z-index: 8;
+}
+.table .deck .card.selected {
+  transform: translate(-50%, -50%) scale(0.5);
+}
+.table .player.skills.sidehand.deck .card {
+  margin-right: -140px;
+}
+.table .player.skills.sidehand.deck .card.on {
+  transform: translate(-50%, -50%) scale(0.4) rotate(15deg);
+}
+
+.table .player.skills.hand .card {
+  margin-right: -140px;
+}
+/*
+.table .player.skills.hand .card:nth-child(1) {
+  transform: scale(0.4) rotate(-18deg);
+}
+.table .player.skills.hand .card:nth-child(2) {
+  transform: scale(0.4) rotate(-14deg);
+}
+.table .player.skills.hand .card:nth-child(3) {
+  transform: scale(0.4) rotate(-10deg);
+}
+.table .player.skills.hand .card:nth-child(4) {
+  transform: scale(0.4) rotate(-6deg);
+}
+.table .player.skills.hand .card:nth-child(5) {
+  transform: scale(0.4) rotate(-2deg);
+}
+.table .player.skills.hand .card:nth-child(6) {
+  transform: scale(0.4) rotate(2deg);
+}
+.table .player.skills.hand .card:nth-child(7) {
+  transform: scale(0.4) rotate(6deg);
+}
+.table .player.skills.hand .card:nth-child(8) {
+  transform: translate(-50%, -46%) scale(0.4) rotate(10deg);
+}
+.table .player.skills.hand .card:nth-child(9) {
+  transform: translate(-50%, -42%) scale(0.4) rotate(14deg);
+}
+.table .player.skills.hand .card:nth-child(10) {
+  transform: translate(-50%, -36%) scale(0.4) rotate(18deg);
+}
+*/
+.table .deck.player.skills.hand .card:hover {
+  transform: translate(-50%, -50%) scale(0.5);
+  z-index: 8;
+}
+
+.table .selectedarea .card {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
+  backface-visibility: hidden;
+}
+.table .selectedarea .card:hover .img {
+  background-size: 100%;
+}
+.table .selectedarea .cardback {
+  background: #111;
+  background-image: url(../img/cardback.jpg);
+  background-size: 101% 101%;
+  background-position: 50%;
+  position: absolute;
+  padding: 0;
+  width: 200px; height: 300px;
+  border-radius: 8px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%) scale(1.1);
+  backface-visibility: hidden;
+  transition: all 0.4s;
+}
+
+.table .selectedarea.flip .card {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+.table .selectedarea.flip .cardback {
+  transform: translate(-50%, -50%) scale(1.1) rotateY(180deg);
+}
+.table .selectedarea.flip:hover .card {
+  backface-visibility: visible; /* blurry fix */
+  z-index: 11;
+  transform: translate(-88%, -12%) scale(1.86);
+}
+.table .selectedarea .card .damaged,
+.table .selectedarea .card .heal {
+  display: none;
+}
+.table .deck.skills.enemy .card {
+  z-index: 6;
+  margin-right: -100px;
+}
+
+.map .card {
+  position: absolute;
+  z-index: 3;
+  top: 50%; left: 50%;
+  transform: translate3d(-50%, -50%, 2px);
+}
+
+.map .card.selected,
+.map .card.source {
+  transform: translate3d(-50%, -32%, 120px) rotateX(-45deg);
+}
+.card.enemy .current .hp span {
+  background: #ed8c8c;
+  color: white;
+}
+
+.card.dragTargetClone.table {
+  transform: scale(0.35);
+}
+
+.map .card legend, 
+.card.dragTargetClone.table legend {
+  opacity: 0;
+  height: 12px;
+}
+
+.map .card h1,
+.map .card .desc,
+.map .card .buff,
+.card.dragTargetClone.table h1,
+.card.dragTargetClone.table .desc,
+.card.dragTargetClone.table .buff {
+  opacity: 0;
+}
+.map .card fieldset,
+.card.dragTargetClone.table fieldset {
+  padding: 0;
+}
+.map .card .portrait .img,
+.map .card .portrait .overlay,
+.card.dragTargetClone.table .portrait .img,
+.card.dragTargetClone.table .portrait .overlay {
+  height: 265px;
+  background-size: 225%;
+}
+.map .card .current,
+.card.dragTargetClone.table .current {
+  top: 35px;
+  right: 30px;
+}
+.map .card .current .damage,
+.card.dragTargetClone.table .current .damage {
+  display: none;
+}
+.map .card .current .hp span,
+.card.dragTargetClone.table .current .hp span {
+  transform: scale(4.5);
+}
+.map .card:hover .portrait .img {
+  background-size: 260%;
+}
+
+/*TOWERS*/
+
+.card.player.towers .img {
+  background-image: url("../img/towers/tower-player.jpg");
+}
+.card.enemy.towers .img {
+  background-image: url("../img/towers/tower-enemy.jpg");
+}
+
+/*UNITS*/
+
+.card.tree {
+  background: forestgreen;
+}
+
+.card.tree .img {
+  background-image: url("../img/units/tree.jpg");
+}
+
+
