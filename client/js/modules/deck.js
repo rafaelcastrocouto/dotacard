@@ -4,17 +4,18 @@ game.deck = {
       filter = op.filter,
       cb = op.cb,
       multi = op.multi,
+      display = op.display,
       deck = $('<div>').addClass('deck ' + name);
     if (!game[name]) {
       game.load.json(name, function () {
-        game.deck.createCards(deck, name, cb, filter, multi);
+        game.deck.createCards(deck, name, cb, filter, multi, display);
       });
-    } else { game.deck.createCards(deck, name, cb, filter, multi); }
+    } else { game.deck.createCards(deck, name, cb, filter, multi, display); }
     return deck;
   },
-  createCards: function (deck, name, cb, filter, multi) {
+  createCards: function (deck, name, cb, filter, multi, display) {
     if (name === 'heroes') { game.deck.createHeroesCards(deck, name, cb, filter); }
-    if (name === 'skills') { game.deck.createSkillsCards(deck, name, cb, filter, multi); }
+    if (name === 'skills') { game.deck.createSkillsCards(deck, name, cb, filter, multi, display); }
     if (name === 'units') { game.deck.createUnitsCards(deck, name, cb, filter); }
   },
   createHeroesCards: function (deck, name, cb, filter) {
@@ -45,7 +46,7 @@ game.deck = {
     deck.data('cards', cards);
     if (cb) { cb(deck); }
   },
-  createSkillsCards: function (deck, name, cb, filter, multi) {
+  createSkillsCards: function (deck, name, cb, filter, multi, display) {
     var deckData = game.data[name],
       cards = [];
     $.each(deckData, function (hero, skills) {
@@ -57,22 +58,24 @@ game.deck = {
       }
       if (found || !filter) {
         $.each(skills, function (skill, skillData) {
-          var k;
-          skillData.hero = hero;
-          skillData.skill = skill;
-          skillData.className = [
-            hero + '-' + skill,
-            name,
-            hero
-          ].join(' ');
-          if (game.data.buffs[hero] && game.data.buffs[hero][skill]) {
-            skillData.buff = game.data.buffs[hero][skill];
-          }
-          if (multi) {
-            for (k = 0; k < skillData[multi]; k += 1) {
-              cards.push(game.card.build(skillData).appendTo(deck));
+          if (display && skillData.display) {
+            var k;
+            skillData.hero = hero;
+            skillData.skill = skill;
+            skillData.className = [
+              hero + '-' + skill,
+              name,
+              hero
+            ].join(' ');
+            if (game.data.buffs[hero] && game.data.buffs[hero][skill]) {
+              skillData.buff = game.data.buffs[hero][skill];
             }
-          } else { cards.push(game.card.build(skillData).appendTo(deck)); }
+            if (multi) {
+              for (k = 0; k < skillData[multi]; k += 1) {
+                cards.push(game.card.build(skillData).appendTo(deck));
+              }
+            } else { cards.push(game.card.build(skillData).appendTo(deck)); }
+          }
         });
       }
     });

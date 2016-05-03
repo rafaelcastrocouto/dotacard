@@ -110,8 +110,6 @@
 .slot.available:before {
   left: 50px;
   transform: rotate(45deg) scale(0.25);
-}
-.slot.available:hover:before {
   animation: chooseslide 1s infinite;
 }
 .movearea:hover:before {

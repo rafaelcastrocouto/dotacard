@@ -78,7 +78,7 @@ game.turn = {
     game.turn.counter -= 1;
   },
   skip: function (e) {console.log(e, this);
-    if (!this.attr('disabled')) {
+    if (!$(this).attr('disabled')) {
       game.turn.counter = 0;
       console.log('skip');
     }
@@ -103,10 +103,10 @@ game.turn = {
       game.states.table.el.removeClass('turn');
       game.states.table.el.addClass('unturn');
       game.status = 'unturn';
-      setTimeout(game.match.sendData, 1000);
+      if (game.mode == 'online') setTimeout(game.online.sendData, 1000);
     } else {
       game.tries = 1;
-      setTimeout(game.match.getData, 1000);
+      if (game.mode == 'online') setTimeout(game.online.getData, 1000);
     }
   },
   hours: function () {

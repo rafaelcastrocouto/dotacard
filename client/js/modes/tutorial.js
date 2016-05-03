@@ -8,28 +8,38 @@ game.tutorial = {
       game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon);
       game.tutorial.axe.appendTo(game.states.choose.el);
     }
+    game.tutorial.start();
+  },
+  start: function () {    
     game.mode = 'tutorial';
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
     game.message.text(game.data.ui.waiting);
     game.tutorial.message.html(game.data.ui.axepick);
-    game.states.choose.counter.show().text(game.data.ui.rightpick);
+    game.states.choose.counter.show().text(game.data.ui.clickpick);
     game.enemy.name = 'axe';
     game.enemy.type = 'challenged';
     game.player.type = 'challenger';
     game.states.choose.pickedbox.show();
+    game.states.choose.librarytest.hide();
+    game.states.choose.randombt.hide();
+    game.states.choose.mydeck.hide();
     game.tutorial.axeshow();
     game.states.choose.enablePick();
   },
   axeshow: function () {
     game.timeout(2000, function () {
-      game.tutorial.axe.addClass('up');
-      game.timeout(400, function () {
-        game.audio.play('tutorial/axehere');
-        game.tutorial.axebaloon.fadeIn('slow');
-        game.message.text(game.data.ui.tutorialstart);
-        game.loader.removeClass('loading');
-      });
+      if (game.mode == 'tutorial') {
+        game.tutorial.axe.addClass('up');
+        game.timeout(400, function () {
+          if (game.mode == 'tutorial') {
+            game.audio.play('tutorial/axehere');
+            game.tutorial.axebaloon.fadeIn('slow');
+            game.message.text(game.data.ui.tutorialstart);
+            game.loader.removeClass('loading');
+          }
+        });
+      }
     });
   },
   pick: function () {
@@ -61,7 +71,7 @@ game.tutorial = {
       var slot = $(this), card = slot.find('.card');
       game.player.picks[slot.data('slot')] = card.data('hero');
       if (game.player.picks.length === 5) {
-        game.states.choose.reset();
+        game.states.choose.clear();
         game.states.changeTo('table');
       }
     });

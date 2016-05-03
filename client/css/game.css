@@ -174,7 +174,6 @@ noscript {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
-  box-shadow: 0 0 6px black;
 }
 
 .state p {
@@ -240,6 +239,9 @@ input:focus {
 }
 .button[disabled]:hover {
   background: darkgray;
+}
+.button[disabled]:active {
+  top: -3px;
 }
 
 input[type="checkbox"],

@@ -9,7 +9,7 @@ game.tower = {
       damage: 15,
       hp: 80
     });
-    if (game.mode === 'match') {
+    if (game.mode === 'online') {
       tower.on('mousedown touchstart', game.card.select);
     }
     tower.place(pos);

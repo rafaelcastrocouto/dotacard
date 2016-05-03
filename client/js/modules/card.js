@@ -688,8 +688,8 @@ game.card = {
       } else if (this.hasClass('enemy')) { this.appendTo(game.enemy.heroesDeck); }
     } else if (this.hasClass('tower')) {
       if (this.hasClass('player')) {
-        game.match.lose();
-      } else if (this.hasClass('enemy')) { game.match.win(); }
+        game.online.lose();
+      } else if (this.hasClass('enemy')) { game.online.win(); }
     } else { this.remove(); }
     return this;
   },

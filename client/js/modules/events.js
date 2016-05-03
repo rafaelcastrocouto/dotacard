@@ -69,7 +69,7 @@ game.events = {
     return false;
   },
   leave: function () {
-    if (game.mode == 'match') {
+    if (game.mode == 'online') {
       return game.data.ui.leave;
     }
   }

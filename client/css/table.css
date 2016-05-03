@@ -34,16 +34,22 @@
 .table .button {
   position: absolute;
   right: 5px;
-  top: auto;
+  top: auto !important;
   width: 175px;
 }
 
-.table .skip {
+.table .skip, .table .skip[disabled]:active {
   bottom: 125px;
 }
+.table .skip:active {
+  bottom: 122px;
+}
 
-.table .surrender {
+.table .surrender, .table .surrender[disabled]:active {
   bottom: 180px;
+}
+.table .surrender:active {
+  bottom: 177px;
 }
 
 .table .deck.skills.enemy {
@@ -67,7 +73,7 @@
   overflow: hidden;
 }
 
-.camera:after {
+/*.camera:after {
   content: "";
   display: block;
   position: absolute;
@@ -76,7 +82,7 @@
   box-shadow: inset 0 0 20px 5px black;
   pointer-events: none;
 }
-
+*/
 /*RESULTS*/
 
 .table .resultsbox {

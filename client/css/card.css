@@ -31,18 +31,18 @@
   0% {top: 36%;}
   100% {top: 50%;}
 }
-.pickedbox .card h1,
-.pickedbox .card .current,
-.pickedbox .card .desc,
-.pickedbox .card .buff {
+.pickedbox .card.heroes h1,
+.pickedbox .card.heroes .current,
+.pickedbox .card.heroes .desc,
+.pickedbox .card.heroes .buff {
   opacity: 0;
 }
-.pickedbox .card .portrait .img,
-.pickedbox .card .portrait .overlay {
+.pickedbox .card.heroes .portrait .img,
+.pickedbox .card.heroes .portrait .overlay {
   height: 265px;
   background-size: 225%;
 }
-.pickedbox .card:hover .portrait .img {
+.pickedbox .card.heroes:hover .portrait .img {
   background-size: 260%;
 }
 
@@ -304,7 +304,7 @@
 }
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
-  box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;
+  /*box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;*/
   width: 34px; height: 34px;
 }
 

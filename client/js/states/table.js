@@ -10,7 +10,7 @@ game.states.table = {
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
     this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
     this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', function () {
-      if(confirm(game.data.ui.leave)) game[game.mode].surrender();
+      if(game[game.mode].surrender && confirm(game.data.ui.leave)) game[game.mode].surrender();
     });
   },
   start: function () {
@@ -20,6 +20,7 @@ game.states.table = {
     this.turns.show();
     this.camera.show();
     this.selectedArea.show();
+    if (game.player.picks.length == 5) localStorage.setItem('mydeck', game.player.picks);
   },
   enableUnselect: function () {
     game.states.table.el.on('mouseup touchend', function (event) { 
@@ -27,7 +28,7 @@ game.states.table = {
       if (!target.closest('.selected').length && !target.closest('.selectedarea').length && !game.events.dragging) {
         //console.log('table unselect');
         game.card.unselect(); 
-        if (game.mode === 'tutorial') game.tutorial.unselected();
+        if (game[game.mode].unselected) game[game.mode].unselected();
       }
     });
   },
@@ -110,7 +111,7 @@ game.states.table = {
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', game.states.table.clear);
   },
   clear: function () {
-    game[game.mode].clear();
+    if (game[game.mode].clear) game[game.mode].clear();
     game.map.clear();
     $('.table .card').remove();
     $('.table .deck').remove();

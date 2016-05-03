@@ -84,21 +84,21 @@
 }
 
 .tutorialblink {
-  box-shadow: 0 0 0 10px white;
+  box-shadow: 0 0 0 6px white;
   animation: tutorialblink 1s infinite;
 }
 
 @keyframes tutorialblink {
-  0%, 100% {box-shadow: 0 0 1px 1px gold;}
-  50% {box-shadow: 0 0 10px 10px white;}
+  0%, 100% {box-shadow: 0 0 0 6px rgba(0,0,0,0);}
+  50% {box-shadow: 0 0 0 6px white;}
 }
 
 .map .tutorialblink {
-  box-shadow: 0 0 0 25px white;
+  box-shadow: 0 0 0 16px white;
   animation: maptutorialblink 1s infinite;
 }
 
 @keyframes maptutorialblink {
-  0%, 100% {box-shadow: 0 0 1px 1px gold;}
-  50% {box-shadow: 0 0 10px 25px white;}
+  0%, 100% {box-shadow: 0 0 0 16px rgba(0,0,0,0);}
+  50% {box-shadow: 0 0 0 16px white;}
 }

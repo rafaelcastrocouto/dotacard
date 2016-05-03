@@ -54,8 +54,9 @@ game.states.log = {
   logout:function () {
     if (game.mode) {
       if (game.states[game.currentState].clear) game.states[game.currentState].clear();
-      game[game.mode].clear();
+      if (game[game.mode].clear) game[game.mode].clear();
       game.clearTimeouts();
+      game.mode = '';
     }
     game.states.changeTo('log');
   },

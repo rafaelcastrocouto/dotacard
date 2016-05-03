@@ -33,9 +33,9 @@ var game = {
   seed: null,
   skills: {}, //bundle from ./skills
   data: {}, //json {buffs, heroes, skills, ui, units}
-  mode: '', //match, tutorial, campain
+  mode: '', //online, tutorial, campain
   status: '', //turn, unturn, over
-  currentData: {}, // match moves data
+  currentData: {}, // moves data
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   db: function (send, cb) {
     if (typeof send.data !== 'string') {
@@ -77,7 +77,7 @@ var game = {
     setTimeout(function () { $('.pickedbox div:nth-child(4)').mouseup(); }, 5300);
     setTimeout(function () { $('.pickedbox div:nth-child(5)').mouseup(); }, 5400);
     //setTimeout(function () { game.tutorial.axe.css({opacity: 0}); }, 2500);
-    //setTimeout(function () { game.match.buildSkills('single'); }, 3000);
+    //setTimeout(function () { game.online.buildSkills('single'); }, 3000);
     //setTimeout(function () { $('.wk-stun.skills').appendTo('.player.hand'); }, 4000);
     //setTimeout(function () {$('.map .hero.wk.player').place('G2'); game.status = 'turn'; }, 5000);
   }
