@@ -14,7 +14,7 @@ game.states.log = {
     this.button = $('<div>').addClass('button').appendTo(this.box).text(game.data.ui.log).attr({
       title: game.data.ui.choosename
     }).on('mouseup touchend', this.login);
-    this.rememberlabel = $('<label>').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
+    this.rememberlabel = $('<label>').addClass('remembername').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
     this.remembercheck = $('<input>').attr({
       type: 'checkbox',
       name: 'remember',
@@ -53,9 +53,9 @@ game.states.log = {
   },
   logout:function () {
     if (game.mode) {
-      if (game.states[game.currentState].clear) game.states[game.currentState].clear();
-      if (game[game.mode].clear) game[game.mode].clear();
       game.clearTimeouts();
+      if (game[game.mode].clear) game[game.mode].clear();
+      if (game.states[game.currentState].clear) game.states[game.currentState].clear();
       game.mode = '';
     }
     game.states.changeTo('log');

@@ -289,6 +289,9 @@ game.online = {
     game.states.table.showResults();
   },
   surrender: function () {
+    game.clearTimeouts();
+    game.online.clear();
+    game.states.table.clear();
     game.online.lose();
   },
   lose: function () {

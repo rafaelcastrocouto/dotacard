@@ -37,6 +37,7 @@ input[type="text"] {
 
 html, body {
   user-select: none;
+  -webkit-user-select: none;
   margin: 0;
   width: 100%; height: 100%;
 }
@@ -81,7 +82,6 @@ img {
   border: 0;
 }
 small {
-  cursor: default;
   font-size: 70%;
 }
 noscript {
@@ -214,7 +214,7 @@ input:focus {
   border-radius: 3px;
   margin: 6px;
   outline: 0;
-  background: #bfbfb0;
+  background: #b6b6b0;
   color: white;
   text-shadow: 0 1px 0 #9b9c89;
   box-shadow: 0 4px 0 #9b9c89;
@@ -222,10 +222,11 @@ input:focus {
   position: relative;
   top: -3px;
   transition: all 0.2s;
-  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+  /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
+  cursor: pointer;
 }
 .button:hover {
-  background: lightgray;
+  background: #c6c6c0;
 }
 .button:active {
   top: 0;
@@ -238,6 +239,7 @@ input:focus {
   box-shadow: 0 4px 0 gray;
 }
 .button[disabled]:hover {
+  cursor: default;
   background: darkgray;
 }
 .button[disabled]:active {
@@ -266,6 +268,10 @@ label span {
 
 .log label {
   text-align: center;
+}
+
+.log .remembername {
+  cursor: pointer;
 }
 
 .menu .box {

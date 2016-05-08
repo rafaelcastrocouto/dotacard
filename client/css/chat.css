@@ -73,8 +73,7 @@
   background: rgba(0,0,0,0.1);
   margin: 4px 2px;
   word-break: break-word;
-  border: rgba(250,250,255,0.5);
-  user-select: text;
+  border: rgba(250,250,255,0.5);   
 }
 
 .chat .messages p {
@@ -85,6 +84,9 @@
   clear: both;
   padding: 6px 9px;
   line-height: 1.5em;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text; 
 }
 .chat .messages p { transform: rotate(2deg); }
 .chat .messages p:nth-child(2n) { transform: rotate(-0.8deg); }

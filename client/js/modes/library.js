@@ -354,7 +354,10 @@ game.library = {
     $('.card').on('toggle.library', game.library.end);
   },
   surrender: function () {
+    ggame.clearTimeouts();
+    game.library.clear();
     game.states.table.clear();
+    game.states.changeTo('menu');
   },
   end: function () {
     game.library.axebaloon.hide().fadeIn('slow');

@@ -60,7 +60,7 @@ game.states.options = {
   },
   start: function () {
     game.states.options.opt.hide();
-    game.chat.el.appendTo(this.el);
+    if (game.chat.el) game.chat.el.appendTo(this.el);
   },
   end: function () {
     game.states.options.opt.show();

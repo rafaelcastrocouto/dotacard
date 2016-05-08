@@ -63,6 +63,7 @@
   padding-left: 26px;
   padding-right: 4px;
   border-radius: 4px;
+  cursor: default;
 }
 .topbar .message * {
   position: static;
@@ -74,13 +75,13 @@
 
 .logout {
   position: absolute;
-  right: 55px;
+  right: 65px;
 }
 
-.logout, .version {
+.logout {
   cursor: pointer;
 }
-.logout:hover, .version:hover {
+.logout:hover {
   color: #ddd;
 }
 
@@ -93,7 +94,8 @@
 
 .turns {
   position: absolute;
-  top: 2px; right: 100px;
+  top: 2px;
+  right: 110px;
   border-radius: 4px;
 }
 
@@ -119,7 +121,7 @@
 .topbar .opt {
   cursor: pointer;
   position: absolute;
-  right: 3px;
+  right: 10px;
 }
 
 .topbar .opt:hover {

@@ -74,14 +74,16 @@
   image-rendering: pixelated;
   position: relative;
   display: inline-block;
-  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+  /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   text-align: left;
   transition: all 0.4s, top 0.6s linear, left 0.6s linear;
   padding: 0;
-  width: 200px; height: 300px;
+  width: 200px;
+  height: 300px;
   border-radius: 8px;
   z-index: 1;
   color: #4d4843;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -112,11 +114,11 @@
   transition: background-size 0.4s;
 }
 .card:hover .portrait .img {
-  background-size: 120%;
+  /* background-size: 120%; */
 }
 
 .card .overlay {
-  box-shadow: 0 0 20px rgba(0,0,0,0.5) inset;
+  box-shadow: 0 0 16px rgba(0,0,0,0.6) inset;
   border-radius: 3px;
   position: absolute;
   top: 0;
@@ -189,15 +191,15 @@
 }
 
 .card.player {
-  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
+  /* cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer; */
   background: #74c47b;
 }
 .card.enemy {
-  cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer;
+  /* cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer; */
   background: #c23636;
 }
 .card.skills {
-  cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer;
+  /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   background: #54a0e3;
 }
 .card.player.heroes.selected,

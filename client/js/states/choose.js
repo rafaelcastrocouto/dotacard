@@ -39,9 +39,10 @@ game.states.choose = {
     });
     this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', function () {
       game.clearTimeouts();
-      game.states.choose.clear();
       if (game[game.mode].clear) game[game.mode].clear();
+      game.states.choose.clear();
       game.states.changeTo('menu');
+      game.mode = '';
     });
   },
   start: function () {
@@ -55,7 +56,8 @@ game.states.choose = {
     var card = $(this);
     if (game[game.mode].choose) game[game.mode].choose(card);
     $('.choose .card.selected').removeClass('selected');
-    card.addClass('selected draggable');
+    card.addClass('selected');
+    if (game.mode !== 'library') card.addClass('draggable');
     game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
   },
   enablePick: function () {
@@ -70,7 +72,9 @@ game.states.choose = {
     var card,
       slot = $(this).closest('.slot'),
       pick = $('.pickbox .card.selected');
-    if (!pick.data('disable') && game.states.choose.pickEnabled) {
+    if (!pick.data('disable') &&
+        game.states.choose.pickEnabled &&
+        game.mode !== 'library') {
       game.audio.play('activate');
       if (slot.hasClass('available')) {
         slot.removeClass('available');
@@ -81,14 +85,14 @@ game.states.choose = {
         card = slot.children('.card');
         card.on('mousedown.choose touchstart.choose', game.states.choose.select).insertBefore(pick);
       }
-      card.addClass('selected draggable');
+      card.addClass('selected');
+      if (game.mode !== 'library') card.addClass('draggable');
       pick.removeClass('selected draggable').appendTo(slot).clearEvents('choose');
       game.states.choose.sort();
       game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
       game.player.picks[slot.data('slot')] = pick.data('hero');
       pick.trigger('pick');
       game.player.manaBuild();
-
       if (game[game.mode].pick) game[game.mode].pick();
     }
   },
@@ -138,6 +142,6 @@ game.states.choose = {
     game.states.choose.sort();
   },
   end: function () {
-    //leave choose state cb
+    this.pickedbox.hide();
   }
 };

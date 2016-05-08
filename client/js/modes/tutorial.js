@@ -351,7 +351,11 @@ game.tutorial = {
     $('.card').on('toggle.tutorial', game.tutorial.end);
   },
   surrender: function () {
+    game.clearTimeouts();
+    game.tutorial.clear();
     game.states.table.clear();
+    game.mode = '';
+    game.states.changeTo('menu');
   },
   end: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');

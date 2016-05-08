@@ -20,6 +20,10 @@
   position: relative;
 }
 
+.options input + span {
+  cursor: pointer;
+}
+
 .volume {
   cursor: pointer;
   position: relative;
