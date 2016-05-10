@@ -229,7 +229,7 @@ input:focus {
 .button:hover, button:hover {
   background: #c6c6c0;
 }
-.button:active, button:active, {
+.button:active, button:active {
   top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
