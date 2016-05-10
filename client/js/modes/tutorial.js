@@ -59,7 +59,6 @@ game.tutorial = {
     } else {
       game.message.text(game.data.ui.getready);
       game.states.choose.counter.text(game.data.ui.cardsperturn + ': ' + game.player.cardsPerTurn);
-      game.tutorial.axe.addClass('left');
       game.audio.play('tutorial/axebattle');
       game.tutorial.message.html(game.data.ui.axebattle);
       game.timeout(2000, game.tutorial.heroesdeck);
@@ -94,7 +93,7 @@ game.tutorial = {
       game.enemy.kills = 0;
       game.timeout(400, function () {
         game.message.text(game.data.ui.yourturncount + ' 10');
-        game.tutorial.axe.addClass('up');
+        game.tutorial.axe.addClass('up left');
         game.timeout(800, game.tutorial.selectEnemyLesson);
       });
     }
@@ -190,11 +189,10 @@ game.tutorial = {
     game.tutorial.lesson = 'Player';
     $('.map .player.hero').addClass('tutorialblink');
     game.tutorial.axe.removeClass('left');
-    game.tutorial.axebaloon.hide().fadeIn('slow');
+    game.tutorial.axebaloon.hide().delay(800).fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectplayer);
     game.message.text(game.data.ui.yourturncount + ' 6');
     game.status = 'turn';
-    //game.timeout(100, game.card.unselect);
   },
   moveLesson: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');

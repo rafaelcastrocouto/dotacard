@@ -10,9 +10,18 @@ game.states.table = {
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
     this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
     this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', function () {
-      if(confirm(game.data.ui.leave)) {        
-        if (game[game.mode].surrender) game[game.mode].surrender();
-      }
+      swal({
+        title: game.data.ui.leave,
+        type: 'warning',
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: game.data.ui.yes,
+        cancelButtonText: game.data.ui.no,
+      }).then(function(isConfirm) {
+        if (isConfirm === true) {
+          if (game[game.mode].surrender) game[game.mode].surrender();
+        }
+      });
     });
   },
   start: function () {

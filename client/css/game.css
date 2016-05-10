@@ -45,7 +45,6 @@ body {
   background-attachment: fixed;
   background-color: #22272c;
   background: radial-gradient(ellipse farthest-corner at center top, #6e7a66 0%, #343b43 30%, #22272c 60%, #22272c 100%), #22272c;
-  color: white;
   background-size: 100% 20%;
   background-repeat: no-repeat;
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
@@ -98,11 +97,13 @@ noscript {
   opacity: 1;
 }
 
-.container {
+.game-container {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   z-index: 2;
+  color: #fff;
 }
 
 .hidden {
@@ -204,7 +205,7 @@ input:focus {
 @keyframes shade {
   50% {opacity: 0.5;}
 }
-.button {
+.button, button {
   display: inline-block;
   text-align: center;
   font-size: 16px;
@@ -225,25 +226,37 @@ input:focus {
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   cursor: pointer;
 }
-.button:hover {
+.button:hover, button:hover {
   background: #c6c6c0;
 }
-.button:active {
+.button:active, button:active, {
   top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
-.button[disabled] {
+.button[disabled], button[disabled] {
   background: darkgray;
   color: gray;
   text-shadow: none;
   box-shadow: 0 4px 0 gray;
 }
-.button[disabled]:hover {
+.button[disabled]:hover, button[disabled]:hover {
   cursor: default;
   background: darkgray;
 }
-.button[disabled]:active {
+.button[disabled]:active, button[disabled]:active{
   top: -3px;
+}
+
+.sweet-confirm {
+  background: tomato;
+  box-shadow: 0 4px 0 #df4327;
+}
+.sweet-confirm:hover {
+  background: #ff7357;
+}
+
+.sweet-container p {
+  color: #484848;
 }
 
 input[type="checkbox"],

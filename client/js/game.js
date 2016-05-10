@@ -15,7 +15,7 @@ var game = {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
-  container: $('.container'),
+  container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message'),
   triesCounter: $('<small>').addClass('triescounter'),
@@ -63,9 +63,19 @@ var game = {
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
   },
   reset: function () {
-    console.error('Internal error: ', game);
-    var r = confirm(game.data.ui.error);
-    if (r) { location.reload(true); }
+    swal({
+      title: game.data.ui.error,
+      text: game.data.ui.reload,
+      type: 'error',
+      showCancelButton: true,
+      buttonsStyling: false,
+      confirmButtonText: game.data.ui.yes,
+      cancelButtonText: game.data.ui.no,
+    }).then(function(isConfirm) {
+      if (isConfirm === true) {
+        location.reload(true);
+      }
+    });
   },
   test: function () {
     game.states.log.input.val('TestBot');
