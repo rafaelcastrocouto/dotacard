@@ -90,16 +90,13 @@
       "display": true,
       "description": "Aumenta o ataque e o movimento do Druida e do Espírito Urso"
     },
-    "passive": {
-      "name": "Sinergia",
+    "roar": {
+      "name": "Rugido Feroz",
       "type": "Passiva",
       "targets": ["Próprio"],
-      "cards": 1,
-      "bear bonus": 4,
-      "rabid bonus": 4,
-      "ult bonus": 20,
+      "cards": 3,
       "display": true,
-      "description": "Aumenta a sinergia entra o Druida e o Espírito Urso"
+      "description": "Ruge de forma tão feroz que os inimigos fogem de medo"
     },
     "ult": {
       "name": "Forma Real",
@@ -112,7 +109,7 @@
       "description": "O Duida se tranforma em um urso furioso"
     },
     "cry": {
-      "name": "Battle Cry",
+      "name": "Grito de Guerra",
       "deck": "Temporária",
       "type": "Ativa",
       "targets": ["Próprio"],
@@ -341,7 +338,7 @@
 
   "nyx": {
     "stun": {
-      "name": "Impale",
+      "name": "Impalar",
       "type": "Ativa",
       "targets": ["Local"],
       "aoe": "Linear",
@@ -363,7 +360,7 @@
       "description": "Causa dano ao alvo obriga o oponente a descartar uma habilidade do alvo"
     },
     "spike": {
-      "name": "Spiked Carapace",
+      "name": "Carapaça",
       "type": "Ativa",
       "targets": ["Próprio"],
       "duration": 2,

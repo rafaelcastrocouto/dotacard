@@ -89,16 +89,13 @@
       "display": true,
       "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear"
     },
-    "passive": {
-      "name": "Synergy",
-      "type": "Passive",
+    "roar": {
+      "name": "Savage Roar",
+      "type": "Active",
       "targets": ["Self"],
-      "cards": 1,
-      "bear bonus": 4,
-      "rabid bonus": 4,
-      "ult bonus": 20,
+      "cards": 3,
       "display": true,
-      "description": "Increases the Lone Druid's synergy with his Spirit Bear"
+      "description": "Roars fiercely causing enemies to flee towards their base in terror"
     },
     "ult": {
       "name": "True Form",

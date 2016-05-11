@@ -70,7 +70,7 @@
 }
 
 .card {
-  image-rendering: pixelated;
+  /* image-rendering: pixelated; */
   position: relative;
   display: inline-block;
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
@@ -378,6 +378,7 @@
 }
 .table .selectedarea .card:hover .img {
   background-size: 100%;
+  image-rendering: pixelated;
 }
 .table .selectedarea .cardback {
   background: #111;

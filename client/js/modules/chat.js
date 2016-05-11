@@ -11,7 +11,7 @@ game.chat = {
       game.chat.icon = $('<span>').text('Chat').addClass('chat-icon').appendTo(game.chat.el);
       setInterval(function () {
         game.db({ 'get': 'chat' }, function (chat) {
-          game.chat.update(chat);
+          game.chat.update(chat, true);
         });
       }, 5000);
     }
@@ -25,17 +25,17 @@ game.chat = {
       game.chat.update(chat);
     });
   },
-  update: function (chat) {
-    var down = false,
-      height = game.chat.messages[0].scrollHeight - game.chat.messages.height(),
-      scroll = game.chat.messages.scrollTop();
-    if (scroll > height * 0.9 || height < 80) { down = true; }
-    game.chat.messages.empty();
-    $.each(chat.messages, function () {
-      var msg = $('<p>').text(this).prependTo(game.chat.messages);
-    });
-    if (down) { game.chat.messages.scrollTop(game.chat.messages[0].scrollHeight); }
-
+  update: function (chat, first) {
+    if (chat.messages.length) {  
+      var height = game.chat.messages[0].scrollHeight - game.chat.messages.height(),
+          scroll = game.chat.messages.scrollTop(),
+          down = (scroll > height * 0.9 || height < 80);
+      game.chat.messages.empty();
+      $.each(chat.messages, function () {
+        var msg = $('<p>').text(this).prependTo(game.chat.messages);
+      });
+      if (down || first) { game.chat.messages.scrollTop(game.chat.messages[0].scrollHeight); }
+    }
   },
   send: function () {
     var msg = game.chat.input.val();

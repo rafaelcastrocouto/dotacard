@@ -14,7 +14,7 @@ game.states.log = {
     }).keydown(function (e) {
       if (e.which === 13) { game.states.log.login(); }
     });
-    this.button = $('<input>').addClass('button').appendTo(this.form).text(game.data.ui.log).attr({
+    this.button = $('<input>').addClass('button').appendTo(this.form).val(game.data.ui.log).attr({
       title: game.data.ui.choosename,
       type: 'submit'
     }).on('mouseup touchend', this.login);

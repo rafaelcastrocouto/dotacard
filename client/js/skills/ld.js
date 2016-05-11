@@ -148,23 +148,8 @@ game.skills.ld = {
     passive: function (skill, source) {
       var side = source.data('side');
       var ld = $('.'+side+'.hero.ld');
-      ld.addBuff(ld, skill.data('buff'));
-      var rabids = $('.'+side+'.skill.ld-rabid');
-      var duration = rabids.data('duration');
-      rabids.data('duration', duration + skill.data('rabid bonus'));
-      var ults = $('.'+side+'.skill.ld-ult');
-      var hpbonus = ults.data('hp bonus');
-      ults.data('hp bonus', hpbonus + skill.data('ult bonus'));
       var bear = ld.data('bear');
       if(bear) {
-        ld.addBuff(bear, skill.data('buff'));
-        var beardamage = bear.data('current damage');
-        bear.changedamage(beardamage + skill.data('bear bonus'));
-        var bearhp = bear.data('hp');
-        var currenthp = bear.data('current hp');
-        var relativehp = currenthp / bearhp;
-        bear.data('hp', bearhp + skill.data('hp bonus'));
-        bear.data('current hp', bear.data('hp') * relativehp);
       }
     }
   },
