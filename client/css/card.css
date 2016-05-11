@@ -47,7 +47,7 @@
 }
 
 .card.dragTargetClone.choose {
-  transform: scale(1.16);
+  transform: translate(40px, 50px) scale(0.8);
 }
 
 .choose .card .kd,
@@ -64,7 +64,6 @@
 .card.dragTargetClone {
   transition: all 0s;
   position: absolute;
-  opacity: 0.9;
   z-index: 25;
   transform-origin: 0 0;
   pointer-events: none;
@@ -114,7 +113,7 @@
   transition: background-size 0.4s;
 }
 .card:hover .portrait .img {
-  /* background-size: 120%; */
+  background-size: 120%;
 }
 
 .card .overlay {
@@ -164,7 +163,7 @@
   padding-top: 4px;
 }
 .card .current .hp span {
-  background: #ceeb71;
+  background: #beeb71;
 }
 .card .current .damage span {
   background: #ed8c8c;

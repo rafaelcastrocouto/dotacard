@@ -4,17 +4,21 @@ game.states.log = {
     this.box = $('<div>').appendTo(this.el).addClass('box');
     $('.logo').clone().prependTo(this.box);
     this.title = $('<h1>').appendTo(this.box).text(game.data.ui.choosename);
-    this.input = $('<input>').appendTo(this.box).attr({
+    this.form = $('<form>').appendTo(this.box);
+    this.input = $('<input>').appendTo(this.form).attr({
       placeholder: game.data.ui.logtype,
       type: 'text',
+      required: 'required',
+      minlength: 3,
       maxlength: 24
     }).keydown(function (e) {
       if (e.which === 13) { game.states.log.login(); }
     });
-    this.button = $('<div>').addClass('button').appendTo(this.box).text(game.data.ui.log).attr({
-      title: game.data.ui.choosename
+    this.button = $('<input>').addClass('button').appendTo(this.form).text(game.data.ui.log).attr({
+      title: game.data.ui.choosename,
+      type: 'submit'
     }).on('mouseup touchend', this.login);
-    this.rememberlabel = $('<label>').addClass('remembername').appendTo(this.box).append($('<span>').text(game.data.ui.remember));
+    this.rememberlabel = $('<label>').addClass('remembername').appendTo(this.form).append($('<span>').text(game.data.ui.remember));
     this.remembercheck = $('<input>').attr({
       type: 'checkbox',
       name: 'remember',
@@ -31,8 +35,9 @@ game.states.log = {
     game.states.options.opt.show();
   },
   login: function () {
-    var name = game.states.log.input.val();
-    if (name) {
+    var valid = game.states.log.input[0].checkValidity(),
+        name = game.states.log.input.val();
+    if (name && valid) {
       game.player.name = name;
       if (game.states.log.remembername) {
         localStorage.setItem('name', name);

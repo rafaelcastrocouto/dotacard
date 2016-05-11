@@ -39,7 +39,7 @@ game.states.menu = {
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');
-    if (!game.chat.builded) { game.chat.build(); }
+    game.chat.build();
     game.chat.el.appendTo(this.el);
   }
 };

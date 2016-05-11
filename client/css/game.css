@@ -205,7 +205,10 @@ input:focus {
 @keyframes shade {
   50% {opacity: 0.5;}
 }
-.button, button {
+.button, 
+button, 
+input[type=button], 
+input[type=submit] {
   display: inline-block;
   text-align: center;
   font-size: 16px;
@@ -224,26 +227,40 @@ input:focus {
   top: -3px;
   transition: all 0.2s;
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
-  cursor: pointer;
 }
-.button:hover, button:hover {
+.button:hover, 
+button:hover,
+input[type=button]:hover, 
+input[type=submit]:hover {
   background: #c6c6c0;
 }
-.button:active, button:active {
+.button:active, 
+button:active,
+input[type=button]:active, 
+input[type=submit]:active {
   top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
-.button[disabled], button[disabled] {
+.button[disabled], 
+button[disabled],
+input[type=button][disabled], 
+input[type=submit][disabled] {
   background: darkgray;
   color: gray;
   text-shadow: none;
   box-shadow: 0 4px 0 gray;
 }
-.button[disabled]:hover, button[disabled]:hover {
+.button[disabled]:hover,
+button[disabled]:hover,
+input[type=button][disabled]:hover, 
+input[type=submit][disabled]:hover {
   cursor: default;
   background: darkgray;
 }
-.button[disabled]:active, button[disabled]:active{
+.button[disabled]:active,
+button[disabled]:active,
+input[type=button][disabled]:active, 
+input[type=submit][disabled]:active {
   top: -3px;
 }
 
@@ -277,6 +294,10 @@ label input {
 
 label span {
   vertical-align: super;
+}
+
+.log input[type=submit] {
+  height: 40px;
 }
 
 .log label {

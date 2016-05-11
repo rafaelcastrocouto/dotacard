@@ -56,12 +56,15 @@ game.library = {
 
   choose: function (card, build) {    
     var hero = card.data('hero'),
-        heroSkills;
+        heroSkills,
+        disabled;
     if (build || hero !== $('.choose .card.selected').data('hero')) {
+      disabled = card.hasClass('dead');
       game.states.choose.counter.text(card.data('name') + ' ' + game.data.ui.skills);      
       $('.slot .card.skills').appendTo(game.library.skills);
       $('.library.skills .'+hero+'.skill').each(function (i) {
         $(game.states.choose.pickedbox.children()[i]).show().append(this);
+        if (disabled) $(this).addClass('dead');
       });
       game.states.choose.pickedbox.hide();
       game.states.choose.pickedbox.fadeIn('slow');
