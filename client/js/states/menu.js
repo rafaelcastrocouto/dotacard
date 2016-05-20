@@ -36,10 +36,11 @@ game.states.menu = {
     }).text(game.data.ui.credits);
   },
   start: function () {
+    if (!game.player.name) game.player.name = localStorage.getItem('log');
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');
     game.chat.build();
-    game.chat.el.appendTo(this.el);
+    game.chat.el.appendTo(this.el);    
   }
 };

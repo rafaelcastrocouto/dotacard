@@ -1,17 +1,13 @@
 var game = {
   start: function () {
+    game.events.savedHash = location.hash.slice(1);
     game.events.build();
     game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
     if (window.$ &&
         window.JSON &&
         window.localStorage &&
         window.btoa && window.atob &&
-        window.XMLHttpRequest &&
-        Modernizr.backgroundsize &&
-        Modernizr.csstransforms &&
-        Modernizr.generatedcontent &&
-        Modernizr.rgba &&
-        Modernizr.opacity) {
+        window.XMLHttpRequest) {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },

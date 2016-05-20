@@ -44,6 +44,7 @@ game.states.log = {
       } else {
         localStorage.removeItem('name');
       }
+      localStorage.setItem('log', name);
       game.states.log.button.attr('disabled', true);
       game.loader.addClass('loading');
       game.db({ 'get': 'server' }, function (server) {

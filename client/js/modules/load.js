@@ -24,7 +24,7 @@ game.load = {
       game.timeout(35, game.load.progress);
     } else if (game.version && game.load.updating === game.load.totalUpdate) {
       game.states.build();
-      game.timeout(800, game.states.changeTo, 'log');
+      game.timeout(800, game.load.end);
     }
   },
   images: {
@@ -125,5 +125,16 @@ game.load = {
   },
   analytics: function () {
     $('<script src="analytics/google.analytics.min.js">').appendTo('body');
+  },
+  end: function () {
+    if (game.events.savedHash &&
+        game.states[game.events.savedHash] &&
+        game.events.savedHash !== 'loading' &&
+        game.events.savedHash !== 'table' &&
+        game.events.savedHash !== 'choose') {
+      game.states.changeTo(game.events.savedHash);
+    } else {
+      game.states.changeTo('log');
+    }
   }
 };

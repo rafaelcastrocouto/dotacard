@@ -31,6 +31,7 @@ game.states = {
       game.currentState = state;
       game.backState = pre;
       if (newstate.start) { newstate.start(); }
+      location.hash = state;
     }
   },
   backState: function () {
