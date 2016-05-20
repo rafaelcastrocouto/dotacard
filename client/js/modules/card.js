@@ -285,7 +285,7 @@ game.card = {
     }
     return card;
   },
-  strokeSkill: function () {
+  strokeSkill: function () { 
     var skill = this,
       hero = skill.data('hero'),
       source = $('.map .source'),

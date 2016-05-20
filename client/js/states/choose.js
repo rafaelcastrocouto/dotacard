@@ -29,7 +29,8 @@ game.states.choose = {
       }
     });
     this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', function () {
-      
+      game.states.choose.clear();
+      game.states.changeTo('table');
     });
     this.mydeck = $('<div>').appendTo(this.buttonbox).addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', function () {
       var deck = localStorage.getItem('mydeck').split(',');

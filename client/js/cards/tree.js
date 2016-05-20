@@ -5,7 +5,7 @@ game.tree = {
       name: game.data.ui.tree,
       attribute: game.data.ui.forest + game.data.ui.tree
     });
-    if (game.mode === 'online') {
+    if (game.mode !== 'tutorial') {
       tree.on('mousedown touchstart', game.card.select);
     }
     tree.place(spot);
