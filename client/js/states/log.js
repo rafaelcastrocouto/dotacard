@@ -31,8 +31,9 @@ game.states.log = {
   start: function () {
     game.message.html('Version <small class="version">' + game.version + '</small>');
     game.states.log.out.hide();
+    game.states.options.opt.show();    
+    game.setMode('');
     this.input.focus();
-    game.states.options.opt.show();
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),
@@ -46,24 +47,14 @@ game.states.log = {
       }
       localStorage.setItem('log', name);
       game.states.log.button.attr('disabled', true);
-      game.loader.addClass('loading');
-      game.db({ 'get': 'server' }, function (server) {
-        if (server.status === 'online') {
-          game.states.log.out.show();
-          game.states.changeTo('menu');
-        } else { game.reset(); }
-      });
+      game.history.jumpTo('menu');
     } else {
       game.states.log.input.focus();
     }
   },
   logout:function () {
-    if (game.mode) {
-      game.clearTimeouts();
-      if (game[game.mode].clear) game[game.mode].clear();
-      if (game.states[game.currentState].clear) game.states[game.currentState].clear();
-      game.mode = '';
-    }
+    if (game.mode && game[game.mode].clear) game[game.mode].clear();
+    if (game.states[game.currentState].clear) game.states[game.currentState].clear();
     game.states.changeTo('log');
   },
   end: function () {

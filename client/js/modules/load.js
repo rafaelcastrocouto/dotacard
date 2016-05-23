@@ -127,14 +127,6 @@ game.load = {
     $('<script src="analytics/google.analytics.min.js">').appendTo('body');
   },
   end: function () {
-    if (game.events.savedHash &&
-        game.states[game.events.savedHash] &&
-        game.events.savedHash !== 'loading' &&
-        game.events.savedHash !== 'table' &&
-        game.events.savedHash !== 'choose') {
-      game.states.changeTo(game.events.savedHash);
-    } else {
-      game.states.changeTo('log');
-    }
+    if (!game.history.recovering())  game.states.changeTo('log');
   }
 };

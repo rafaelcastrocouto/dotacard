@@ -119,7 +119,11 @@ game.states.table = {
         text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
-    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', game.states.table.clear);
+    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
+      game.states.table.clear();
+      if (game.mode && game[game.mode].clear) game[game.mode].clear();
+      game.states.changeTo('menu');
+    });
   },
   clear: function () {
     game.map.clear();

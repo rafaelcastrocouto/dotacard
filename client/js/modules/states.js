@@ -1,7 +1,7 @@
 game.states = {
   el: $('.states').first(),
   build: function () {
-    var preBuild = ['menu', 'options', 'choose', 'table'];
+    var preBuild = ['log', 'menu', 'options', 'choose', 'table'];
     for (var i=0; i<preBuild.length; i++) {
       game.states.buildState(preBuild[i]);
     }
@@ -16,12 +16,13 @@ game.states = {
   },
   changeTo: function (state) {
     if (state !== game.currentState) {
+      game.clearTimeouts();
       game.states.buildState(state);
       var newstate,
         pre = game.currentState,
         oldstate = game.states[pre];
       if (oldstate && oldstate.el) { oldstate.el.fadeOut(100); }
-      if (oldstate && oldstate.end) { oldstate.end(); }
+      if (oldstate && oldstate.end) { oldstate.end(); }      
       newstate = game.states[state];
       if (newstate.el) {
         setTimeout(function () {
@@ -29,12 +30,16 @@ game.states = {
         }, 120);
       }
       game.currentState = state;
-      game.backState = pre;
+      if (pre != 'loading' && pre != 'noscript') {
+        localStorage.setItem('backstate', pre);
+        game.backState = pre;
+      }
       if (newstate.start) { newstate.start(); }
       location.hash = state;
     }
   },
-  backState: function () {
+  backState: function () { console.log(game.backState)
+    if (!game.backState) game.backState = localStorage.getItem('backstate')
     game.states.changeTo(game.backState);
   }
 };

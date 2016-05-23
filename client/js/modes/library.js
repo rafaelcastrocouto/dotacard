@@ -1,5 +1,5 @@
 game.library = {
-  build: function () {
+  build: function (recover) {
     if (!game.library.builded) {
       game.library.builded = true;
       game.library.skills = game.deck.build({
@@ -13,12 +13,10 @@ game.library = {
         }
       });
     }
-    game.library.start();
+    game.library.start(recover);
   },
-
-  start: function () {
+  start: function (recover) {
     game.loader.removeClass('loading');
-    game.mode = 'library';
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
     game.message.text(game.data.ui.library);
@@ -31,7 +29,7 @@ game.library = {
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
     game.states.choose.counter.text(game.data.ui.skills);
-    game.library.choose(game.states.choose.pickDeck.children().first(), true);
+    if (!recover) game.library.choose(game.states.choose.pickDeck.children().first(), true);
   },
   choose: function (card, build) {    
     var hero = card.data('hero'),
@@ -55,10 +53,15 @@ game.library = {
   setTable: function () {
     if (!game.library.started) {
       game.library.started = true;      
-      game.loader.removeClass('loading');
+      game.loader.removeClass('loading');      
       game.audio.play('horn');
       game.tower.place();
-      game.tree.place();
+      game.tree.place();      
+      if (!game.library.hero) {
+        var hero = localStorage.getItem('library');
+        game.library.hero = $('.pickbox .'+hero);
+        game.player.picks = [hero];
+      }
       game.library.placePlayerHeroes();
       game.library.placeEnemyHeroes();
       game.library.buildSkills();
@@ -190,31 +193,27 @@ game.library = {
     $('.player.hero').on('attack.library', game.library.skillSelect);
   },
   surrender: function () {
-    ggame.clearTimeouts();
     game.library.clear();
     game.states.table.clear();
     game.states.changeTo('menu');
   },
   end: function () {
-    //game.library.axebaloon.hide().fadeIn('slow');
-    //game.library.message.html(game.data.ui.axeend);
-    //game.audio.play('library/axeah');
-    game.message.text(game.data.ui.win);
-    //game.winner = game.player.name;
-    //game.states.table.showResults();
-    game.status = 'over';
-    game.db({
-      'set': 'chat',
-      'data': game.player.name + ' ' + game.data.ui.completedlibrary
-    }, function (chat) {
-      game.chat.update(chat);
-    });
+//    game.message.text(game.data.ui.library);
+//     game.library.axebaloon.hide().fadeIn('slow');
+//     game.library.message.html(game.data.ui.axeend);
+//     game.audio.play('library/axeah');
+//     game.message.text(game.data.ui.win);
+//     game.winner = game.player.name;
+//     game.states.table.showResults();
+     game.status = 'over';
+//     game.db({
+//       'set': 'chat',
+//       'data': game.player.name + ' ' + game.data.ui.completedlibrary
+//     }, function (chat) {
+//       game.chat.update(chat);
+//     });
   },
   clear: function () {
-    game.library.lesson = '';
     game.library.started = false;
-//     game.library.axe.removeClass('up');
-//     game.library.axe.removeClass('left');
-//     game.library.axebaloon.hide();
   }
 };

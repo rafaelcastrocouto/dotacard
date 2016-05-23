@@ -10,8 +10,7 @@ game.tutorial = {
     }
     game.tutorial.start();
   },
-  start: function () {    
-    game.mode = 'tutorial';
+  start: function () {
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
     game.message.text(game.data.ui.waiting);
@@ -83,6 +82,9 @@ game.tutorial = {
       game.audio.play('horn');
       game.tower.place();
       game.tree.place();
+      if (!game.player.picks.length) {
+        game.player.picks = localStorage.getItem('mydeck').split(',');
+      }
       game.tutorial.placePlayerHeroes();
       game.tutorial.placeEnemyHeroes();
       game.states.table.buildUnits();
@@ -349,10 +351,8 @@ game.tutorial = {
     $('.card').on('toggle.tutorial', game.tutorial.end);
   },
   surrender: function () {
-    game.clearTimeouts();
     game.tutorial.clear();
     game.states.table.clear();
-    game.mode = '';
     game.states.changeTo('menu');
   },
   end: function () {
@@ -373,8 +373,10 @@ game.tutorial = {
   clear: function () {
     game.tutorial.lesson = '';
     game.tutorial.started = false;
-    game.tutorial.axe.removeClass('up');
-    game.tutorial.axe.removeClass('left');
-    game.tutorial.axebaloon.hide();
+    if (game.tutorial.axe) {      
+      game.tutorial.axe.removeClass('up');
+      game.tutorial.axe.removeClass('left');
+      game.tutorial.axebaloon.hide();
+    }
   }
 };

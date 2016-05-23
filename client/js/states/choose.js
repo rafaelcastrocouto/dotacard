@@ -39,11 +39,9 @@ game.states.choose = {
       }
     });
     this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', function () {
-      game.clearTimeouts();
-      if (game[game.mode].clear) game[game.mode].clear();
+      if (game.mode && game[game.mode].clear) game[game.mode].clear();
       game.states.choose.clear();
       game.states.changeTo('menu');
-      game.mode = '';
     });
   },
   start: function () {
@@ -53,13 +51,15 @@ game.states.choose = {
     game.chat.el.appendTo(this.el);
     game.states.choose.selectFirst();
   },
-  select: function () {
-    var card = $(this);
-    if (game[game.mode].choose) game[game.mode].choose(card);
-    $('.choose .card.selected').removeClass('selected');
-    card.addClass('selected');
-    if (game.mode !== 'library') card.addClass('draggable');
-    game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+  select: function (card) {
+    if (!card.hasClass || !card.hasClass('heroes')) card = $(this);
+    if (card.hasClass && card.hasClass('heroes')) { console.log(true);
+      localStorage.setItem('choose', card.data('hero'));
+      $('.choose .selected').removeClass('selected draggable');
+      card.addClass('selected');
+      if (game.mode !== 'library') card.addClass('draggable');
+      game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+    }
   },
   enablePick: function () {
     game.states.choose.pickEnabled = true;
@@ -86,11 +86,9 @@ game.states.choose = {
         card = slot.children('.card');
         card.on('mousedown.choose touchstart.choose', game.states.choose.select).insertBefore(pick);
       }
-      card.addClass('selected');
-      if (game.mode !== 'library') card.addClass('draggable');
-      pick.removeClass('selected draggable').appendTo(slot).clearEvents('choose');
+      pick.appendTo(slot).clearEvents('choose');
       game.states.choose.sort();
-      game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+      game.states.choose.select.call(card);
       game.player.picks[slot.data('slot')] = pick.data('hero');
       pick.trigger('pick');
       game.player.manaBuild();
@@ -98,7 +96,9 @@ game.states.choose = {
     }
   },
   selectFirst: function () {
-    game.states.choose.pickDeck.children().first().mousedown();
+    var saved = localStorage.getItem('choose');
+    if (saved) this.select($('.pickdeck .'+saved));
+    else this.select(game.states.choose.pickDeck.children().first());
   },
   sort: function () {
     $('.pickdeck .card').sort(function (a, b) {

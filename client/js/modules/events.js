@@ -2,7 +2,7 @@ game.events = {
   build: function () {
     $.fn.clearEvents = game.events.clearEvents; //almost the same as .off
     game.card.bindJquery(); // cards methods (move attack select ...)
-    $(window).on('popstate', game.events.hash);
+    $(window).on('popstate', game.history.stateChange);
     game.container.on('mousedown touchstart', game.events.hit)
                   .on('mousemove', game.events.move)
                   .on('touchmove', function (event) {
@@ -12,23 +12,6 @@ game.events = {
                   .on('mouseup touchend', game.events.end)
                   .on('contextmenu', game.events.cancel)
                   .on('beforeunload ', game.events.leave);
-  },
-  hash: function (event) {
-    console.log('e',location.hash, game.currentState);
-    var hash = location.hash.slice(1);
-    if (hash == 'choose' || hash == 'table' || hash == 'loading' ) {
-      location.hash = game.currentState;
-    } else if (hash !== game.currentState &&
-        game.states[hash]) {
-      if (game.mode) {
-        game.clearTimeouts();
-        if (game[game.mode].clear) game[game.mode].clear();
-        if (game.states[game.currentState].clear) game.states[game.currentState].clear();
-        game.mode = '';
-      }
-      game.states.changeTo(hash);
-      return true;
-    }
   },
   getCoordinates: function (event) {
     var position = {

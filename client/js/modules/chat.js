@@ -15,7 +15,6 @@ game.chat = {
         });
       }, 5000);
     }
-    game.chat.start();
   },
   start: function () {
     game.db({

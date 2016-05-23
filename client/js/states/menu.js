@@ -5,7 +5,7 @@ game.states.menu = {
     this.tutorial = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.tutorial
     }).text(game.data.ui.tutorial).on('mouseup touchend', function () {
-      game.mode = 'tutorial';
+      game.setMode('tutorial');
       game.states.changeTo('choose');
     });
     this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({
@@ -15,13 +15,13 @@ game.states.menu = {
     this.online = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.chooseonline
     }).text(game.data.ui.online).on('mouseup touchend', function () {
-      game.mode = 'online';
+      game.setMode('online');
       game.states.changeTo('choose');
     });
     this.library = $('<div>').addClass('button').appendTo(this.menu).attr({
       title: game.data.ui.chooselibrary
     }).text(game.data.ui.library).on('mouseup touchend', function () {
-      game.mode = 'library';
+      game.setMode('library');
       game.states.changeTo('choose');
     });
     this.options = $('<div>').addClass('button').appendTo(this.menu).attr({
@@ -33,14 +33,16 @@ game.states.menu = {
       title: game.data.ui.choosecredits,
       href: 'https://github.com/rafaelcastrocouto/dotacard/graphs/contributors',
       target: '_blank'
-    }).text(game.data.ui.credits);
+    }).text(game.data.ui.credits);    
+    game.chat.build();
   },
   start: function () {
-    if (!game.player.name) game.player.name = localStorage.getItem('log');
     game.loader.removeClass('loading');
-    game.triesCounter.text('');
-    game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');
-    game.chat.build();
-    game.chat.el.appendTo(this.el);    
+    game.triesCounter.text('');    
+    game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');    
+    game.states.log.out.show();    
+    game.chat.el.appendTo(this.el);
+    game.chat.start();
+    game.setMode('');
   }
 };
