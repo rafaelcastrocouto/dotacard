@@ -9,6 +9,6 @@ game.states.loading = {
   start: function () {
     game.message.html('<b>ALERT</b>: This game is in development and bugs may (will) happen.</a>');
     game.utils();
-    game.timeout(400, game.load.start);
+    game.load.start();
   }
 };

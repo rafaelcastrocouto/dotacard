@@ -48,7 +48,6 @@
   margin: 4px;
   background: rgba(0,0,0,0.33);
   /*box-shadow: inset 0 0 40px rgba(255,255,255,0.1);*/
-  /* cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer; */
   cursor: pointer;
 }
 

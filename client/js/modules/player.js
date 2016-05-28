@@ -50,7 +50,7 @@ game.player = {
       to = game.map.getPosition(spot);
     if (game.status === 'turn' && spot.hasClass('free') && from !== to && !card.hasClass('done')) {
       card.move(to);
-      if (game.mode !== 'tutorial') { game.currentData.moves.push('M:' + from + ':' + to); }
+      if (game.mode == 'online') { game.currentData.moves.push('M:' + from + ':' + to); }
       game.map.unhighlight();
     }
   },
@@ -61,7 +61,7 @@ game.player = {
       to = game.map.getPosition(target);
     if (game.status === 'turn' && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
       source.attack(target);
-      if (game.mode !== 'tutorial') { game.currentData.moves.push('A:' + from + ':' + to); }
+      if (game.mode == 'online') { game.currentData.moves.push('A:' + from + ':' + to); }
       game.map.unhighlight();
     }
   },
@@ -73,7 +73,7 @@ game.player = {
       to = game.map.getPosition(target);
     if (hero && skillid && game.status === 'turn') {
       game.audio.play('activate');
-      if (game.mode !== 'tutorial') { game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero); }
+      if (game.mode == 'online') { game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero); }
       skill.passive(target);
       game.states.table.animateCast(skill, target);
     }
@@ -86,7 +86,7 @@ game.player = {
       to = game.map.getPosition(target);
     if (hero && skillid && game.status === 'turn') {
       game.audio.play('activate');
-      if (game.mode !== 'tutorial') { game.currentData.moves.push('T:' + to + ':' + skillid + ':' + hero); }
+      if (game.mode == 'online') game.currentData.moves.push('T:' + to + ':' + skillid + ':' + hero);
       skill.toggle(target);
       game.states.table.animateCast(skill, target);
     }
@@ -100,7 +100,7 @@ game.player = {
       hero = skill.data('hero'),
       skillid = skill.data('skill');
     if (hero && skillid && from && to && game.status === 'turn' && !source.hasClass('done')) {
-      if (game.mode !== 'tutorial') { game.currentData.moves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero); }
+      if (game.mode == 'online') game.currentData.moves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       source.cast(skill, to);
       game.states.table.animateCast(skill, to);
     }

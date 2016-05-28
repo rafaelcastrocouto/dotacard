@@ -29,9 +29,10 @@ game.library = {
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
     game.states.choose.counter.text(game.data.ui.skills);
-    if (!recover) game.library.choose(game.states.choose.pickDeck.children().first(), true);
+    //if (!recover) game.library.select(game.states.choose.pickDeck.children().first(), true);
+    //else game.library.select($('.choose .heroes.'+localStorage.getItem('choose')), true);
   },
-  choose: function (card, build) {    
+  select: function (card, build) { 
     var hero = card.data('hero'),
         heroSkills,
         disabled;
@@ -56,9 +57,9 @@ game.library = {
       game.loader.removeClass('loading');      
       game.audio.play('horn');
       game.tower.place();
-      game.tree.place();      
+      game.tree.place();
       if (!game.library.hero) {
-        var hero = localStorage.getItem('library');
+        var hero = localStorage.getItem('choose');
         game.library.hero = $('.pickbox .'+hero);
         game.player.picks = [hero];
       }
@@ -66,9 +67,15 @@ game.library = {
       game.library.placeEnemyHeroes();
       game.library.buildSkills();
       game.states.table.buildUnits();
+      game.states.table.enableUnselect();
+      game.states.table.surrender.hide();
+      game.states.table.back.show();
       game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.player.kills = 0;
       game.enemy.kills = 0;
+      game.enemy.mana = 14;
+      game.enemy.maxCards = 7;
+      game.enemy.hand = 2;
       game.timeout(400, function () {
         game.status = 'turn';
         game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));

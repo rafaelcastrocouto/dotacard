@@ -63,11 +63,6 @@
   background: rgba(255,255,100,0.25);
 }
 
-.map .spot.movearea {
-  cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer;
-}
-
-
 .map canvas.fx {
   pointer-events: none;
   position: absolute;

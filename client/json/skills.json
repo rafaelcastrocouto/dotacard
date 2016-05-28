@@ -135,16 +135,16 @@
       "targets": ["Self"],
       "cards": 1,
       "display": true,
-      "description": "Everytime Antimage attacks enemy player loses a skill card of the attaked hero"
+      "description": "AntiMage attacks to enemy heroes have bonus damage equal to that hero mana and makes the enemy discard a skill card of that hero"
     },
-    "passive": {
+    "shield": {
       "name": "Spell Shield",
       "type": "Passive",
       "targets": ["Self"],
       "percentage": 50,
       "cards": 1,
       "display": true,
-      "description": "Reduces all magic damage by half"
+      "description": "Reduces all magic damage dealt to the AntiMage by half"
     },
     "blink": {
       "name": "Blink",
@@ -153,7 +153,7 @@
       "range": "Long",
       "cards": 8,
       "display": true,
-      "description": "Teleport Anti Mage to the target spot"
+      "description": "Teleport AntiMage to the target spot"
     },
     "ult": {
       "name": "Mana Void",

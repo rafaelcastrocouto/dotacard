@@ -71,7 +71,7 @@
 .am-blink .img {
   background-image: url("../img/skills/antimage_blink.jpg");
 }
-.am-passive .img {
+.am-shield .img {
   background-image: url("../img/skills/antimage_spell_shield.jpg");
 }
 .am-ult .img {

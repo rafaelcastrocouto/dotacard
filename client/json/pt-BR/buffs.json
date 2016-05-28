@@ -5,7 +5,7 @@
       "name": "Quebra de Mana",
       "description": "O inimigo tem que descartar um habilidade do herói atacado"
     },
-    "passive": {
+    "shield": {
       "name": "Escudo Antimagia",
       "description": "Reduz o dano mágico pela metade"
     }
@@ -126,6 +126,10 @@
       "name": "Rugido de Batalha",
       "description": "Aumenta o ataque do Druida e de seu Epírito Urso",
       "purgeable": true
+    },
+    "roar": {
+      "name": "Savage Roar",
+      "description": "Savage Roar causes enemies to flee towards their base in terror"
     }
   }
 

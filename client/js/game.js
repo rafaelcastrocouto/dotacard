@@ -1,19 +1,4 @@
 var game = {
-  start: function () {
-    if (window.$ &&
-        window.JSON &&
-        window.localStorage &&
-        window.btoa && window.atob &&
-        window.XMLHttpRequest) {
-      game.events.savedHash = location.hash.slice(1);
-      var mode = localStorage.getItem('mode');
-      if (mode) game.mode = mode;
-      
-      game.events.build();
-      game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
-      game.states.changeTo('loading');
-    } else game.states.changeTo('unsupported');
-  },
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message'),
@@ -30,12 +15,27 @@ var game = {
   tries: 0,
   id: null,
   seed: null,
+  timeoutArray: [],
   skills: {}, //bundle from ./skills
   data: {}, //json {buffs, heroes, skills, ui, units}
   mode: '', //online, tutorial, campain
   status: '', //turn, unturn, over
   currentData: {}, // moves data
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
+  start: function () {
+    if (window.$ &&
+        window.JSON &&
+        window.localStorage &&
+        window.btoa && window.atob &&
+        window.XMLHttpRequest) {
+      game.events.savedHash = location.hash.slice(1);
+      var mode = localStorage.getItem('mode');
+      if (mode) game.mode = mode;
+      game.events.build();
+      game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
+      game.states.changeTo('loading');
+    } else game.states.changeTo('unsupported');
+  },
   db: function (send, cb) {
     if (typeof send.data !== 'string') {
       send.data = JSON.stringify(send.data);

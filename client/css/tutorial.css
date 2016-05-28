@@ -7,6 +7,7 @@
   bottom: -450px;
   transition: all 1s;
   pointer-events: none;
+  transform: translateZ(0);
 }
 
 .tutorial.axe.up {

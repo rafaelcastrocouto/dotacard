@@ -3,62 +3,49 @@ game.states.choose = {
   build: function () {
     this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.data.ui.chooseheroes);
     this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide();
-    for (var slot = 0; slot < 5; slot += 1) {
-      $('<div>').appendTo(this.pickedbox).attr({ title: game.data.ui.rightpick }).data('slot', slot).addClass('slot available').on('mouseup touchend', game.states.choose.pick);
-    }
+    this.slots = this.buildSlots();
     this.buttonbox = $('<div>').appendTo(this.el).addClass('buttonbox');
     this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
-    this.pickDeck = game.deck.build({
-      name: 'heroes',
-      cb: function (pickDeck) {
-        pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
-        $.each(pickDeck.data('cards'), function (i, card) {
-          card[0].dataset.index = i;
-          if (card.data('disable')) card.addClass('dead');
-          card.on('mousedown.choose touchstart.choose', game.states.choose.select);
-          $.each(game.data.skills[card.data('hero')], function () {
-            if (this.display) { card.addBuff(card, this); }
-          });
-        });
-        pickDeck.width(game.states.choose.size + $('.card').width() * pickDeck.children().length);
-      }
-    });
-    this.randombt = $('<div>').appendTo(this.buttonbox).addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () {
-      if (!$(this).attr('disabled')) {
-        game.states.choose.random();
-      }
-    });
-    this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', function () {
-      game.states.choose.clear();
-      game.states.changeTo('table');
-    });
-    this.mydeck = $('<div>').appendTo(this.buttonbox).addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', function () {
-      var deck = localStorage.getItem('mydeck').split(',');
-      if (deck && deck.length == 5 && !$(this).attr('disabled')) {
-        game.states.choose.remember(deck);
-      }
-    });
-    this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', function () {
-      if (game.mode && game[game.mode].clear) game[game.mode].clear();
-      game.states.choose.clear();
-      game.states.changeTo('menu');
-    });
+    this.pickDeck = game.deck.build({name: 'heroes', cb: this.buildDeck});
+    this.randombt = $('<div>').appendTo(this.buttonbox).addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () { if (!$(this).attr('disabled')) this.random(); });
+    this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.test);
+    this.mydeck = $('<div>').appendTo(this.buttonbox).addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck);
+    this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.back);
   },
-  start: function () {
+  start: function (recover) {
     game.loader.addClass('loading');
-    if (game[game.mode].build) game[game.mode].build();
-    else console.warn('game mode "'+String(game.mode)+'" has no build function');
+    if (game[game.mode].build) game[game.mode].build(recover);
     game.chat.el.appendTo(this.el);
-    game.states.choose.selectFirst();
+    game.states.choose.selectFirst(true);
   },
-  select: function (card) {
-    if (!card.hasClass || !card.hasClass('heroes')) card = $(this);
-    if (card.hasClass && card.hasClass('heroes')) { console.log(true);
-      localStorage.setItem('choose', card.data('hero'));
+  buildDeck: function (pickDeck) {
+    pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
+    $.each(pickDeck.data('cards'), function (i, card) {
+      card[0].dataset.index = i;
+      if (card.data('disable')) card.addClass('dead');
+      card.on('mousedown.choose touchstart.choose', game.states.choose.select);
+      $.each(game.data.skills[card.data('hero')], function () {
+        if (this.display) { card.addBuff(card, this); }
+      });
+    });
+    pickDeck.width(game.states.choose.size + $('.card').width() * pickDeck.children().length);
+  },
+  buildSlots: function () {
+    var slots = [];
+    for (var slot = 0; slot < 5; slot += 1) {
+      slots.push($('<div>').appendTo(this.pickedbox).attr({ title: game.data.ui.rightpick }).data('slot', slot).addClass('slot available').on('mouseup touchend', this.pick));
+    }
+    return slots;
+  },
+  select: function (recover) {
+    var card = $(this);
+    if (card.hasClass && card.hasClass('heroes')) {
       $('.choose .selected').removeClass('selected draggable');
       card.addClass('selected');
       if (game.mode !== 'library') card.addClass('draggable');
+      else game.library.select(card, recover);
       game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+      localStorage.setItem('choose', card.data('hero'));
     }
   },
   enablePick: function () {
@@ -95,15 +82,21 @@ game.states.choose = {
       if (game[game.mode].pick) game[game.mode].pick();
     }
   },
-  selectFirst: function () {
+  selectFirst: function (recover) {
     var saved = localStorage.getItem('choose');
-    if (saved) this.select($('.pickdeck .'+saved));
-    else this.select(game.states.choose.pickDeck.children().first());
+    if (saved) this.select.call($('.pickdeck .'+saved), recover);
+    else this.select.call(game.states.choose.pickDeck.children().first());
   },
   sort: function () {
     $('.pickdeck .card').sort(function (a, b) {
       return a.dataset.index - b.dataset.index;
     }).appendTo('.pickdeck');
+  },
+  savedDeck:  function () {
+    var deck = localStorage.getItem('mydeck').split(',');
+    if (deck && deck.length == 5 && !$(this).attr('disabled')) {
+      game.states.choose.remember(deck);
+    }
   },
   remember: function (deck) {
     $('.slot').each(function (i) {
@@ -133,6 +126,15 @@ game.states.choose = {
         if (game[game.mode].sendDeck) game[game.mode].sendDeck();
       }
     });
+  },
+  test: function () {
+    game.states.choose.clear(); 
+    game.states.changeTo('table');
+  },
+  back: function () {
+    if (game.mode && game[game.mode].clear) game[game.mode].clear();
+    game.states.choose.clear();
+    game.states.changeTo('menu');
   },
   clear: function () {
     $('.slot .card.heroes').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);

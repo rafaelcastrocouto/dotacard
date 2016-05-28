@@ -2,8 +2,10 @@
 .chat {
   background: rgba(240,250,255,0.5);
   position: absolute;
-  left: 50%; top: 50%;
-  width: 450px; height: 450px;
+  left: 50%;
+  top: 50%;
+  width: 450px;
+  height: 450px;
   border-radius: 4px;
   padding: 8px;
   color: #4d4843;

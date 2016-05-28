@@ -1,5 +1,3 @@
-game.timeoutArray = [];
-
 game.timeout = function (ms, cb, arg) {
   var t = setTimeout(function (arg) {
       cb(arg);

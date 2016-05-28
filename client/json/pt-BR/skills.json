@@ -138,7 +138,7 @@
       "display": true,
       "description": "A cada ataque o AnitMage obriga o oponente a descartar uma habilidade da unidade atacada"
     },
-    "passive": {
+    "shield": {
       "name": "Escudo Antimagia",
       "type": "Passiva",
       "targets": ["Próprio"],

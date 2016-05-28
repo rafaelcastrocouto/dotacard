@@ -2,40 +2,16 @@ game.states.options = {
   build: function () {
     this.menu = $('<div>').appendTo(this.el).addClass('box');
     this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.options);
-    this.resolution = $('<div>').appendTo(this.menu).addClass('screenresolution').attr({
-      title: game.data.ui.screenres
-    });
-    $('<h2>').appendTo(this.resolution).text(game.data.ui.screenres);
-    this.high = $('<label>').appendTo(this.resolution).append($('<input>').attr({
-      type: 'radio',
-      name: 'resolution',
-      value: 'high'
-    }).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.high + ' 1920x1080'));
-    $('<label>').appendTo(this.resolution).append($('<input>').attr({
-      type: 'radio',
-      name: 'resolution',
-      value: 'medium'
-    }).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.medium + ' 1366x768'));
-    $('<label>').appendTo(this.resolution).append($('<input>').attr({
-      type: 'radio',
-      name: 'resolution',
-      checked: true,
-      value: 'default'
-    }).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui['default'] + ' 1024x768'));
-    this.low = $('<label>').appendTo(this.resolution).append($('<input>').attr({
-      type: 'radio',
-      name: 'resolution',
-      value: 'low'
-    }).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.low + ' 800x600'));
+    //screen
+    this.resolution = $('<div>').appendTo(this.menu).addClass('screenresolution').attr({title: game.data.ui.screenres}).append($('<h2>').text(game.data.ui.screenres));
+    $('<label>').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'high'}).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.high + ' 1920x1080'));
+    $('<label>').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'medium'}).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.medium + ' 1366x768'));
+    $('<label>').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', checked: true, value: 'default'}).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui['default'] + ' 1024x768'));
+    $('<label>').appendTo(this.resolution).append($('<input>').attr({type: 'radio', name: 'resolution', value: 'low'}).change(game.screen.changeResolution)).append($('<span>').text(game.data.ui.low + ' 800x600'));
     game.screen.rememberResolution();
-    this.audio = $('<div>').appendTo(this.menu).addClass('audioconfig').attr({
-      title: game.data.ui.audioconfig
-    });
-    $('<h2>').appendTo(this.audio).text(game.data.ui.audioconfig);
-    this.muteinput = $('<input>').attr({
-      type: 'checkbox',
-      name: 'mute'
-    }).change(game.audio.mute);
+    //audio
+    this.audio = $('<div>').appendTo(this.menu).addClass('audioconfig').attr({title: game.data.ui.audioconfig}).append($('<h2>').text(game.data.ui.audioconfig));
+    this.muteinput = $('<input>').attr({type: 'checkbox', name: 'mute'}).change(game.audio.mute);
     $('<label>').appendTo(this.audio).append(this.muteinput).append($('<span>').text(game.data.ui.mute));
     //main volume
     this.volumecontrol = $('<div>').addClass('volumecontrol');
@@ -51,12 +27,8 @@ game.states.options = {
     $('<label>').appendTo(this.audio).append($('<span>').text(game.data.ui.sounds)).append(this.soundsinput);
     $(document).on('mouseup.volume', game.audio.volumeMouseUp);
     game.audio.rememberVolume();
-    this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({
-      title: game.data.ui.back
-    }).on('mouseup touchend', game.states.backState);
-    this.opt = $('<small>').addClass('opt').text('Options').hide().appendTo(game.topbar).on('mouseup touchend', function () {
-      game.states.changeTo('options');
-    });
+    this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({title: game.data.ui.back}).on('mouseup touchend', game.states.backState);
+    this.opt = $('<small>').addClass('opt').hide().text('Options').appendTo(game.topbar).on('mouseup touchend', function () {game.states.changeTo('options');});
   },
   start: function () {
     game.states.options.opt.hide();

@@ -14,32 +14,32 @@ game.states = {
       if (state.build) state.build();
     }
   },
-  changeTo: function (state) {
+  changeTo: function (state, recover) {
     if (state !== game.currentState) {
       game.clearTimeouts();
       game.states.buildState(state);
       var newstate,
         pre = game.currentState,
         oldstate = game.states[pre];
-      if (oldstate && oldstate.el) { oldstate.el.fadeOut(100); }
-      if (oldstate && oldstate.end) { oldstate.end(); }      
+      if (oldstate && oldstate.el) oldstate.el.fadeOut(100);
+      if (oldstate && oldstate.end) oldstate.end();
       newstate = game.states[state];
       if (newstate.el) {
         setTimeout(function () {
           newstate.el.append(game.topbar).fadeIn(100);
-        }, 120);
+        }, 105);
       }
       game.currentState = state;
       if (pre != 'loading' && pre != 'noscript') {
         localStorage.setItem('backstate', pre);
         game.backState = pre;
       }
-      if (newstate.start) { newstate.start(); }
+      if (newstate.start) newstate.start(recover); 
       location.hash = state;
     }
   },
-  backState: function () { console.log(game.backState)
-    if (!game.backState) game.backState = localStorage.getItem('backstate')
+  backState: function () {
+    if (!game.backState) game.backState = localStorage.getItem('backstate');
     game.states.changeTo(game.backState);
   }
 };

@@ -1,6 +1,6 @@
 {
   "name": "dotacard",
-  "version": "0.2.9",
+  "version": "0.3.0",
   "author": "rafaelcastrocouto",
   "description": "DotaCard game",
   "homepage": "http://dotacard.herokuapp.com/",
@@ -13,7 +13,7 @@
   "main": "server.js",
   "scripts": { "start": "node server.js" },
   "bugs": { "url": "https://github.com/rafaelcastrocouto/dotacard/issues" },
-  "keywords": ["cardgame", "game","games","card","cards","dota","moba","rts","rpg"],
+  "keywords": ["cardgame", "game","games","card","cards","dota"],
   "dependencies": { "serve-static": "^1.10.2" },
   "devDependencies": {
     "grunt": "~0.4.5",

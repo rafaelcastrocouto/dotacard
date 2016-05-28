@@ -12,8 +12,9 @@
 
 .pickbox .card {
   margin: 0 -50px;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(0.4);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) translateZ(0) scale(0.4);
 }
 
 .pickbox .card.selected {
@@ -189,7 +190,6 @@
 }
 
 .card.player {
-  /* cursor: url("../img/cursor/cursor-green.png"), url("../img/cursor/cursor-green.cur"), pointer; */
   background: #74c47b;
 }
 .card.enemy {
@@ -280,9 +280,9 @@
     -10px -10px white;
 }
 @keyframes slideup {
-  0% {top: 0;opacity: 1;}
+  0% {top: -120px;opacity: 1;}
   80% {opacity: 1;}
-  100% {top: -100px;opacity: 0;}
+  100% {top: -240px;opacity: 0;}
 }
 .card.dead {
   background: silver;

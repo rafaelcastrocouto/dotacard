@@ -36,10 +36,9 @@
     "damage": 9,
     "armor": 34,
     "resistance": 25,
-    "skills": "Spirit Bear, Rabid, True Form",
-    "passive": "Synergy",
+    "skills": "Spirit Bear, Savage Roar, Rabid, True Form",
     "temporary": "Battle Cry",
-    "buffs": "Rabid, Battle Cry, True Form"
+    "buffs": "Rabid, Savage Roar, Battle Cry, True Form"
   },
 
   "pud":{

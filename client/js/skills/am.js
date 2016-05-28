@@ -3,8 +3,6 @@ game.skills.am = {
     passive: function (skill, source) {
       source.on('attack.burn', this.attack).data('am-burn', skill);
       source.addBuff(source, skill.data('buff'));
-      source.on('die.am-burn', this.die);
-      source.on('reborn.am-burn', this.reborn);
     },
     attack: function (event, eventdata) {
       var source = eventdata.source;
@@ -19,22 +17,12 @@ game.skills.am = {
           card.discard();
         }
       }
-    },
-    die: function (event, eventdata) {
-      var source = eventdata.target;
-      source.removeBuff('am-burn');
-      source.off('attack.am-burn').data('am-burn', null);
-    },
-    reborn: function (event, eventdata) {
-      var source = eventdata.target;
-      var skill = source.data('am-burn');
-      source.addBuff(source, skill.data('buff'));
-      source.on('attack.am-burn', this.attack).data('am-burn', skill);
     }
   },
-  passive: {
+  shield: {
     passive: function (skill, source) {
       source.data('resistance', skill.data('percentage') / 100);
+      source.addBuff(source, skill.data('buff'));
     }
   },
   blink: {

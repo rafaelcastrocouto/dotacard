@@ -9,22 +9,14 @@ game.states.table = {
     this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
     this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
-    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', function () {
-      swal({
-        title: game.data.ui.leave,
-        type: 'warning',
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: game.data.ui.yes,
-        cancelButtonText: game.data.ui.no,
-      }).then(function(isConfirm) {
-        if (isConfirm === true) {
-          if (game[game.mode].surrender) game[game.mode].surrender();
-        }
-      });
-    });
+    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrender);
+    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', game.states.table.back).text(game.data.ui.back);
   },
-  start: function () {
+  start: function (recover) {
+    if (recover) {
+      game.states.choose.clear();
+      game[game.mode].build(true);
+    }
     game[game.mode].setTable();
     game.chat.el.appendTo(this.el);
     this.time.show();
@@ -124,6 +116,25 @@ game.states.table = {
       if (game.mode && game[game.mode].clear) game[game.mode].clear();
       game.states.changeTo('menu');
     });
+  },
+  surrender: function () {
+    swal({
+      title: game.data.ui.leave,
+      type: 'warning',
+      showCancelButton: true,
+      buttonsStyling: false,
+      confirmButtonText: game.data.ui.yes,
+      cancelButtonText: game.data.ui.no,
+    }).then(function(isConfirm) {
+      if (isConfirm === true) {
+        if (game[game.mode].surrender) game[game.mode].surrender();
+      }
+    });
+  },
+  back: function () {
+    if (game[game.mode].clear) game[game.mode].clear();
+    game.states.table.clear();
+    game.states.changeTo('choose');
   },
   clear: function () {
     game.map.clear();

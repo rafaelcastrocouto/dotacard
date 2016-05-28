@@ -22,26 +22,23 @@ game.history = {
         log = localStorage.getItem('log'),
         recovering = (log && valid);
     if (recovering) {
+      game.states.log.out.show();
+      game.states.options.opt.show();
       game.player.name = log;
-      if (hash == 'table' && game.mode && game[game.mode].build) {
-        game.states.choose.clear();
-        game[game.mode].build(true);
-      }
-      game.history.jumpTo(hash);
+      game.history.jumpTo(hash, recovering);
     }
-    //if (game.mode == 'online') todo: recover online match
     return recovering;
   },
-  jumpTo: function (state) {
+  jumpTo: function (state, recover) {
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
     game.loader.addClass('loading');
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {
         game.loader.removeClass('loading');
-        game.states.changeTo(state);
+        game.states.changeTo(state, recover);
       } else { game.reset(); }
-    });
+    }.bind());
   },
   stateChange: function (event) {
     //console.log('e',location.hash, game.currentState);

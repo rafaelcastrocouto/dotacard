@@ -27,7 +27,7 @@ game.tutorial = {
     game.states.choose.enablePick();
   },
   axeshow: function () {
-    game.timeout(2000, function () {
+    game.timeout(800, function () {
       if (game.mode == 'tutorial') {
         game.tutorial.axe.addClass('up');
         game.timeout(400, function () {
@@ -88,9 +88,11 @@ game.tutorial = {
       game.tutorial.placePlayerHeroes();
       game.tutorial.placeEnemyHeroes();
       game.states.table.buildUnits();
+      game.states.table.surrender.hide();
+      game.states.table.back.show();
+      game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
       game.tutorial.axebaloon.hide();
-      game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.player.kills = 0;
       game.enemy.kills = 0;
       game.timeout(400, function () {
@@ -141,7 +143,7 @@ game.tutorial = {
     $('.map .enemy.tower').addClass('tutorialblink').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
   },
   selected: function (event, data) { 
-    var card = data.card; //console.log('tutorial select', card[0]);
+    var card = data.card;
     if (card.hasClass('tutorialblink')) {
       if (game.tutorial.lesson === 'Enemy') {
         game.tutorial.hoverLesson();
@@ -350,11 +352,6 @@ game.tutorial = {
     $('.card').on('passive.tutorial', game.tutorial.end);
     $('.card').on('toggle.tutorial', game.tutorial.end);
   },
-  surrender: function () {
-    game.tutorial.clear();
-    game.states.table.clear();
-    game.states.changeTo('menu');
-  },
   end: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeend);
@@ -373,7 +370,8 @@ game.tutorial = {
   clear: function () {
     game.tutorial.lesson = '';
     game.tutorial.started = false;
-    if (game.tutorial.axe) {      
+    if (game.tutorial.axe) {
+      game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axe.removeClass('up');
       game.tutorial.axe.removeClass('left');
       game.tutorial.axebaloon.hide();

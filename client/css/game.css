@@ -165,9 +165,10 @@ noscript {
 
 .states, .state {
   background-size: cover;
-  border-radius: 4px;  
+  border-radius: 4px;
   width: 970px;
   height: 600px;
+  transform: translateZ(0);
 }
 
 .state {

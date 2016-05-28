@@ -170,6 +170,8 @@ game.online = {
       game.tower.place();
       game.tree.place();
       game.states.table.buildUnits();
+      game.states.table.surrender.show();
+      game.states.table.back.hide();
       game.turn.build();
       game.timeout(3000, game.turn.begin);
     }

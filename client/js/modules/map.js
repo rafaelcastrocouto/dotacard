@@ -335,11 +335,11 @@ game.map = {
   },
   getRange: function (att) {
     var range = att;
-    if (att === game.data.ui.ortho) { range = 1; }
-    if (att === game.data.ui.melee) { range = 2; }
-    if (att === game.data.ui.short) { range = 3; }
+    if (att === game.data.ui.ortho)  { range = 1; }
+    if (att === game.data.ui.melee)  { range = 2; }
+    if (att === game.data.ui.short)  { range = 3; }
     if (att === game.data.ui.ranged) { range = 4; }
-    if (att === game.data.ui.long) { range = 5; }
+    if (att === game.data.ui.long)   { range = 5; }
     return range;
   },
   highlight: function () {
@@ -367,6 +367,6 @@ game.map = {
   },
   clear: function () {
     game.map.unhighlight();
-    $('.map .spot').removeClass('block');
+    $('.map .spot').removeClass('block').addClass('free');
   }
 };

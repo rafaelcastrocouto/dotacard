@@ -45,10 +45,11 @@
   bottom: 122px;
 }
 
-.table .surrender, .table .surrender[disabled]:active {
+.table .surrender, .table .surrender[disabled]:active, 
+.table .back, .table .back[disabled]:active {
   bottom: 180px;
 }
-.table .surrender:active {
+.table .surrender:active, .table .back:active {
   bottom: 177px;
 }
 

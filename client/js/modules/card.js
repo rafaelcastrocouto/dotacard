@@ -4,6 +4,7 @@ game.card = {
     $.fn.select = game.card.select;
     $.fn.unselect = game.card.unselect;
     $.fn.highlightSource = game.card.highlightSource;
+    $.fn.highlightAlly = game.card.highlightAlly;
     $.fn.highlightTargets = game.card.highlightTargets;
     $.fn.strokeSkill = game.card.strokeSkill;
     $.fn.highlightMove = game.card.highlightMove;
@@ -115,17 +116,17 @@ game.card = {
     if (!target.removeClass) {
       target = $('#' + target);
     }
-    this.closest('spot.block').removeClass('block').addClass('free');
+    this.closest('.spot.block').removeClass('block').addClass('free');
     this.parent().find('.fx').each(function () {
       $(this).appendTo(target);
     });
     this.appendTo(target.removeClass('free').addClass('block'));
-    if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
+    //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
   select: function (event) { 
     var card = $(this).closest('.card'); //console.log('card select', card[0]);
-    if (!game.selectedCard || card[0] !== game.selectedCard[0]) {
+    if (!game.selectedCard || card[0] !== game.selectedCard[0] && !card.hasClass('dead')) {
       if (!card.hasClasses('attacktarget casttarget')) {
         game.card.unselect();
         game.selectedCard = card;
@@ -147,7 +148,6 @@ game.card = {
     }
     game.selectedCard = null;
     game.states.table.selectedArea.removeClass('flip');
-    //game.states.table.selectedArea.trigger('unselect');
     var del = $('.selectedarea .card')[0];
     if (del) setTimeout(function () { $(this).remove(); }.bind(del), 400);
   },
@@ -185,7 +185,7 @@ game.card = {
   highlightSelf: function (source) {
     source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
   },
-  hightlightAlly: function (source, skill) {
+  highlightAlly: function (source, skill) {
     var range = game.map.getRange(skill.data('range'));
     if (range === game.data.ui.global) {
       $('.map .player').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
@@ -303,7 +303,7 @@ game.card = {
           game.aoerange = game.map.getRange(skill.data('range'));
           game.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
-        $('.map .spot, .map .card').hover(function () {
+        $('.map .spot, .map .card').on('hover:cast', function () {
           var spot = $(this);
           $('.map .spot').removeClass('skillarea skillcast top right left bottom');
           if (spot.hasClass('targetarea')) {
@@ -333,12 +333,11 @@ game.card = {
       from = game.map.getPosition(card),
       to = game.map.getPosition(destiny);
     if (destiny.hasClass('free') && from !== to) {
+      card.removeClass('draggable').off('mousedown touchstart');
       game.map.unhighlight();
       card.stopChanneling();
       card.closest('.spot').removeClass('block').addClass('free');
       destiny.removeClass('free').addClass('block');
-      t = card.offset();
-      d = destiny.offset();
       if (!destiny.data('detour')) {
         card.animateMove(destiny);
       } else {
@@ -348,20 +347,20 @@ game.card = {
         }.bind({
           card: card,
           destiny: destiny
-        }), 200);
+        }), 100);
       }
       if (card.data('movement bonus')) {
         card.data('movement bonus', false);
-      } else { card.addClass('done'); }
+      } else if (game.mode !== 'library') card.addClass('done');
       card.trigger('move', { card: card, target: to });
       setTimeout(function () {
 //         this.card.parent().find('.fx').each(function () {
 //           $(this).appendTo(this.destiny);
 //         });
-        $(this.card).css({ transform: '' }).prependTo(this.destiny);
+        this.card.css({ transform: '' }).prependTo(this.destiny).addClass('draggable').on('mousedown touchstart', game.card.select);
         $('.map .spot').data('detour', false);
-        game.map.highlight();
-        //if (game.events.dragging) game.events.end();
+        if (game.mode === 'library') this.card.select();
+        else game.map.highlight();
       }.bind({
         card: card,
         destiny: destiny
@@ -415,14 +414,14 @@ game.card = {
         if (source.hasClass('enemy')) {
           game.enemy.hand -= 1;
         } else {
+          if (game.mode !== 'library') source.addClass('done');
           setTimeout(function () {
-            this.select();
-          }.bind(source));
+            game.aoe = '';
+            $('.map .spot, .map .card').off('hover:cast');
+            if (game.mode !== 'library') this.skill.discard();
+            this.source.select();
+          }.bind({source: source, skill: skill}), 400);
         }
-        source.addClass('done');
-        setTimeout(function () {
-          this.discard();
-        }.bind(skill), 400);
       }
     }
     return this;
@@ -572,7 +571,8 @@ game.card = {
         name = 'bear';
       } else { name = source.data('hero'); }
       game.audio.play(name + '/attack');
-      source.addClass('done');
+      if (game.mode !== 'library') source.addClass('done');
+      else game.timeout(400, function () { this.select(); }.bind(source));
     }
     return this;
   },
@@ -607,7 +607,7 @@ game.card = {
     if (hp < 1) {
       target.addClass('dead').removeClass('target done').changehp(0);
       setTimeout(function () {
-        this.trigger('kill', evt);
+        $(this).trigger('kill', evt);
         target.trigger('die', evt);
         target.die();
       }, 2000);
@@ -623,10 +623,11 @@ game.card = {
       }
     }
     damageFx = target.find('.damaged');
-    if (damageFx.length) {
+    if (damageFx.length && game.mode !== 'library') {
       currentDamage = parseInt(damageFx.text(), 10);
       damageFx.text(currentDamage + damage).appendTo(target);
     } else {
+      damageFx.remove();
       damageFx = $('<span>').addClass('damaged').text(damage).appendTo(target);
     }
     if (source.data('crit')) {
