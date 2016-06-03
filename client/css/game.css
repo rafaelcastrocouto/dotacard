@@ -194,7 +194,7 @@ input {
   border-radius: 3px;
   letter-spacing: -1px;
   word-spacing: -1px;
-  font-size: 18px;
+  font-size: 17px;
   color: #4d4843;
   outline: 0;
   border: 0;
@@ -301,8 +301,12 @@ label span {
   vertical-align: super;
 }
 
+.log form {
+  margin-top: 1px;
+}
+
 .log input[type=submit] {
-  height: 40px;
+  height: 40px;
 }
 
 .log label {

@@ -3,7 +3,7 @@ var http = require('http'),
     fs = require('fs'),
     serveStatic = require('serve-static'),
     setHeaders = function (response) {
-      response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.com');
+      response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.io');
     },
     clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
     rootServer = serveStatic(__dirname, {'setHeaders': setHeaders}),
@@ -19,9 +19,8 @@ var http = require('http'),
     debug = false,
     send = function(response, data){
       response.statusCode = 200;
-      response.setHeader('Content-Type', 'application/json');
       response.end( String(data) );
-};
+    };
 
 http.createServer(function(request, response) {
   setHeaders(response);
@@ -30,10 +29,12 @@ http.createServer(function(request, response) {
   if(request.headers['x-forwarded-proto'] === 'https'){
     response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'});
     response.end();
+    return;
   }
-  //console.log('request: '+pathname);
+  console.log('request: '+pathname);
   if(pathname[0] === '/') { pathname = pathname.slice(1); }
   if(pathname === 'db') {
+    response.setHeader('Content-Type', 'application/json');
     var query = urlObj.query;
     if(query.set){
       //console.log('set: '+ query.set);
@@ -43,10 +44,12 @@ http.createServer(function(request, response) {
           waiting = query.data;
           console.log('Player' + waiting);
           send(response, waiting);
+          return;
         } else {
           console.log('Online game started');
           send(response, waiting);
           waiting = {id: 'none'};
+          return;
         }
       } //CHAT
       else if(query.set === 'chat'){
@@ -55,20 +58,39 @@ http.createServer(function(request, response) {
         chat.unshift(msg);
         chat = chat.slice(0, 240);
         send(response, JSON.stringify({messages: chat}));
+        return;
       } //DEFAULT SET
-      else { db.set(query.set, query.data, function(data){send(response, data);}); }
+      else { 
+        db.set(query.set, query.data, function(data){
+          send(response, data);
+        });
+        return;
+      }
     } else if (query.get){
       //console.log('get: '+ query.get);
       //STATUS
-      if(query.get === 'server') { send(response, JSON.stringify({status: 'online'})); }
+      if(query.get === 'server') { 
+        send(response, JSON.stringify({status: 'online'})); 
+        return;
+      }
       //CHAT
-      if(query.get === 'chat') { send(response, JSON.stringify({messages: chat})); }
+      if(query.get === 'chat') { 
+        send(response, JSON.stringify({messages: chat}));
+        return;
+      }
       //LANGUAGE
-      else if(query.get === 'lang') { send(response, JSON.stringify({lang: request.headers['accept-language']})); }
+      if(query.get === 'lang') { 
+        send(response, JSON.stringify({lang: request.headers['accept-language']})); 
+        return;
+      }
       //DEFAULT GET
-      else { db.get(query.get, function(data){ send(response, data); }); }
+      db.get(query.get, function(data){ send(response, data); });
+      return;
       //DB CHECK
-    } else { send(response, 'Db works!'); }
+    } else { 
+      send(response, 'Db works!');
+      return;
+    }
   }
   else { //STATIC
     clientServer(request, response, function onNext(err) {
