@@ -2,8 +2,11 @@ var http = require('http'),
     url = require('url'),
     fs = require('fs'),
     serveStatic = require('serve-static'),
-    clientServer = serveStatic('client', {'index': ['index.html', 'index.htm']}),
-    rootServer = serveStatic(__dirname),
+    setHeaders = function (response) {
+      response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.com');
+    },
+    clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
+    rootServer = serveStatic(__dirname, {'setHeaders': setHeaders}),
     host = process.env.HOST,
     port = process.env.PORT || 5000,
     waiting = {id: 'none'},
@@ -21,25 +24,27 @@ var http = require('http'),
 };
 
 http.createServer(function(request, response) {
-  response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.com');
+  setHeaders(response);
   var urlObj = url.parse(request.url, true);
   var pathname = urlObj.pathname;
   if(request.headers['x-forwarded-proto'] === 'https'){
     response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'});
     response.end();
   }
-  console.log('request: '+pathname);
+  //console.log('request: '+pathname);
   if(pathname[0] === '/') { pathname = pathname.slice(1); }
   if(pathname === 'db') {
     var query = urlObj.query;
     if(query.set){
-      console.log('set: '+ query.set);
+      //console.log('set: '+ query.set);
       //WAITING
       if(query.set === 'waiting'){
         if(waiting.id === 'none'){
           waiting = query.data;
+          console.log('Player' + waiting);
           send(response, waiting);
         } else {
+          console.log('Online game started');
           send(response, waiting);
           waiting = {id: 'none'};
         }
@@ -53,7 +58,7 @@ http.createServer(function(request, response) {
       } //DEFAULT SET
       else { db.set(query.set, query.data, function(data){send(response, data);}); }
     } else if (query.get){
-      console.log('get: '+ query.get);
+      //console.log('get: '+ query.get);
       //STATUS
       if(query.get === 'server') { send(response, JSON.stringify({status: 'online'})); }
       //CHAT
