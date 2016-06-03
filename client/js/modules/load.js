@@ -45,14 +45,14 @@ game.load = {
     preload: function () {
       var pre = $('<div>').addClass('preload hidden').appendTo(document.body);
       $(game.load.images.array).each(function () {
-        $('<img/>').attr('src', 'img/' + this).appendTo(pre);
+        $('<img/>').attr('src', game.staticHost + 'img/' + this).appendTo(pre);
       });
     }
   },
   json: function (name, cb) {
     $.ajax({
       type: 'GET',
-      url: 'json/' + game.language.dir + name + '.json',
+      url: game.dynamicHost + 'json/' + game.language.dir + name + '.json',
       complete: function (response) {
         game.load.updating += 1;
         var data = JSON.parse(response.responseText);
@@ -66,7 +66,7 @@ game.load = {
   pack: function () {
     $.ajax({
       type: 'GET',
-      url: 'package.json',
+      url: game.dynamicHost + 'package.json',
       complete: function (response) {
         game.load.updating += 1;
         var data = JSON.parse(response.responseText);
@@ -113,7 +113,7 @@ game.load = {
     var start = new Date();
     $.ajax({
       type: 'GET',
-      url: game.homepage,
+      url: game.dynamicHost,
       complete: function (response) {
         game.ping = new Date() - start;
         if (response.readyState === 4) {

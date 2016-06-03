@@ -14,7 +14,7 @@ game.audio = {
   buffers: {},
   load: function (name, cb) {
     var ajax = new XMLHttpRequest();
-    ajax.open('GET', '/audio/' + name + '.mp3', /*async*/true);
+    ajax.open('GET', game.dynamicHost + 'audio/' + name + '.mp3', /*async*/true);
     ajax.responseType = 'arraybuffer';
     ajax.onload = function () {
       game.audio.context.decodeAudioData(ajax.response, function (buffer) {

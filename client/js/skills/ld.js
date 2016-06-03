@@ -100,7 +100,7 @@ game.skills.ld = {
     }
   },
   rabid: {
-    cast: function (skill, source) { console.log(source)
+    cast: function (skill, source) {
       if (!source.hasClass('rabid')) {
         source.addClass('rabid');
         source.addBuff(source, skill.data('buff'));

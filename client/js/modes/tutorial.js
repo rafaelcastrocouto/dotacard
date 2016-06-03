@@ -307,7 +307,7 @@ game.tutorial = {
       name: 'skills',
       multi: true,
       filter: game.player.picks,
-      cb: function (deck) {  console.log(deck)
+      cb: function (deck) {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
           skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);

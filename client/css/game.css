@@ -101,7 +101,7 @@ noscript {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate3d(-50%, -50%, 0);
   z-index: 2;
   color: #fff;
 }
@@ -194,7 +194,7 @@ input {
   border-radius: 3px;
   letter-spacing: -1px;
   word-spacing: -1px;
-  font-size: 16px;
+  font-size: 18px;
   color: #4d4843;
   outline: 0;
   border: 0;

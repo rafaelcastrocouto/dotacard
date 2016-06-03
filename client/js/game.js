@@ -1,4 +1,6 @@
 var game = {
+  staticHost: 'http://rafaelcastrocouto.github.io/dotacard/client/',
+  dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message'),
@@ -28,6 +30,10 @@ var game = {
         window.localStorage &&
         window.btoa && window.atob &&
         window.XMLHttpRequest) {
+      if (game.debug) {
+        game.staticHost = '';
+        game.dynamicHost = '';
+      }
       game.history.build();
       game.events.build();
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
@@ -41,7 +47,7 @@ var game = {
     $.ajax({
       async: true,
       type: 'GET',
-      url: '/db',
+      url: game.dynamicHost + 'db',
       data: send,
       timeout: 4000,
       complete: function (receive) {
