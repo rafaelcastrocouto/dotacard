@@ -15,13 +15,13 @@ var http = require('http'),
     chat = [],
     debug = false,
     send = function(response, data){
-      response.writeHead(200, {
-        'Content-Type': 'application/json'
-      });
-      response.end(String(data));
+      response.statusCode = 200;
+      response.setHeader('Content-Type', 'application/json');
+      response.end( String(data) );
 };
 
-http.createServer(function(request, response){
+http.createServer(function(request, response) {
+  response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.com');
   var urlObj = url.parse(request.url, true);
   var pathname = urlObj.pathname;
   if(request.headers['x-forwarded-proto'] === 'https'){
@@ -30,7 +30,7 @@ http.createServer(function(request, response){
   }
   console.log('request: '+pathname);
   if(pathname[0] === '/') { pathname = pathname.slice(1); }
-  if(pathname === 'db'){
+  if(pathname === 'db') {
     var query = urlObj.query;
     if(query.set){
       console.log('set: '+ query.set);
