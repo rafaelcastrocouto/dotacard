@@ -25,7 +25,7 @@ game.chat = {
     });
   },
   update: function (chat, first) {
-    if (chat.messages.length) {  
+    if (chat.messages && chat.messages.length) {  
       var height = game.chat.messages[0].scrollHeight - game.chat.messages.height(),
           scroll = game.chat.messages.scrollTop(),
           down = (scroll > height * 0.9 || height < 80);

@@ -1,5 +1,6 @@
 game.online = {
   build: function () {
+    game.loader.addClass('loading');
     if (!game.online.builded) {
       game.online.builded = true;
       game.seed = new Date().valueOf();
@@ -27,7 +28,6 @@ game.online = {
     game.states.choose.mydeck.show().attr({disabled: true});
   },
   wait: function () {
-    game.loader.addClass('loading');
     game.currentData.challenged = game.player.name;
     game.db({
       'set': game.id,
@@ -216,10 +216,8 @@ game.online = {
   },
   buildSkills: function (single) {
     game.player.manaBuild();
-    game.player.skills = {};
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
     game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
     game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
     game.player.skills.deck = game.deck.build({
@@ -233,15 +231,12 @@ game.online = {
           if (skill.data('skill') === 'ult') {
             skill.appendTo(game.player.skills.ult);
           } else if (skill.data('deck') === game.data.ui.temp) {
-            skill.appendTo(game.player.skills.temp);
+            skill.appendTo(game.player.skills.sidehand);
           }
         });
       }
     });
-    game.enemy.maxCards = Math.round(game.enemy.mana / 2);
-    game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana / 10);
-    game.enemy.hand = 0;
-    game.enemy.skills = {};
+    game.enemy.manaBuild();
     game.enemy.skills.deck = game.deck.build({
       name: 'skills',
       filter: game.enemy.picks,
@@ -305,6 +300,7 @@ game.online = {
     game.states.table.showResults();
   },
   clear: function () {
+    game.online.builded = false;
     game.online.started = false;
   }
 };

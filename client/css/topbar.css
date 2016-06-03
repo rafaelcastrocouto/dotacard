@@ -15,6 +15,7 @@
 .topbar * {
   position: absolute;
   top: 4px;
+  transform: translateZ(0);
 }
 
 .choose .topbar,
@@ -59,7 +60,7 @@
 }
 
 .topbar .message {
-  position: static;
+  position: absolute;
   padding-left: 26px;
   padding-right: 4px;
   border-radius: 4px;
@@ -112,6 +113,7 @@
   text-align: center;
   transition: all 0.4s;
   text-shadow: 0 0 3px #aaa, 0 0 20px #bbb, 0 0 40px #ddd, 0 0 60px #FFF;
+  transform: translateZ(0);
 }
 .turntitle.show {
   left: 0;

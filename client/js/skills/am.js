@@ -1,15 +1,22 @@
 game.skills.am = {
   burn: {
     passive: function (skill, source) {
-      source.on('attack.burn', this.attack).data('am-burn', skill);
       source.addBuff(source, skill.data('buff'));
+      source.on({
+        'attack.burn': this.attack, 
+        'afterattack.burn': this.afterattack
+      }).data('am-burn', skill);
     },
-    attack: function (event, eventdata) {
+    attack: function (event, eventdata) { 
       var source = eventdata.source;
       var target = eventdata.target;
       var hero = target.data('hero');
-      var side = source.data('side');
+      var side = source.data('side'); console.log(target.data('mana'));
       game.audio.play('am/burn');
+      if (hero) {
+        var damage = source.data('current damage') + target.data('mana');
+        source.data('current damage', damage);
+      }
       if(side === 'enemy' && hero) {
         var cards = game.states.table.playerHand.children('.'+hero);
         if(cards.length > 0) {
@@ -17,12 +24,17 @@ game.skills.am = {
           card.discard();
         }
       }
+    },
+    afterattack: function (event, eventdata) {
+      var source = eventdata.source;
+      source.data('current damage', source.data('damage'));
     }
   },
   shield: {
     passive: function (skill, source) {
       source.data('resistance', skill.data('percentage') / 100);
       source.addBuff(source, skill.data('buff'));
+      source.find('.resistance').text(game.data.ui.resistance + ': ' + (source.data('resistance') * 100) + '%');
     }
   },
   blink: {

@@ -9,8 +9,8 @@ game.states.table = {
     this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
     this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
-    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrender);
-    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', game.states.table.back).text(game.data.ui.back);
+    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrenderClick);
+    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', game.states.table.backClick).text(game.data.ui.back);
   },
   start: function (recover) {
     if (recover) {
@@ -26,11 +26,15 @@ game.states.table = {
     if (game.player.picks.length == 5) localStorage.setItem('mydeck', game.player.picks);
   },
   enableUnselect: function () {
-    game.states.table.el.on('mouseup touchend', function (event) { 
+    game.states.table.el.on('mousedown touchstart', function (event) { 
       var target = $(event.target); 
-      if (!target.closest('.selected').length && !target.closest('.selectedarea').length && !game.events.dragging) {
-        //console.log('table unselect');
-        game.card.unselect(); 
+      if (!target.closest('.selected').length && 
+          !target.closest('.selectedarea').length &&
+          !target.closest('.movearea').length &&
+          !target.closest('.attacktarget').length &&
+          !target.closest('.targetarea').length &&
+          !target.closest('.casttarget').length) {
+        game.card.unselect();
         if (game[game.mode].unselected) game[game.mode].unselected();
       }
     });
@@ -112,12 +116,11 @@ game.states.table = {
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
-      game.states.table.clear();
-      if (game.mode && game[game.mode].clear) game[game.mode].clear();
+      game.clear();
       game.states.changeTo('menu');
     });
   },
-  surrender: function () {
+  surrenderClick: function () {
     swal({
       title: game.data.ui.leave,
       type: 'warning',
@@ -131,9 +134,10 @@ game.states.table = {
       }
     });
   },
-  back: function () {
+  backClick: function () {
     if (game[game.mode].clear) game[game.mode].clear();
     game.states.table.clear();
+    game.setMode(game.mode);
     game.states.changeTo('choose');
   },
   clear: function () {

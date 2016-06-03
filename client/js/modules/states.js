@@ -34,7 +34,7 @@ game.states = {
         localStorage.setItem('backstate', pre);
         game.backState = pre;
       }
-      if (newstate.start) newstate.start(recover); 
+      if (newstate.start) newstate.start(recover);
       location.hash = state;
     }
   },

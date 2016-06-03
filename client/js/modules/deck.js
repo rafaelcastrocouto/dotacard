@@ -58,7 +58,7 @@ game.deck = {
       }
       if (found || !filter) {
         $.each(skills, function (skill, skillData) {
-          if (display && skillData.display) {
+          if (!display || (display && skillData.display)) {
             var k;
             skillData.hero = hero;
             skillData.skill = skill;
@@ -71,7 +71,7 @@ game.deck = {
               skillData.buff = game.data.buffs[hero][skill];
             }
             if (multi) {
-              for (k = 0; k < skillData[multi]; k += 1) {
+              for (k = 0; k < skillData.cards; k += 1) {
                 cards.push(game.card.build(skillData).appendTo(deck));
               }
             } else { cards.push(game.card.build(skillData).appendTo(deck)); }

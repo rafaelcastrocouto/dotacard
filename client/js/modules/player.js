@@ -1,14 +1,9 @@
 game.player = {
   manaBuild: function () {
-    game.player.mana = 0;
-    $(game.player.picks).each(function (a, b) {
-      if (b) {
-        var card = $('.pickedbox .card.' + b);
-        game.player.mana += card.data('mana');
-      }
-    });
+    game.player.maxCards = Math.round(game.player.mana / 2);
     game.player.cardsPerTurn = 1 + Math.round(game.player.mana / 10);
-    game.player.maxCards = Math.round(game.player.mana / 2);    
+    game.player.maxCards = Math.round(game.player.mana / 2);
+    game.player.skills = {};
   },
   buyCard: function () {
     if (game.player.turn === 6) {
@@ -29,7 +24,7 @@ game.player = {
       hero = $('.map .player.heroes.' + heroid);
       to = game.map.getPosition(hero);
       card.passive(to);
-      if (game.mode !== 'tutorial') game.currentData.moves.push('P:' + to + ':' + card.data('skill') + ':' + heroid);
+      if (game.mode == 'online') game.currentData.moves.push('P:' + to + ':' + card.data('skill') + ':' + heroid);
       card.appendTo(game.player.skills.sidehand);
     } else {
       card.appendTo(game.player.skills.hand);
@@ -51,7 +46,7 @@ game.player = {
     if (game.status === 'turn' && spot.hasClass('free') && from !== to && !card.hasClass('done')) {
       card.move(to);
       if (game.mode == 'online') { game.currentData.moves.push('M:' + from + ':' + to); }
-      game.map.unhighlight();
+      game.highlight.clearMap();
     }
   },
   attack: function () {
@@ -62,7 +57,7 @@ game.player = {
     if (game.status === 'turn' && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
       source.attack(target);
       if (game.mode == 'online') { game.currentData.moves.push('A:' + from + ':' + to); }
-      game.map.unhighlight();
+      game.highlight.clearMap();
     }
   },
   passive: function () {

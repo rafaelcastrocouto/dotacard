@@ -342,31 +342,8 @@ game.map = {
     if (att === game.data.ui.long)   { range = 5; }
     return range;
   },
-  highlight: function () {
-    if (game.selectedCard) {
-      if (game.selectedCard.hasClasses('hero unit')) {
-        game.selectedCard.strokeAttack();
-        if (game.status === 'turn') {
-          if (!game.tutorial.lessonAttack) { game.selectedCard.highlightMove(); }
-          if (!game.tutorial.lessonSkill) { game.selectedCard.highlightAttack(); }
-        }
-      } else if (game.selectedCard.hasClass('skill')) {
-        game.selectedCard.highlightSource();
-        game.selectedCard.strokeSkill();
-        if (game.status === 'turn') {
-          game.selectedCard.highlightTargets();
-        }
-      } else if (game.selectedCard.hasClass('tower')) {
-        game.selectedCard.strokeAttack();
-      }
-    }
-  },
-  unhighlight: function () {
-    $('.map .card').clearEvents('highlight').removeClass('attacktarget source casttarget targetarea');
-    $('.map .spot').clearEvents('highlight').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
-  },
   clear: function () {
-    game.map.unhighlight();
+    game.highlight.clearMap();
     $('.map .spot').removeClass('block').addClass('free');
   }
 };

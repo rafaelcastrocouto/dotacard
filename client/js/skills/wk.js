@@ -81,8 +81,8 @@ game.skills.wk = {
     passive: function (skill, source) {
       source.addBuff(source, skill.data('buff'));
       source.on({
-        'attack.wk': this.attack,
-        'afterattack.wk': this.afterattack
+        'attack.crit': this.attack,
+        'afterattack.crit': this.afterattack
       }).data('wk-crit', skill);
     },
     attack: function (event, eventdata) {

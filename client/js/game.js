@@ -28,9 +28,7 @@ var game = {
         window.localStorage &&
         window.btoa && window.atob &&
         window.XMLHttpRequest) {
-      game.events.savedHash = location.hash.slice(1);
-      var mode = localStorage.getItem('mode');
-      if (mode) game.mode = mode;
+      game.history.build();
       game.events.build();
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       game.states.changeTo('loading');
@@ -63,7 +61,12 @@ var game = {
   },
   setMode: function (mode) {
     game.mode = mode;
+    if (mode) game[mode].build();
     localStorage.setItem('mode', mode);
+  },
+  clear: function () {
+    if (game.mode && game[game.mode].clear) game[game.mode].clear();
+    if (game.states[game.currentState].clear) game.states[game.currentState].clear();
   },
   reset: function () {
     swal({

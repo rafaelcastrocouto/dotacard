@@ -70,6 +70,13 @@
 }
 
 /*TARGETS*/
+
+.map .movearea:hover {
+  background: rgba(100,255,100,0.3);
+}
+
+
+
 .slot.available:after,
 .slot.available:before {
   transform-origin: 0% 0%;

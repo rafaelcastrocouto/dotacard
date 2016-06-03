@@ -8,8 +8,8 @@ game.turn = {
     game.currentData.moves = [];
     game.currentData = {};
     game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
-    if (game.player.type === 'challenged') { game.status = 'turn'; }
-    if (game.player.type === 'challenger') { game.status = 'unturn'; }
+    if (game.player.type === 'challenged') game.status = 'turn';
+    if (game.player.type === 'challenger') game.status = 'unturn';
   },
   reset: function () {
     game.currentData.moves = [];
@@ -45,7 +45,7 @@ game.turn = {
       game.player.turn += 1;
       $('.map .card.player').removeClass('done');
       game.tower.attack();
-      game.map.highlight();
+      game.highlight.map();
       game.player.buyHand();
     } else {
       game.message.text(game.data.ui.enemyturn);
@@ -77,15 +77,15 @@ game.turn = {
     game.time += 0.9 / game.timeToPlay;
     game.turn.counter -= 1;
   },
-  skip: function (e) {console.log(e, this);
+  skip: function (e) {
     if (!$(this).attr('disabled')) {
+      if (game.mode == 'tutorial') game.tutorial.skip();
       game.turn.counter = 0;
-      console.log('skip');
     }
   },
   end: function () {
     game.message.text(game.data.ui.turnend);
-    game.map.unhighlight();
+    game.highlight.clearMap();
     $('.card .damaged').remove();
     $('.card .heal').remove();
     $('.spot.fountain').find('.card').each(function () {

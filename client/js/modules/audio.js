@@ -78,7 +78,10 @@ game.audio = {
     });
   },
   play: function (name) {
-    if (game.audio.context && game.audio.context.createBufferSource) {
+    if (game.audio.context && 
+        game.audio.context.createBufferSource &&
+        game.audio.buffers[name] &&
+        game.audio.buffers[name].duration) {
       var audio = game.audio.context.createBufferSource();
       //console.log(name, game.audio.buffers[name]);
       audio.buffer = game.audio.buffers[name];

@@ -128,6 +128,7 @@ noscript {
 .logo .h1 {
   position: relative;
   top: 0px;
+  transform: translateZ(0);
 }
 .logo.slide .h1 {
   animation: logoslideup 1s 1 linear;
@@ -139,6 +140,7 @@ noscript {
 .logo .h2 {
   margin: 16px;
   position: relative;
+  transform: translateZ(0);
 }
 .logo .h2 {
   animation: slideright 6s infinite;
@@ -199,6 +201,7 @@ input {
   padding: 5px;
   margin: 1px;
   height: 22px;
+  transform: translateZ(0);
 }
 input:focus {
   animation: shade 0.5s;
@@ -228,6 +231,7 @@ input[type=submit] {
   top: -3px;
   transition: all 0.2s;
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
+  transform: translateZ(0);
 }
 .button:hover, 
 button:hover,

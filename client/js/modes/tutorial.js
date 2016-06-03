@@ -17,21 +17,21 @@ game.tutorial = {
     game.tutorial.message.html(game.data.ui.axepick);
     game.states.choose.counter.show().text(game.data.ui.clickpick);
     game.enemy.name = 'axe';
-    game.enemy.type = 'challenged';
-    game.player.type = 'challenger';
+    game.enemy.type = 'challenger';
+    game.player.type = 'challenged';
     game.states.choose.pickedbox.show();
     game.states.choose.librarytest.hide();
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
-    game.tutorial.axeshow();
     game.states.choose.enablePick();
+    game.tutorial.axeshow();
   },
   axeshow: function () {
-    game.timeout(800, function () {
+    setTimeout(function () {
       if (game.mode == 'tutorial') {
         game.tutorial.axe.addClass('up');
         game.timeout(400, function () {
-          if (game.mode == 'tutorial') {
+          if (game.mode == 'tutorial' && game.currentState == 'choose') {
             game.audio.play('tutorial/axehere');
             game.tutorial.axebaloon.fadeIn('slow');
             game.message.text(game.data.ui.tutorialstart);
@@ -39,7 +39,7 @@ game.tutorial = {
           }
         });
       }
-    });
+    }, 400);
   },
   pick: function () {
     var availableSlots = $('.slot.available').length;
@@ -93,33 +93,39 @@ game.tutorial = {
       game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
       game.tutorial.axebaloon.hide();
-      game.player.kills = 0;
+      game.player.kills = 0;     
       game.enemy.kills = 0;
-      game.timeout(400, function () {
-        game.message.text(game.data.ui.yourturncount + ' 10');
-        game.tutorial.axe.addClass('up left');
-        game.timeout(800, game.tutorial.selectEnemyLesson);
+      game.tutorial.moveCountValue = 10;
+      game.message.text(game.data.ui.yourturncount + ' ' + game.tutorial.moveCountValue);
+      game.tutorial.axe.addClass('up left');
+      game.turn.build();
+      game.timeout(1000, function () {
+        game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
+        game.timeout(1000, game.tutorial.selectEnemyLesson);
       });
     }
   },
   placePlayerHeroes: function () {
     game.player.mana = 0;
-    game.player.heroesDeck = game.deck.build({
-      name: 'heroes',
-      filter: game.player.picks,
-      cb: function (deck) {
-        deck.addClass('player').appendTo(game.states.table.player);
-        var x = 1, y = 4;
-        $.each(deck.data('cards'), function (i, card) {
-          var p = game.player.picks.indexOf(card.data('hero'));
-          card.addClass('player hero').data('side', 'player').on('select', game.tutorial.selected);
-          card.place(game.map.toId(x + p, y));
-          game.player.mana += card.data('mana');
-        });
-      }
-    });
+    if (game.player.picks) {
+      game.player.heroesDeck = game.deck.build({
+        name: 'heroes',
+        filter: game.player.picks,
+        cb: function (deck) {
+          deck.addClass('player').appendTo(game.states.table.player);
+          var x = 1, y = 4;
+          $.each(deck.data('cards'), function (i, card) {
+            var p = game.player.picks.indexOf(card.data('hero'));
+            card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
+            card.place(game.map.toId(x + p, y));
+            game.player.mana += card.data('mana');
+          });
+        }
+      });
+    }
   },
   placeEnemyHeroes: function () {
+    game.enemy.mana = 0;
     game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
     game.enemy.heroesDeck = game.deck.build({
       name: 'heroes',
@@ -129,8 +135,9 @@ game.tutorial = {
         var x = 1, y = 4;
         $.each(deck.data('cards'), function (i, card) {
           var p = game.enemy.picks.indexOf(card.data('hero'));
-          card.addClass('enemy hero').data('side', 'enemy').on('select', game.tutorial.selected);
+          card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
+          game.enemy.mana += card.data('mana');
         });
       }
     });
@@ -139,14 +146,14 @@ game.tutorial = {
     game.tutorial.lesson = 'Enemy';
     game.tutorial.axebaloon.fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectenemy);
-    game.message.text(game.data.ui.yourturncount + ' 9');
-    $('.map .enemy.tower').addClass('tutorialblink').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
+    $('.map .enemy.tower').addClass('tutorialblink').on('select', game.tutorial.selected);
+    game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
   },
-  selected: function (event, data) { 
+  selected: function (event, data) {
     var card = data.card;
     if (card.hasClass('tutorialblink')) {
       if (game.tutorial.lesson === 'Enemy') {
-        game.tutorial.hoverLesson();
+        game.tutorial.unselectLesson();
       }
       if (game.tutorial.lesson === 'Player') {
         game.tutorial.moveLesson();
@@ -157,30 +164,13 @@ game.tutorial = {
     }
     return card;
   },
-  hoverLesson: function () {
-    game.tutorial.lesson = 'Hover';
-    game.tutorial.axebaloon.hide().fadeIn('slow');
-    game.tutorial.message.html(game.data.ui.axezoom);
-    game.message.text(game.data.ui.yourturncount + ' 8');
-    game.states.table.selectedArea.addClass('tutorialblink');
-    game.states.table.selectedArea.on('mouseover touchstart', '.card', game.tutorial.hovered);
-    $('.map .enemy.tower').removeClass('tutorialblink').clearEvents();
-    $('.map .card').on('mousedown touchstart', game.card.select);   //console.log('tutorial hover');
-  },
-  hovered: function () {
-    if (game.tutorial.lesson === 'Hover') {
-      game.tutorial.lesson = '';
-      var card = $(this);
-      game.states.table.selectedArea.removeClass('tutorialblink').off('mouseover touchstart');
-      $('.map .enemy.tower').removeClass('tutorialblink');      
-      game.tutorial.unselectLesson();
-    }
-  },
   unselectLesson: function () {
+    game.audio.play('tutorial/axeah');
+    $('.map .enemy.tower').removeClass('tutorialblink').off('select');
     game.tutorial.lesson = 'Unselect';
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeunselect);
-    game.message.text(game.data.ui.yourturncount + ' 7');
+    game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
     game.states.table.enableUnselect();
   },
   unselected: function () {
@@ -195,8 +185,7 @@ game.tutorial = {
     game.tutorial.axe.removeClass('left');
     game.tutorial.axebaloon.hide().delay(800).fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectplayer);
-    game.message.text(game.data.ui.yourturncount + ' 6');
-    game.status = 'turn';
+    game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
   },
   moveLesson: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');
@@ -204,55 +193,60 @@ game.tutorial = {
     if (game.tutorial.lesson !== 'Move') {
       game.tutorial.lesson = 'Move';
       game.audio.play('tutorial/axemove');
-      game.message.text(game.data.ui.yourturncount + ' 5');
-      game.tutorial.moveCountValue = 5;
+      game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
       $('.map .hero.player').on('move', game.tutorial.moveCount);
     }
   },
   moveCount: function (event, data) {//console.log('moveCount', event, data);
     data.card.removeClass('tutorialblink');
-    game.tutorial.moveCountValue--;
-    game.message.text(game.data.ui.yourturncount + ' ' + game.tutorial.moveCountValue);
-    if (game.tutorial.moveCountValue === 0) game.tutorial.moveDone();
+    game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
+    if (game.tutorial.moveCountValue === 0) game.tutorial.endTurnLesson();
   },
-  moveDone: function () {
-    if (!game.turn.el) {
-      game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
-    }
+  endTurnLesson: function () {
+    game.tutorial.axebaloon.hide().fadeIn('slow');
+    game.tutorial.axe.addClass('left');
+    game.tutorial.message.html(game.data.ui.axeendturn);
+    game.states.table.skip.attr('disabled', false).addClass('tutorialblink');
+  },
+  skip: function () {
+    if (!game.tutorial.waited) game.tutorial.moveCountValue = 4;
+    else game.tutorial.moveCountValue = 2;
+    game.states.table.skip.attr('disabled', true).removeClass('tutorialblink');
+    game.tutorial.axebaloon.hide().fadeIn('slow');
+    game.tutorial.message.html(game.data.ui.axedone);
+    game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
+    game.message.addClass('tutorialblink');
+    game.loader.addClass('loading');
     game.timeout(1000, function () {
       game.turn.el.text(game.data.ui.enemyturn);
       game.turn.el.addClass('show');
-      game.timeout(3000, function () {
+      game.timeout(2500, function () {
         game.turn.el.removeClass('show');
-        game.tutorial.axe.addClass('left');
-        game.tutorial.axebaloon.hide().fadeIn('slow');
-        game.tutorial.message.html(game.data.ui.axedone);
-        game.message.text(game.data.ui.enemyturncount + ' 3');
-        game.message.addClass('tutorialblink');
-        game.loader.addClass('loading');
         game.status = 'unturn';
-        game.timeout(5000, game.tutorial.wait);
+        if (!game.tutorial.waited) game.timeout(1000, game.tutorial.wait);
+        else game.timeout(1000, game.tutorial.attack);
       });
     });
   },
   wait: function () {
+    game.tutorial.waited = true;
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axewait);
-    game.message.text(game.data.ui.enemyturncount + ' 2');
+    game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
     game.audio.play('tutorial/axetime');
     game.states.table.time.text(game.data.ui.time + ': 1:30 ' + game.data.ui.night);
     game.message.removeClass('tutorialblink');
     game.states.table.time.addClass('tutorialblink');
-    game.timeout(5000, game.tutorial.time);
+    game.timeout(4000, game.tutorial.time);
   },
   time: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');
-    game.message.text(game.data.ui.enemyturncount + ' 1');
+    game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
     game.tutorial.message.html(game.data.ui.axetime);
     game.states.table.time.removeClass('tutorialblink');
     game.states.table.turns.addClass('tutorialblink');
     game.states.table.turns.text(game.data.ui.turns + ': 1/1 (2)');
-    game.timeout(5000, game.tutorial.enemyMove);
+    game.timeout(4000, game.tutorial.enemyMove);
     game.tutorial.buildSkills();
   },
   enemyMove: function () {
@@ -270,13 +264,14 @@ game.tutorial = {
       ].join('|')
     };
     game.enemy.move();
-    game.timeout(2000, function () {
+    game.timeout(4000, function () {
       game.turn.el.text(game.data.ui.yourturn);
       game.turn.el.addClass('show');
-      game.timeout(3000, game.tutorial.attack);
+      game.timeout(2500, game.tutorial.attack);
     });
   },
   attack: function () {
+    $('.tutorialblink').removeClass('tutorialblink');
     game.turn.el.removeClass('show');
     game.tutorial.axe.removeClass('left');
     game.enemy.skills.deck.removeClass('slide');
@@ -303,23 +298,28 @@ game.tutorial = {
     $('.player.hero').on('attack.tutorial', game.tutorial.skillSelect);
   },
   buildSkills: function () {
-    game.player.skills = {};
+    game.player.manaBuild();
     game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills hand');
     game.player.skills.sidehand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
     game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
     game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
     game.player.skills.deck = game.deck.build({
       name: 'skills',
-      filter: [game.player.picks[3], game.player.picks[4]],
-      cb: function (deck) {
+      multi: true,
+      filter: game.player.picks,
+      cb: function (deck) {  console.log(deck)
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
           skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
+          if (skill.data('skill') === 'ult') {
+            skill.appendTo(game.player.skills.ult);
+          } else if (skill.data('deck') === game.data.ui.temp) {
+            skill.appendTo(game.player.skills.sidehand);
+          }
         });
       }
     });
-    game.enemy.skills = {};
+    game.enemy.manaBuild();
     game.enemy.skills.deck = game.deck.build({
       name: 'skills',
       filter: ['am'],
@@ -333,7 +333,6 @@ game.tutorial = {
   },
   skillSelect: function () {
     game.tutorial.lesson = 'Skill';
-    $('.card.enemy.done').removeClass('done');
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeskillselect);
     game.player.buyHand();
@@ -370,6 +369,7 @@ game.tutorial = {
   clear: function () {
     game.tutorial.lesson = '';
     game.tutorial.started = false;
+    game.tutorial.waited = false;
     if (game.tutorial.axe) {
       game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axe.removeClass('up');

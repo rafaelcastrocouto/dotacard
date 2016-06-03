@@ -1,4 +1,7 @@
 game.history = {
+  build: function () {
+    game.history.hash = location.hash.slice(1);
+  },
   validState: function (state) {
     if (state && 
         game.states[state] &&
@@ -17,21 +20,24 @@ game.history = {
     return false;
   },
   recovering: function () {
-    var hash = game.events.savedHash,
-        valid = game.history.validState(hash), 
+    var mode = localStorage.getItem('mode');
+    if (mode) game.setMode(mode);
+    var hash = game.history.hash,
+        valid = game.history.validState(hash),
         log = localStorage.getItem('log'),
         recovering = (log && valid);
     if (recovering) {
       game.states.log.out.show();
       game.states.options.opt.show();
       game.player.name = log;
+      var 
+      i;
       game.history.jumpTo(hash, recovering);
     }
     return recovering;
   },
   jumpTo: function (state, recover) {
-    if (game.mode && game[game.mode].clear) game[game.mode].clear();
-    if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+    game.clear();
     game.loader.addClass('loading');
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {
@@ -48,6 +54,7 @@ game.history = {
       if (game.mode && game[game.mode].clear) game[game.mode].clear();
       if (game.states[game.currentState].clear) game.states[game.currentState].clear();
       if (hash == 'log' || hash == 'menu') game.setMode('');
+      if (hash == 'choose' || hash == 'table') game.setMode(game.mode);
       game.history.jumpTo(hash);
       return true;
     } else {

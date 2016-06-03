@@ -4,6 +4,7 @@
   height: 120px;
   bottom: -10px;
   z-index: 6;
+  transform: translateZ(0);
 }
 
 .table .player.heroes.deck {
@@ -19,6 +20,7 @@
   right: 10px;
   width: 620px;
 }
+
 .table .selectedarea {
   width: 220px;
   height: 330px;
@@ -74,6 +76,7 @@
   perspective: 1100px;
   overflow: hidden;
   cursor: pointer;
+  transform: translateZ(0);
 }
 
 /*.camera:after {

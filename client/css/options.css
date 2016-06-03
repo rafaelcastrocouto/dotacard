@@ -27,7 +27,8 @@
 .volume {
   cursor: pointer;
   position: relative;
-  width: 0; height: 0;
+  width: 0;
+  height: 0;
   border: 0 solid transparent;
   border-top: 20px solid transparent;
   border-right: 50px solid rgba(255,255,255,0.2);
@@ -35,6 +36,7 @@
   position: absolute;
   right: 80px;
   bottom: 11px;
+  transform: translateZ(0);
 }
 
 .volumecontrol {

@@ -13,8 +13,6 @@ game.states.choose = {
     this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.back);
   },
   start: function (recover) {
-    game.loader.addClass('loading');
-    if (game[game.mode].build) game[game.mode].build(recover);
     game.chat.el.appendTo(this.el);
     game.states.choose.selectFirst(true);
   },
@@ -83,9 +81,7 @@ game.states.choose = {
     }
   },
   selectFirst: function (recover) {
-    var saved = localStorage.getItem('choose');
-    if (saved) this.select.call($('.pickdeck .'+saved), recover);
-    else this.select.call(game.states.choose.pickDeck.children().first());
+    this.select.call(game.states.choose.pickDeck.children().first(), recover);
   },
   sort: function () {
     $('.pickdeck .card').sort(function (a, b) {
@@ -132,8 +128,7 @@ game.states.choose = {
     game.states.changeTo('table');
   },
   back: function () {
-    if (game.mode && game[game.mode].clear) game[game.mode].clear();
-    game.states.choose.clear();
+    game.clear();
     game.states.changeTo('menu');
   },
   clear: function () {

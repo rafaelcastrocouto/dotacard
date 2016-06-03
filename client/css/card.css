@@ -14,19 +14,20 @@
   margin: 0 -50px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) translateZ(0) scale(0.4);
+  transform: translate3d(-50%, -50%, 0) translateZ(0) scale(0.4);
 }
 
 .pickbox .card.selected {
   margin: 0 22px;
-  transform: translate(-50%, -50%) scale(1.16);
+  transform: translate3d(-50%, -50%, 0) scale(1.16);
 }
 
 
 .pickedbox .card {
   animation: pickedboxslidedown 0.5s;
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(0.4);
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0.4);
 }
 @keyframes pickedboxslidedown {
   0% {top: 36%;}
@@ -83,6 +84,7 @@
   z-index: 1;
   color: #4d4843;
   cursor: pointer;
+  transform: translateZ(0);
 }
 
 .card:hover {
@@ -113,7 +115,7 @@
   transition: background-size 0.4s;
 }
 .card:hover .portrait .img {
-  background-size: 120%;
+  /* background-size: 120%; */
 }
 
 .card .overlay {
@@ -310,8 +312,9 @@
 
 
 .table .deck .card {
-  top: 50%; left: 50%;
-  transform: translate(-50%, -50%) scale(0.4);
+  top: 50%;
+  left: 50%;
+  transform: translate3d(-50%, -50%, 0) scale(0.4);
   margin-right: -190px;
   left: 40px;
 }
@@ -369,6 +372,9 @@
   z-index: 8;
 }
 
+.table .selectedarea:hover {
+  z-index: 11;
+}
 .table .selectedarea .card {
   position: absolute;
   top: 50%; left: 50%;
@@ -402,7 +408,6 @@
 }
 .table .selectedarea.flip:hover .card {
   backface-visibility: visible; /* blurry fix */
-  z-index: 11;
   transform: translate(-88%, -12%) scale(1.86);
 }
 .table .selectedarea .card .damaged,
@@ -446,7 +451,7 @@
 .card.dragTargetClone.table h1,
 .card.dragTargetClone.table .desc,
 .card.dragTargetClone.table .buff {
-  opacity: 0;
+  display: none;
 }
 .map .card fieldset,
 .card.dragTargetClone.table fieldset {

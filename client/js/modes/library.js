@@ -1,5 +1,5 @@
 game.library = {
-  build: function (recover) {
+  build: function () {
     if (!game.library.builded) {
       game.library.builded = true;
       game.library.skills = game.deck.build({
@@ -13,24 +13,23 @@ game.library = {
         }
       });
     }
-    game.library.start(recover);
+    game.library.start();
   },
-  start: function (recover) {
+  start: function () {
     game.loader.removeClass('loading');
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
     game.message.text(game.data.ui.library);
     game.states.choose.counter.show().text(game.data.ui.clickpick);
     game.enemy.name = 'axe';
-    game.enemy.type = 'challenged';
-    game.player.type = 'challenger';
+    game.enemy.type = 'challenger';
+    game.player.type = 'challenged';
     game.states.choose.pickedbox.show();
     game.states.choose.librarytest.show();
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
     game.states.choose.counter.text(game.data.ui.skills);
-    //if (!recover) game.library.select(game.states.choose.pickDeck.children().first(), true);
-    //else game.library.select($('.choose .heroes.'+localStorage.getItem('choose')), true);
+    $('.slot').removeClass('available');
   },
   select: function (card, build) { 
     var hero = card.data('hero'),
@@ -40,7 +39,7 @@ game.library = {
       game.player.picks = [hero];
       game.library.hero = card;
       disabled = card.hasClass('dead');
-      game.states.choose.counter.text(card.data('name') + ' ' + game.data.ui.skills);      
+      game.states.choose.counter.text(card.data('name') + ' ' + game.data.ui.skills);
       $('.slot .card.skills').appendTo(game.library.skills);
       $('.library.skills .'+hero+'.skill').each(function (i) {
         $(game.states.choose.pickedbox.children()[i]).show().append(this);
@@ -54,8 +53,7 @@ game.library = {
   setTable: function () {
     if (!game.library.started) {
       game.library.started = true;      
-      game.loader.removeClass('loading');      
-      game.audio.play('horn');
+      game.loader.removeClass('loading');
       game.tower.place();
       game.tree.place();
       if (!game.library.hero) {
@@ -73,11 +71,8 @@ game.library = {
       game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.player.kills = 0;
       game.enemy.kills = 0;
-      game.enemy.mana = 14;
-      game.enemy.maxCards = 7;
-      game.enemy.hand = 2;
+      game.turn.build();
       game.timeout(400, function () {
-        game.status = 'turn';
         game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
       });
     }
@@ -97,6 +92,7 @@ game.library = {
     });
   },
   placeEnemyHeroes: function () {
+    game.enemy.mana = 0;
     game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
     game.enemy.heroesDeck = game.deck.build({
       name: 'heroes',
@@ -108,21 +104,21 @@ game.library = {
           var p = game.enemy.picks.indexOf(card.data('hero'));
           card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
+          game.enemy.mana += card.data('mana');
         });
       }
     });
   },
   buildSkills: function () {
-    game.player.skills = {};
+    game.player.manaBuild();
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     var hero = game.library.hero.data('hero');
     $('.library.skills .'+hero+'.skill').each(function (i, skill) {
       $(skill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
     });
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.temp = $('<div>').appendTo(game.states.table.player).addClass('player deck skills temp');
     game.player.skills.cemitery = $('<div>').appendTo(game.states.table.player).addClass('player deck skills cemitery');
-    game.enemy.skills = {};
+    game.enemy.manaBuild();
     game.enemy.skills.deck = game.deck.build({
       name: 'skills',
       filter: ['am'],

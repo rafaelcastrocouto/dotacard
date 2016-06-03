@@ -37,8 +37,7 @@ game.states.log = {
     }
   },
   logout:function () {
-    if (game.mode && game[game.mode].clear) game[game.mode].clear();
-    if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+    game.clear();
     game.states.changeTo('log');
   },
   end: function () {

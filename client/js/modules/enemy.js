@@ -1,5 +1,11 @@
 game.enemy = {
   playtime: 3,
+  manaBuild: function () {
+    game.enemy.maxCards = Math.round(game.enemy.mana / 2);
+    game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana / 10);
+    game.enemy.hand = 0;
+    game.enemy.skills = {};
+  },
   buyCard: function () {
     game.enemy.hand += 1;
     game.random();

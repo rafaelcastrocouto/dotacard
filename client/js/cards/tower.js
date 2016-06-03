@@ -9,9 +9,7 @@ game.tower = {
       damage: 15,
       hp: 80
     });
-    if (game.mode !== 'tutorial') {
-      tower.on('mousedown touchstart', game.card.select);
-    }
+    tower.on('mousedown touchstart', game.card.select);
     tower.place(pos);
     game.map.around(pos, game.map.getRange(game.data.ui.ranged), function (spot) {
       spot.addClass(side + 'area');
