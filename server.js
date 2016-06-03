@@ -3,7 +3,7 @@ var http = require('http'),
     fs = require('fs'),
     serveStatic = require('serve-static'),
     setHeaders = function (response) {
-      response.setHeader('Access-Control-Allow-Origin', 'https://rafaelcastrocouto.github.io');
+      response.setHeader('Access-Control-Allow-Origin', 'http://rafaelcastrocouto.github.io');
     },
     clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
     rootServer = serveStatic(__dirname, {'setHeaders': setHeaders}),
