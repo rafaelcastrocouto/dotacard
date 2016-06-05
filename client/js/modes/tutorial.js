@@ -77,6 +77,7 @@ game.tutorial = {
   setTable: function () {
     if (!game.tutorial.started) {
       game.tutorial.started = true;
+      game.tutorial.lesson = 'Enemy';
       game.message.text(game.data.ui.battle);
       game.loader.removeClass('loading');
       game.audio.play('horn');
@@ -143,7 +144,6 @@ game.tutorial = {
     });
   },
   selectEnemyLesson: function () {
-    game.tutorial.lesson = 'Enemy';
     game.tutorial.axebaloon.fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeselectenemy);
     $('.map .enemy.tower').addClass('tutorialblink').on('select', game.tutorial.selected);
@@ -217,15 +217,13 @@ game.tutorial = {
     game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
     game.message.addClass('tutorialblink');
     game.loader.addClass('loading');
-    game.timeout(1000, function () {
-      game.turn.el.text(game.data.ui.enemyturn);
-      game.turn.el.addClass('show');
-      game.timeout(2500, function () {
-        game.turn.el.removeClass('show');
-        game.status = 'unturn';
-        if (!game.tutorial.waited) game.timeout(1000, game.tutorial.wait);
-        else game.timeout(1000, game.tutorial.attack);
-      });
+    game.turn.el.text(game.data.ui.enemyturn);
+    game.turn.el.addClass('show');
+    game.timeout(2500, function () {
+      game.turn.el.removeClass('show');
+      game.status = 'unturn';
+      if (!game.tutorial.waited) game.timeout(1000, game.tutorial.wait);
+      else game.timeout(1000, game.tutorial.attack);
     });
   },
   wait: function () {
@@ -244,8 +242,8 @@ game.tutorial = {
     game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
     game.tutorial.message.html(game.data.ui.axetime);
     game.states.table.time.removeClass('tutorialblink');
-    game.states.table.turns.addClass('tutorialblink');
-    game.states.table.turns.text(game.data.ui.turns + ': 1/1 (2)');
+    game.turn.msg.addClass('tutorialblink');
+    game.turn.msg.text(game.data.ui.turns + ': 1/1 (2)');
     game.timeout(4000, game.tutorial.enemyMove);
     game.tutorial.buildSkills();
   },
@@ -254,7 +252,7 @@ game.tutorial = {
     game.tutorial.message.html(game.data.ui.axeenemymove);
     game.message.html(game.data.ui.enemymove);
     game.audio.play('tutorial/axewait');
-    game.states.table.turns.removeClass('tutorialblink');
+    game.turn.msgs.removeClass('tutorialblink');
     game.currentData = {
       moves: [
         'M:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('C3'),

@@ -1,7 +1,6 @@
 game.states.table = {
   build: function () {
     this.time = $('<p>').appendTo(game.topbar).addClass('time').text(game.data.ui.time + ': 0:00 Day').hide();
-    this.turns = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)').hide();
     this.camera = $('<div>').appendTo(game.states.table.el).addClass('camera');
     this.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(this.camera);
     this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea').append($('<div>').addClass('cardback'));
@@ -10,7 +9,7 @@ game.states.table = {
     this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
     this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
     this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrenderClick);
-    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', game.states.table.backClick).text(game.data.ui.back);
+    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', this.backClick).text(game.data.ui.back);
   },
   start: function (recover) {
     if (recover) {
@@ -19,8 +18,8 @@ game.states.table = {
     }
     game[game.mode].setTable();
     game.chat.el.appendTo(this.el);
+    game.turn.msg.show();
     this.time.show();
-    this.turns.show();
     this.camera.show();
     this.selectedArea.show();
     if (game.player.picks.length == 5) localStorage.setItem('mydeck', game.player.picks);
@@ -135,10 +134,34 @@ game.states.table = {
     });
   },
   backClick: function () {
+    if (game.mode == 'library') {
+      game.states.table.toChoose();
+    } else {
+      swal({
+        title: game.data.ui.leave,
+        type: 'warning',
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: game.data.ui.yes,
+        cancelButtonText: game.data.ui.no,
+      }).then(function(isConfirm) {
+        if (isConfirm === true) {
+          game.states.table.toMenu();
+        }
+      });
+    }
+  },
+  toChoose: function () {
     if (game[game.mode].clear) game[game.mode].clear();
     game.states.table.clear();
     game.setMode(game.mode);
     game.states.changeTo('choose');
+  },
+  toMenu: function () {
+    if (game[game.mode].clear) game[game.mode].clear();
+    game.states.table.clear();
+    game.setMode(game.mode);
+    game.states.changeTo('menu');    
   },
   clear: function () {
     game.map.clear();
@@ -149,6 +172,6 @@ game.states.table = {
   },
   end: function () {
     this.time.hide();
-    this.turns.hide();
+    game.turn.msg.hide();
   }
 };

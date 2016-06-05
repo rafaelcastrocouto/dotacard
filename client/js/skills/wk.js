@@ -48,7 +48,7 @@ game.skills.wk = {
       team.on('attack.wk-lifesteal', this.attack);
       team.data('wk-lifesteal', skill);
       source.addBuff(team, skill.data('buff'));
-      source.on('die.wk-lifesteal', this.die);
+      source.on('death.wk-lifesteal', this.death);
       source.on('reborn.wk-lifesteal', this.reborn);
     },
     attack: function (event, eventdata) {
@@ -59,7 +59,7 @@ game.skills.wk = {
       var bonus = skill.data('percentage') / 100;
       source.heal(damage * bonus);
     },
-    die: function (event, eventdata) {
+    death: function (event, eventdata) {
       var source = eventdata.target;
       var side = source.data('side');
       var team = $('.card.heroes.'+side);
@@ -108,10 +108,10 @@ game.skills.wk = {
   },
   ult: {
     passive: function (skill, source) {
-      source.on('die.wk-ult', this.die);
+      source.on('death.wk-ult', this.death);
       source.data('wk-ult-skill', skill);
     },
-    die: function (event, eventdata) {
+    death: function (event, eventdata) {
       var wk = eventdata.target;
       var spot = eventdata.spot;
       var skill = wk.data('wk-ult-skill');
@@ -134,7 +134,7 @@ game.skills.wk = {
           card.data('wk-ult', skill.data('duration'));
         }
       });
-      wk.off('die.wk-ult');
+      wk.off('death.wk-ult');
     },
     resurrect: function (event, eventdata) {
       var wk = eventdata.target;

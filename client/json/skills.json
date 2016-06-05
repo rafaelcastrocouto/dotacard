@@ -103,7 +103,7 @@
       "targets": ["Self"],
       "cards": 1,
       "armor bonus": 16,
-      "hpbonus": 20,
+      "hp bonus": 20,
       "display": true,
       "description": "Lone Druid morphs himself into a raging bear"
     },

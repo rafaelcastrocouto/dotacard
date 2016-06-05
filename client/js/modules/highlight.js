@@ -12,7 +12,7 @@ game.highlight = {
       if (game.selectedCard.hasClasses('hero unit')) {
         game.selectedCard.strokeAttack();
         if (game.status === 'turn') {
-          game.selectedCard.highlightMove();
+          if (game.tutorial.lesson != 'Enemy' && game.tutorial.lesson != 'Unselect') game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack();
         }
       } else if (game.selectedCard.hasClass('skill')) {

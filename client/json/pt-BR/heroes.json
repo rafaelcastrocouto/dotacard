@@ -36,7 +36,7 @@
     "damage": 9,
     "armor": 34,
     "resistance": 25,
-    "skills": "Spirit Bear, Savage Roar, Rabid, True Form",
+    "skills": "Spirit Bear, Rabid, Savage Roar, True Form",
     "temporary": "Battle Cry",
     "buffs": "Rabid, Savage Roar, Battle Cry, True Form"
   },

@@ -121,7 +121,7 @@ game.map = {
   },
   atMovementRange: function (card, range, cb, filter) {
     if (range >= 0 && range <= game.map.rangeArray.length) {
-      var radius, x, y, r, r2, l, a, i, o, m, s,
+      var radius, x, y, r, r2, l, a, i, o, m, s, t, u,
         fil = function (x, y) {
           var spot = game.map.getSpot(x, y);
           if (spot) {
@@ -144,10 +144,18 @@ game.map = {
       if (range === 2 || range === 3) {
         for (x = 1; x <= l; x += 1) {
           y = Math.round(Math.sqrt(r2 - x * x));
-          fil(w + x, h + y);
-          fil(w + x, h - y);
-          fil(w - x, h + y);
-          fil(w - x, h - y);
+          m = game.map.getSpot(w, h - y);
+          s = game.map.getSpot(w - x, h);
+          t = game.map.getSpot(w + x, h);
+          u = game.map.getSpot(w, h + y);
+          if (m) m = m.hasClass('free'); 
+          if (s) s = s.hasClass('free'); 
+          if (t) t = t.hasClass('free'); 
+          if (u) u = u.hasClass('free'); 
+          if (t || u) fil(w + x, h + y);
+          if (t || m) fil(w + x, h - y);
+          if (s || u) fil(w - x, h + y);
+          if (s || m) fil(w - x, h - y);
         }
       }
       if (range === 3 && !card.hasClass('phased')) {

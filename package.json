@@ -1,9 +1,9 @@
 {
   "name": "dotacard",
-  "version": "0.3.6",
+  "version": "0.3.7",
   "author": "rafaelcastrocouto",
   "description": "DotaCard game",
-  "homepage": "http://dotacard.herokuapp.com",
+  "homepage": "http://dotacard.ga",
   "readmeFilename": "README.md",
   "engine": "node >= 0.10.x",
   "repository": {

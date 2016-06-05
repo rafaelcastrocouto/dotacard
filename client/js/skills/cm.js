@@ -40,11 +40,11 @@ game.skills.cm = {
     passive: function (skill, source) {
       var side = source.data('side');
       game[side].cardsPerTurn += 1;
-      source.on('die.cm-aura');
+      source.on('death.cm-aura');
       source.on('reborn.cm-aura');
       source.addBuff(source, skill.data('buff'));
     },
-    die: function (event, eventdata) {
+    death: function (event, eventdata) {
       var cm = eventdata.target;
       var side = cm.data('side');
       game[side].cardsPerTurn -= 1;

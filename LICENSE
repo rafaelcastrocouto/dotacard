@@ -44,10 +44,6 @@ registered trademarks of Valve Corporation, http://www.valvesoftware.com/legal.h
 DOTACARD versions may include or require the following libraries, which may have other licenses.
 
 "jQuery", John Resig, http://jquery.com
-"jQuery Cookie Plugin", Klaus Hartl, https://github.com/carhartl/jquery-cookie
-"-prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
-"modernizr", Modernizr team, http://modernizr.com
-"google-analytics", Google, http://www.google.com/analytics
-"nodejs", Joyent, http://nodejs.org/
-"emojify" - Hassan Khan - http://hassankhan.github.io/emojify.js/
-"Font Awesome" - Davegandy - http://fontawesome.io
+"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
+"Google-analytics", Google, http://www.google.com/analytics
+"Nodejs", Joyent, http://nodejs.org

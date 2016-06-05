@@ -86,8 +86,24 @@ game.library = {
         deck.addClass('player').appendTo(game.states.table.player);
         var card = deck.data('cards')[0];
         card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
-        card.place(game.map.toId(4, 4));
+        card.place(game.map.toId(4, 4));        
         game.player.mana = card.data('mana');
+        card.on('action', function (e, ev) {
+          $('.card .damaged').remove();
+          game.timeout(400, function () {
+            game.enemy.tower.attack($('.map .enemyarea .card.player'));
+          });
+        }).on('death', function (e, evt) {
+          game.timeout(800, function (spot) {
+            var card = $(this), o = $('#' + game.map.toId(4, 4));
+            if (o.hasClass('free')) {
+              card.place(o);
+            } else {
+              card.place(spot);
+            }
+            card.removeClass('dead').setCurrentHp(card.data('hp'));
+          }.bind(this, evt.spot));
+        });
       }
     });
   },
@@ -130,91 +146,8 @@ game.library = {
       }
     });
   },
-  turnDone: function () {
-    if (!game.turn.el) {
-      game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
-    }
-    game.timeout(1000, function () {
-      game.turn.el.text(game.data.ui.enemyturn);
-      game.turn.el.addClass('show');
-      game.timeout(3000, function () {
-        game.turn.el.removeClass('show');
-        game.library.message.html(game.data.ui.axedone);
-        game.message.text(game.data.ui.enemyturncount + ' 3');
-        game.message.addClass('libraryblink');
-        game.loader.addClass('loading');
-        game.status = 'unturn';
-        game.timeout(5000, game.library.newTurn);
-      });
-    });
-  },
-  newTurn: function () {
-    game.library.axebaloon.hide().fadeIn('slow');
-    game.library.message.html(game.data.ui.axeenemymove);
-    game.message.html(game.data.ui.enemymove);
-    game.audio.play('library/axewait');
-    game.states.table.turns.removeClass('libraryblink');
-//     game.currentData = {
-//       moves: [
-//         'M:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('C3'),
-//         'M:'+game.map.mirrorPosition('F2')+':'+game.map.mirrorPosition('F3'),
-//         'M:'+game.map.mirrorPosition('H2')+':'+game.map.mirrorPosition('G3'),
-//         'M:'+game.map.mirrorPosition('F3')+':'+game.map.mirrorPosition('E4')
-//       ].join('|')
-//     };
-//     game.enemy.move();
-    game.timeout(2000, function () {
-      game.turn.el.text(game.data.ui.yourturn);
-      game.turn.el.addClass('show');
-      game.timeout(3000, game.library.attack);
-    });
-  },
-  attack: function () {
-    game.turn.el.removeClass('show');
-    game.library.axe.removeClass('left');
-    game.enemy.skills.deck.removeClass('slide');
-    $('.enemy.skills .card').fadeOut(400);
-    game.library.lesson = 'Attack';
-    $('.map .hero').removeClass('done');
-    var pos = game.map.getPosition($('.map .enemy.am')),
-      range = game.map.getRange(game.data.ui.ranged);
-    game.map.around(pos, range, function (spot) {
-      spot.find('.card.player.hero').addClass('libraryblink');
-    });
-    pos = game.map.getPosition($('.map .enemy.pud'));
-    game.map.around(pos, range, function (spot) {
-      spot.find('.card.player.hero').addClass('libraryblink');
-    });
-    var heroes = $('.card.libraryblink');
-    if (heroes.length === 0) $('.map .card.player.hero').addClass('libraryblink');
-    game.status = 'turn';
-    game.library.axebaloon.hide().fadeIn('slow');
-    game.library.message.html(game.data.ui.axeattack);
-    game.audio.play('library/axeattack');
-    game.message.text(game.data.ui.yourturncount + ' 5');
-    game.library.moveCountValue = 5;
-    $('.player.hero').on('attack.library', game.library.skillSelect);
-  },
-  surrender: function () {
-    game.library.clear();
-    game.states.table.clear();
-    game.states.changeTo('menu');
-  },
   end: function () {
-//    game.message.text(game.data.ui.library);
-//     game.library.axebaloon.hide().fadeIn('slow');
-//     game.library.message.html(game.data.ui.axeend);
-//     game.audio.play('library/axeah');
-//     game.message.text(game.data.ui.win);
-//     game.winner = game.player.name;
-//     game.states.table.showResults();
      game.status = 'over';
-//     game.db({
-//       'set': 'chat',
-//       'data': game.player.name + ' ' + game.data.ui.completedlibrary
-//     }, function (chat) {
-//       game.chat.update(chat);
-//     });
   },
   clear: function () {
     game.library.started = false;

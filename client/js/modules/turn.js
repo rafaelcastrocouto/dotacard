@@ -7,6 +7,7 @@ game.turn = {
     game.enemy.kills = 0;
     game.currentData.moves = [];
     game.currentData = {};
+    game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)').hide();
     game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
     if (game.player.type === 'challenged') game.status = 'turn';
     if (game.player.type === 'challenger') game.status = 'unturn';
@@ -67,7 +68,7 @@ game.turn = {
   count: function () {
     clearTimeout(game.timeout);
     game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
-    game.states.table.turns.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     if (game.status === 'turn') {
       game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
     } else if (game.status === 'unturn') {

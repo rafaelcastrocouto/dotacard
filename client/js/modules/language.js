@@ -1,14 +1,15 @@
 game.language = {
   current: 'en-US',
   available: ['en-US', 'pt-BR'],
-  dir: '', // ./json path
-  load: function (cb) {
+  dir: '',
+  load: function (cb) {    
     game.db({ 'get': 'lang' }, function (data) {
       game.load.updating += 1;
       if (data.lang) {
-        game.language.detected = data.lang.split(';')[0].split(',')[0];
-        if (game.language.available.indexOf(game.language.detected) > 0) {
-          game.language.current = game.language.detected;
+        var language = data.lang.split(';')[0].split(',')[0],
+            detectLanguage = game.language.available.indexOf(language);
+        if (detectLanguage > 0) {
+          game.language.current = game.language.available[detectLanguage];
           game.language.dir = game.language.current + '/';
         }
       }

@@ -8,13 +8,15 @@ game.states.choose = {
     this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
     this.pickDeck = game.deck.build({name: 'heroes', cb: this.buildDeck});
     this.randombt = $('<div>').appendTo(this.buttonbox).addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () { if (!$(this).attr('disabled')) this.random(); });
-    this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.test);
+    this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHero);
     this.mydeck = $('<div>').appendTo(this.buttonbox).addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck);
-    this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.back);
+    this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick);
   },
   start: function (recover) {
     game.chat.el.appendTo(this.el);
     game.states.choose.selectFirst(true);
+    if (game.mode != 'online') this.pickedbox.show();
+    else this.pickedbox.hide();
   },
   buildDeck: function (pickDeck) {
     pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
@@ -123,11 +125,29 @@ game.states.choose = {
       }
     });
   },
-  test: function () {
+  testHero: function () {
     game.states.choose.clear(); 
     game.states.changeTo('table');
   },
-  back: function () {
+  backClick: function () {
+    if (game.mode == 'library') {
+      game.states.choose.toMenu();
+    } else {
+      swal({
+        title: game.data.ui.leave,
+        type: 'warning',
+        showCancelButton: true,
+        buttonsStyling: false,
+        confirmButtonText: game.data.ui.yes,
+        cancelButtonText: game.data.ui.no,
+      }).then(function(isConfirm) {
+        if (isConfirm === true) {
+          game.states.choose.toMenu();
+        }
+      });
+    }
+  },
+  toMenu: function () {
     game.clear();
     game.states.changeTo('menu');
   },

@@ -80,7 +80,7 @@ http.createServer(function(request, response) {
       }
       //LANGUAGE
       if(query.get === 'lang') { 
-        send(response, JSON.stringify({lang: request.headers['accept-language']})); 
+        send(response, JSON.stringify({lang: request.headers['accept-language'] || ''})); 
         return;
       }
       //DEFAULT GET

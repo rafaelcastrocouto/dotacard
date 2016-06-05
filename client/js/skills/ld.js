@@ -19,7 +19,7 @@ game.skills.ld = {
       }
       var returnskillcard = $('.'+side+'.skill.ld-return');
       returnskillcard.appendTo(game.player.skills.sidehand);
-      bear.changehp(bear.data('hp'));
+      bear.setCurrentHp(bear.data('hp'));
       bear.place(target);
       if(side === 'player') { bear.select(); }
     },
@@ -63,8 +63,12 @@ game.skills.ld = {
         target.removeBuff('ld-entangle');
       }
     },
-    death: function () {
-
+    death: function (event, eventdata) {
+      var bear = eventdata.target;
+      var killer = eventdata.source;
+      var side = target.data('side');
+      var ld = $('.'+target+'.hero.ld');
+      killer.damage(ld, ld.data('hp') * 0.1, 'Pure');
     }
   },
   bearreturn: {
@@ -105,7 +109,7 @@ game.skills.ld = {
         source.addClass('rabid');
         source.addBuff(source, skill.data('buff'));
         var damage = source.data('current damage');
-        source.changedamage(damage + skill.data('damage bonus'));
+        source.setDamage(damage + skill.data('damage bonus'));
         var speed = source.data('current speed');
         source.data('current speed', speed + 1);
         source.data('ld-rabid', skill.data('duration'));
@@ -116,7 +120,7 @@ game.skills.ld = {
       if(bear && !bear.hasClass('dead') && !bear.hasClass('rabid')) {
         bear.addClass('rabid');
         var beardamage = bear.data('current damage');
-        bear.changedamage(beardamage + skill.data('damage bonus'));
+        bear.setDamage(beardamage + skill.data('damage bonus'));
         var bearspeed = bear.data('current speed');
         bear.data('current speed', bearspeed + 1);
         source.addBuff(bear, skill.data('buff'));
@@ -130,7 +134,7 @@ game.skills.ld = {
         target.data('ld-rabid', duration);
       } else {
         var damage = target.data('current damage');
-        target.changedamage(damage - target.data('ld-rabid-damage-bonus'));
+        target.setDamage(damage - target.data('ld-rabid-damage-bonus'));
         var speed = target.data('current speed');
         target.data('current speed', speed - 1);
         target.off('turnstart.ld-rabid');
@@ -139,7 +143,7 @@ game.skills.ld = {
         var bear = target.data('bear');
         if(bear && bear.hasBuff('ld-rabid') && bear.hasClass('rabid')) {
           var beardamage = bear.data('current damage');
-          bear.changedamage(beardamage - target.data('ld-rabid-damage-bonus'));
+          bear.setDamage(beardamage - target.data('ld-rabid-damage-bonus'));
           var bearspeed = bear.data('current speed');
           bear.data('current speed', bearspeed - 1);
           bear.removeBuff('ld-rabid');
@@ -157,7 +161,7 @@ game.skills.ld = {
   },
   ult: {
     toggle: function (skill, source) {
-      if (source.hasClass('transformed')) {
+      if (!source.hasClass('transformed')) {
         game.skills.ld.ult.cast(skill, source);
       } else {
         game.skills.ld.transform.cast(skill, source);
@@ -171,12 +175,10 @@ game.skills.ld = {
       cry.appendTo(game.player.skills.permanent);
       skill.appendTo(game.player.skills.sidehand);
       var ldhp = source.data('hp');
-      var currenthp = source.data('current hp');
-      var relativehp = currenthp / ldhp;
-      source.data('hp', ldhp + skill.data('hp bonus'));
-      source.data('current hp', source.data('hp') * relativehp);
-      var armor = source.data('armor');
-      source.data('armor', + skill.data('armor bonus'));
+      var relativehp = source.data('current hp') / ldhp;
+      source.setHp(ldhp + skill.data('hp bonus'));
+      source.setCurrentHp(source.data('hp') * relativehp);
+      source.setArmor(source.data('armor') + skill.data('armor bonus'));
       source.data('range', game.data.ui.melee);
       source.addClass('transformed');
     }
@@ -190,12 +192,10 @@ game.skills.ld = {
       var cry = $('.'+side+'.skill.ld-cry');
       cry.appendTo(game.player.skills.sidehand);
       var ldhp = source.data('hp');
-      var currenthp = source.data('current hp');
-      var relativehp = currenthp / ldhp;
-      source.data('hp', ldhp - skill.data('hp bonus'));
-      source.data('current hp', source.data('hp') * relativehp);
-      var armor = source.data('armor');
-      source.data('armor', - skill.data('armor bonus'));
+      var relativehp = source.data('current hp') / ldhp;
+      source.setHp(ldhp - skill.data('hp bonus'));
+      source.setCurrentHp(source.data('hp') * relativehp);
+      source.setArmor(source.data('armor') - skill.data('armor bonus'));
       source.data('range', game.data.ui.short);
       source.removeClass('transformed');
     }
@@ -206,14 +206,14 @@ game.skills.ld = {
       var armor = source.data('armor');
       source.data('armor', + skill.data('armor bonus'));
       var damage = source.data('current damage');
-      source.changedamage(damage + skill.data('damage bonus'));
+      source.setDamage(damage + skill.data('damage bonus'));
       var bear = source.data('bear');
       if(bear) {
         source.addBuff(bear, skill.data('buff'));
         var beararmor = bear.data('armor');
         bear.data('armor', beararmor + skill.data('armor bonus'));
         var beardamage = bear.data('current damage');
-        bear.changedamage(beardamage + skill.data('damage bonus'));
+        bear.setDamage(beardamage + skill.data('damage bonus'));
       }
       source.data('ld-cry', skill.data('duration'));
       source.data('ld-cry-damage-bonus', skill.data('damage bonus'));
@@ -229,7 +229,7 @@ game.skills.ld = {
         target.data('ld-cry', duration);
       } else {
         var damage = target.data('current damage');
-        target.changedamage(damage - target.data('ld-cry-damage-bonus'));
+        target.setDamage(damage - target.data('ld-cry-damage-bonus'));
         var armor = target.data('armor');
         target.data('armor', armor - target.data('ld-cry-armor-bonus'));
         target.off('turnstart.ld-cry');
@@ -238,7 +238,7 @@ game.skills.ld = {
         var bear = target.data('bear');
         if(bear && bear.hasBuff('ld-cry')) {
           var beardamage = bear.data('current damage');
-          bear.changedamage(beardamage - target.data('ld-cry-damage-bonus'));
+          bear.setDamage(beardamage - target.data('ld-cry-damage-bonus'));
           var beararmor = bear.data('armor bonus');
           bear.data('armor bonus', beararmor - target.data('ld-cry-armor-bonus'));
           bear.removeBuff('ld-rabid');

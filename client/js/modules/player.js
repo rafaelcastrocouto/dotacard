@@ -71,6 +71,7 @@ game.player = {
       if (game.mode == 'online') { game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero); }
       skill.passive(target);
       game.states.table.animateCast(skill, target);
+      game.highlight.clearMap();
     }
   },
   toggle: function () {
@@ -84,6 +85,7 @@ game.player = {
       if (game.mode == 'online') game.currentData.moves.push('T:' + to + ':' + skillid + ':' + hero);
       skill.toggle(target);
       game.states.table.animateCast(skill, target);
+      game.highlight.clearMap();
     }
   },
   cast: function () {
@@ -98,6 +100,7 @@ game.player = {
       if (game.mode == 'online') game.currentData.moves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       source.cast(skill, to);
       game.states.table.animateCast(skill, to);
+      game.highlight.clearMap();
     }
   }
 };

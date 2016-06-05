@@ -141,10 +141,10 @@ game.skills.pud = {
       var kills = source.data('kills');
       var damage = source.data('damage');
       var bonusDamage = (skill.data('damage bonus') * kills);
-      source.changedamage(damage + bonusDamage);
+      source.setDamage(damage + bonusDamage);
       var hp = source.data('hp');
       var bonusHp = (skill.data('hp bonus') * kills);
-      source.changehp(hp + bonusHp);
+      source.setCurrentHp(hp + bonusHp);
     }
   },
   ult: {
