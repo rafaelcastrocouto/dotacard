@@ -178,6 +178,12 @@ noscript {
   position: relative;
   overflow: hidden;
   border-radius: 4px;
+  transition: 1s opacity;
+}
+
+.state.hidden {
+  opacity: 0;
+  /*display: none;*/
 }
 
 .state p {
@@ -318,11 +324,10 @@ label span {
 }
 
 .menu .box {
-  transform: translate(0%,-50%);
   width: 450px;
   height: 450px;
 }
-.menu  .button {
+.menu .box .button {
   display: block;
   margin: 12px auto;
   width: 216px;

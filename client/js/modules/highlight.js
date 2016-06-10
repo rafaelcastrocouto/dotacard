@@ -6,19 +6,20 @@ game.highlight = {
     $.fn.highlightAttack = game.highlight.attack;
     $.fn.highlightMove = game.highlight.move;
     $.fn.strokeSkill = game.highlight.strokeSkill;
+    $.fn.strokeAttack = game.highlight.strokeAttack;
   },
   map: function () {
     if (game.selectedCard) {
       if (game.selectedCard.hasClasses('hero unit')) {
         game.selectedCard.strokeAttack();
-        if (game.status === 'turn') {
+        if (!game.states.table.el.hasClass('unturn')) {
           if (game.tutorial.lesson != 'Enemy' && game.tutorial.lesson != 'Unselect') game.selectedCard.highlightMove();
           game.selectedCard.highlightAttack();
         }
       } else if (game.selectedCard.hasClass('skill')) {
         game.selectedCard.highlightSource();
         game.selectedCard.strokeSkill();
-        if (game.status === 'turn') {
+        if (!game.states.table.el.hasClass('unturn')) {
           game.selectedCard.highlightTargets();
         }
       } else if (game.selectedCard.hasClass('tower')) {
@@ -181,14 +182,14 @@ game.highlight = {
     if (hero && pos && !source.hasClasses('dead done stunned')) {
       if (skill.data('aoe')) {
         game.castpos = pos;
-        game.aoe = skill.data('aoe');
-        if (game.aoe === 'Linear') {
-          game.aoewidth = skill.data('aoe width');
-          game.aoerange = skill.data('aoe range');
-          game.map.crossStroke(pos, game.aoerange, game.aoewidth, 'skillarea');
-        } else if (game.aoe === 'Radial') {
-          game.aoerange = game.map.getRange(skill.data('range'));
-          game.aoecastrange = game.map.getRange(skill.data('aoe range'));
+        game.map.spots = skill.data('aoe');
+        if (game.skill.aoe === 'Linear') {
+          game.skill.aoewidth = skill.data('aoe width');
+          game.skill.aoerange = skill.data('aoe range');
+          game.map.crossStroke(pos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
+        } else if (game.map.spots === 'Radial') {
+          game.skill.aoerange = game.map.getRange(skill.data('range'));
+          game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
         $('.map .spot, .map .card').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
@@ -198,20 +199,29 @@ game.highlight = {
     }
     return skill;
   },
+  strokeAttack: function () {
+    var card = this, pos, range;
+    if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
+      pos = game.map.getPosition(card);
+      range = game.map.getRange(card.data('range'));
+      game.map.radialStroke(pos, range, card.data('side') + 'attack');
+    }
+    return card;
+  },
   hover: function (event) {
     var spot = $(this);
     $('.map .spot').removeClass('skillarea skillcast top right left bottom');
     if (!spot.hasClass('targetarea') || event.type === 'mouseleave') {      
-      if (game.aoe === 'Linear') {
-        game.map.crossStroke(game.castpos, game.aoerange, game.aoewidth, 'skillarea');
-      } else if (game.aoe === 'Radial') {
-        game.map.radialStroke(game.castpos, game.aoerange, 'skillarea');
+      if (game.map.spots === 'Linear') {
+        game.map.crossStroke(game.castpos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
+      } else if (game.skill.aoe === 'Radial') {
+        game.map.radialStroke(game.castpos, game.skill.aoerange, 'skillarea');
       }
     } else {
-      if (game.aoe === 'Linear') {
-        game.map.linearStroke(game.map.getPosition(spot), game.aoerange, game.aoewidth, 'skillcast');
-      } else if (game.aoe === 'Radial') {
-        game.map.radialStroke(game.map.getPosition(spot), game.aoecastrange, 'skillcast');
+      if (game.skill.aoe === 'Linear') {
+        game.map.linearStroke(game.map.getPosition(spot), game.skill.aoerange, game.skill.aoewidth, 'skillcast');
+      } else if (game.skill.aoe === 'Radial') {
+        game.map.radialStroke(game.map.getPosition(spot), game.skill.aoecastrange, 'skillcast');
       }
     }
   },

@@ -4,7 +4,6 @@ game.language = {
   dir: '',
   load: function (cb) {    
     game.db({ 'get': 'lang' }, function (data) {
-      game.load.updating += 1;
       if (data.lang) {
         var language = data.lang.split(';')[0].split(',')[0],
             detectLanguage = game.language.available.indexOf(language);

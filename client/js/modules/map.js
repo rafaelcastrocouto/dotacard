@@ -2,13 +2,13 @@ game.map = {
   lettersStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   build: function (opt) {
     game.map.letters = game.map.lettersStr.split('');
-    game.spot = [];
+    game.map.spots = [];
     var map = $('<div>').addClass('map').css({width: game.width * 212, height: game.height * 312}), w, h, tr;
     for (h = 0; h < opt.height; h += 1) {
-      game.spot[h] = [];
+      game.map.spots[h] = [];
       tr = $('<div>').addClass('row').appendTo(map);
       for (w = 0; w < opt.width; w += 1) {
-        game.spot[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.events.cancel);
+        game.map.spots[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.events.cancel);
       }
     }
     game.map.builded = true;
@@ -34,7 +34,7 @@ game.map = {
     }
   },
   getSpot: function (w, h) {
-    if (game.spot[h] && game.spot[h][w]) { return game.spot[h][w]; }
+    if (game.map.spots[h] && game.map.spots[h][w]) { return game.map.spots[h][w]; }
   },
   getPosition: function (el) {
     if (el.hasClass('spot')) { return el.attr('id'); }

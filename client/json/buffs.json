@@ -26,8 +26,8 @@
       "description": "Chance of bonus damage"
     },
     "ult": {
-      "name": "Reincarnation Slow",
-      "description": "Witness the Wraith King return!",
+      "name": "Reincarnation",
+      "description": "No one can kill the Wraith King!",
       "purgeable": true
     }
   },

@@ -1,6 +1,7 @@
 game.states.options = {
+  chat: true,
   build: function () {
-    this.menu = $('<div>').appendTo(this.el).addClass('box');
+    this.menu = $('<div>').addClass('box');
     this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.options);
     //screen
     this.resolution = $('<div>').appendTo(this.menu).addClass('screenresolution').attr({title: game.data.ui.screenres}).append($('<h2>').text(game.data.ui.screenres));
@@ -29,10 +30,10 @@ game.states.options = {
     game.audio.rememberVolume();
     this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({title: game.data.ui.back}).on('mouseup touchend', game.states.backState);
     this.opt = $('<small>').addClass('opt').hide().text('Options').appendTo(game.topbar).on('mouseup touchend', function () {game.states.changeTo('options');});
+    this.el.append(this.menu);
   },
   start: function () {
     game.states.options.opt.hide();
-    if (game.chat.el) game.chat.el.appendTo(this.el);
   },
   end: function () {
     game.states.options.opt.show();

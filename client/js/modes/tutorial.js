@@ -53,6 +53,8 @@ game.tutorial = {
     } else if (availableSlots === 1) {
       game.tutorial.message.html(game.data.ui.axeautodeck);
     }
+    game.player.mana = game.states.choose.mana();
+    game.player.manaBuild();
     if (availableSlots) {
       game.states.choose.counter.text(availableSlots + ' ' + game.data.ui.togo + '. ' + game.data.ui.cardsperturn + ': ' + game.player.cardsPerTurn);
     } else {
@@ -81,16 +83,13 @@ game.tutorial = {
       game.message.text(game.data.ui.battle);
       game.loader.removeClass('loading');
       game.audio.play('horn');
-      game.tower.place();
-      game.tree.place();
       if (!game.player.picks.length) {
         game.player.picks = localStorage.getItem('mydeck').split(',');
       }
       game.tutorial.placePlayerHeroes();
       game.tutorial.placeEnemyHeroes();
-      game.states.table.buildUnits();
-      game.states.table.surrender.hide();
-      game.states.table.back.show();
+      game.states.table.surrender.show();
+      game.states.table.back.hide();
       game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
       game.tutorial.axebaloon.hide();
@@ -221,7 +220,7 @@ game.tutorial = {
     game.turn.el.addClass('show');
     game.timeout(2500, function () {
       game.turn.el.removeClass('show');
-      game.status = 'unturn';
+      game.states.table.el.addClass('unturn');
       if (!game.tutorial.waited) game.timeout(1000, game.tutorial.wait);
       else game.timeout(1000, game.tutorial.attack);
     });
@@ -287,7 +286,7 @@ game.tutorial = {
     });
     var heroes = $('.card.tutorialblink');
     if (heroes.length === 0) $('.map .card.player.hero').addClass('tutorialblink');
-    game.status = 'turn';
+    game.states.table.el.removeClass('unturn');
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeattack);
     game.audio.play('tutorial/axeattack');
@@ -349,6 +348,9 @@ game.tutorial = {
     $('.card').on('passive.tutorial', game.tutorial.end);
     $('.card').on('toggle.tutorial', game.tutorial.end);
   },
+  surrender: function() {
+    game.states.table.toMenu();
+  },
   end: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeend);
@@ -356,7 +358,7 @@ game.tutorial = {
     game.message.text(game.data.ui.win);
     game.winner = game.player.name;
     game.states.table.showResults();
-    game.status = 'over';
+    game.states.table.el.addClass('over');
     game.db({
       'set': 'chat',
       'data': game.player.name + ' ' + game.data.ui.completedtutorial

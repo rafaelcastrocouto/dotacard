@@ -16,7 +16,7 @@ game.chat = {
       }, 5000);
     }
   },
-  start: function () {
+  joined: function () {
     game.db({
       'set': 'chat',
       'data': game.player.name + ' ' + game.data.ui.joined

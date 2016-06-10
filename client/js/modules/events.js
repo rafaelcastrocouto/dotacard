@@ -1,17 +1,17 @@
 game.events = {
   build: function() {
+    game.offset = game.container.offset();
     $.fn.clearEvents = game.events.clearEvents;
-    //almost the same as .off
     game.card.bindJquery();
-    // cards methods (move attack select ...)
+    game.skill.bindJquery();
     game.highlight.bindJquery();
-    $(window).on('popstate', game.history.stateChange);
+    $(window).on('popstate', game.history.stateChange)
+             .on('resize', game.screen.resize);
     game.container.on('mousedown touchstart', game.events.hit)
                   .on('mousemove', game.events.move)
                   .on('touchmove', function(event) {
                     game.events.move.call(this, event);
-                    //prevent touch scroll
-                    if (event.preventDefault) event.preventDefault();
+                    if (event.preventDefault) event.preventDefault(); //prevent touch scroll
                   })
                   .on('mouseup touchend', game.events.end)
                   .on('contextmenu', game.events.cancel)
@@ -32,14 +32,13 @@ game.events = {
     var target = $(event.target), 
         card = target.closest('.card');
     if (card && card.hasClass('draggable')) {
-      var position = game.events.getCoordinates(event), 
-          containerOffset = game.container.offset(), 
+      var position = game.events.getCoordinates(event),
           cardOffset = card.offset();
       game.events.dragging = card;
-      card.clone().removeClass('dragTarget').hide().addClass('dragTargetClone ' + game.currentState).appendTo(game.container);
+      game.events.dragClone = card.clone().removeClass('dragTarget').hide().addClass('dragTargetClone ' + game.currentState).appendTo(game.container);
       game.events.dragOffset = {
-        left: containerOffset.left + (position.left - cardOffset.left),
-        top: containerOffset.top + (position.top - cardOffset.top)
+        left: game.offset.left + (position.left - cardOffset.left),
+        top: game.offset.top + (position.top - cardOffset.top)
       };
     }
   },
@@ -47,10 +46,10 @@ game.events = {
     if (game.events.dragging) {
       var position = game.events.getCoordinates(event);
       game.events.dragging.addClass('dragTarget');
-      $('.dragTargetClone').show().css({
+      game.events.dragClone.css({
         left: (position.left - game.events.dragOffset.left) + 'px',
         top: (position.top - game.events.dragOffset.top) + 'px'
-      });
+      }).show();
     }
   },
   end: function(event) {
@@ -60,9 +59,9 @@ game.events = {
           target = $(document.elementFromPoint(position.left, position.top));
       target.mouseup();
     } else if (game.events.dragging) {
+      game.events.dragClone.remove();
+      game.events.dragging.removeClass('dragTarget');
       game.events.dragging = false;
-      $('.dragTargetClone').remove();
-      $('.dragTarget').removeClass('dragTarget');
     }
   },
   clearEvents: function(name) {

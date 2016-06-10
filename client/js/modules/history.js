@@ -1,10 +1,7 @@
 game.history = {
-  build: function () {
-    game.history.hash = location.hash.slice(1);
-  },
   validState: function (state) {
     if (state && 
-        game.states[state] &&
+        game.states[state] && game.states[state].start &&
         state != game.currentState) {
       if (game.mode == 'library' || 
           game.mode == 'tutorial') {
@@ -19,7 +16,7 @@ game.history = {
     }
     return false;
   },
-  recovering: function () {
+  recover: function () {
     var mode = localStorage.getItem('mode');
     if (mode) game.setMode(mode);
     var hash = game.history.hash,
@@ -30,11 +27,10 @@ game.history = {
       game.states.log.out.show();
       game.states.options.opt.show();
       game.player.name = log;
-      var 
-      i;
       game.history.jumpTo(hash, recovering);
+    } else {
+      game.history.jumpTo('log');
     }
-    return recovering;
   },
   jumpTo: function (state, recover) {
     game.clear();
@@ -44,17 +40,16 @@ game.history = {
         game.loader.removeClass('loading');
         game.states.changeTo(state, recover);
       } else { game.reset(); }
-    }.bind());
+    });
   },
   stateChange: function (event) {
     //console.log('e',location.hash, game.currentState);
     var hash = location.hash.slice(1);
     var change = game.history.validState(hash);
     if (change) {
-      if (game.mode && game[game.mode].clear) game[game.mode].clear();
-      if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+      game.clear();
       if (hash == 'log' || hash == 'menu') game.setMode('');
-      if (hash == 'choose' || hash == 'table') game.setMode(game.mode);
+      else if (hash == 'choose' || hash == 'table') game.setMode(game.mode);
       game.history.jumpTo(hash);
       return true;
     } else {

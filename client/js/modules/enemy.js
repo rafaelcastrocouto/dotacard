@@ -79,16 +79,6 @@ game.enemy = {
         }
       }
     }
-    if (game.mode !== 'tutorial') { setTimeout(game.enemy.end, game.enemy.playtime * 1000); }
-  },
-  end: function () {
-    if (game.status !== 'over') {
-      game.enemy.skills.deck.removeClass('slide');
-      $('.card.enemy.heroes').removeClass('done');
-      $('.enemy.skills .card').hide();
-      game.status = 'turn';
-      game.turn.begin();
-      if (game.selectedCard) { game.selectedCard.select(); }
-    }
+    if (game.mode == 'online') { setTimeout(game.online.endEnemyTurn, game.enemy.playtime * 1000); }
   }
 };

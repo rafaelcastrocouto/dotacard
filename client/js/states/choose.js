@@ -1,19 +1,20 @@
 game.states.choose = {
   size: 100,
+  chat: true,
   build: function () {
-    this.pickbox = $('<div>').appendTo(this.el).addClass('pickbox').attr('title', game.data.ui.chooseheroes);
-    this.pickedbox = $('<div>').appendTo(this.el).addClass('pickedbox').hide();
+    this.pickbox = $('<div>').addClass('pickbox').attr('title', game.data.ui.chooseheroes).appendTo(this.el);
+    this.pickedbox = $('<div>').addClass('pickedbox').hide();
     this.slots = this.buildSlots();
-    this.buttonbox = $('<div>').appendTo(this.el).addClass('buttonbox');
-    this.counter = $('<p>').appendTo(this.pickedbox).addClass('counter').hide();
+    this.counter = $('<p>').addClass('counter').hide().appendTo(this.pickedbox);
     this.pickDeck = game.deck.build({name: 'heroes', cb: this.buildDeck});
-    this.randombt = $('<div>').appendTo(this.buttonbox).addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () { if (!$(this).attr('disabled')) this.random(); });
-    this.librarytest = $('<div>').appendTo(this.buttonbox).addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHero);
-    this.mydeck = $('<div>').appendTo(this.buttonbox).addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck);
-    this.back = $('<div>').appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick);
+    this.buttonbox = $('<div>').addClass('buttonbox');
+    this.randombt = $('<div>').addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () { if (!$(this).attr('disabled')) this.random(); }).appendTo(this.buttonbox);
+    this.librarytest = $('<div>').addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHero).appendTo(this.buttonbox);
+    this.mydeck = $('<div>').addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck).appendTo(this.buttonbox);
+    this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
+    this.el.append(this.pickedbox).append(this.buttonbox);
   },
   start: function (recover) {
-    game.chat.el.appendTo(this.el);
     game.states.choose.selectFirst(true);
     if (game.mode != 'online') this.pickedbox.show();
     else this.pickedbox.hide();
@@ -85,6 +86,13 @@ game.states.choose = {
   selectFirst: function (recover) {
     this.select.call(game.states.choose.pickDeck.children().first(), recover);
   },
+  mana: function () {
+    var mana = 0;
+    $('.pickedbox .heroes').each(function () {
+      mana += $(this).data('mana');
+    });
+    return mana;
+  },
   sort: function () {
     $('.pickdeck .card').sort(function (a, b) {
       return a.dataset.index - b.dataset.index;
@@ -130,22 +138,10 @@ game.states.choose = {
     game.states.changeTo('table');
   },
   backClick: function () {
-    if (game.mode == 'library') {
-      game.states.choose.toMenu();
-    } else {
-      swal({
-        title: game.data.ui.leave,
-        type: 'warning',
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: game.data.ui.yes,
-        cancelButtonText: game.data.ui.no,
-      }).then(function(isConfirm) {
-        if (isConfirm === true) {
-          game.states.choose.toMenu();
-        }
-      });
-    }
+    if (game.mode == 'online') {
+      //todo: clear server wait
+    } 
+    else game.states.choose.toMenu();
   },
   toMenu: function () {
     game.clear();

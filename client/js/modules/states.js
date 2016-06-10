@@ -5,12 +5,13 @@ game.states = {
     for (var i=0; i<preBuild.length; i++) {
       game.states.buildState(preBuild[i]);
     }
+    game.chat.build();
   },
   buildState: function (name) {
     var state = game.states[name];
     if (state && !state.builded) {
       state.builded = true;
-      state.el = $('<div>').addClass('state ' + name).hide().appendTo(game.states.el);
+      state.el = $('<div>').addClass('hidden state ' + name).appendTo(game.states.el);
       if (state.build) state.build();
     }
   },
@@ -21,12 +22,14 @@ game.states = {
       var newstate,
         pre = game.currentState,
         oldstate = game.states[pre];
-      if (oldstate && oldstate.el) oldstate.el.fadeOut(100);
+      if (oldstate && oldstate.el) oldstate.el.addClass('hidden');
       if (oldstate && oldstate.end) oldstate.end();
       newstate = game.states[state];
-      if (newstate.el) {
+      if (newstate.el) { 
         setTimeout(function () {
-          newstate.el.append(game.topbar).fadeIn(100);
+          localStorage.setItem('state', state);
+          if (newstate.chat) game.chat.el.appendTo(newstate.el);
+          newstate.el.append(game.topbar).removeClass('hidden');
         }, 105);
       }
       game.currentState = state;
@@ -35,7 +38,6 @@ game.states = {
         game.backState = pre;
       }
       if (newstate.start) newstate.start(recover);
-      location.hash = state;
     }
   },
   backState: function () {

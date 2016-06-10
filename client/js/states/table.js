@@ -1,22 +1,26 @@
 game.states.table = {
+  chat: true,
   build: function () {
     this.time = $('<p>').appendTo(game.topbar).addClass('time').text(game.data.ui.time + ': 0:00 Day').hide();
-    this.camera = $('<div>').appendTo(game.states.table.el).addClass('camera');
+    this.camera = $('<div>').addClass('camera');
     this.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(this.camera);
-    this.selectedArea = $('<div>').appendTo(this.el).addClass('selectedarea').append($('<div>').addClass('cardback'));
-    this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
-    this.player = $('<div>').appendTo(this.el).addClass('playerdecks');
-    this.enemy = $('<div>').appendTo(this.el).addClass('enemydecks');
-    this.skip = $('<div>').appendTo(this.el).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
-    this.surrender = $('<div>').appendTo(this.el).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrenderClick);
-    this.back = $('<div>').hide().appendTo(this.el).addClass('back button').on('mouseup touchend', this.backClick).text(game.data.ui.back);
+    this.selectedArea = $('<div>').addClass('selectedarea').append($('<div>').addClass('cardback'));
+    //this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
+    this.player = $('<div>').addClass('playerdecks');
+    this.enemy = $('<div>').addClass('enemydecks');
+    this.buttonbox = $('<div>').addClass('buttonbox');
+    this.skip = $('<div>').appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).on('mouseup touchend', game.turn.skip).text(game.data.ui.skip);
+    this.surrender = $('<div>').appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', game.states.table.surrenderClick);
+    this.back = $('<div>').hide().appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).on('mouseup touchend', this.toChoose);
+    this.el.append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
-    if (recover) {
-      game.states.choose.clear();
-      game[game.mode].build(true);
-    }
+    if (recover)  game[game.mode].build(true);
+    game.tower.place();
+    game.tree.place();
+    game.units.place();
     game[game.mode].setTable();
+    game.chat.build();
     game.chat.el.appendTo(this.el);
     game.turn.msg.show();
     this.time.show();
@@ -33,44 +37,8 @@ game.states.table = {
           !target.closest('.attacktarget').length &&
           !target.closest('.targetarea').length &&
           !target.closest('.casttarget').length) {
-        game.card.unselect();
-        if (game[game.mode].unselected) game[game.mode].unselected();
-      }
-    });
-  },
-  buildUnits: function () {
-    var j = 'A1';
-    $('#' + j).addClass('jungle').attr({title: 'Jungle'});
-    $('#' + game.map.mirrorPosition(j)).addClass('jungle').attr({title: 'Jungle'});
-    game.neutrals = {};
-    game.neutrals.unitsDeck = game.deck.build({
-      name: 'units',
-      filter: ['forest'],
-      cb: function (deck) {
-        deck.addClass('neutral units cemitery').hide().appendTo(game.states.table.neutrals);
-        $.each(deck.data('cards'), function (i, card) {
-          card.addClass('neutral unit').data('side', 'neutral').on('mousedown touchstart', game.card.select);
-        });
-      }
-    });
-    game.player.unitsDeck = game.deck.build({
-      name: 'units',
-      filter: game.player.picks,
-      cb: function (deck) {
-        deck.addClass('player units cemitery').hide().appendTo(game.states.table.player);
-        $.each(deck.data('cards'), function (i, card) {
-          card.addClass('player unit').data('side', 'player').on('mousedown touchstart', game.card.select);
-        });
-      }
-    });
-    game.enemy.unitsDeck = game.deck.build({
-      name: 'units',
-      filter: game.enemy.picks,
-      cb: function (deck) {
-        deck.addClass('enemy units cemitery').hide().appendTo(game.states.table.enemy);
-        $.each(deck.data('cards'), function (i, card) {
-          card.addClass('enemy unit').data('side', 'enemy').on('mousedown touchstart', game.card.select);
-        });
+        game.card.unselect(event);
+        if (game[game.mode].unselected) game[game.mode].unselected(event);
       }
     });
   },
@@ -120,36 +88,9 @@ game.states.table = {
     });
   },
   surrenderClick: function () {
-    swal({
-      title: game.data.ui.leave,
-      type: 'warning',
-      showCancelButton: true,
-      buttonsStyling: false,
-      confirmButtonText: game.data.ui.yes,
-      cancelButtonText: game.data.ui.no,
-    }).then(function(isConfirm) {
-      if (isConfirm === true) {
-        if (game[game.mode].surrender) game[game.mode].surrender();
-      }
+    game.confirm(function(confirmed) {
+      if (confirmed && game[game.mode].surrender) game[game.mode].surrender();
     });
-  },
-  backClick: function () {
-    if (game.mode == 'library') {
-      game.states.table.toChoose();
-    } else {
-      swal({
-        title: game.data.ui.leave,
-        type: 'warning',
-        showCancelButton: true,
-        buttonsStyling: false,
-        confirmButtonText: game.data.ui.yes,
-        cancelButtonText: game.data.ui.no,
-      }).then(function(isConfirm) {
-        if (isConfirm === true) {
-          game.states.table.toMenu();
-        }
-      });
-    }
   },
   toChoose: function () {
     if (game[game.mode].clear) game[game.mode].clear();

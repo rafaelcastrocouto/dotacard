@@ -49,7 +49,7 @@ game.skills.am = {
   ult: {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
-      if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
+      if (!game.states.table.el.hasClass('unturn')) { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
       var side = source.data('side');
       var otherside = (side === 'enemy') ? 'player': 'enemy';
       var damage = game.enemy.maxCards - game.enemy.hand;

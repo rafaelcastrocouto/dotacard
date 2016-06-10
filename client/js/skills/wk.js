@@ -4,7 +4,7 @@ game.skills.wk = {
       var wk = source;
       var stun = skill.data('stun duration');
       var dot = skill.data('dot duration');
-      if(game.status === 'turn') {
+      if(!game.states.table.el.hasClass('unturn')) {
           game.states.table.animateCast(skill, target, game.states.table.playerCemitery);
       }
       wk.damage(skill.data('damage'), target, skill.data('damage type'));
@@ -51,12 +51,13 @@ game.skills.wk = {
       source.on('death.wk-lifesteal', this.death);
       source.on('reborn.wk-lifesteal', this.reborn);
     },
-    attack: function (event, eventdata) {
+    attack: function (event, eventdata) { 
       var source = eventdata.source;
       var target = eventdata.target;
       var damage = source.data('current damage');
       var skill = source.data('wk-lifesteal');
       var bonus = skill.data('percentage') / 100;
+      window.temp = skill;
       source.heal(damage * bonus);
     },
     death: function (event, eventdata) {
@@ -108,6 +109,7 @@ game.skills.wk = {
   },
   ult: {
     passive: function (skill, source) {
+      source.addBuff(source, skill.data('buff'));
       source.on('death.wk-ult', this.death);
       source.data('wk-ult-skill', skill);
     },
@@ -115,7 +117,7 @@ game.skills.wk = {
       var wk = eventdata.target;
       var spot = eventdata.spot;
       var skill = wk.data('wk-ult-skill');
-      $('#'+spot).addClass('cript');
+      spot.addClass('cript block');
       wk.on('turnstart.wk-ult', game.skills.wk.ult.resurrect).data('wk-ult', {
         skill: skill,
         spot: spot,
@@ -147,10 +149,18 @@ game.skills.wk = {
         data.duration -= 1;
         wk.data('wk-ult', data);
       } else {
-        $('#'+spot).removeClass('cript');
-        wk.reborn(spot).data('wk-ult', null);
-        wk.off('turnstart.wk-ult');
+        game.skills.wk.ult.reborn(wk, spot);
       }
+    },
+    reborn: function (wk, spot) {
+      if (!spot) {
+        spot = $('.cript')[0].id;
+      }
+
+      $('#'+spot).removeClass('cript');
+      wk.reborn(spot).data('wk-ult', null);
+      wk.off('turnstart.wk-ult');
+      wk.removeBuff('wk-ult');
     },
     turnstart: function (event, eventdata) {
       var target = eventdata.target;

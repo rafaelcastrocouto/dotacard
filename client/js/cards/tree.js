@@ -3,7 +3,8 @@ game.tree = {
     var tree = game.card.build({
       className: 'tree static neutral',
       name: game.data.ui.tree,
-      attribute: game.data.ui.forest + game.data.ui.tree
+      attribute: game.data.ui.tree,
+      description: game.data.ui.forest
     });
     tree.on('mousedown touchstart', game.card.select);
     tree.place(spot);

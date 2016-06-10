@@ -23,20 +23,18 @@
   background-image: url("../img/skills/pudge_dismember.jpg");
 }
 .map .pud-rot fieldset:before {
-  width: 220px;
-  height: 320px;
-  top: -10px;
-  left: -10px;
+  width: 190px;
+  height: 260px;
   display: block;
   content: "";
   position: absolute;
   box-shadow: 0 0 60px 20px yellowgreen;
-  border-radius: 20px;
+  border-radius: 60px;
   animation: rot 0.8s infinite;
 }
 @keyframes rot {
-  0%, 100% {box-shadow: 0 0 60px 20px yellowgreen;}
-  50% {box-shadow: 0 0 60px 0px yellowgreen;}
+  0%, 100% {box-shadow: 0 0 40px 20px yellowgreen;}
+  50% {box-shadow: 0 0 40px 30px yellowgreen;}
 }
 
 .nyx {

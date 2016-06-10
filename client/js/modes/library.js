@@ -54,8 +54,6 @@ game.library = {
     if (!game.library.started) {
       game.library.started = true;      
       game.loader.removeClass('loading');
-      game.tower.place();
-      game.tree.place();
       if (!game.library.hero) {
         var hero = localStorage.getItem('choose');
         game.library.hero = $('.pickbox .'+hero);
@@ -64,7 +62,6 @@ game.library = {
       game.library.placePlayerHeroes();
       game.library.placeEnemyHeroes();
       game.library.buildSkills();
-      game.states.table.buildUnits();
       game.states.table.enableUnselect();
       game.states.table.surrender.hide();
       game.states.table.back.show();
@@ -85,24 +82,22 @@ game.library = {
       cb: function (deck) {
         deck.addClass('player').appendTo(game.states.table.player);
         var card = deck.data('cards')[0];
-        card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
+        game.library.hero = card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
         card.place(game.map.toId(4, 4));        
         game.player.mana = card.data('mana');
-        card.on('action', function (e, ev) {
-          $('.card .damaged').remove();
-          game.timeout(400, function () {
-            game.enemy.tower.attack($('.map .enemyarea .card.player'));
-          });
-        }).on('death', function (e, evt) {
-          game.timeout(800, function (spot) {
-            var card = $(this), o = $('#' + game.map.toId(4, 4));
-            if (o.hasClass('free')) {
-              card.place(o);
+        card.on('action', game.library.endTurn).on('death', function (e, evt) {
+          game.timeout(450, function (e) {
+            var card = $(this), o = $('#E5');
+            card.unselect();
+            if (!card.hasBuff('wk-ult')) {
+              if (o.hasClass('free')) card.place(o);
+              else card.place(e.spot);
+              card.removeClass('dead').setCurrentHp(card.data('hp'));
             } else {
-              card.place(spot);
+              game.skills.wk.ult.reborn(card);
             }
-            card.removeClass('dead').setCurrentHp(card.data('hp'));
-          }.bind(this, evt.spot));
+            card.select();
+          }.bind(this, evt));
         });
       }
     });
@@ -130,7 +125,17 @@ game.library = {
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     var hero = game.library.hero.data('hero');
     $('.library.skills .'+hero+'.skill').each(function (i, skill) {
-      $(skill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
+      var card = $(skill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
+      if (card.data('type') === game.data.ui.toggle) {
+        game.timeout(800, function () {
+          card.appendTo(game.player.skills.sidehand);
+        });
+      } else if (card.data('type') === game.data.ui.automatic) {
+        game.timeout(100, function () {
+          var to = game.map.getPosition(game.library.hero);
+          card.passive(to);
+        });
+      }
     });
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
     game.player.skills.cemitery = $('<div>').appendTo(game.states.table.player).addClass('player deck skills cemitery');
@@ -146,8 +151,22 @@ game.library = {
       }
     });
   },
+  startTurn: function () {
+    game.states.table.el.removeClass('unturn');
+    game.turn.begin();
+    game.library.hero.removeClass('done').select();
+  },
+  endTurn: function () {
+    game.library.hero.addClass('done').unselect();
+    game.states.table.el.addClass('unturn');
+    game.turn.end();
+    game.timeout(800, function () {
+      game.enemy.tower.attack($('.map .enemyarea .card.player'));
+      game.timeout(800, game.library.startTurn);
+    });
+  },
   end: function () {
-     game.status = 'over';
+     game.states.table.el.removeClass('unturn');
   },
   clear: function () {
     game.library.started = false;

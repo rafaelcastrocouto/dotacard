@@ -95,7 +95,7 @@
   color: white;
   font-size: 14px;
   text-transform: uppercase;
-  margin: 5px 0 0 10px;
+  margin: 3px 0 0 10px;
 }
 
 .card fieldset {
@@ -241,7 +241,7 @@
 }
 
 .card .damaged {
-  z-index: 6;
+  z-index: 16;
   color: gold;
   position: absolute;
   opacity: 0;
@@ -263,7 +263,7 @@
   color: orangered;
 }
 .card .heal {
-  z-index: 7;
+  z-index: 17;
   color: springgreen;
   position: absolute;
   opacity: 0;
@@ -327,9 +327,10 @@
 }
 .table .player.skills.sidehand.deck .card {
   margin-right: -140px;
+  float: right;
 }
 .table .player.skills.sidehand.deck .card.on {
-  transform: translate(-50%, -50%) scale(0.4) rotate(15deg);
+  transform: translate(-50%, -53%) scale(0.4);
 }
 
 .table .player.skills.hand .card {
@@ -428,7 +429,7 @@
 
 .map .card.selected,
 .map .card.source {
-  transform: translate3d(-50%, -32%, 120px) rotateX(-45deg);
+  transform: translate3d(-50%, -40%, 100px) rotateX(-30deg);
 }
 .card.enemy .current .hp span {
   background: #ed8c8c;
@@ -478,7 +479,7 @@
   transform: scale(4.5);
 }
 .map .card:hover .portrait .img {
-  background-size: 260%;
+  /* background-size: 260%; */
 }
 
 /*TOWERS*/
@@ -493,7 +494,7 @@
 /*UNITS*/
 
 .card.tree {
-  background: forestgreen;
+  background: #693;
 }
 
 .card.tree .img {

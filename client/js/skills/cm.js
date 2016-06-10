@@ -2,7 +2,7 @@ game.skills.cm = {
   slow: {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
-      if(game.status === 'turn') { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
+      if (!game.states.table.el.hasClass('unturn')) { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
       var side = source.data('side');
       var otherside = (side === 'enemy') ? 'player': 'enemy';
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
@@ -88,7 +88,7 @@ game.skills.cm = {
   ult: {
     cast: function (skill, source) {
       var spot = game.map.getPosition(source);
-      if(game.status === 'turn') {
+      if (!game.states.table.el.hasClass('unturn')) {
           game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
       }
       source.on('channel', game.skills.cm.ult.channel).data('cm-ult', skill);

@@ -69,12 +69,12 @@ game.audio = {
     });
   },
   loadMusic: function () {
-    game.song = 'doomhammer';
-    game.audio.load(game.song, function () {
-      game.audio.play(game.song);
+    game.audio.song = 'doomhammer';
+    game.audio.load(game.audio.song, function () {
+      game.audio.play(game.audio.song);
       setInterval(function () {
-        game.audio.play(game.song);
-      }, game.audio.buffers[game.song].duration * 1000);
+        game.audio.play(game.audio.song);
+      }, game.audio.buffers[game.audio.song].duration * 1000);
     });
   },
   play: function (name) {
@@ -85,7 +85,7 @@ game.audio = {
       var audio = game.audio.context.createBufferSource();
       //console.log(name, game.audio.buffers[name]);
       audio.buffer = game.audio.buffers[name];
-      if (name === game.song) {
+      if (name === game.audio.song) {
         audio.connect(game.audio.musicNode);
       } else {
         audio.connect(game.audio.soundsNode);
@@ -94,7 +94,7 @@ game.audio = {
     }
   },
   mute: function () {
-    var vol = game.unmutedvolume || game.audio.volumeNode.gain.value || 0.6;
+    var vol = game.audio.unmutedvolume || game.audio.volumeNode.gain.value || 0.6;
     if (this.checked) { vol = 0; }
     game.audio.setVolume('volume', vol);
   },
@@ -106,7 +106,7 @@ game.audio = {
         if (target === 'volume') game.states.options.muteinput.prop('checked', true);
       } else {
         if (target === 'volume') {
-          game.unmutedvolume = vol;
+          game.audio.unmutedvolume = vol;
           game.states.options.muteinput.prop('checked', false);
         }
       }

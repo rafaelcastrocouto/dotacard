@@ -290,7 +290,7 @@
       "targets": ["Spot"],
       "aoe": "Linear",
       "aoe width": 0,
-      "aoe range": 4,
+      "aoe range": 3,
       "damage": 18,
       "damage type": "Pure",
       "cards": 6,

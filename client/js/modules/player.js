@@ -40,10 +40,13 @@ game.player = {
   },
   move: function () {
     var spot = $(this),
-      card = game.selectedCard,
+      card = game.selectedCard, 
       from = game.map.getPosition(card),
       to = game.map.getPosition(spot);
-    if (game.status === 'turn' && spot.hasClass('free') && from !== to && !card.hasClass('done')) {
+    if (!game.states.table.el.hasClass('unturn') && 
+        spot.hasClass('free') && 
+        from !== to && 
+        !card.hasClass('done')) {
       card.move(to);
       if (game.mode == 'online') { game.currentData.moves.push('M:' + from + ':' + to); }
       game.highlight.clearMap();
@@ -54,7 +57,7 @@ game.player = {
       source = game.selectedCard,
       from = game.map.getPosition(source),
       to = game.map.getPosition(target);
-    if (game.status === 'turn' && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
+    if (!game.states.table.el.hasClass('unturn') && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
       source.attack(target);
       if (game.mode == 'online') { game.currentData.moves.push('A:' + from + ':' + to); }
       game.highlight.clearMap();
@@ -66,7 +69,8 @@ game.player = {
       hero = skill.data('hero'),
       skillid = skill.data('skill'),
       to = game.map.getPosition(target);
-    if (hero && skillid && game.status === 'turn') {
+    if (hero && skillid && 
+       !game.states.table.el.hasClass('unturn')) {
       game.audio.play('activate');
       if (game.mode == 'online') { game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero); }
       skill.passive(target);
@@ -80,7 +84,7 @@ game.player = {
       hero = skill.data('hero'),
       skillid = skill.data('skill'),
       to = game.map.getPosition(target);
-    if (hero && skillid && game.status === 'turn') {
+    if (hero && skillid && !game.states.table.el.hasClass('unturn')) {
       game.audio.play('activate');
       if (game.mode == 'online') game.currentData.moves.push('T:' + to + ':' + skillid + ':' + hero);
       skill.toggle(target);
@@ -96,7 +100,9 @@ game.player = {
       to = game.map.getPosition(target),
       hero = skill.data('hero'),
       skillid = skill.data('skill');
-    if (hero && skillid && from && to && game.status === 'turn' && !source.hasClass('done')) {
+    if (hero && skillid && from && to && 
+       !game.states.table.el.hasClass('unturn') && 
+       !source.hasClass('done')) {
       if (game.mode == 'online') game.currentData.moves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       source.cast(skill, to);
       game.states.table.animateCast(skill, to);

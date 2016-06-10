@@ -7,7 +7,7 @@ game.deck = {
       display = op.display,
       deck = $('<div>').addClass('deck ' + name);
     if (!game[name]) {
-      game.load.json(name, function () {
+      game.states.loading.json(name, function () {
         game.deck.createCards(deck, name, cb, filter, multi, display);
       });
     } else { game.deck.createCards(deck, name, cb, filter, multi, display); }

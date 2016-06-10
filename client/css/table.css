@@ -12,7 +12,7 @@
   left: 10px;
 }
 .table .player.skills.sidehand.deck {
-  left: 175px;
+  left: 150px;
   width: 160px;
 }
 
@@ -33,7 +33,7 @@
 }
 
 
-.table .button {
+.table .buttonbox .button {
   position: absolute;
   right: 5px;
   top: auto !important;

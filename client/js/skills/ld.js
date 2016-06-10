@@ -77,7 +77,7 @@ game.skills.ld = {
       var ld = $('.'+side+'.hero.ld');
       var bear = ld.data('bear');
       bear.css({opacity: 0});
-      if(game.status === 'turn') { skill.css({opacity: 0}); }
+      if (!game.states.table.el.hasClass('unturn')) { skill.css({opacity: 0}); }
       setTimeout(function () {
         this.bear.place(this.target).css({opacity: 1});
         this.ld.select();

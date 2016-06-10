@@ -3,30 +3,27 @@ var game = {
   dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
-  message: $('<span>').addClass('message'),
+  message: $('<span>').addClass('message').html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen.</a>'),
   triesCounter: $('<small>').addClass('triescounter'),
-  scrollspeed: 0.4,
   timeToPick: 25,
   timeToPlay: 30,
   waitLimit: 90,
   connectionLimit: 60,
   dayLength: 12,
-  deadLength: 10,
+  deadLength: 8,
   width: 9,
   height: 6,
   tries: 0,
   id: null,
   seed: null,
   timeoutArray: [],
-  skills: {}, //bundle from ./skills
+  skills: {},
   data: {}, //json {buffs, heroes, skills, ui, units}
   mode: '', //online, tutorial, campain
-  status: '', //turn, unturn, over
   currentData: {}, // moves data
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   start: function () {
-    if (window.$ &&
-        window.JSON &&
+    if (window.JSON &&
         window.localStorage &&
         window.btoa && window.atob &&
         window.XMLHttpRequest) {
@@ -34,8 +31,9 @@ var game = {
         game.staticHost = '';
         game.dynamicHost = '';
       }
-      game.history.build();
+      game.utils();
       game.events.build();
+      game.history.hash = localStorage.getItem('state');
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
@@ -74,7 +72,17 @@ var game = {
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
   },
-  reset: function () {
+  confirm: function (cb) {
+    swal({
+      title: game.data.ui.leave,
+      type: 'warning',
+      showCancelButton: true,
+      buttonsStyling: false,
+      confirmButtonText: game.data.ui.yes,
+      cancelButtonText: game.data.ui.no,
+    }).then(cb);
+  },
+  error: function (cb) {
     swal({
       title: game.data.ui.error,
       text: game.data.ui.reload,
@@ -83,8 +91,12 @@ var game = {
       buttonsStyling: false,
       confirmButtonText: game.data.ui.yes,
       cancelButtonText: game.data.ui.no,
-    }).then(function(isConfirm) {
-      if (isConfirm === true) {
+    }).then(cb);
+  },
+  reset: function () {
+    game.error(function(confirmed) { 
+      if (confirmed) {
+        game.setMode('');
         location.reload(true);
       }
     });

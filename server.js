@@ -1,26 +1,26 @@
 var http = require('http'),
-    url = require('url'),
-    fs = require('fs'),
-    serveStatic = require('serve-static'),
-    setHeaders = function (response) {
-      response.setHeader('Access-Control-Allow-Origin', 'http://rafaelcastrocouto.github.io');
-    },
-    clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
-    rootServer = serveStatic(__dirname, {'setHeaders': setHeaders}),
-    host = process.env.HOST,
-    port = process.env.PORT || 5000,
-    waiting = {id: 'none'},
-    currentData = {},
-    db = {
-      get: function(name, cb){cb(currentData[name]||'');},
-      set: function(name, val, cb){currentData[name] = val; cb(true);}
-    },
-    chat = [],
-    debug = false,
-    send = function(response, data){
-      response.statusCode = 200;
-      response.end( String(data) );
-    };
+url = require('url'),
+fs = require('fs'),
+serveStatic = require('serve-static'),
+host = process.env.HOST,
+port = process.env.PORT || 5000,
+waiting = {id: 'none'},
+currentData = {},
+chat = [],
+debug = false,
+db = {
+  get: function(name, cb){cb(currentData[name]||'');},
+  set: function(name, val, cb){currentData[name] = val; cb(true);}
+},
+send = function(response, data){
+  response.statusCode = 200;
+  response.end( String(data) );
+},
+setHeaders = function (response) {
+  response.setHeader('Access-Control-Allow-Origin', 'http://rafaelcastrocouto.github.io');
+},
+clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
+rootServer = serveStatic(__dirname, {'setHeaders': setHeaders});
 
 http.createServer(function(request, response) {
   setHeaders(response);
@@ -31,7 +31,7 @@ http.createServer(function(request, response) {
     response.end();
     return;
   }
-  console.log('request: '+pathname);
+  //console.log('request: '+pathname);
   if(pathname[0] === '/') { pathname = pathname.slice(1); }
   if(pathname === 'db') {
     response.setHeader('Content-Type', 'application/json');
