@@ -172,8 +172,12 @@ game.online = {
       game.states.table.surrender.show();
       game.states.table.back.hide();
       game.turn.build();
-      if (game.player.type === 'challenger') game.states.table.el.addClass('unturn');
-      game.timeout(2000, game.turn.begin);
+      if (game.player.type === 'challenger') {
+        game.states.table.el.addClass('unturn');
+        game.timeout(2000, game.turn.beginEnemy);
+      } else {
+        game.timeout(2000, game.turn.beginPlayer);
+      }
     }
   },
   placePlayerHeroes: function () {
@@ -261,9 +265,9 @@ game.online = {
     game.timeout(1000, function () {
       if (game.states.table.el.hasClass('unturn')) {
         game.states.table.el.removeClass('unturn');
+        game.highlight.map();
         game.states.table.skip.attr({disabled: false});
       }
-      game.highlight.map();
       game.turn.count();
     });
   },
@@ -300,7 +304,7 @@ game.online = {
       $('.card.enemy.heroes').removeClass('done');
       $('.enemy.skills .card').hide();
       game.states.table.el.removeClass('unturn');
-      game.turn.begin();
+      game.turn.beginPlayer();
       if (game.selectedCard) { game.selectedCard.select(); }
     }
   },
@@ -315,7 +319,7 @@ game.online = {
   },
   endPlayerTurn: function () {
     game.states.table.el.addClass('unturn');
-    game.timeout(1000, game.turn.begin);
+    game.timeout(1000, game.turn.beginEnemy);
   },
   win: function () {
     game.winner = game.player.name;

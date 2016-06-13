@@ -180,8 +180,8 @@
       "damage": 10,
       "damage type": "Mágico",
       "dot duration": 2,
-      "dot": 2,
-      "stun duration": 3,
+      "dot": 4,
+      "stun duration": 2,
       "cards": 7,
       "display": true,
       "description": "Atordoa e depois causa dano por turno à uma unidade inimiga"

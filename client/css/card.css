@@ -76,7 +76,7 @@
   display: inline-block;
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   text-align: left;
-  transition: all 0.4s, top 0.6s linear, left 0.6s linear;
+  transition: all 0.39s;
   padding: 0;
   width: 200px;
   height: 300px;
@@ -112,10 +112,6 @@
   border-radius: 3px;
   background-size: 100%;
   background-position: 50% 50%;
-  transition: background-size 0.4s;
-}
-.card:hover .portrait .img {
-  /* background-size: 120%; */
 }
 
 .card .overlay {
@@ -248,7 +244,7 @@
   top: 0;
   right: 0;
   font-size: 150px;
-  animation: slideup 2s linear;
+  animation: slideup 3s linear;
   text-shadow:
      10px   0   white,
     -10px   0   white,
@@ -261,6 +257,12 @@
 }
 .card .damaged.critical {
   color: orangered;
+  animation: slideupcrit 2s linear;
+}
+@keyframes slideupcrit {
+  0% {top: -180px;opacity: 1;}
+  80% {opacity: 1;}
+  100% {top: -300px;opacity: 0;}
 }
 .card .heal {
   z-index: 17;
@@ -270,7 +272,7 @@
   top: 0;
   left: 0;
   font-size: 150px;
-  animation: slideup 2s linear;
+  animation: slideup 3s linear;
   text-shadow:
      10px   0   white,
     -10px   0   white,
@@ -329,9 +331,6 @@
   margin-right: -140px;
   float: right;
 }
-.table .player.skills.sidehand.deck .card.on {
-  transform: translate(-50%, -53%) scale(0.4);
-}
 
 .table .player.skills.hand .card {
   margin-right: -140px;
@@ -368,6 +367,10 @@
   transform: translate(-50%, -36%) scale(0.4) rotate(18deg);
 }
 */
+.table .player.skills.sidehand.deck .card.on {
+  transform: translate(-50%, -50%) scale(0.45);
+}
+.table .player.skills.sidehand.deck .card.on:hover,
 .table .deck.player.skills.hand .card:hover {
   transform: translate(-50%, -50%) scale(0.5);
   z-index: 8;
@@ -497,8 +500,10 @@
   background: #693;
 }
 
-.card.tree .img {
-  background-image: url("../img/units/tree.jpg");
+.card.tree.rad .img {
+  background-image: url("../img/trees/tree_rad.jpg");
 }
 
-
+.card.tree.dire .img {
+  background-image: url("../img/trees/tree_dire.jpg");
+}

@@ -20,7 +20,7 @@ game.map = {
     }
   },
   getX: function (id) {
-    if (typeof id.attr == 'function') { id = id.attr('id'); }
+    if (id && typeof id.attr == 'function') { id = id.attr('id'); }
     if (id) {
       var w = game.map.letters.indexOf(id[0]);
       if (w >= 0 && w < game.width) { return w; }
@@ -99,7 +99,7 @@ game.map = {
       var x, y, r,
         fil = function (x, y) {
           var spot = game.map.getSpot(x, y);
-          if (spot) {
+          if (spot && spot.hasClass) {
             if (filter) {
               if (!spot.hasClasses(filter)) { cb(spot); }
             } else { cb(spot); }

@@ -24,12 +24,14 @@ game.skills.wk = {
       var duration = data.duration;
       var speed;
       if(duration > 0) {
-        if(duration === dotduration) {
+        if(duration === dotduration + 1) {
           source.addBuff(target, skill.data('buff'), dotduration);
           speed = target.data('speed') - 1;
           target.data('current speed', speed);
         }
-        if(duration <= dotduration) { source.damage(skill.data('dot'), target, skill.data('damage type')); }
+        if(duration <= dotduration) {
+          source.damage(skill.data('dot'), target, skill.data('damage type')); 
+        }
         data.duration -= 1;
         target.data('wk-stun', data);
       } else {
@@ -93,12 +95,12 @@ game.skills.wk = {
       var damage = source.data('current damage');
       var chance = skill.data('chance') / 100;
       var bonus = skill.data('percentage') / 100;
-      if(game.random() < chance) {
+      if (/*game.random() < chance*/1) {
         game.audio.play('crit');
         damage *= bonus;
         source.data({
           'crit': true,
-          'currentdamage': damage
+          'crit damage': damage
         });
       }
     },

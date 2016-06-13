@@ -96,7 +96,7 @@ game.library = {
             } else {
               game.skills.wk.ult.reborn(card);
             }
-            card.select();
+            //card.select();
           }.bind(this, evt));
         });
       }
@@ -152,17 +152,21 @@ game.library = {
     });
   },
   startTurn: function () {
-    game.states.table.el.removeClass('unturn');
-    game.turn.begin();
-    game.library.hero.removeClass('done').select();
+    game.turn.beginPlayer();
+    game.timeout(800, function () {
+      game.states.table.el.removeClass('unturn');
+      game.library.hero.removeClass('done');
+      game.highlight.map();
+    });
   },
   endTurn: function () {
-    game.library.hero.addClass('done').unselect();
+    game.library.hero.addClass('done');
     game.states.table.el.addClass('unturn');
     game.turn.end();
-    game.timeout(800, function () {
+    game.timeout(400, function () {
       game.enemy.tower.attack($('.map .enemyarea .card.player'));
-      game.timeout(800, game.library.startTurn);
+      game.enemy.turn += 1;
+      game.timeout(400, game.library.startTurn);
     });
   },
   end: function () {

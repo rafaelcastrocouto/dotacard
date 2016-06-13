@@ -1,7 +1,7 @@
 game.tree = {
-  build: function (spot) {
+  build: function (spot, side) {
     var tree = game.card.build({
-      className: 'tree static neutral',
+      className: 'tree static neutral ' + side,
       name: game.data.ui.tree,
       attribute: game.data.ui.tree,
       description: game.data.ui.forest
@@ -13,8 +13,8 @@ game.tree = {
   place: function () {
     var treeSpots = 'A2 A3 A4 B3';
     $.each(treeSpots.split(' '), function () {
-      game.tree.build(this);
-      game.tree.build(game.map.mirrorPosition(this));
+      game.tree.build(this, 'rad');
+      game.tree.build(game.map.mirrorPosition(this), 'dire');
     });
   }
 };

@@ -3,6 +3,7 @@ game.skill = {
     $.fn.cast = game.skill.cast;
     $.fn.passive = game.skill.passive;
     $.fn.toggle = game.skill.toggle;
+    $.fn.discard = game.card.discard;
   },
   cast: function (skill, target) {
     var source = this, targets, duration, channeler, channelDuration,
@@ -45,13 +46,13 @@ game.skill = {
         if (source.hasClass('enemy')) {
           game.enemy.hand -= 1;
         } else {
-          if (game.mode !== 'library' && source.hasClass('player')) source.addClass('done');
-          source.unselect();
+          if (game.mode !== 'library' && source.hasClass('player')) {
+            source.addClass('done').unselect();
+          }
           game.timeout(400, function () {
             game.skill.aoe = '';
-            $('.map .spot, .map .card').off('hover:cast');
+            //$('.map .spot, .map .card').off('mouseover.highlight mouseleave.highlight');
             if (game.mode !== 'library') this.skill.discard();
-            this.source.select();
           }.bind({source: source, skill: skill}));
         }
       }
@@ -119,5 +120,16 @@ game.skill = {
       if (target.hasClass('selected')) { target.select(); }
     });
     return this;
-  }
+  },
+  discard: function () {
+    if (this.hasClass('skill')) {
+      this.trigger('discard', {target: this});
+      if (this.hasClass('player')) {
+        this.appendTo(game.player.skills.cemitery);
+      } else {
+        this.appendTo(game.enemy.skills.deck);
+        game.enemy.hand -= 1;
+      }
+    }
+  },
 };

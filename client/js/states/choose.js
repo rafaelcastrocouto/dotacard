@@ -14,8 +14,10 @@ game.states.choose = {
     this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
     this.el.append(this.pickedbox).append(this.buttonbox);
   },
-  start: function (recover) {
-    game.states.choose.selectFirst(true);
+  start: function () {
+    var hero = localStorage.getItem('choose');
+    if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
+    else game.states.choose.selectFirst();
     if (game.mode != 'online') this.pickedbox.show();
     else this.pickedbox.hide();
   },
@@ -83,8 +85,13 @@ game.states.choose = {
       if (game[game.mode].pick) game[game.mode].pick();
     }
   },
-  selectFirst: function (recover) {
-    this.select.call(game.states.choose.pickDeck.children().first(), recover);
+  selectFirst: function () {
+    var first = game.states.choose.pickDeck.children().first();
+    this.select.call(first, true);
+  },
+  selectHero: function (hero) {
+    var card = game.states.choose.pickDeck.children('.'+hero);
+    this.select.call(card, true);
   },
   mana: function () {
     var mana = 0;

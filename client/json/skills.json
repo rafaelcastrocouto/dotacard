@@ -179,8 +179,8 @@
       "damage": 10,
       "damage type": "Magical",
       "dot duration": 2,
-      "dot": 2,
-      "stun duration": 3,
+      "dot": 4,
+      "stun duration": 2,
       "cards": 7,
       "display": true,
       "description": "Stun and then damage over time and slows an enemy"

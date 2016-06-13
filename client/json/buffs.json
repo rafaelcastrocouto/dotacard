@@ -77,6 +77,10 @@
       "name": "Rot",
       "description": "Movement speed reduced by toxic cloud"
     },
+    "passive": {
+      "name": "Flesh Heap",
+      "description": "Reduces magic damage and gives Pudge bonus HP and damage on every kill"
+    },
     "ult": {
       "name": "Dismember Hold",
       "description": "Disabled and receiving damage over time by Pudge claws"

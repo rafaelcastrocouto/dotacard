@@ -11,7 +11,6 @@ game.card = {
     $.fn.stopChanneling = game.card.stopChanneling;
     $.fn.addStun = game.card.addStun;
     $.fn.reduceStun = game.card.reduceStun;
-    $.fn.discard = game.card.discard;
     $.fn.attack = game.card.attack;
     $.fn.damage = game.card.damage;
     $.fn.heal = game.card.heal;
@@ -133,8 +132,8 @@ game.card = {
     }
     return card;
   },
-  unselect: function (event) {
-    if (game.mode == 'library' && game.states.table.el.hasClass('unturn') && event) {
+  unselect: function () {
+    if (game.mode == 'library' && game.states.table.el.hasClass('unturn')) {
       //console.trace(event);
     } else {
       game.highlight.clearMap();
@@ -174,12 +173,12 @@ game.card = {
       else if (game.mode !== 'library' && card.hasClass('player')) card.addClass('done');
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
-      game.timeout(400, function () {
+      game.timeout(390, function () {
 //         this.card.parent().find('.fx').each(function () {
 //           $(this).appendTo(this.destiny);
 //         });
         this.card.css({ transform: '' }).prependTo(this.destiny).addClass('draggable').on('mousedown touchstart', game.card.select);
-        game.highlight.map();
+//        game.highlight.map();
         $('.map .spot').data('detour', false);
       }.bind({
         card: card,
@@ -239,29 +238,17 @@ game.card = {
         hero.data('stun', currentstun - 1);
       } else { hero.trigger('stunend', { target: hero }).data('stun', null).removeClass('stunned').removeBuff('stun'); }
     }
-    if (hero.hasClass('selected')) { hero.select(); }
     return this;
   },
   stopChanneling: function () {
     this.data('channeling', false).removeClass('channeling').off('channel');
   },
-  discard: function () {
-    if (this.hasClass('skill')) {
-      this.trigger('discard', {target: this});
-      if (this.hasClass('player')) {
-        this.appendTo(game.player.skills.cemitery);
-      } else {
-        this.appendTo(game.enemy.skills.deck);
-        game.enemy.hand -= 1;
-      }
-    }
-  },
   attack: function (target) {
     if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-    var source = this, name,
+    var source = this, damage = source.data('current damage'), name,
       from = game.map.getPosition(source),
       to = game.map.getPosition(target);
-    if (source.data('current damage') && from !== to && target.data('current hp')) {
+    if (damage && from !== to && target.data('current hp')) {
       source.stopChanneling();
       var evt = {
         type: 'attack',
@@ -269,18 +256,23 @@ game.card = {
         target: target
       };
       source.trigger('attack', evt).trigger('action', evt);
-      source.damage(source.data('current damage'), target, game.data.ui.physical);
-      source.trigger('afterattack', evt);
-      if (source.hasClass('tower')) {
-        name = 'tower';
-      } else if (source.hasClass('bear')) {
-        name = 'bear';
-      } else { name = source.data('hero'); }
-      game.audio.play(name + '/attack');
-      game.timeout(400, function () {
-        if (game.mode !== 'library' && this.source.hasClass('player')) this.source.addClass('done').unselect();
-        else if (this.source.hasClass('player')) game.highlight.map();
-      }.bind({source: source}));
+      game.timeout(10, function () {
+        var damage = source.data('current damage');
+        if (source.data('crit')) {
+          damage = source.data('crit damage');
+        }
+        source.damage(damage, target, game.data.ui.physical);
+        source.trigger('afterattack', evt);
+        if (source.hasClass('tower')) {
+          name = 'tower';
+        } else if (source.hasClass('bear')) {
+          name = 'bear';
+        } else { name = source.data('hero'); }
+        game.audio.play(name + '/attack');
+        game.timeout(390, function () {
+          if (this.source.hasClass('player')) game.highlight.map();
+        }.bind({source: source}));
+      });
     }
     return this;
   },
@@ -288,6 +280,10 @@ game.card = {
     if (damage < 1) { return this; } 
     else { damage = Math.ceil(damage); }
     var source = this, evt, x, y, position, spot, resistance, armor, hp, currentDamage;
+    if (source.data('crit')) {
+      damage = source.data('crit damage');
+      source.data('crit', false);
+    }
     if (!type) { type = game.data.ui.physical; }
     resistance = 1 - target.data('resistance') / 100;
     if (type === game.data.ui.magical && resistance) { damage = Math.round(damage * resistance); }
@@ -311,19 +307,24 @@ game.card = {
       type: type
     };
     target.trigger('damage', evt);
-    if (hp < 1) game.card.kill(evt);
-    damageFx = target.find('.damaged');
-    if (damageFx.length && game.mode !== 'library') {
-      currentDamage = parseInt(damageFx.text(), 10);
-      damageFx.text(currentDamage + damage);
-    } else {
-      damageFx.remove();
-      damageFx = $('<span>').addClass('damaged').text(damage).appendTo(target);
-    }
+    if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
+    console.trace('damage',source.data('crit') );
     if (source.data('crit')) {
-      source.data('crit', false);
-      damageFx.addClass('critical');
+      damageFx = target.find('.damaged.critical');
+      if (!damageFx.length) {
+        damageFx = $('<span>').addClass('damaged critical').appendTo(target);
+      } else {
+        damage += parseInt(damageFx.text(), 10);
+      }
+    } else {
+      damageFx = target.find('.damaged').not('.critical');
+      if (!damageFx.length) {
+        damageFx = $('<span>').addClass('damaged').appendTo(target);
+      } else {
+        damage += parseInt(damageFx.text(), 10);
+      }
     }
+    damageFx.text(damage);
     game.timeout(2000, function () {
       this.remove();
     }.bind(damageFx));
@@ -449,8 +450,10 @@ game.card = {
         }
       }
     }
-    this.place(spot);
-    this.trigger('reborn');
-    return this;
+    if (spot && spot.length) {
+      this.place(spot);
+      this.trigger('reborn');
+      return this;
+    }
   }
 };

@@ -48,7 +48,6 @@ game.skills.pud = {
             top: '50%',
             left: '50%'
           });
-          this.source.select();
         }.bind({source: source, hooked: hooked, target: target}), 1200);
       }
     }/*,
@@ -66,6 +65,7 @@ game.skills.pud = {
         source.off('turnend.rot');
         source.data('pud-rot', null);
         source.removeClass('pud-rot');
+        source.removeBuff('pud-rot');
         //source.data('rot fx').stop();
       }
       else {
@@ -74,6 +74,7 @@ game.skills.pud = {
         source.on('turnend.rot', game.skills.pud.rot.turnendcast);
         source.data('pud-rot', skill);
         source.addClass('pud-rot');
+        source.addBuff(source, skill.data('buff'));
         //if (!source.data('rot fx')) { game.skills.pud.rot.fx(source); }
         //source.data('rot fx').animate();
       }
@@ -132,6 +133,7 @@ game.skills.pud = {
     passive: function (skill, source) {
       var resistance = source.data('resistance') + skill.data('resistance bonus');
       source.data('resistance', resistance);
+      source.addBuff(source, skill.data('buff'));
       game.skills.pud.passive.kill.call({skill: skill, source: source});
       source.on('kill', game.skills.pud.passive.kill.bind({skill: skill, source: source}));
     },

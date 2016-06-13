@@ -73,7 +73,7 @@
   width: 740px;
   height: 450px;
   background: #666;
-  perspective: 1100px;
+  perspective: 840px;
   overflow: hidden;
   cursor: pointer;
   transform: translateZ(0);

@@ -10,13 +10,21 @@ game.turn = {
     game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)').hide();
     game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
   },
-  begin: function () {
+  beginPlayer: function () {
     if (!game.states.table.el.hasClass('over')) {
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
-      if (!game.states.table.el.hasClass('unturn')) {
-        game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      }
+      game.turn.el.text(game.data.ui.yourturn).addClass('show');
+      game.turn.begin();
+    }
+  },
+  beginEnemy: function () {
+    if (!game.states.table.el.hasClass('over')) {
+      game.turn.begin();
+    }
+  },
+  begin: function () {
+    if (!game.states.table.el.hasClass('over')) {
       if (game.mode == 'online') game.online.beginTurn();
       $('.card.dead').each(function () {
         var dead = $(this);
@@ -39,6 +47,7 @@ game.turn = {
       $('.map .card.enemy').removeClass('done');
       game.enemy.buyHand();
     }
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card').each(function () {
       var card = $(this);
       card.trigger('turnstart', { target: card });
@@ -52,7 +61,7 @@ game.turn = {
   },
   count: function () {
     game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
-    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
     if (!game.states.table.el.hasClass('unturn')) {
       game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
     } else if (ggame.states.table.el.hasClass('unturn')) {
@@ -71,9 +80,9 @@ game.turn = {
   end: function () {
     if (!game.states.table.el.hasClass('over')) {
       game.message.text(game.data.ui.turnend);
-      game.highlight.clearMap();
       if (game.states.table.el.hasClass('unturn') &&
           game.mode !== 'library') {
+        game.highlight.clearMap();
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         game.timeout(800, function () {
           game.turn.el.removeClass('show');

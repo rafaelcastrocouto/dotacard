@@ -2,12 +2,12 @@
 .map {
   z-index: 1;
   background-repeat: no-repeat;
-  background-size: 85% 60%;
-  background-position: 50% 40%;
+  background-position: 40% 25%;
+  background-size: 140%;
   background-image: url("../img/bkg/map_vectorized.jpg");
-  transform: translate(-50%,-50.5%) rotateX(45deg) scale3d(.3,.3,.3);
+  transform: translate(-50%,-52.5%) rotateX(43deg) scale3d(.28,.28,.28);
   transform-style: preserve-3d;
-  padding: 120%;
+  padding: 44% 96% 2%;
   position: absolute;
   top: 50%;
   left: 50%;
