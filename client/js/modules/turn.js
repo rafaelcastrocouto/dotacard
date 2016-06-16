@@ -12,41 +12,32 @@ game.turn = {
   },
   beginPlayer: function () {
     if (!game.states.table.el.hasClass('over')) {
+      game.player.turn += 1;
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      game.turn.begin();
+      game.message.text(game.data.ui.yourturn);
+      $('.map .card.player').removeClass('done');
+      game.tower.attack();
+      game.player.buyHand();
+      game.turn.start('turn');
     }
   },
   beginEnemy: function () {
     if (!game.states.table.el.hasClass('over')) {
-      game.turn.begin();
-    }
-  },
-  begin: function () {
-    if (!game.states.table.el.hasClass('over')) {
-      if (game.mode == 'online') game.online.beginTurn();
-      $('.card.dead').each(function () {
-        var dead = $(this);
-        if (game.time > dead.data('reborn')) { dead.reborn(); }
-      });
-      game.time = game.player.turn + game.enemy.turn;
-      setTimeout(game.turn.startCount, 800);
-    }
-  },
-  startCount: function () {
-    if (!game.states.table.el.hasClass('unturn')) {
-      game.message.text(game.data.ui.yourturn);
-      game.player.turn += 1;
-      $('.map .card.player').removeClass('done');
-      game.tower.attack();
-      game.player.buyHand();
-    } else if (game.states.table.el.hasClass('unturn')) {
-      game.message.text(game.data.ui.enemyturn);
       game.enemy.turn += 1;
+      game.message.text(game.data.ui.enemyturn);
       $('.map .card.enemy').removeClass('done');
       game.enemy.buyHand();
+      game.turn.start('unturn');
     }
+  },
+  start: function (unturn) { console.log('start', unturn)
+    game.time = game.player.turn + game.enemy.turn;
+    $('.card.dead').each(function () {
+      var dead = $(this);
+      if (game.time > dead.data('reborn')) { dead.reborn(); }
+    });
     game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card').each(function () {
       var card = $(this);
@@ -56,38 +47,31 @@ game.turn = {
       } else { card.trigger('enemyturnstart', { target: card }); }
       card.reduceStun();
     });
-    game.turn.el.removeClass('show');
-    if (game.mode == 'online') game.online.startTurnCount();
+    var t = 800;
+    if (unturn === 'unturn' && game.mode === 'library') t = 200;
+    game.timeout(t, function () {
+      game.turn.el.removeClass('show');
+      if (unturn === 'turn') game.states.table.skip.attr('disabled', false);
+      if (game[game.mode].startTurn) game[game.mode].startTurn(unturn);
+    });
   },
-  count: function () {
+  count: function (unturn) {
     game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
     game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
-    if (!game.states.table.el.hasClass('unturn')) {
+    if (unturn !== 'unturn') {
       game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-    } else if (ggame.states.table.el.hasClass('unturn')) {
+    } else {
       game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
     }
-    if (game.turn.counter < 1) { game.turn.end(); } else { game.timeout = setTimeout(game.turn.count, 1000); }
+    if (game.turn.counter < 1) game.turn.end(unturn); 
+    else game.timeout(1000, game.turn.count.bind(this, unturn));
     game.time += 0.9 / game.timeToPlay;
     game.turn.counter -= 1;
   },
-  skip: function (e) {
-    if (!$(this).attr('disabled')) {
-      if (game.mode == 'tutorial') game.tutorial.skip();
-      game.turn.counter = 0;
-    }
-  },
-  end: function () {
+  end: function (unturn) {
     if (!game.states.table.el.hasClass('over')) {
+      game.states.table.skip.attr('disabled', true);
       game.message.text(game.data.ui.turnend);
-      if (game.states.table.el.hasClass('unturn') &&
-          game.mode !== 'library') {
-        game.highlight.clearMap();
-        game.turn.el.text(game.data.ui.enemyturn).addClass('show');
-        game.timeout(800, function () {
-          game.turn.el.removeClass('show');
-        });
-      }
       $('.spot.fountain').find('.card').each(function () {
         var card = $(this),
           heal  = card.data('hp') * 0.1;
@@ -98,7 +82,15 @@ game.turn = {
         if (hero.data('channeling')) { hero.trigger('channel', { source: hero }); }
         hero.trigger('turnend', { target: hero });
       });
-      if (game.mode == 'online') game.online.endTurn();
+      if (unturn === 'unturn' &&
+          game.mode !== 'library') {
+        game.highlight.clearMap();
+        game.turn.el.text(game.data.ui.enemyturn).addClass('show');
+        game.timeout(800, function () {
+          game.turn.el.removeClass('show');
+        });
+      }
+      if (game[game.mode].endTurn) game[game.mode].endTurn(unturn);
     }
   },
   hours: function () {

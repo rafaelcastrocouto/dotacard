@@ -70,6 +70,7 @@ game.library = {
       game.enemy.kills = 0;
       game.turn.build();
       game.timeout(400, function () {
+        game.turn.beginPlayer();
         game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
       });
     }
@@ -85,7 +86,7 @@ game.library = {
         game.library.hero = card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
         card.place(game.map.toId(4, 4));        
         game.player.mana = card.data('mana');
-        card.on('action', game.library.endTurn).on('death', function (e, evt) {
+        card.on('action', game.library.action).on('death', function (e, evt) {
           game.timeout(450, function (e) {
             var card = $(this), o = $('#E5');
             card.unselect();
@@ -151,26 +152,36 @@ game.library = {
       }
     });
   },
-  startTurn: function () {
-    game.turn.beginPlayer();
-    game.timeout(800, function () {
-      game.states.table.el.removeClass('unturn');
-      game.library.hero.removeClass('done');
-      game.highlight.map();
-    });
+  startTurn: function (unturn) {
+    if (unturn === 'turn') {
+      game.timeout(750, function () {
+        game.states.table.el.removeClass('unturn');
+        game.highlight.map();
+      });
+    } else {
+      game.turn.end(unturn);
+    }
   },
-  endTurn: function () {
-    game.library.hero.addClass('done');
-    game.states.table.el.addClass('unturn');
-    game.turn.end();
-    game.timeout(400, function () {
-      game.enemy.tower.attack($('.map .enemyarea .card.player'));
-      game.enemy.turn += 1;
-      game.timeout(400, game.library.startTurn);
-    });
+  action: function () {
+    $(this).addClass('done');
+    var done = false;
+    if ($('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length) {
+      game.states.table.el.addClass('unturn');
+      game.turn.end('turn');
+    }
   },
-  end: function () {
-     game.states.table.el.removeClass('unturn');
+  skip: function () {console.log('click skip')
+    if (!game.states.table.el.hasClass('unturn')) {
+      game.states.table.el.addClass('unturn');
+      game.turn.end('turn');
+    }
+  },
+  endTurn: function (unturn) {
+    if (unturn === 'unturn') {
+      game.turn.beginPlayer();
+    } else {
+      game.turn.beginEnemy();
+    }
   },
   clear: function () {
     game.library.started = false;

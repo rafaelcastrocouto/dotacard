@@ -1,20 +1,10 @@
 game.history = {
   validState: function (state) {
-    if (state && 
-        game.states[state] && game.states[state].start &&
-        state != game.currentState) {
-      if (game.mode == 'library' || 
-          game.mode == 'tutorial') {
-        if (state != 'unsupported' &&
-            state != 'loading')  return true;
-      } else {
-        if (state != 'unsupported' &&
-            state != 'loading' &&
-            state != 'choose' &&
-            state != 'table')  return true;
-      }
-    }
-    return false;
+    return (
+      state && 
+      game.states[state] && game.states[state].start &&
+      state !== game.currentState
+    );
   },
   recover: function () {
     var mode = localStorage.getItem('mode');

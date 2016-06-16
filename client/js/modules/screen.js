@@ -5,8 +5,14 @@ game.screen = {
   rememberResolution: function () {
     var res, rememberedres = localStorage.getItem('resolution');
     if (rememberedres && game.states.options[rememberedres]) res = rememberedres;
-    else if (window.innerWidth < 970) res = 'low';
+    else if (window.innerWidth < 970) {
+      res = 'low';
+    }
+    this.setResotution(res);
     if (res) game.screen.changeResolution(res);
+  },
+  setResotution: function (res) {
+    $('input[name=resolution][value='+res+']').attr('checked', true);
   },
   changeResolution: function (resolution) {
     if (!resolution || resolution.constructor.name !== 'String') {
@@ -14,5 +20,5 @@ game.screen = {
     }
     game.states.el.removeClass('low high medium default').addClass(resolution);
     localStorage.setItem('resolution', resolution);
-  }
+  },
 };

@@ -47,11 +47,11 @@ game.tutorial = {
     if (availableSlots === 4) {
       game.tutorial.message.html(game.data.ui.axeheroes);
     } else if (availableSlots === 3) {
-      game.tutorial.message.html(game.data.ui.axemaxcards);
+      game.tutorial.message.html(game.data.ui.axeautodeck);
     } else if (availableSlots === 2) {
       game.tutorial.message.html(game.data.ui.axecardsperturn);
     } else if (availableSlots === 1) {
-      game.tutorial.message.html(game.data.ui.axeautodeck);
+      game.tutorial.message.html(game.data.ui.axemaxcards);
     }
     game.player.mana = game.states.choose.mana();
     game.player.manaBuild();
@@ -71,6 +71,7 @@ game.tutorial = {
       var slot = $(this), card = slot.find('.card');
       game.player.picks[slot.data('slot')] = card.data('hero');
       if (game.player.picks.length === 5) {
+        localStorage.setItem('mydeck', game.player.picks);
         game.states.choose.clear();
         game.states.changeTo('table');
       }
@@ -88,17 +89,20 @@ game.tutorial = {
       }
       game.tutorial.placePlayerHeroes();
       game.tutorial.placeEnemyHeroes();
+      game.tutorial.buildSkills();
+      game.player.buyHand();
       game.states.table.surrender.show();
       game.states.table.back.hide();
       game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
       game.tutorial.axe.removeClass('up').appendTo(game.states.table.el);
       game.tutorial.axebaloon.hide();
-      game.player.kills = 0;     
+      game.player.kills = 0;
       game.enemy.kills = 0;
       game.tutorial.moveCountValue = 10;
       game.message.text(game.data.ui.yourturncount + ' ' + game.tutorial.moveCountValue);
       game.tutorial.axe.addClass('up left');
       game.turn.build();
+      game.states.table.skip.attr('disabled', true);
       game.timeout(1000, function () {
         game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
         game.timeout(1000, game.tutorial.selectEnemyLesson);
@@ -138,6 +142,40 @@ game.tutorial = {
           card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
           game.enemy.mana += card.data('mana');
+        });
+      }
+    });
+  },
+  buildSkills: function () {
+    game.player.manaBuild();
+    game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
+    game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
+    game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
+    game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
+    game.player.skills.deck = game.deck.build({
+      name: 'skills',
+      multi: true,
+      filter: game.player.picks,
+      cb: function (deck) {
+        deck.addClass('player available').hide().appendTo(game.states.table.player);
+        $.each(deck.data('cards'), function (i, skill) {
+          skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select);
+          if (skill.data('skill') === 'ult') {
+            skill.appendTo(game.player.skills.ult);
+          } else if (skill.data('deck') === game.data.ui.temp) {
+            skill.appendTo(game.player.skills.sidehand);
+          }
+        });
+      }
+    });
+    game.enemy.manaBuild();
+    game.enemy.skills.deck = game.deck.build({
+      name: 'skills',
+      filter: ['am'],
+      cb: function (deck) {
+        deck.addClass('enemy hand cemitery toggle').appendTo(game.states.table.enemy);
+        $.each(deck.data('cards'), function (i, skill) {
+          skill.hide().addClass('enemy skill').data('side', 'enemy');
         });
       }
     });
@@ -208,9 +246,10 @@ game.tutorial = {
     game.states.table.skip.attr('disabled', false).addClass('tutorialblink');
   },
   skip: function () {
+    game.states.table.skip.attr('disabled', true);
     if (!game.tutorial.waited) game.tutorial.moveCountValue = 4;
     else game.tutorial.moveCountValue = 2;
-    game.states.table.skip.attr('disabled', true).removeClass('tutorialblink');
+    game.states.table.skip.removeClass('tutorialblink');
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axedone);
     game.message.text(game.data.ui.enemyturncount + ' ' + --game.tutorial.moveCountValue);
@@ -244,14 +283,13 @@ game.tutorial = {
     game.turn.msg.addClass('tutorialblink');
     game.turn.msg.text(game.data.ui.turns + ': 1/1 (2)');
     game.timeout(4000, game.tutorial.enemyMove);
-    game.tutorial.buildSkills();
   },
   enemyMove: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeenemymove);
     game.message.html(game.data.ui.enemymove);
     game.audio.play('tutorial/axewait');
-    game.turn.msgs.removeClass('tutorialblink');
+    game.turn.msg.removeClass('tutorialblink');
     game.currentData = {
       moves: [
         'M:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('C3'),
@@ -294,45 +332,11 @@ game.tutorial = {
     game.tutorial.moveCountValue = 5;
     $('.player.hero').on('attack.tutorial', game.tutorial.skillSelect);
   },
-  buildSkills: function () {
-    game.player.manaBuild();
-    game.player.skills.hand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills hand');
-    game.player.skills.sidehand = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
-    game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
-    game.player.skills.deck = game.deck.build({
-      name: 'skills',
-      multi: true,
-      filter: game.player.picks,
-      cb: function (deck) {
-        deck.addClass('player available').hide().appendTo(game.states.table.player);
-        $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select).on('select', game.tutorial.selected);
-          if (skill.data('skill') === 'ult') {
-            skill.appendTo(game.player.skills.ult);
-          } else if (skill.data('deck') === game.data.ui.temp) {
-            skill.appendTo(game.player.skills.sidehand);
-          }
-        });
-      }
-    });
-    game.enemy.manaBuild();
-    game.enemy.skills.deck = game.deck.build({
-      name: 'skills',
-      filter: ['am'],
-      cb: function (deck) {
-        deck.addClass('enemy hand cemitery toggle').appendTo(game.states.table.enemy);
-        $.each(deck.data('cards'), function (i, skill) {
-          skill.hide().addClass('enemy skill').data('side', 'enemy');
-        });
-      }
-    });
-  },
   skillSelect: function () {
     game.tutorial.lesson = 'Skill';
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeskillselect);
-    game.player.buyHand();
+    $('.player.skill').on('select', game.tutorial.selected);
     game.player.skills.hand.show();
     game.player.skills.sidehand.show();
     $('.player.hero').removeClass('tutorialblink');
@@ -349,7 +353,8 @@ game.tutorial = {
     $('.card').on('toggle.tutorial', game.tutorial.end);
   },
   surrender: function() {
-    game.states.table.toMenu();
+    game.clear();
+    game.states.changeTo('menu');
   },
   end: function () {
     game.tutorial.axebaloon.hide().fadeIn('slow');

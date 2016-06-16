@@ -21,6 +21,7 @@ game.units = {
         deck.addClass('player units cemitery').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, card) {
           card.addClass('player unit').data('side', 'player').on('mousedown touchstart', game.card.select);
+          if (game.mode == 'library') card.on('action', game.library.action); 
         });
       }
     });

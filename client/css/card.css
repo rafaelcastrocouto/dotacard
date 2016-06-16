@@ -85,6 +85,7 @@
   color: #4d4843;
   cursor: pointer;
   transform: translateZ(0);
+  background: #898;
 }
 
 .card:hover {
@@ -155,10 +156,11 @@
   text-align: center;
   display: inline-block;
   border-radius: 50%;
-  width: 22px;
+  width: 20px;
   height: 18px;
   padding: 0;
   padding-top: 4px;
+  padding-right: 2px;
 }
 .card .current .hp span {
   background: #beeb71;
@@ -196,7 +198,7 @@
 }
 .card.skills {
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
-  background: #54a0e3;
+  background: #378cd6;
 }
 .card.player.heroes.selected,
 .card.player.towers.selected {
@@ -322,7 +324,6 @@
 }
 .table .deck .card:hover {
   transform: translate(-50%, -50%) scale(0.5);
-  z-index: 8;
 }
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
@@ -376,7 +377,7 @@
   z-index: 8;
 }
 
-.table .selectedarea:hover {
+.table .selectedarea.flip:hover {
   z-index: 11;
 }
 .table .selectedarea .card {
@@ -386,7 +387,7 @@
   backface-visibility: hidden;
 }
 .table .selectedarea .card:hover .img {
-  background-size: 100%;
+  background-size: cover;
   image-rendering: pixelated;
 }
 .table .selectedarea .cardback {
@@ -439,12 +440,14 @@
   color: white;
 }
 
+/*DRAG*/
+
 .card.dragTargetClone.table {
-  transform: scale(0.35);
+  transform: scale(0.4);
 }
 
 .map .card legend, 
-.card.dragTargetClone.table legend {
+.card.dragTargetClone.fromMap legend {
   opacity: 0;
   height: 12px;
 }
@@ -452,38 +455,40 @@
 .map .card h1,
 .map .card .desc,
 .map .card .buff,
-.card.dragTargetClone.table h1,
-.card.dragTargetClone.table .desc,
-.card.dragTargetClone.table .buff {
+.card.dragTargetClone.fromMap h1,
+.card.dragTargetClone.fromMap .desc,
+.card.dragTargetClone.fromMap .buff {
   display: none;
 }
 .map .card fieldset,
-.card.dragTargetClone.table fieldset {
+.card.dragTargetClone.fromMap fieldset {
   padding: 0;
 }
 .map .card .portrait .img,
 .map .card .portrait .overlay,
-.card.dragTargetClone.table .portrait .img,
-.card.dragTargetClone.table .portrait .overlay {
+.card.dragTargetClone.fromMap .portrait .img,
+.card.dragTargetClone.fromMap .portrait .overlay {
   height: 265px;
   background-size: 225%;
 }
 .map .card .current,
-.card.dragTargetClone.table .current {
+.card.dragTargetClone.fromMap .current {
   top: 35px;
   right: 30px;
 }
 .map .card .current .damage,
-.card.dragTargetClone.table .current .damage {
+.card.dragTargetClone.fromMap .current .damage {
   display: none;
 }
 .map .card .current .hp span,
-.card.dragTargetClone.table .current .hp span {
+.card.dragTargetClone.fromMap .current .hp span {
   transform: scale(4.5);
+  padding-right: 1px;
+  width: 21px;
 }
-.map .card:hover .portrait .img {
-  /* background-size: 260%; */
-}
+/*.map .card:hover .portrait .img {
+   background-size: 260%; 
+}*/
 
 /*TOWERS*/
 
@@ -497,11 +502,11 @@
 /*UNITS*/
 
 .card.tree {
-  background: #693;
+  background: #5ba22f;
 }
 
 .card.tree.rad .img {
-  background-image: url("../img/trees/tree_rad.jpg");
+  background-image: url("../img/trees/tree.jpg");
 }
 
 .card.tree.dire .img {

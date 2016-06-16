@@ -8,19 +8,19 @@
   box-shadow: 0 0 15px 115px #62a64e;
 }
 .pud.heroes .portrait .img {
-  background-image: url("../img/heroes/pudge_full.jpg");
+  background-image: url("../img/heroes/pud.jpg");
 }
 .pud-hook .img {
-  background-image: url("../img/skills/pudge_meat_hook.jpg");
+  background-image: url("../img/skills/pud/hook.jpg");
 }
 .pud-rot .img {
-  background-image: url("../img/skills/pudge_rot.jpg");
+  background-image: url("../img/skills/pud/rot.jpg");
 }
 .pud-passive .img {
-  background-image: url("../img/skills/pudge_flesh_heap.jpg");
+  background-image: url("../img/skills/pud/passive.jpg");
 }
 .pud-ult .img {
-  background-image: url("../img/skills/pudge_dismember.jpg");
+  background-image: url("../img/skills/pud/dismember.jpg");
 }
 .map .pud-rot fieldset:before {
   width: 190px;
@@ -41,19 +41,19 @@
   background: #145;
 }
 .nyx.heroes .portrait .img {
-  background-image: url("../img/heroes/nyx_assassin_full.jpg");
+  background-image: url("../img/heroes/nyx.jpg");
 }
 .nyx-stun .img {
-  background-image: url("../img/skills/nyx_assassin_impale.jpg");
+  background-image: url("../img/skills/nyx/nyx_assassin_impale.jpg");
 }
 .nyx-burn .img {
-  background-image: url("../img/skills/nyx_assassin_mana_burn.jpg");
+  background-image: url("../img/skills/nyx/nyx_assassin_mana_burn.jpg");
 }
 .nyx-spike .img {
-  background-image: url("../img/skills/nyx_assassin_spiked_carapace.jpg");
+  background-image: url("../img/skills/nyx/nyx_assassin_spiked_carapace.jpg");
 }
 .nyx-ult .img {
-  background-image: url("../img/skills/nyx_assassin_vendetta.jpg");
+  background-image: url("../img/skills/nyx/nyx_assassin_vendetta.jpg");
 }
 
 
@@ -61,19 +61,19 @@
   background: #674f80;
 }
 .am.heroes .portrait .img {
-  background-image: url("../img/heroes/antimage_full.jpg");
+  background-image: url("../img/heroes/am.jpg");
 }
 .am-burn .img {
-  background-image: url("../img/skills/antimage_mana_break.jpg");
+  background-image: url("../img/skills/am/antimage_mana_break.jpg");
 }
 .am-blink .img {
-  background-image: url("../img/skills/antimage_blink.jpg");
+  background-image: url("../img/skills/am/antimage_blink.jpg");
 }
 .am-shield .img {
-  background-image: url("../img/skills/antimage_spell_shield.jpg");
+  background-image: url("../img/skills/am/antimage_spell_shield.jpg");
 }
 .am-ult .img {
-  background-image: url("../img/skills/antimage_mana_void.jpg");
+  background-image: url("../img/skills/am/antimage_mana_void.jpg");
 }
 
 
@@ -82,33 +82,33 @@
 }
 .ld.heroes .portrait .img,
 .ld-transform .img {
-  background-image: url("../img/heroes/lone_druid_full.jpg");
+  background-image: url("../img/heroes/ld.jpg");
 }
 .ld.transformed.heroes .portrait .img,
 .ld-ult .img {
-  background-image: url("../img/heroes/lone_druid_transf.jpg");
+  background-image: url("../img/skills/ld/ult.jpg");
 }
 .ld-summon .img,
 .spiritbear .img {
-  background-image: url("../img/skills/lone_druid_spirit_bear.jpg");
+  background-image: url("../img/skills/ld/lone_druid_spirit_bear.jpg");
 }
 .ld-return .img {
-  background-image: url("../img/skills/lone_druid_return.jpg");
+  background-image: url("../img/skills/ld/lone_druid_return.jpg");
 }
 .ld-rabid .img {
-  background-image: url("../img/skills/lone_druid_rabid.jpg");
+  background-image: url("../img/skills/ld/lone_druid_rabid.jpg");
 }
 .ld-roar .img {
-  background-image: url("../img/skills/lone_druid_roar.jpg");
+  background-image: url("../img/skills/ld/lone_druid_roar.jpg");
 }
 .ld-cry .img {
-  background-image: url("../img/skills/lone_druid_battle_cry.jpg");
+  background-image: url("../img/skills/ld/lone_druid_battle_cry.jpg");
 }
 .ld-entangle .img {
-  background-image: url("../img/skills/lone_druid_entangle.jpg");
+  background-image: url("../img/skills/ld/lone_druid_entangle.jpg");
 }
 .ld-demolish .img {
-  background-image: url("../img/skills/lone_druid_demolish.jpg");
+  background-image: url("../img/skills/ld/lone_druid_demolish.jpg");
 }
 
 
@@ -116,20 +116,20 @@
   background: #6db090;
 }
 .wk.heroes .portrait .img {
-  background-image: url("../img/heroes/skeleton_king_full.jpg");
+  background-image: url("../img/heroes/wk.jpg");
 }
 .wk-stun .img,
 .wk-dot .img {
-  background-image: url("../img/skills/skeleton_king_hellfire_blast.jpg");
+  background-image: url("../img/skills/wk/skeleton_king_hellfire_blast.jpg");
 }
 .wk-lifesteal .img {
-  background-image: url("../img/skills/skeleton_king_vampiric_aura.jpg");
+  background-image: url("../img/skills/wk/skeleton_king_vampiric_aura.jpg");
 }
 .wk-crit .img {
-  background-image: url("../img/skills/skeleton_king_mortal_strike.jpg");
+  background-image: url("../img/skills/wk/skeleton_king_mortal_strike.jpg");
 }
 .wk-ult .img {
-  background-image: url("../img/skills/skeleton_king_reincarnation.jpg");
+  background-image: url("../img/skills/wk/skeleton_king_reincarnation.jpg");
 }
 
 
@@ -137,28 +137,28 @@
   background: #E5BC53;
 }
 .kotl.heroes .portrait .img {
-  background-image: url("../img/heroes/keeper_of_the_light_full.jpg");
+  background-image: url("../img/heroes/kotl.jpg");
 }
 .kotl-illuminate .img {
-  background-image: url("../img/skills/keeper_of_the_light_illuminate.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_illuminate.jpg");
 }
 .kotl-leak .img {
-  background-image: url("../img/skills/keeper_of_the_light_mana_leak.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_mana_leak.jpg");
 }
 .kotl-mana .img {
-  background-image: url("../img/skills/keeper_of_the_light_chakra_magic.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_chakra_magic.jpg");
 }
 .kotl-ult .img {
-  background-image: url("../img/skills/keeper_of_the_light_spirit_form.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_spirit_form.jpg");
 }
 .kotl-illuminate-ult .img {
-  background-image: url("../img/skills/keeper_of_the_light_spirit_form_illuminate.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_spirit_form_illuminate.jpg");
 }
 .kotl-blind .img {
-  background-image: url("../img/skills/keeper_of_the_light_blinding_light.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_blinding_light.jpg");
 }
 .kotl-recall .img {
-  background-image: url("../img/skills/keeper_of_the_light_recall.jpg");
+  background-image: url("../img/skills/kotl/keeper_of_the_light_recall.jpg");
 }
 
 
@@ -166,17 +166,17 @@
   background: #54a0e3;
 }
 .cm.heroes .portrait .img {
-  background-image: url("../img/heroes/crystal_maiden_full.jpg");
+  background-image: url("../img/heroes/cm.jpg");
 }
 .cm-slow .img {
-  background-image: url("../img/skills/crystal_maiden_crystal_nova.jpg");
+  background-image: url("../img/skills/cm/crystal_maiden_crystal_nova.jpg");
 }
 .cm-aura .img {
-  background-image: url("../img/skills/crystal_maiden_brilliance_aura.jpg");
+  background-image: url("../img/skills/cm/crystal_maiden_brilliance_aura.jpg");
 }
 .cm-freeze .img {
-  background-image: url("../img/skills/crystal_maiden_frostbite.jpg");
+  background-image: url("../img/skills/cm/crystal_maiden_frostbite.jpg");
 }
 .cm-ult .img {
-  background-image: url("../img/skills/crystal_maiden_freezing_field.jpg");
+  background-image: url("../img/skills/cm/crystal_maiden_freezing_field.jpg");
 }

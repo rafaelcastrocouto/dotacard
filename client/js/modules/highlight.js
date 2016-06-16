@@ -191,7 +191,7 @@ game.highlight = {
           game.skill.aoewidth = skill.data('aoe width');
           game.skill.aoerange = skill.data('aoe range');
           game.map.crossStroke(pos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
-        } else if (game.map.spots === 'Radial') {
+        } else if (game.skill.aoe === 'Radial') {
           game.skill.aoerange = game.map.getRange(skill.data('range'));
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
@@ -217,7 +217,7 @@ game.highlight = {
     if (game.states.table.map.hasClass('aoe')) {
       var spot = $(this);
       $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-      if (!spot.hasClass('targetarea') || event.type === 'mouseleave') {      
+      if (!spot.hasClass('targetarea') || event.type === 'mouseleave') {
         if (game.skill.aoe === 'Linear') {
           game.map.crossStroke(game.castpos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
         } else if (game.skill.aoe === 'Radial') {

@@ -92,10 +92,10 @@ game.skills.cm = {
           game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
       }
       source.on('channel', game.skills.cm.ult.channel).data('cm-ult', skill);
-      source.trigger('channel', {target: source});
+      source.trigger('channel', {source: source});
     },
     channel: function (event, eventdata) {
-      var cm = eventdata.target;
+      var cm = eventdata.source;
       var skill = cm.data('cm-ult');
       var spot = game.map.getPosition(cm);
       var side = cm.data('side');

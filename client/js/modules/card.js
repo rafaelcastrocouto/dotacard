@@ -122,7 +122,10 @@ game.card = {
         !card.hasClasses('attacktarget casttarget targetarea dead')) {
       game.card.unselect();
       game.selectedCard = card;
-      game.highlight.map();
+      if (game.mode == 'tutorial') {
+          if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
+          else game.highlight.map();
+      } else game.highlight.map();
       card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
       card.addClass('selected draggable');
       card.trigger('select', { card: card });
@@ -308,7 +311,6 @@ game.card = {
     };
     target.trigger('damage', evt);
     if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
-    console.trace('damage',source.data('crit') );
     if (source.data('crit')) {
       damageFx = target.find('.damaged.critical');
       if (!damageFx.length) {

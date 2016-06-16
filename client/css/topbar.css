@@ -10,6 +10,7 @@
   height: 24px;
   font-size: 16px;
   line-height: 16px;
+  text-shadow: 0 1px #888;
 }
 
 .topbar * {
@@ -21,6 +22,7 @@
 .choose .topbar,
 .table .topbar {
   background: rgba(0,0,0,0.5);
+  text-shadow: 0 1px #444;
 }
 .loader {
   width: 12px;
@@ -46,7 +48,7 @@
   left: 2px;
   top: 2px;
 }
-.triescounter {
+.topbar .triescounter {
   font-size: 8px;
   left: 7px;
   top: 4px;
@@ -70,63 +72,37 @@
   position: static;
 }
 
-.unturn .message {
+.unturn .topbar .message {
   text-shadow: 0 0 6px white;
 }
 
-.logout {
+.topbar .logout {
   position: absolute;
   right: 65px;
-}
-
-.logout {
   cursor: pointer;
 }
-.logout:hover {
-  color: #ddd;
+
+.topbar .logout:hover,
+.topbar .opt:hover {
+  text-decoration: underline;
 }
 
-.time {
+.topbar .time {
   position: absolute;
   top: 2px; left: 50%;
   transform: translateX(-50%);
   border-radius: 4px;
 }
 
-.turns {
+.topbar .turns {
   position: absolute;
   top: 2px;
   right: 110px;
   border-radius: 4px;
 }
 
-.turntitle {
-  z-index: 15;
-  opacity: 0;
-  position: absolute;
-  left: -970px;
-  width: 970px;
-  top: 230px;
-  font-weight: bold;
-  color: white;
-  font-size: 80px;
-  text-align: center;
-  transition: all 0.4s;
-  text-shadow: 0 0 3px #aaa, 0 0 20px #bbb, 0 0 40px #ddd, 0 0 60px #FFF;
-  transform: translateZ(0);
-  cursor: no-drop;
-}
-.turntitle.show {
-  left: 0;
-  opacity: 1;
-}
-
 .topbar .opt {
   cursor: pointer;
   position: absolute;
   right: 10px;
-}
-
-.topbar .opt:hover {
-  color: #ddd;
 }

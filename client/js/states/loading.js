@@ -6,22 +6,18 @@ game.states.loading = {
     this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
     this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
     this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
-    this.h2 = $('<p>').appendTo(this.box).addClass('loadtext').html('<span class="loader loading"></span><span class="message">Checking for updates</span><span class="progress"></span>');
+    this.h2 = $('<p>').appendTo(this.box).addClass('loadtext').html('<span class="loader loading"></span><span class="message">Updating: </span><span class="progress">0%</span>');
     this.el.append(this.box);
-  },
-  start: function () {
-    $('.loadtext .message').text('Updating: ');
-    $('.loadtext .progress').text('0%');
-    game.states.loading.package();
+    this.package();
     if (window.AudioContext) game.audio.build();
     game.language.load(function () {
       game.states.loading.updating += 1;
       game.states.loading.data();
     });
-    game.states.loading.ping(function () {
-      if (!game.offline) game.states.loading.analytics();
+    this.ping(function () {
+      if (!game.offline) this.analytics();
     });
-    game.states.loading.progress();
+    this.progress();
   },
   progress: function () {
     var loading = Number.parseInt(game.states.loading.updating / game.states.loading.totalUpdate * 100);

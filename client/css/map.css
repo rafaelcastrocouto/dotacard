@@ -45,10 +45,10 @@
 }
 
 .map .spot.fountain.player {
-  background: rgba(150,255,150,0.3);
+  background: rgba(180,255,180,0.3);
 }
 .map .spot.fountain.player:hover {
-  background: rgba(150,255,150,0.35);
+  background: rgba(180,255,180,0.35);
 }
 .map .spot.fountain.enemy {
   background: rgba(255,150,150,0.3);
@@ -72,10 +72,12 @@
 
 /*TARGETS*/
 
-.map .movearea:hover {
+.map .spot.movearea {
+  cursor: pointer;
+}
+.map .spot.movearea:hover {
   background: rgba(100,255,100,0.3);
 }
-
 
 
 .slot.available:after,
@@ -182,6 +184,9 @@
   50% {
     transform: translateY(25px) rotate(45deg) scale(1.5);
   }
+}
+.targetarea {
+  cursor: pointer;
 }
 
 .targetarea:after,
@@ -379,5 +384,5 @@
 
 .unturn .map .card,
 .unturn .map .spot {
-  cursor: no-drop;
+  cursor: default;
 }

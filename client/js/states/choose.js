@@ -19,7 +19,7 @@ game.states.choose = {
     if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
     else game.states.choose.selectFirst();
     if (game.mode != 'online') this.pickedbox.show();
-    else this.pickedbox.hide();
+    else game.online.chooseStart();
   },
   buildDeck: function (pickDeck) {
     pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
@@ -48,7 +48,7 @@ game.states.choose = {
       if (game.mode !== 'library') card.addClass('draggable');
       else game.library.select(card, recover);
       game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
-      localStorage.setItem('choose', card.data('hero'));
+      if (!card.hasClass('dead')) localStorage.setItem('choose', card.data('hero'));
     }
   },
   enablePick: function () {
@@ -126,7 +126,7 @@ game.states.choose = {
       }
     });
   },
-  random: function () {
+  randomFill: function (cb) {
     $('.slot').each(function () {
       var slot = $(this), card;
       if (slot.hasClass('available')) {
@@ -135,9 +135,7 @@ game.states.choose = {
         game.player.picks[slot.data('slot')] = card.data('hero');
       }
       if ($('.choose .card.selected').length === 0) { game.states.choose.selectFirst(); }
-      if (game.player.picks.length === 5) { 
-        if (game[game.mode].sendDeck) game[game.mode].sendDeck();
-      }
+      if (game.player.picks.length === 5 && cb) cb();
     });
   },
   testHero: function () {
@@ -146,13 +144,19 @@ game.states.choose = {
   },
   backClick: function () {
     if (game.mode == 'online') {
-      //todo: clear server wait
-    } 
-    else game.states.choose.toMenu();
+      game.db({
+        'set': 'back',
+        'data': game.id
+      }, function () {
+        game.seed = 0;
+        localStorage.setItem('seed', '');
+        game.states.choose.toMenu();
+      });
+    } else game.states.choose.toMenu();
   },
   toMenu: function () {
     game.clear();
-    game.states.changeTo('menu');
+    game.states.changeTo('menu');  
   },
   clear: function () {
     $('.slot .card.heroes').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);

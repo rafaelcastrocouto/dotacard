@@ -1,58 +1,69 @@
 var http = require('http'),
-url = require('url'),
-fs = require('fs'),
-serveStatic = require('serve-static'),
-host = process.env.HOST,
-port = process.env.PORT || 5000,
-waiting = {id: 'none'},
-currentData = {},
-chat = [],
-debug = false,
-db = {
+  url = require('url'),
+  fs = require('fs'),
+  serveStatic = require('serve-static'),
+  host = process.env.HOST,
+  port = process.env.PORT || 5000,
+  waiting = {id: 'none'},
+  currentData = {},
+  chat = [],
+  debug = false;
+
+var db = {
   get: function(name, cb){cb(currentData[name]||'');},
   set: function(name, val, cb){currentData[name] = val; cb(true);}
-},
-send = function(response, data){
+};
+var send = function(response, data){
   response.statusCode = 200;
   response.end( String(data) );
-},
-setHeaders = function (response) {
+};
+var setHeaders = function (response) {
   response.setHeader('Access-Control-Allow-Origin', 'http://rafaelcastrocouto.github.io');
-},
-clientServer = serveStatic('client', {'index': ['index.html', 'index.htm'], 'setHeaders': setHeaders}),
-rootServer = serveStatic(__dirname, {'setHeaders': setHeaders});
+};
+var clientServer = serveStatic('client', {
+  'index': ['index.html', 'index.htm'], 
+  'setHeaders': setHeaders
+});
+var rootServer = serveStatic(__dirname, {
+  'setHeaders': setHeaders
+});
 
 http.createServer(function(request, response) {
   setHeaders(response);
   var urlObj = url.parse(request.url, true);
   var pathname = urlObj.pathname;
-  if(request.headers['x-forwarded-proto'] === 'https'){
+  if (request.headers['x-forwarded-proto'] === 'https'){
     response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'});
     response.end();
     return;
   }
   //console.log('request: '+pathname);
-  if(pathname[0] === '/') { pathname = pathname.slice(1); }
-  if(pathname === 'db') {
+  if (pathname[0] === '/') { pathname = pathname.slice(1); }
+  if (pathname === 'db') {
     response.setHeader('Content-Type', 'application/json');
     var query = urlObj.query;
-    if(query.set){
+    if (query.set){
       //console.log('set: '+ query.set);
       //WAITING
-      if(query.set === 'waiting'){
-        if(waiting.id === 'none'){
+      if (query.set === 'waiting'){
+        if (waiting.id === 'none'){
           waiting = query.data;
-          console.log('Player' + waiting);
+          //console.log('Player' + waiting);
           send(response, waiting);
           return;
         } else {
-          console.log('Online game started');
+          //console.log('Online game started');
           send(response, waiting);
           waiting = {id: 'none'};
           return;
         }
-      } //CHAT
-      else if(query.set === 'chat'){
+      } else if (query.set === 'back') {
+        //console.log('Choose back click')
+        waiting = {id: 'none'};
+        send(response, JSON.stringify(waiting));
+      }
+      //CHAT
+      else if (query.set === 'chat'){
         var msg = query.data;
         msg = msg.substring(0, 42);
         chat.unshift(msg);
@@ -60,7 +71,8 @@ http.createServer(function(request, response) {
         send(response, JSON.stringify({messages: chat}));
         return;
       } //DEFAULT SET
-      else { 
+      else {
+        console.log('set', query.data)
         db.set(query.set, query.data, function(data){
           send(response, data);
         });
@@ -69,22 +81,22 @@ http.createServer(function(request, response) {
     } else if (query.get){
       //console.log('get: '+ query.get);
       //STATUS
-      if(query.get === 'server') { 
+      if (query.get === 'server') { 
         send(response, JSON.stringify({status: 'online'})); 
         return;
       }
       //CHAT
-      if(query.get === 'chat') { 
+      if (query.get === 'chat') { 
         send(response, JSON.stringify({messages: chat}));
         return;
       }
       //LANGUAGE
-      if(query.get === 'lang') { 
+      if (query.get === 'lang') { 
         send(response, JSON.stringify({lang: request.headers['accept-language'] || ''})); 
         return;
       }
       //DEFAULT GET
-      db.get(query.get, function(data){ send(response, data); });
+      db.get(query.get, function(data){ send(response, data);console.log('get', data) });
       return;
       //DB CHECK
     } else { 

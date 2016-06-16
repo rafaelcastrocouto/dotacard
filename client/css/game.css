@@ -228,11 +228,10 @@ input[type=submit] {
   border-radius: 3px;
   margin: 6px;
   outline: 0;
-  background: #b6b6b0;
+  background: #9dada4;
   color: white;
-  text-shadow: 0 1px 0 #9b9c89;
-  box-shadow: 0 4px 0 #9b9c89;
-  opacity: 0.9;
+  text-shadow: 0 1px 0 #888;
+  box-shadow: 0 4px 0 #888;
   position: relative;
   top: -3px;
   transition: all 0.2s;
@@ -243,7 +242,8 @@ input[type=submit] {
 button:hover,
 input[type=button]:hover, 
 input[type=submit]:hover {
-  background: #c6c6c0;
+  background: #aab2a3;
+  z-index: 11;
 }
 .button:active, 
 button:active,
@@ -267,6 +267,7 @@ input[type=button][disabled]:hover,
 input[type=submit][disabled]:hover {
   cursor: default;
   background: darkgray;
+  z-index: 1;
 }
 .button[disabled]:active,
 button[disabled]:active,
@@ -342,7 +343,7 @@ label span {
 .stun .img {
    background-image: url("../img/skills/stun.jpg");
 }
-/*
+
 .silence .img {
    background-image: url("../img/skills/silence.jpg");
 }
@@ -352,5 +353,4 @@ label span {
 .ethereal .img {
    background-image: url("../img/skills/ethereal.jpg")
 }
-*/
 
