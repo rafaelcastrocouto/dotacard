@@ -153,10 +153,35 @@ game.skills.ld = {
   },
   roar: {
     cast: function (skill, source) {
-      var side = source.data('side');
+      game.skills.ld.roar.scare(source, skill);
       var bear = source.data('bear');
-      if(bear) {
-      }
+      if (bear) game.skills.ld.roar.scare(bear, skill);
+    },
+    scare: function (source, skill) {
+      var otherSide = game.otherSide(source);
+      var spot = game.map.getPosition(source);
+      var aoerange = game.map.getRange(skill.data('aoe range'));
+      game.map.inRange(spot, aoerange, function (neighbor) {
+        var card = neighbor.find('.card.' + otherSide);
+        if(card.length) {
+          source.addBuff(card, skill.data('buff'));
+          card.on('turnstart.ld-roar', game.skills.ld.roar.turnstart);
+          var cardSpot = game.map.getPosition(card);
+          var x = game.map.getX(cardSpot),
+              y = game.map.getY(cardSpot) - 1;
+          var upSpot = game.map.getSpot(x, y);
+          if (upSpot.hasClass && upSpot.hasClass('free')) card.place(upSpot);
+          else {
+            var upRight = game.map.getSpot(x + 1, y);
+            if (upRight.hasClass && upRight.hasClass('free')) card.place(upRight);
+          }
+        }
+      });
+    },
+    turnstart: function (event, eventdata) {
+      var target = eventdata.target;
+      target.off('turnstart.ld-roar');
+      target.removeBuff('ld-roar');
     }
   },
   ult: {

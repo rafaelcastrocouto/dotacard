@@ -32,13 +32,13 @@ game.turn = {
       game.turn.start('unturn');
     }
   },
-  start: function (unturn) { console.log('start', unturn)
+  start: function (unturn) {
     game.time = game.player.turn + game.enemy.turn;
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card.dead').each(function () {
       var dead = $(this);
       if (game.time > dead.data('reborn')) { dead.reborn(); }
     });
-    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card').each(function () {
       var card = $(this);
       card.trigger('turnstart', { target: card });

@@ -93,6 +93,9 @@
       "name": "Savage Roar",
       "type": "Active",
       "targets": ["Self"],
+      "range": "Melee",
+      "aoe": "Radial",
+      "aoe range": "Melee",
       "cards": 3,
       "display": true,
       "description": "Roars fiercely causing enemies to flee towards their base in terror"

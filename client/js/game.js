@@ -39,6 +39,10 @@ var game = {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
+  otherSide: function (card) {
+    var side = card.data('side');
+    return (side === 'enemy') ? 'player' : 'enemy';
+  },
   db: function (send, cb) {
     if (typeof send.data !== 'string') {
       send.data = JSON.stringify(send.data);

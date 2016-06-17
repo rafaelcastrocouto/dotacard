@@ -3,10 +3,9 @@ game.skills.cm = {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
       if (!game.states.table.el.hasClass('unturn')) { game.states.table.animateCast(skill, spot, game.states.table.playerCemitery); }
-      var side = source.data('side');
-      var otherside = (side === 'enemy') ? 'player': 'enemy';
+      var otherSide = game.otherSide(source);
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
-        var card = neighbor.find('.card.'+otherside);
+        var card = neighbor.find('.card.'+otherSide);
         if(card.length) {
           source.damage(skill.data('damage'), card, skill.data('damage type'));
           if(card.data('cm-slow')) {
@@ -98,10 +97,9 @@ game.skills.cm = {
       var cm = eventdata.source;
       var skill = cm.data('cm-ult');
       var spot = game.map.getPosition(cm);
-      var side = cm.data('side');
-      var otherside = (side === 'enemy') ? 'player': 'enemy';
+      var otherSide = game.otherSide(cm);
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
-        var card = neighbor.find('.card.'+otherside);
+        var card = neighbor.find('.card.'+otherSide);
         if(card.length) {
           cm.damage(skill.data('damage'), card, skill.data('damage type'));
           if(card.data('cm-ult')) {

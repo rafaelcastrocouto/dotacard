@@ -126,10 +126,8 @@ game.skills.wk = {
         duration: skill.data('delay')
       });
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
-        var otherside = 'enemy';
-        var side = wk.data('side');
-        if(side === 'enemy') { otherside = 'player'; }
-        var card = neighbor.find('.card.'+otherside);
+        var otherSide = game.otherSide(wk);
+        var card = neighbor.find('.card.'+otherSide);
         if(card.length) {
           wk.addBuff(card, skill.data('buff'));
           var speed = card.data('speed') - 1;

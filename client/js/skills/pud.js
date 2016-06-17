@@ -82,12 +82,11 @@ game.skills.pud = {
     turnendcast: function (event, eventdata) {
       var source = eventdata.target;
       var spot = game.map.getPosition(source);
-      var side = source.data('side');
-      var otherside = (side === 'enemy') ? 'player' : 'enemy';
+      var otherSide = game.otherSide(source);
       var skill = source.data('pud-rot');
       source.damage(skill.data('damage'), source, skill.data('damage type'));
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
-        var card = neighbor.find('.card.'+otherside);
+        var card = neighbor.find('.card.'+otherSide);
         if(card.length) {
           source.damage(skill.data('damage'), card, skill.data('damage type'));
           if(card.data('pud-rot')) {
