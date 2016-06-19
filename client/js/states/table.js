@@ -15,14 +15,14 @@ game.states.table = {
     this.el.append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
-    if (recover) game[game.mode].build(true);
+    if (recover && game.mode) game[game.mode].build(true);
     game.tower.place();
     game.tree.place();
     game.units.place();
-    game[game.mode].setTable();
+    if (game.mode) game[game.mode].setTable();
     game.chat.build();
     game.chat.el.appendTo(this.el);
-    game.turn.msg.show();
+    if (game.turn.msg) game.turn.msg.show();
     this.time.show();
     this.camera.show();
     this.selectedArea.show();
@@ -97,7 +97,8 @@ game.states.table = {
   },
   surrenderClick: function () {
     game.confirm(function(confirmed) {
-      if (confirmed && game[game.mode].surrender) game[game.mode].surrender();
+      if (confirmed && game.mode && game[game.mode].surrender) game[game.mode].surrender();
+      else game.reset();
     });
   },
   backClick: function () {

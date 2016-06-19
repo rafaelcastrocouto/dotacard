@@ -153,18 +153,10 @@ game.library = {
     });
   },
   startTurn: function (unturn) {
-    if (unturn === 'turn') {
-      game.timeout(750, function () {
-        game.states.table.el.removeClass('unturn');
-        game.highlight.map();
-      });
-    } else {
-      game.turn.end(unturn);
-    }
+    if (unturn === 'unturn') game.turn.end('unturn');
   },
   action: function () {
     $(this).addClass('done');
-    var done = false;
     if ($('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length) {
       game.states.table.el.addClass('unturn');
       game.turn.end('turn');
@@ -177,11 +169,9 @@ game.library = {
     }
   },
   endTurn: function (unturn) {
-    if (unturn === 'unturn') {
-      game.turn.beginPlayer();
-    } else {
-      game.turn.beginEnemy();
-    }
+    if (unturn === 'unturn') 
+         game.turn.beginPlayer();
+    else game.turn.beginEnemy();
   },
   clear: function () {
     game.library.started = false;

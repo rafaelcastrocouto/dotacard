@@ -102,6 +102,7 @@ var game = {
     game.error(function(confirmed) { 
       if (confirmed) {
         game.setMode('');
+        localStorage.setItem('state', 'menu');
         location.reload(true);
       }
     });

@@ -51,22 +51,31 @@ game.turn = {
     if (unturn === 'unturn' && game.mode === 'library') t = 200;
     game.timeout(t, function () {
       game.turn.el.removeClass('show');
-      if (unturn === 'turn') game.states.table.skip.attr('disabled', false);
+      if (unturn === 'turn') {
+        game.states.table.el.removeClass('unturn');
+        game.states.table.skip.attr('disabled', false);
+        game.highlight.map();
+      }
       if (game[game.mode].startTurn) game[game.mode].startTurn(unturn);
     });
   },
   count: function (unturn) {
-    game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
-    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
-    if (unturn !== 'unturn') {
-      game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-    } else {
-      game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
+    if (game.turn.counter >= 0) {
+      game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
+      game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
+      if (unturn !== 'unturn') {
+        game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
+      } else {
+        game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
+        game.online.preGetData();
+      }
+      if (game.turn.counter === 0) game.turn.end(unturn); 
+      else if (game.turn.counter > 0) {
+        game.timeout(1000, game.turn.count.bind(this, unturn));
+        game.time += 0.9 / game.timeToPlay;
+        game.turn.counter -= 1;
+      }
     }
-    if (game.turn.counter < 1) game.turn.end(unturn); 
-    else game.timeout(1000, game.turn.count.bind(this, unturn));
-    game.time += 0.9 / game.timeToPlay;
-    game.turn.counter -= 1;
   },
   end: function (unturn) {
     if (!game.states.table.el.hasClass('over')) {

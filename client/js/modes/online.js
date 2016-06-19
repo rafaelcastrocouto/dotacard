@@ -172,7 +172,7 @@ game.online = {
       }
     });
   },
-  getChallengedDeck: function () { console.trace('getChallengedDeck', game.tries)
+  getChallengedDeck: function () {
     game.message.text(game.data.ui.loadingdeck);
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
@@ -205,6 +205,7 @@ game.online = {
       game.states.table.back.hide();
       game.turn.build();
       if (game.player.type === 'challenger') {
+        game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         game.states.table.el.addClass('unturn');
         game.timeout(2000, game.turn.beginEnemy);
       } else {
@@ -223,7 +224,7 @@ game.online = {
           var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
-            card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
+            card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select).on('action', game.online.action);
             card.place(game.map.toId(x + p, y));
             game.player.mana += card.data('mana');
           });
@@ -284,7 +285,7 @@ game.online = {
       }
     });
   },
-  startTurn: function (unturn) { console.log(unturn)
+  startTurn: function (unturn) {
     game.currentData.moves = [];
     $('.card .damaged').remove();
     $('.card .heal').remove();
@@ -292,27 +293,43 @@ game.online = {
     if (game.turn === 6) {
       $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck); 
     }
-    game.timeout(810, function () { console.log(unturn)
-      if (unturn === 'unturn') {
-        game.states.table.el.removeClass('unturn');
-        game.highlight.map();
+    game.timeout(1000, function () { game.turn.count(unturn); });
+  },
+  action: function () {
+    $(this).addClass('done');
+    if ($('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length) {
+      game.online.endPlayerTurn();
+    }
+  },
+  preGetData: function () {
+    game.db({ 'get': game.id }, function (data) {
+      if (data[game.enemy.type + 'Turn'] === game.enemy.turn) {
+        game.turn.counter = -1;
+        game.currentData = data;
+        game.turn.end('unturn'); 
       }
-      game.turn.count(unturn);
     });
+  },
+  skip: function () {console.log('click skip')
+    if (!game.states.table.el.hasClass('unturn')) {
+      game.online.endPlayerTurn();
+    }
+  },
+  endPlayerTurn: function () {
+    game.turn.counter = -1;
+    game.states.table.el.addClass('unturn');
+    game.turn.end('turn');
   },
   endTurn: function (unturn) {
     $('.card .damaged').remove();
     $('.card .heal').remove();
     if (unturn === 'unturn') {
+      game.message.text(game.data.ui.loadingturn);
       game.tries = 0;
       setTimeout(game.online.getData, 1000);
-    } else {
-      game.states.table.skip.attr({disabled: true});
-      setTimeout(game.online.sendData, 1000);
-    }
+    } else game.timeout(1000, game.online.sendData);
   },
   getData: function () {
-    game.message.text(game.data.ui.loadingturn);
     game.db({ 'get': game.id }, function (data) {
       if (data[game.enemy.type + 'Turn'] === game.enemy.turn) {
         game.triesCounter.text('');
@@ -332,9 +349,7 @@ game.online = {
       game.enemy.skills.deck.removeClass('slide');
       $('.card.enemy.heroes').removeClass('done');
       $('.enemy.skills .card').hide();
-      game.states.table.el.removeClass('unturn');
       game.turn.beginPlayer();
-      if (game.selectedCard) { game.selectedCard.select(); }
     }
   },
   sendData: function () {
@@ -344,11 +359,7 @@ game.online = {
     game.db({
       'set': game.id,
       'data': game.currentData
-    }, game.online.endPlayerTurn);
-  },
-  endPlayerTurn: function () {
-    game.states.table.el.addClass('unturn');
-    game.timeout(1000, game.turn.beginEnemy);
+    }, game.turn.beginEnemy);
   },
   win: function () {
     game.winner = game.player.name;
