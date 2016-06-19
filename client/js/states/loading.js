@@ -15,7 +15,7 @@ game.states.loading = {
       game.states.loading.data();
     });
     this.ping(function () {
-      if (!game.offline) this.analytics();
+      if (!game.offline) game.states.loading.analytics();
     });
     this.progress();
   },
