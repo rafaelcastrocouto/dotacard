@@ -89,7 +89,7 @@ game.states.table = {
   },
   skipClick: function () {
     if (!game.states.table.skip.attr('disabled')) {
-      game.highlight.clearMap()
+      game.highlight.clearMap();
       if (game.mode == 'online') game.turn.counter = 0;
       if (game.mode == 'tutorial') game.tutorial.skip();
       if (game.mode == 'library') game.library.skip();

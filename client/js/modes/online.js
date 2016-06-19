@@ -310,7 +310,7 @@ game.online = {
       }
     });
   },
-  skip: function () {console.log('click skip')
+  skip: function () {
     if (!game.states.table.el.hasClass('unturn')) {
       game.online.endPlayerTurn();
     }

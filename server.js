@@ -72,7 +72,7 @@ http.createServer(function(request, response) {
         return;
       } //DEFAULT SET
       else {
-        console.log('set', query.data)
+        //console.log('set', query.data)
         db.set(query.set, query.data, function(data){
           send(response, data);
         });
@@ -96,7 +96,10 @@ http.createServer(function(request, response) {
         return;
       }
       //DEFAULT GET
-      db.get(query.get, function(data){ send(response, data);console.log('get', data) });
+      db.get(query.get, function(data){ 
+        send(response, data);
+        //console.log('get', data) 
+      });
       return;
       //DB CHECK
     } else { 

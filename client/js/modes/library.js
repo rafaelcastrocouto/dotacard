@@ -162,7 +162,7 @@ game.library = {
       game.turn.end('turn');
     }
   },
-  skip: function () {console.log('click skip')
+  skip: function () {
     if (!game.states.table.el.hasClass('unturn')) {
       game.states.table.el.addClass('unturn');
       game.turn.end('turn');

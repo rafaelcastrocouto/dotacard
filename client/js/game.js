@@ -15,7 +15,6 @@ var game = {
   height: 6,
   tries: 0,
   seed: 0,
-  seed: 0,
   id: null,
   timeoutArray: [],
   skills: {},
