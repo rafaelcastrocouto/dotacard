@@ -13,7 +13,7 @@
 [7]: https://github.com/rafaelcastrocouto/dotacard/issues
 
 
-[![DotaCard Banner](http://github.com/rafaelcastrocouto/dotacard/blob/gh-pages/client/img/banner.jpg)][1]
+[![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)][6]
 
@@ -37,4 +37,4 @@ More information on how to play, setup your own server and more on our [Wiki pag
 
 _Powered by_
 
-[![Powered by Github, Heroku, Grunt and Jquery](http://github.com/rafaelcastrocouto/dotacard/blob/gh-pages/client/img/banner-poweredby.jpg)][1]
+[![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/banner-poweredby.jpg)][1]
