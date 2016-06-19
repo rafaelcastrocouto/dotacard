@@ -1,4 +1,4 @@
-[1]: http://dotacard.ga
+[1]: http://dotacard.herokuapp.com
 
 [2]: https://github.com/rafaelcastrocouto/dotacard/fork
 
@@ -17,22 +17,24 @@
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)][6]
 
-[<h2>DOTACARD alpha</h2>][1]
+[<h2>DOTACARD pre-alpha</h2>][1]
+
 
 A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
 
-You are free to [fork][2] and help to build the game, you can even [make a hero and win real cash!][4]
+You are free to [fork][2] and help to build the game, you can even make a hero and [win real cash!][4]
 
-Please report any [sugestion or issue][7]
+Please report any [sugestions or issues][7]
 
 More information on how to play, setup your own server and more on our [Wiki page][5]
 
+
+[License](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/gh-pages/LICENSE)
+
+
 ---
+
 
 _Powered by_
 
 [![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/banner-poweredby.jpg)][1]
-
-__[GPL License](http://opensource.org/licenses/gpl-3.0.html)__
-
-**DotA**, and **Defense of the Ancients** are trademarks and/or registered trademarks of [Valve Corporation](http://www.valvesoftware.com/).
