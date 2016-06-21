@@ -15,17 +15,17 @@ game.states.table = {
     this.el.append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
-    if (recover && game.mode) game[game.mode].build(true);
     game.tower.place();
     game.tree.place();
     game.units.place();
-    if (game.mode) game[game.mode].setTable();
     game.chat.build();
     game.chat.el.appendTo(this.el);
     if (game.turn.msg) game.turn.msg.show();
     this.time.show();
     this.camera.show();
     this.selectedArea.show();
+    if (recover && game.mode) game[game.mode].build(true);
+    if (game.mode) game[game.mode].setTable();
   },
   enableUnselect: function () {
     game.states.table.el.on('mousedown touchstart', function (event) { 
@@ -62,7 +62,7 @@ game.states.table = {
   showResults: function () {
     game.states.table.selectedArea.hide();
     game.states.table.camera.hide();
-    $('.table > .button').hide();
+    $('.table .button').hide();
     $('.table .deck').hide();
     game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
     $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
@@ -84,7 +84,9 @@ game.states.table = {
     });
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
       game.clear();
-      game.states.changeTo('menu');
+      game.timeout(1000, function () {
+        game.states.changeTo('menu');
+      });
     });
   },
   skipClick: function () {

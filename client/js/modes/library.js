@@ -125,16 +125,16 @@ game.library = {
     game.player.manaBuild();
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     var hero = game.library.hero.data('hero');
-    $('.library.skills .'+hero+'.skill').each(function (i, skill) {
-      var card = $(skill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
-      if (card.data('type') === game.data.ui.toggle) {
+    $('.library.skills .'+hero+'.skill').each(function (i, librarySkill) {
+      var skill = $(librarySkill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
+      if (skill.data('type') === game.data.ui.toggle) {
         game.timeout(800, function () {
-          card.appendTo(game.player.skills.sidehand);
+          skill.appendTo(game.player.skills.sidehand);
         });
-      } else if (card.data('type') === game.data.ui.automatic) {
+      } else if (skill.data('type') === game.data.ui.automatic) {
         game.timeout(100, function () {
           var to = game.map.getPosition(game.library.hero);
-          card.passive(to);
+          skill.passive(to);
         });
       }
     });

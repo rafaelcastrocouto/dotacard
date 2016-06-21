@@ -17,16 +17,19 @@ game.history = {
         state = game.history.state,
         valid = game.history.validState(state),
         log = localStorage.getItem('log'),
-        recovering = (log && valid),
+        logged = (localStorage.getItem('logged') === 'true'),
+        recovering = (logged && log && valid),
         online = (mode === 'online' && state === 'table');
-    if (recovering && !online) {
+    if (recovering) {
       game.states.log.out.show();
       game.states.options.opt.show();
       game.player.name = log;
-      if (mode) game.setMode(mode, recovering);
-      game.history.jumpTo(state, recovering);
-    } else if (online) {
-      game.history.jumpTo('menu');
+      if (!online) {
+        if (mode) game.setMode(mode, recovering);
+        game.history.jumpTo(state, recovering);
+      } else if (online) {
+        game.history.jumpTo('menu');
+      }
     } else {
       game.history.jumpTo('log');
     }

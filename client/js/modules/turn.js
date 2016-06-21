@@ -14,7 +14,6 @@ game.turn = {
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      game.message.text(game.data.ui.yourturn);
       $('.map .card.player').removeClass('done');
       game.tower.attack();
       game.player.buyHand();
@@ -45,9 +44,9 @@ game.turn = {
       } else { card.trigger('enemyturnstart', { target: card }); }
       card.reduceStun();
     });
-    var t = 800;
-    if (unturn === 'unturn' && game.mode === 'library') t = 200;
-    game.timeout(t, function () {
+    var ms = 800;
+    if (unturn === 'unturn' && game.mode === 'library') ms = 200;
+    game.timeout(ms, function () {
       game.turn.el.removeClass('show');
       if (unturn === 'turn') {
         game.states.table.el.removeClass('unturn');
@@ -65,7 +64,7 @@ game.turn = {
         game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
       } else {
         game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-        game.online.preGetData();
+        if (game.mode === 'online') game.online.preGetTurnData();
       }
       if (game.turn.counter === 0) game.turn.end(unturn); 
       else if (game.turn.counter > 0) {

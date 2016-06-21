@@ -47,9 +47,9 @@ http.createServer(function(request, response) {
       //WAITING
       if (query.set === 'waiting'){
         if (waiting.id === 'none'){
-          waiting = query.data;
           //console.log('Player' + waiting);
-          send(response, waiting);
+          send(response, JSON.stringify(waiting));
+          waiting = query.data;
           return;
         } else {
           //console.log('Online game started');
@@ -61,6 +61,7 @@ http.createServer(function(request, response) {
         //console.log('Choose back click')
         waiting = {id: 'none'};
         send(response, JSON.stringify(waiting));
+        return;
       }
       //CHAT
       else if (query.set === 'chat'){

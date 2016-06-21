@@ -35,6 +35,7 @@ game.states.log = {
         localStorage.removeItem('name');
       }
       localStorage.setItem('log', name);
+      localStorage.setItem('logged', 'true');
       game.states.log.button.attr('disabled', true);
       game.chat.build();
       game.chat.joined();
@@ -43,9 +44,14 @@ game.states.log = {
       game.states.log.input.focus();
     }
   },
-  logout:function () {
-    game.clear();
-    game.states.changeTo('log');
+  logout: function () {
+    game.confirm(function (confirmed) {
+      if (confirmed) {
+        localStorage.setItem('logged', 'false');
+        game.clear();
+        location.reload();
+      }
+    });
   },
   end: function () {
     this.button.attr('disabled', false);

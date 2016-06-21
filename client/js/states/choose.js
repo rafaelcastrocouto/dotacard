@@ -8,7 +8,7 @@ game.states.choose = {
     this.counter = $('<p>').addClass('counter').hide().appendTo(this.pickedbox);
     this.pickDeck = game.deck.build({name: 'heroes', cb: this.buildDeck});
     this.buttonbox = $('<div>').addClass('buttonbox');
-    this.randombt = $('<div>').addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', function () { if (!$(this).attr('disabled')) this.random(); }).appendTo(this.buttonbox);
+    this.randombt = $('<div>').addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', game.states.choose.randomClick).appendTo(this.buttonbox);
     this.librarytest = $('<div>').addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHero).appendTo(this.buttonbox);
     this.mydeck = $('<div>').addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck).appendTo(this.buttonbox);
     this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
@@ -126,6 +126,11 @@ game.states.choose = {
         if (game[game.mode].sendDeck) game[game.mode].sendDeck(); 
       }
     });
+  },
+  randomClick: function () {
+    var cb;
+    if (game.mode === 'online') cb = game.online.sendDeck;
+    if (!$(this).attr('disabled')) game.states.choose.randomFill(cb); 
   },
   randomFill: function (cb) {
     $('.slot').each(function () {
