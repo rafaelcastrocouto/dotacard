@@ -30,8 +30,8 @@ game.states.loading = {
   },
   updated: function () {
     game.states.build();
-    game.history.recover();
     game.loader.removeClass('loading');
+    game.history.recover();
   },
   json: function (name, cb) {
     $.ajax({

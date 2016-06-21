@@ -93,9 +93,7 @@ game.turn = {
           game.mode !== 'library') {
         game.highlight.clearMap();
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
-        game.timeout(800, function () {
-          game.turn.el.removeClass('show');
-        });
+        game.timeout(800, function () { game.turn.el.removeClass('show'); });
       }
       if (game[game.mode].endTurn) game[game.mode].endTurn(unturn);
     }

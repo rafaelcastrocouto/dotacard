@@ -7,7 +7,7 @@ game.audio = {
     game.audio.soundsNode.connect(game.audio.volumeNode);
     game.audio.musicNode = game.audio.context.createGain();
     game.audio.musicNode.connect(game.audio.volumeNode);
-    game.audio.volumeNode.gain.value = 0.6;
+    game.audio.volumeNode.gain.value = 0.4;
     game.audio.loadMusic();
     game.audio.loadSounds();
   },

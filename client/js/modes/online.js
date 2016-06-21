@@ -1,10 +1,11 @@
 game.online = {
   build: function (recover) {
     game.loader.addClass('loading');
+    game.currentData = {};
     if (!recover && !game.online.builded) {
       game.online.builded = true;
       game.online.newId();
-      game.currentData = { id: game.id };
+      game.online.setData('id', game.id);
       game.db({ // tell player wants to play
         'set': 'waiting',
         'data': game.currentData
@@ -13,7 +14,6 @@ game.online = {
         else game.online.wait();
       });
     } else game.online.recover();
-    game.online.chooseStart();
   },
   newId: function () {
     game.seed = new Date().valueOf() + parseInt(Math.random() * 1000);
@@ -25,25 +25,33 @@ game.online = {
     game.seed = parseInt(atob(id), 10);
     localStorage.setItem('seed', game.seed);
   },
-  recover: function () {
-    game.seed = localStorage.getItem('seed');
-    game.id = btoa(game.seed);
-    game.currentData = localStorage.getItem('data');
+  recover: function () { 
+    game.id = btoa(game.history.seed);
+    if (game.history.data) {
+      game.currentData = JSON.parse(game.history.data);
+      if (game.currentData.challenged === game.player.name) {
+        game.online.wait();
+      }
+    }
     // todo
   },
-  saveData: function () {
+  setData: function (item, data) {
+    game.currentData[item] = data;
     localStorage.setItem('data', JSON.stringify(game.currentData));
   },
   chooseStart: function () {
-    game.states.choose.pickedbox.hide();
-    game.states.choose.librarytest.hide();
-    game.states.choose.randombt.show().attr({disabled: true});
-    game.states.choose.mydeck.show().attr({disabled: true});
+    if (!game.online.chooseStarted) {
+      game.online.chooseStarted = true;
+      game.states.choose.pickedbox.hide();
+      game.states.choose.librarytest.hide();
+      game.states.choose.randombt.show().attr({disabled: true});
+      game.states.choose.mydeck.show().attr({disabled: true});
+    }
   },
   wait: function () {
     game.loader.addClass('loading');
-    game.currentData.challenged = game.player.name;
     game.player.type = /* will be */ 'challenged';
+    game.online.setData('challenged', game.player.name);
     game.db({ // tell challenged name
       'set': game.id,
       'data': game.currentData
@@ -58,8 +66,8 @@ game.online = {
       // asking challenger name
       if (found.challenger) {
         game.triesCounter.text('');
-        game.currentData.challenger = found.challenger;
-        game.online.battle(game.currentData.challenger, 'challenger');
+        game.online.setData('challenger', found.challenger);
+        game.online.battle(found.challenger, 'challenger');
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.waitLimit) {
@@ -75,19 +83,18 @@ game.online = {
     game.online.setId(waiting.id);
     // ask challenged name
     game.db({ 'get': waiting.id }, function (found) {
-      game.currentData.challenged = found.challenged;
-      game.currentData.challenger = game.player.name;
+      game.online.setData('challenged', found.challenged);
+      game.online.setData('challenger', game.player.name);
       // tell challenger name
       game.db({
         'set': game.id,
         'data': game.currentData
       }, function () {
-        game.online.battle(game.currentData.challenged, 'challenged');
+        game.online.battle(found.challenged, 'challenged');
       });
     });
   },
   battle: function (enemy, challenge) {
-    game.online.saveData();
     game.loader.removeClass('loading');
     game.tries = 0;
     game.online.picked = false;
@@ -136,25 +143,29 @@ game.online = {
     // check if enemy picked
     game.db({ 'get': game.id }, function (found) {
       if (game.player.type === 'challenged') {
-        if (found.challengerDeck) game.currentData.challengerDeck = found.challengerDeck;
-        game.currentData.challengedDeck = picks;
-        game.db({
+        game.online.setData('challengedDeck', picks);
+        if (found.challengerDeck) {
+          game.db({
+            'set': game.id,
+            'data': game.currentData
+          });
+          game.online.foundChallengerDeck(found);
+        } else game.db({
           'set': game.id,
           'data': game.currentData
-        }, function () {
-          game.online.saveData();
-          game.online.getChallengerDeck();
-        });
+        }, game.online.getChallengerDeck);
       } else if (game.player.type === 'challenger') {
-        if (found.challengedDeck) game.currentData.challengedDeck = found.challengedDeck;
-        game.currentData.challengerDeck = picks;
-        game.db({
+        game.online.setData('challengerDeck', picks);
+        if (found.challengedDeck) {
+          game.db({
+            'set': game.id,
+            'data': game.currentData
+          });
+          game.online.foundChallengedDeck(found);
+        } else game.db({
           'set': game.id,
           'data': game.currentData
-        }, function () {
-          game.online.saveData();
-          game.online.getChallengedDeck();
-        });
+        }, game.online.getChallengedDeck);
       }
     });
   },
@@ -163,11 +174,7 @@ game.online = {
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
       if (found.challengerDeck) {
-        game.triesCounter.text('');
-        game.currentData.challengerDeck = found.challengerDeck;
-        game.enemy.picks = game.currentData.challengerDeck.split('|');
-        game.states.choose.clear();
-        game.states.changeTo('table');
+        game.online.foundChallengerDeck(found);
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.connectionLimit) {
@@ -181,11 +188,7 @@ game.online = {
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
       if (found.challengedDeck) {
-        game.triesCounter.text('');
-        game.currentData.challengedDeck = found.challengedDeck;
-        game.enemy.picks = game.currentData.challengedDeck.split('|');
-        game.states.choose.clear();
-        game.states.changeTo('table');
+        game.online.foundChallengedDeck(found);
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.connectionLimit) {
@@ -194,10 +197,23 @@ game.online = {
       }
     });
   },
+  foundChallengerDeck: function (found) {
+    game.triesCounter.text('');
+    game.online.setData('challengerDeck', found.challengerDeck);
+    game.enemy.picks = found.challengerDeck.split('|');
+    game.states.choose.clear();
+    game.states.changeTo('table');
+  },
+  foundChallengedDeck: function (found) {
+    game.triesCounter.text('');
+    game.online.setData('challengedDeck', found.challengedDeck);
+    game.enemy.picks = found.challengedDeck.split('|');
+    game.states.choose.clear();
+    game.states.changeTo('table');
+  },
   setTable: function () {
     if (!game.online.started) {
       game.online.started = true;
-      game.online.saveData();
       game.states.table.enableUnselect();
       game.loader.addClass('loading');
       game.message.text(game.data.ui.battle);
@@ -213,8 +229,7 @@ game.online = {
         game.states.table.el.addClass('unturn');
         game.timeout(2000, game.turn.beginEnemy);
       } else {
-        game.currentData.moves = [];
-        game.timeout(2000, game.turn.beginPlayer);
+        game.timeout(2000, game.online.beginPlayer);
       }
     }
   },
@@ -290,6 +305,10 @@ game.online = {
       }
     });
   },
+  beginPlayer: function () {
+    game.currentMoves = [];
+    game.turn.beginPlayer();
+  },
   startTurn: function (unturn) {
     $('.card .damaged').remove();
     $('.card .heal').remove();
@@ -310,8 +329,8 @@ game.online = {
       var challengeTurn = game.enemy.type + 'Turn';
       if (data[challengeTurn] === game.enemy.turn) {
         game.turn.counter = -1;
-        game.currentData[challengeTurn] = data[challengeTurn];
-        game.currentData.moves = data.moves;
+        game.online.setData(challengeTurn, data[challengeTurn]);
+        game.online.setData('moves', data.moves);
         game.turn.end('unturn'); 
       }
     });
@@ -330,6 +349,7 @@ game.online = {
     $('.card .damaged').remove();
     $('.card .heal').remove();
     if (unturn === 'unturn') {
+      game.loader.addClass('loading');
       game.message.text(game.data.ui.loadingturn);
       game.tries = 0;
       setTimeout(game.online.getData, 1000);
@@ -340,8 +360,8 @@ game.online = {
       var challengeTurn = game.enemy.type + 'Turn';
       if (data[challengeTurn] === game.enemy.turn) {
         game.triesCounter.text('');
-        game.currentData[challengeTurn] = data[challengeTurn];
-        game.currentData.moves = data.moves;
+        game.online.setData(challengeTurn, data[challengeTurn]);
+        game.online.setData('moves', data.moves);
         game.enemy.move();
       } else {
         game.tries += 1;
@@ -357,14 +377,14 @@ game.online = {
       game.enemy.skills.deck.removeClass('slide');
       $('.card.enemy.heroes').removeClass('done');
       $('.enemy.skills .card').hide();
-      game.turn.beginPlayer();
+      game.online.beginPlayer();
     }
   },
   sendData: function () {
     var challengeTurn = game.player.type + 'Turn';
     game.message.text(game.data.ui.uploadingturn);
-    game.currentData[challengeTurn] = game.player.turn;
-    game.currentData.moves = game.currentData.moves.join('|');
+    game.online.setData(challengeTurn, game.player.turn);
+    game.online.setData('moves', game.currentMoves.join('|'));
     game.db({
       'set': game.id,
       'data': game.currentData
@@ -394,6 +414,7 @@ game.online = {
   },
   clear: function () {
     game.online.builded = false;
+    game.online.chooseStarted = false;
     game.online.started = false;
     game.seed = 0;
     game.id = null;

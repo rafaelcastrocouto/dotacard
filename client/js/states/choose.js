@@ -20,6 +20,7 @@ game.states.choose = {
       if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
       else game.states.choose.selectFirst();
     }
+    if (game.mode === 'online') game.online.chooseStart();
   },
   buildDeck: function (pickDeck) {
     pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);

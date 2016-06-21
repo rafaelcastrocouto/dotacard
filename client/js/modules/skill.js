@@ -52,6 +52,7 @@ game.skill = {
           game.timeout(400, function () {
             game.skill.aoe = '';
             //$('.map .spot, .map .card').off('mouseover.highlight mouseleave.highlight');
+            console.log(this.skill);
             if (game.mode !== 'library') this.skill.discard();
           }.bind({source: source, skill: skill}));
         }
