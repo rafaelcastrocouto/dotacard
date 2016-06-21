@@ -375,6 +375,7 @@ game.tutorial = {
     game.tutorial.lesson = '';
     game.tutorial.started = false;
     game.tutorial.waited = false;
+    localStorage.setItem('mode', '');
     if (game.tutorial.axe) {
       game.tutorial.axe.appendTo(game.states.choose.el);
       game.tutorial.axe.removeClass('up');

@@ -13,7 +13,8 @@ game.player = {
       card = game.deck.randomCard(availableSkills),
       heroid,
       hero,
-      to;
+      to,
+      skillid;
     if (availableSkills.length === 0) {
       $('.player.deck.skills.cemitery .card').appendTo(game.player.skills.deck);
     }
@@ -23,8 +24,9 @@ game.player = {
       heroid = card.data('hero');
       hero = $('.map .player.heroes.' + heroid);
       to = game.map.getPosition(hero);
+      skillid = card.data('skill');
       card.passive(to);
-      if (game.mode == 'online') game.currentData.moves.push('P:' + to + ':' + card.data('skill') + ':' + heroid);
+      if (game.mode == 'online') game.currentData.moves.push('P:' + to + ':' + skillid + ':' + heroid);
       card.appendTo(game.player.skills.sidehand);
     } else {
       card.appendTo(game.player.skills.hand);
@@ -48,7 +50,7 @@ game.player = {
         from !== to && 
         !card.hasClass('done')) {
       card.move(to);
-      if (game.mode == 'online') { game.currentData.moves.push('M:' + from + ':' + to); }
+      if (game.mode == 'online') game.currentData.moves.push('M:' + from + ':' + to);
       game.highlight.clearMap();
     }
   },
@@ -59,7 +61,7 @@ game.player = {
       to = game.map.getPosition(target);
     if (!game.states.table.el.hasClass('unturn') && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
       source.attack(target);
-      if (game.mode == 'online') { game.currentData.moves.push('A:' + from + ':' + to); }
+      if (game.mode == 'online') game.currentData.moves.push('A:' + from + ':' + to);
       game.highlight.clearMap();
     }
   },
@@ -72,7 +74,7 @@ game.player = {
     if (hero && skillid && 
        !game.states.table.el.hasClass('unturn')) {
       game.audio.play('activate');
-      if (game.mode == 'online') { game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero); }
+      if (game.mode == 'online') game.currentData.moves.push('P:' + to + ':' + skillid + ':' + hero);
       skill.passive(target);
       game.states.table.animateCast(skill, target);
       game.highlight.clearMap();

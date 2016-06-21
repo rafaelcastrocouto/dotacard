@@ -5,8 +5,6 @@ game.turn = {
     game.enemy.turn = 0;
     game.player.kills = 0;
     game.enemy.kills = 0;
-    game.currentData.moves = [];
-    game.currentData = {};
     game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)').hide();
     game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
   },

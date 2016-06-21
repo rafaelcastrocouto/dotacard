@@ -20,7 +20,7 @@ var game = {
   skills: {},
   data: {}, //json {buffs, heroes, skills, ui, units}
   mode: '', //online, tutorial, campain
-  currentData: {}, // moves data
+  currentData: {}, // current game data
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
   start: function () {
     if (window.JSON &&
@@ -33,7 +33,7 @@ var game = {
       }
       game.utils();
       game.events.build();
-      game.history.hash = localStorage.getItem('state');
+      game.history.build();
       game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
@@ -67,9 +67,9 @@ var game = {
     game.seed += 1;
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
   },
-  setMode: function (mode) {
+  setMode: function (mode, recover) {
     game.mode = mode;
-    if (mode) game[mode].build();
+    if (mode) game[mode].build(recover);
     localStorage.setItem('mode', mode);
   },
   clear: function () {

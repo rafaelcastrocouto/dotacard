@@ -15,11 +15,11 @@ game.states.choose = {
     this.el.append(this.pickedbox).append(this.buttonbox);
   },
   start: function () {
-    var hero = localStorage.getItem('choose');
-    if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
-    else game.states.choose.selectFirst();
-    if (game.mode != 'online') this.pickedbox.show();
-    else game.online.chooseStart();
+    if (!$('.choose .selected').length) {
+      var hero = localStorage.getItem('choose');
+      if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
+      else game.states.choose.selectFirst();
+    }
   },
   buildDeck: function (pickDeck) {
     pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);
@@ -148,8 +148,7 @@ game.states.choose = {
         'set': 'back',
         'data': game.id
       }, function () {
-        game.seed = 0;
-        localStorage.setItem('seed', '');
+        game.clear();
         game.states.choose.toMenu();
       });
     } else game.states.choose.toMenu();

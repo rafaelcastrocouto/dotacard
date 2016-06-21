@@ -31,6 +31,7 @@ game.states.loading = {
   updated: function () {
     game.states.build();
     game.history.recover();
+    game.loader.removeClass('loading');
   },
   json: function (name, cb) {
     $.ajax({

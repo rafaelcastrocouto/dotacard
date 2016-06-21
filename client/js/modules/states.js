@@ -28,7 +28,7 @@ game.states = {
       if (newstate.el) { 
         setTimeout(function () {
           localStorage.setItem('state', state);
-          if (newstate.chat) game.chat.el.appendTo(newstate.el);
+          if (newstate.chat && game.backState !== 'log') game.chat.el.appendTo(newstate.el);
           newstate.el.append(game.topbar).removeClass('hidden');
         }, 105);
       }

@@ -17,6 +17,8 @@ game.states.log = {
     game.message.html('Version <small class="version">' + game.version + '</small>');
     game.states.log.out.hide();
     game.states.options.opt.show();
+    game.loader.removeClass('loading');
+    game.triesCounter.text('');
     game.setMode('');
     game.timeout(200, function () {
       game.states.log.input.focus();

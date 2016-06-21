@@ -50,7 +50,6 @@ game.chat = {
       }, function (chat) {
         game.chat.update(chat);
         setTimeout(function () {
-          game.loader.removeClass('loading');
           game.chat.button.attr('disabled', false);
         }, 2000);
       });

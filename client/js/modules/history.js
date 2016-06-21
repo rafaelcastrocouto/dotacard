@@ -1,4 +1,8 @@
 game.history = {
+  build: function () {
+    game.history.state = localStorage.getItem('state');
+    game.history.mode = localStorage.getItem('mode');
+  },
   validState: function (state) {
     return (
       state && 
@@ -7,17 +11,17 @@ game.history = {
     );
   },
   recover: function () {
-    var mode = localStorage.getItem('mode');
-    if (mode) game.setMode(mode);
-    var hash = game.history.hash,
-        valid = game.history.validState(hash),
+    var mode = game.history.mode,
+        state = game.history.state,
+        valid = game.history.validState(state),
         log = localStorage.getItem('log'),
         recovering = (log && valid);
     if (recovering) {
       game.states.log.out.show();
       game.states.options.opt.show();
       game.player.name = log;
-      game.history.jumpTo(hash, recovering);
+      if (mode) game.setMode(mode, recovering);
+      game.history.jumpTo(state, recovering);
     } else {
       game.history.jumpTo('log');
     }
@@ -25,26 +29,11 @@ game.history = {
   jumpTo: function (state, recover) {
     game.clear();
     game.loader.addClass('loading');
+    game.states.buildState(state);
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {
-        game.loader.removeClass('loading');
         game.states.changeTo(state, recover);
       } else { game.reset(); }
     });
-  },
-  stateChange: function (event) {
-    //console.log('e',location.hash, game.currentState);
-    var hash = location.hash.slice(1);
-    var change = game.history.validState(hash);
-    if (change) {
-      game.clear();
-      if (hash == 'log' || hash == 'menu') game.setMode('');
-      else if (hash == 'choose' || hash == 'table') game.setMode(game.mode);
-      game.history.jumpTo(hash);
-      return true;
-    } else {
-      location.hash = game.currentState;
-      return false;
-    }
   }
 };

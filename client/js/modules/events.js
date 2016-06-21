@@ -5,8 +5,7 @@ game.events = {
     game.card.bindJquery();
     game.skill.bindJquery();
     game.highlight.bindJquery();
-    $(window).on('popstate', game.history.stateChange)
-             .on('resize', game.screen.resize);
+    $(window).on('resize', game.screen.resize);
     game.container.on('mousedown touchstart', game.events.hit)
                   .on('mousemove', game.events.move)
                   .on('touchmove', function(event) {
