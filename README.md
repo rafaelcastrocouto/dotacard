@@ -29,9 +29,6 @@ Please report any [sugestions or issues][4]
 More information on how to play, setup your own server and more on our [Wiki page][5]
 
 
-[License](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/gh-pages/LICENSE)
-
-
 ---
 
 
