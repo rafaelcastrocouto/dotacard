@@ -15,11 +15,9 @@ game.states.choose = {
     this.el.append(this.pickedbox).append(this.buttonbox);
   },
   start: function () {
-    if (!$('.choose .selected').length) {
-      var hero = localStorage.getItem('choose');
-      if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
-      else game.states.choose.selectFirst();
-    }
+    var hero = localStorage.getItem('choose');
+    if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
+    else game.states.choose.selectFirst();
     if (game.mode === 'online') game.online.chooseStart();
   },
   buildDeck: function (pickDeck) {

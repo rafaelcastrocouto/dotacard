@@ -40,7 +40,7 @@ game.tower = {
       game.player.tower.attack(lowestHp);
       from = game.map.getPosition(game.player.tower);
       to = game.map.getPosition(lowestHp);
-      game.currentData.moves.push('A:' + from + ':' + to);
+      game.currentMoves.push('A:' + from + ':' + to);
     }
   }
 };

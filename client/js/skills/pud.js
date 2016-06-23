@@ -27,9 +27,7 @@ game.skills.pud = {
         }
       }
       if(hooked && hooked.hasClasses('hero unit')) {
-        if (hooked.hasClass('enemy')) {
-          source.damage(skill.data('damage'), hooked, skill.data('damage type'));
-        }
+        source.damage(skill.data('damage'), hooked, skill.data('damage type'));
         w = game.map.getX(hooked.parent());
         h = game.map.getY(hooked.parent());
         dx = -212 * x * (Math.abs(cw - w) - 1);

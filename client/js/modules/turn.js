@@ -90,7 +90,6 @@ game.turn = {
       });
       if (unturn === 'unturn' &&
           game.mode !== 'library') {
-        game.highlight.clearMap();
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         game.timeout(800, function () { game.turn.el.removeClass('show'); });
       }

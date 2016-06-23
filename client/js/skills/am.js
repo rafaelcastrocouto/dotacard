@@ -17,7 +17,7 @@ game.skills.am = {
         var damage = source.data('current damage') + target.data('mana');
         source.data('current damage', damage);
       }
-      if(side === 'enemy' && hero) {
+      if (side === 'enemy' && hero) {
         var cards = game.states.table.playerHand.children('.'+hero);
         if(cards.length > 0) {
           var card = game.deck.randomCard(cards, 'noseed');

@@ -3,7 +3,7 @@ game.skill = {
     $.fn.cast = game.skill.cast;
     $.fn.passive = game.skill.passive;
     $.fn.toggle = game.skill.toggle;
-    $.fn.discard = game.card.discard;
+    $.fn.discard = game.skill.discard;
   },
   cast: function (skill, target) {
     var source = this, targets, duration, channeler, channelDuration,
@@ -47,12 +47,12 @@ game.skill = {
           game.enemy.hand -= 1;
         } else {
           if (game.mode !== 'library' && source.hasClass('player')) {
-            source.addClass('done').unselect();
+            source.addClass('done');
           }
+          if (target.hasClass('selected')) { target.select(); }
           game.timeout(400, function () {
             game.skill.aoe = '';
             //$('.map .spot, .map .card').off('mouseover.highlight mouseleave.highlight');
-            console.log(this.skill);
             if (game.mode !== 'library') this.skill.discard();
           }.bind({source: source, skill: skill}));
         }
@@ -70,13 +70,12 @@ game.skill = {
         skill: skill,
         target: target
       });
+      if (target.hasClass('selected')) { target.select(); }
       game.skills[hero][skillid].passive(skill, target);
-      target.unselect();
       if (skill.hasClass('enemy')) game.enemy.hand -= 1;
       game.timeout(400, function () {
         this.skill.detach();
-        this.target.select();
-      }.bind({target: target, skill: skill}));
+      }.bind({skill: skill}));
     }
     return this;
   },
@@ -95,9 +94,8 @@ game.skill = {
       game.skills[hero][skillid].toggle(skill, target);
       if (skill.hasClass('enemy')) {
         game.enemy.hand -= 1;
-      } else {
-        game.timeout(450, target.select.bind(target));
       }
+      if (target.hasClass('selected')) { target.select(); }
     }
     return this;
   },
@@ -107,6 +105,7 @@ game.skill = {
     $('<div>').appendTo(buff).addClass('overlay');
     buff.data('source', this);
     target.find('.buffs').append(buff);
+    if (target.hasClass('selected')) { target.select(); }
     return buff;
   },
   hasBuff: function (buff) {
