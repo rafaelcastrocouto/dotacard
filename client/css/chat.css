@@ -70,7 +70,6 @@
   line-height: 1.5em;
   cursor: text;
   user-select: text;
-  -webkit-user-select: text; 
 }
 .chat .messages p { transform: rotate(2deg) translateZ(0); }
 .chat .messages p:nth-child(2n) { transform: rotate(-0.8deg) translateZ(0); }

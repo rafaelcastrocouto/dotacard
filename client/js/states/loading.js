@@ -8,16 +8,18 @@ game.states.loading = {
     this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
     this.h2 = $('<p>').appendTo(this.box).addClass('loadtext').html('<span class="loader loading"></span><span class="message">Updating: </span><span class="progress">0%</span>');
     this.el.append(this.box);
-    this.package();
+  },
+  start: function () {
+    game.states.loading.package();
     if (window.AudioContext) game.audio.build();
     game.language.load(function () {
-      game.states.loading.updating += 1;
+      game.states.loading.updated();
       game.states.loading.data();
     });
-    this.ping(function () {
+    game.states.loading.ping(function () {
       if (!game.offline) game.states.loading.analytics();
     });
-    this.progress();
+    game.states.loading.progress();
   },
   progress: function () {
     var loading = Number.parseInt(game.states.loading.updating / game.states.loading.totalUpdate * 100);
@@ -25,20 +27,20 @@ game.states.loading = {
     if (game.states.loading.updating < game.states.loading.totalUpdate) {
       game.timeout(800, game.states.loading.progress);
     } else if (game.states.loading.updating === game.states.loading.totalUpdate) {
-      game.timeout(800, game.states.loading.updated);
+      game.timeout(800, function () {
+        game.states.build();
+      });
     }
   },
   updated: function () {
-    game.states.build();
-    game.loader.removeClass('loading');
-    game.history.recover();
+    game.states.loading.updating += 1;
   },
   json: function (name, cb) {
     $.ajax({
       type: 'GET',
       url: game.dynamicHost + 'json/' + game.language.dir + name + '.json',
       complete: function (response) {
-        game.states.loading.updating += 1;
+        game.states.loading.updated();
         var data = JSON.parse(response.responseText);
         game.data[name] = data;
         if (cb) {
@@ -52,7 +54,7 @@ game.states.loading = {
       type: 'GET',
       url: game.dynamicHost + 'package.json',
       complete: function (response) {
-        game.states.loading.updating += 1;
+        game.states.loading.updated();
         var data = JSON.parse(response.responseText);
         $.each(data, function (name) {
           game[name] = this;

@@ -24,7 +24,6 @@ game.states.table = {
     this.time.show();
     this.camera.show();
     this.selectedArea.show();
-    if (recover && game.mode) game[game.mode].build(true);
     if (game.mode) game[game.mode].setTable();
   },
   enableUnselect: function () {
@@ -104,6 +103,7 @@ game.states.table = {
     });
   },
   backClick: function () {
+    //tutorial only
     game.clear();
     game.setMode(game.mode);
     game.states.changeTo('choose');

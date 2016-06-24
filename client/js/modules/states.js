@@ -1,19 +1,26 @@
 game.states = {
   el: $('.states').first(),
+  valid: ['log', 'menu', 'options', 'choose', 'table'],
   build: function () {
-    var preBuild = ['log', 'menu', 'options', 'choose', 'table'];
-    for (var i=0; i<preBuild.length; i++) {
-      game.states.buildState(preBuild[i]);
+    var l = 0;
+    var count = function () {
+      l++;
+      if (l === game.states.valid.length) game.history.recover();
+    };
+    for (var i=0; i<game.states.valid.length; i++) {
+      game.states.buildState(game.states.valid[i], count);
     }
     game.chat.build();
   },
-  buildState: function (name) {
+  buildState: function (name, cb) {
     var state = game.states[name];
     if (state && !state.builded) {
       state.builded = true;
-      state.el = $('<div>').addClass('hidden state ' + name).appendTo(game.states.el);
+      state.el = $('<div>').addClass('hidden state ' + name);
       if (state.build) state.build();
+      state.el.appendTo(game.states.el);
     }
+    if (cb) cb();
   },
   changeTo: function (state, recover) {
     if (state !== game.currentState) {
@@ -25,7 +32,7 @@ game.states = {
       if (oldstate && oldstate.el) oldstate.el.addClass('hidden');
       if (oldstate && oldstate.end) oldstate.end();
       newstate = game.states[state];
-      if (newstate.el) { 
+      if (newstate.el) {
         setTimeout(function () {
           localStorage.setItem('state', state);
           if (newstate.chat && game.backState !== 'log') game.chat.el.appendTo(newstate.el);

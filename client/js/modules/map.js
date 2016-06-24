@@ -27,7 +27,7 @@ game.map = {
     }
   },
   getY: function (id) {
-    if (typeof id.attr == 'function') { id = id.attr('id'); }
+    if (id && typeof id.attr == 'function') { id = id.attr('id'); }
     if (id) {
       var h = parseInt(id[1], 10) - 1;
       if (h >= 0 && h < game.height) { return h; }

@@ -120,22 +120,23 @@ game.card = {
     var card = $(this).closest('.card'); //console.trace('card select', card[0].className);
     if ((!game.selectedCard || card[0] !== game.selectedCard[0]) && 
         !card.hasClasses('attacktarget casttarget targetarea dead')) {
-      game.card.unselect();
-      game.selectedCard = card;
-      if (game.mode == 'tutorial') {
-          if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
-          else game.highlight.map();
-      } else game.highlight.map();
-      card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
-      card.addClass('selected draggable');
-      card.trigger('select', { card: card });
-      setTimeout(function () {
-        game.states.table.selectedArea.addClass('flip');
+      game.card.unselect(function (del) {
+        game.selectedCard = card;
+        if (game.mode == 'tutorial') {
+            if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
+            else game.highlight.map();
+        } else game.highlight.map();
+        card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
+        card.addClass('selected draggable');
+        card.trigger('select', { card: card });
+        game.timeout(del ? 300 : 0, function () {
+          game.states.table.selectedArea.addClass('flip');
+        });
       });
     }
     return card;
   },
-  unselect: function () {
+  unselect: function (cb) {
     if (game.mode == 'library' && game.states.table.el.hasClass('unturn')) {
       //console.trace(event);
     } else {
@@ -146,8 +147,9 @@ game.card = {
       game.skill.aoe = null;
       game.selectedCard = null;
       game.states.table.selectedArea.removeClass('flip');
-      var del = $('.selectedarea .card')[0];
-      if (del) setTimeout(function () { $(this).remove(); }.bind(del), 400);
+      var del = $('.selectedarea .card');
+      if (del.length) setTimeout(del.remove.bind(del), 300);
+      if (cb && typeof(cb) == 'function') cb(!!del.length);
     }
   },
   move: function (destiny) {

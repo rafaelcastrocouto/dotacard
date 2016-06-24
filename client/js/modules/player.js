@@ -78,6 +78,9 @@ game.player = {
       skill.passive(target);
       game.states.table.animateCast(skill, target);
       game.highlight.clearMap();
+      game.timeout(400, function () {
+        this.card.select();
+      }.bind({card: target}));
     }
   },
   toggle: function () {
@@ -92,6 +95,9 @@ game.player = {
       skill.toggle(target);
       game.states.table.animateCast(skill, target);
       game.highlight.clearMap();
+      game.timeout(400, function () {
+        this.card.select();
+      }.bind({card: target}));
     }
   },
   cast: function () {

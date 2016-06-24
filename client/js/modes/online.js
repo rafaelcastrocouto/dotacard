@@ -56,9 +56,13 @@ game.online = {
       game.states.choose.librarytest.hide();
       game.states.choose.randombt.show().attr({disabled: true});
       game.states.choose.mydeck.show().attr({disabled: true});
+      game.states.choose.pickedbox.hide();
+      game.states.choose.selectFirst();
     }
-    if (game.currentData.status === 'waiting') game.states.choose.pickedbox.hide();
-    else game.states.choose.pickedbox.show();
+    if (game.currentData.status &&
+        game.currentData.status !== 'waiting') {
+      game.states.choose.pickedbox.show();
+    }
   },
   wait: function () {
     game.loader.addClass('loading');

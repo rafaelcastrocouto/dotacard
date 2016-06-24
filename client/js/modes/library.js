@@ -31,6 +31,10 @@ game.library = {
     game.states.choose.counter.text(game.data.ui.skills);
     $('.slot').removeClass('available');
   },
+  chooseStart: function (hero) {
+    if (hero) game.states.choose.selectHero(hero);
+    else game.states.choose.selectFirst();
+  },
   select: function (card, build) { 
     var hero = card.data('hero'),
         heroSkills,

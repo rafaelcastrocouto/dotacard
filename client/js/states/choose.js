@@ -16,9 +16,7 @@ game.states.choose = {
   },
   start: function () {
     var hero = localStorage.getItem('choose');
-    if (game.mode == 'library' && hero) game.states.choose.selectHero(hero);
-    else game.states.choose.selectFirst();
-    if (game.mode === 'online') game.online.chooseStart();
+    if (game[game.mode].chooseStart) game[game.mode].chooseStart(hero);
   },
   buildDeck: function (pickDeck) {
     pickDeck.addClass('pickdeck').appendTo(game.states.choose.pickbox);

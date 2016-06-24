@@ -8,9 +8,6 @@ game.tutorial = {
       game.tutorial.message = $('<div>').addClass('txt').appendTo(game.tutorial.axebaloon);
       game.tutorial.axe.appendTo(game.states.choose.el);
     }
-    game.tutorial.start();
-  },
-  start: function () {
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
     game.message.text(game.data.ui.waiting);
@@ -19,12 +16,12 @@ game.tutorial = {
     game.enemy.name = 'axe';
     game.enemy.type = 'challenger';
     game.player.type = 'challenged';
-    game.states.choose.pickedbox.show();
     game.states.choose.librarytest.hide();
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
     game.states.choose.enablePick();
     game.tutorial.axeshow();
+    game.states.choose.selectFirst();
   },
   axeshow: function () {
     setTimeout(function () {
@@ -40,6 +37,9 @@ game.tutorial = {
         });
       }
     }, 400);
+  },
+  chooseStart: function () {
+    game.states.choose.pickedbox.show();
   },
   pick: function () {
     var availableSlots = $('.slot.available').length;

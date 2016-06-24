@@ -382,9 +382,11 @@
 }
 .table .selectedarea .card {
   position: absolute;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
   backface-visibility: hidden;
+  transition: all 0.3s;
 }
 .table .selectedarea .card:hover .img {
   background-size: cover;
@@ -397,12 +399,14 @@
   background-position: 50%;
   position: absolute;
   padding: 0;
-  width: 200px; height: 300px;
+  width: 200px;
+  height: 300px;
   border-radius: 8px;
-  top: 50%; left: 50%;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%) scale(1.1);
   backface-visibility: hidden;
-  transition: all 0.4s;
+  transition: all 0.3s;
 }
 
 .table .selectedarea.flip .card {

@@ -69,8 +69,8 @@ var game = {
   },
   setMode: function (mode, recover) {
     game.mode = mode;
-    if (mode) game[mode].build(recover);
     localStorage.setItem('mode', mode);
+    if (mode) game[mode].build(recover);
   },
   clear: function () {
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
