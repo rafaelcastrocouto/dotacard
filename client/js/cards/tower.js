@@ -6,6 +6,7 @@ game.tower = {
       name: game.data.ui.tower,
       attribute: game.data.ui.building,
       range: game.data.ui.ranged,
+      description: game.data.ui.towerDescription,
       damage: 15,
       hp: 80
     });
@@ -24,23 +25,26 @@ game.tower = {
     $('#' + p).addClass('fountain player').attr({title: 'Player Fountain'});
     $('#' + game.map.mirrorPosition(p)).addClass('fountain enemy').attr({title: 'Enemy Fountain'});
   },
-  attack: function () {
+  attack: function (side) {
     var from, to,
+      attacker = game.otherSide(side),
       lowestHp = {
         notfound: true,
         data: function (c) { return Infinity; }
       };
-    $('.map .playerarea .card.enemy').each(function () {
+    $('.map .'+ attacker +'area .card.' + side).each(function () {
       var target = $(this);
       if (target.data('current hp') < lowestHp.data('current hp')) {
         lowestHp = target;
       }
     });
     if (!lowestHp.notfound) {
-      game.player.tower.attack(lowestHp);
-      from = game.map.getPosition(game.player.tower);
-      to = game.map.getPosition(lowestHp);
-      game.currentMoves.push('A:' + from + ':' + to);
+      game[attacker].tower.attack(lowestHp);
+      if (game.mode === 'online') {
+        from = game.map.getPosition(game[attacker].tower);
+        to = game.map.getPosition(lowestHp);
+        game.currentMoves.push('A:' + from + ':' + to);
+      }
     }
   }
 };

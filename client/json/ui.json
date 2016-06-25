@@ -87,6 +87,7 @@
   "surrender": "Surrender",
   "tower": "Tower",
   "towers": "Towers",
+  "towerDescription": "Attacks the lowest HP enemy unit in range every turn",
   "building": "Building",
   "tree": "Tree",
   "forest": "Forest - Path block",

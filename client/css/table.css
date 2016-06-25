@@ -137,11 +137,10 @@
 
 .table .turntitle {
   z-index: 15;
-  opacity: 0;
   position: absolute;
   width: 970px;
   top: 230px;
-  left: -970px;
+  left: -980px;
   font-weight: bold;
   color: white;
   font-size: 80px;

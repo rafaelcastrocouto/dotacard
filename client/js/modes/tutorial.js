@@ -103,6 +103,7 @@ game.tutorial = {
       game.tutorial.axe.addClass('up left');
       game.turn.build();
       game.states.table.skip.attr('disabled', true);
+      game.states.table.el.removeClass('unturn');
       game.timeout(1000, function () {
         game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
         game.timeout(1000, game.tutorial.selectEnemyLesson);

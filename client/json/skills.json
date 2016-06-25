@@ -70,7 +70,7 @@
       "display": true,
       "description": "Summons a powerful Spirit Bear companion"
     },
-    "return": {
+    "bearreturn": {
       "name": "Return",
       "deck": "Temporary",
       "type": "Active",

@@ -87,6 +87,7 @@
   "surrender": "Desistir",
   "tower": "Torre",
   "towers": "Torres",
+  "towerDescription": "Ataca o inimigo com menos HP ao alcançe a cada turno",
   "building": "Edificação",
   "tree": "Árvore",
   "forest": "Floresta - Caminho bloqueado",

@@ -47,9 +47,11 @@ game.enemy = {
           target = $('#' + to);
           skill = $('.enemy.skills .' + hero + '-' + skillid).show();
           targets = skill.data('targets');
-          if (targets.indexOf(game.data.ui.enemy) >= 0 ||
+          if (targets) {
+            if (targets.indexOf(game.data.ui.enemy) >= 0 ||
               targets.indexOf(game.data.ui.ally)  >= 0 ||
               targets.indexOf(game.data.ui.self)  >= 0) { target = $('#' + to + ' .card'); }
+          }
           if (game.skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) {
             source.cast(skill, target);
             game.enemy.hand -= 1;

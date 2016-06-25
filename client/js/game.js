@@ -38,8 +38,8 @@ var game = {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
-  otherSide: function (card) {
-    var side = card.data('side');
+  otherSide: function (side) {
+    if (side.data) side = side.data('side');
     return (side === 'enemy') ? 'player' : 'enemy';
   },
   db: function (send, cb) {

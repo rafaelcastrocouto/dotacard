@@ -55,29 +55,26 @@ game.library = {
     }
   },
   setTable: function () {
-    if (!game.library.started) {
-      game.library.started = true;      
-      game.loader.removeClass('loading');
-      if (!game.library.hero) {
-        var hero = localStorage.getItem('choose');
-        game.library.hero = $('.pickbox .'+hero);
-        game.player.picks = [hero];
-      }
-      game.library.placePlayerHeroes();
-      game.library.placeEnemyHeroes();
-      game.library.buildSkills();
-      game.states.table.enableUnselect();
-      game.states.table.surrender.hide();
-      game.states.table.back.show();
-      game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
-      game.player.kills = 0;
-      game.enemy.kills = 0;
-      game.turn.build();
-      game.timeout(400, function () {
-        game.turn.beginPlayer();
-        game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
-      });
+    if (!game.library.hero) {
+      var hero = localStorage.getItem('choose');
+      game.library.hero = $('.pickbox .'+hero);
+      game.player.picks = [hero];
     }
+    game.library.placePlayerHeroes();
+    game.library.placeEnemyHeroes();
+    game.library.buildSkills();
+    game.states.table.enableUnselect();
+    game.states.table.surrender.hide();
+    game.states.table.back.show();
+    game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
+    game.player.kills = 0;
+    game.enemy.kills = 0;
+    game.turn.build();
+    game.timeout(400, function () {
+      game.states.table.el.removeClass('unturn');
+      game.turn.beginPlayer();
+      game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
+    });
   },
   placePlayerHeroes: function () {
     game.player.mana = 0;
@@ -128,22 +125,27 @@ game.library = {
   buildSkills: function () {
     game.player.manaBuild();
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
+    game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
+    game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
+    game.player.skills.cemitery = $('<div>').appendTo(game.states.table.player).addClass('player deck skills cemitery');
     var hero = game.library.hero.data('hero');
-    $('.library.skills .'+hero+'.skill').each(function (i, librarySkill) {
-      var skill = $(librarySkill).clone(true).off().appendTo(game.player.skills.hand).data('side', 'player').on('mousedown touchstart', game.card.select);
-      if (skill.data('type') === game.data.ui.toggle) {
-        game.timeout(800, function () {
-          skill.appendTo(game.player.skills.sidehand);
-        });
-      } else if (skill.data('type') === game.data.ui.automatic) {
-        game.timeout(100, function () {
-          var to = game.map.getPosition(game.library.hero);
-          skill.passive(to);
+    game.player.skills.deck = game.deck.build({
+      name: 'skills',
+      filter: [hero],
+      cb: function (deck) {
+        deck.addClass('player available').hide().appendTo(game.states.table.player);
+        $.each(deck.data('cards'), function (i, skill) {
+          skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select);
+          if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game.player.skills.temp);
+          else if (skill.data('type') === game.data.ui.toggle) skill.appendTo(game.player.skills.sidehand);
+          else if (skill.data('type') === game.data.ui.automatic) {
+            game.timeout(16, function () { skill.passive(game.map.getPosition(game.library.hero)); });
+          } else {
+            skill.appendTo(game.player.skills.hand);
+          }
         });
       }
     });
-    game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.cemitery = $('<div>').appendTo(game.states.table.player).addClass('player deck skills cemitery');
     game.enemy.manaBuild();
     game.enemy.skills.deck = game.deck.build({
       name: 'skills',
@@ -157,7 +159,10 @@ game.library = {
     });
   },
   startTurn: function (unturn) {
-    if (unturn === 'unturn') game.turn.end('unturn');
+    if (unturn === 'unturn') {
+      game.tower.attack('player');
+      game.turn.end('unturn');
+    }
   },
   action: function () {
     $(this).addClass('done');
@@ -176,8 +181,5 @@ game.library = {
     if (unturn === 'unturn') 
          game.turn.beginPlayer();
     else game.turn.beginEnemy();
-  },
-  clear: function () {
-    game.library.started = false;
   }
 };

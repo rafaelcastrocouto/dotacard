@@ -86,6 +86,12 @@ game.card = {
     if (data.multiplier) {
       $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.multiplier + 'X');
     }
+    if (data['hp bonus']) {
+      $('<p>').appendTo(desc).text('HP Bonus: ' + data['hp bonus']);
+    }
+    if (data['armor bonus']) {
+      $('<p>').appendTo(desc).text('Armor Bonus: ' + data['armor bonus'] + '%');
+    }
     if (data.description) {
       card.attr({ title: data.name + ': ' + data.description });
       $('<p>').appendTo(desc).addClass('description').text(data.description);
@@ -116,10 +122,11 @@ game.card = {
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
-  select: function (event) { 
+  select: function (event) {
     var card = $(this).closest('.card'); //console.trace('card select', card[0].className);
-    if ((!game.selectedCard || card[0] !== game.selectedCard[0]) && 
-        !card.hasClasses('attacktarget casttarget targetarea dead')) {
+    if ((card) && 
+        ( (event && event.force) ||
+          !card.hasClasses('attacktarget casttarget targetarea dead') )) {
       game.card.unselect(function (del) {
         game.selectedCard = card;
         if (game.mode == 'tutorial') {
@@ -138,7 +145,7 @@ game.card = {
   },
   unselect: function (cb) {
     if (game.mode == 'library' && game.states.table.el.hasClass('unturn')) {
-      //console.trace(event);
+      if (cb) cb();
     } else {
       game.highlight.clearMap();
       if (game.selectedCard) {
@@ -149,7 +156,9 @@ game.card = {
       game.states.table.selectedArea.removeClass('flip');
       var del = $('.selectedarea .card');
       if (del.length) setTimeout(del.remove.bind(del), 300);
-      if (cb && typeof(cb) == 'function') cb(!!del.length);
+      if (cb && typeof(cb) == 'function') {
+        cb(!!del.length);
+      }
     }
   },
   move: function (destiny) {

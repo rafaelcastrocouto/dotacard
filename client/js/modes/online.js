@@ -252,6 +252,7 @@ game.online = {
         game.states.table.el.addClass('unturn');
         game.timeout(2000, game.turn.beginEnemy);
       } else {
+        game.states.table.el.removeClass('unturn');
         game.timeout(2000, game.online.beginPlayer);
       }
     }
@@ -300,6 +301,7 @@ game.online = {
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
     game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
+    game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
     game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
     game.player.skills.deck = game.deck.build({
       name: 'skills',
@@ -309,8 +311,11 @@ game.online = {
         deck.addClass('player available').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, skill) {
           skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select);
-          if (skill.data('skill') === 'ult') {
-            skill.appendTo(game.player.skills.ult);
+          if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game.player.skills.temp);
+          else if (skill.data('skill') === 'ult') skill.appendTo(game.player.skills.ult);
+          else if (skill.data('type') === game.data.ui.toggle) skill.appendTo(game.player.skills.sidehand);
+          else if (skill.data('type') === game.data.ui.automatic) {
+            game.timeout(16, function () { skill.passive(game.map.getPosition(game.library.hero)); });
           }
         });
       }
