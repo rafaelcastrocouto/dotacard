@@ -133,19 +133,19 @@ game.card = {
             if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
             else game.highlight.map();
         } else game.highlight.map();
-        card.clone().appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
+        card.clone().css({'transform': ''}).appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink').clearEvents();
         card.addClass('selected draggable');
         card.trigger('select', { card: card });
         game.timeout(del ? 300 : 0, function () {
           game.states.table.selectedArea.addClass('flip');
         });
-      });
+      }, event ? event.force : null);
     }
     return card;
   },
-  unselect: function (cb) {
-    if (game.mode == 'library' && game.states.table.el.hasClass('unturn')) {
-      if (cb) cb();
+  unselect: function (cb, force) {
+    if (game.mode == 'library' && game.states.table.el.hasClass('unturn') && !force) {
+      //console.trace(cb);
     } else {
       game.highlight.clearMap();
       if (game.selectedCard) {
@@ -157,7 +157,7 @@ game.card = {
       var del = $('.selectedarea .card');
       if (del.length) setTimeout(del.remove.bind(del), 300);
       if (cb && typeof(cb) == 'function') {
-        cb(!!del.length);
+        cb(!!del.length); 
       }
     }
   },
@@ -183,8 +183,7 @@ game.card = {
           destiny: destiny
         }));
       }
-      if (card.data('movement bonus'))  card.data('movement bonus', false);
-      else if (game.mode !== 'library' && card.hasClass('player')) card.addClass('done');
+      if (card.data('movement bonus')) card.data('movement bonus', false);
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
       game.timeout(390, function () {
@@ -214,6 +213,7 @@ game.card = {
     $('<div>').appendTo(buff).addClass('overlay');
     buff.data('source', this);
     target.find('.buffs').append(buff);
+    if (target.hasClass('selected')) { target.select({force: true}); }
     return buff;
   },
   hasBuff: function (buff) {
@@ -225,7 +225,7 @@ game.card = {
     $.each(buffs.split(' '), function () {
       var buff = this;
       target.find('.buffs .' + buff).remove();
-      if (target.hasClass('selected')) { target.select(); }
+      if (target.hasClass('selected')) { target.select({force: true}); }
     });
     return this;
   },
@@ -283,9 +283,6 @@ game.card = {
           name = 'bear';
         } else { name = source.data('hero'); }
         game.audio.play(name + '/attack');
-        game.timeout(390, function () {
-          if (this.source.hasClass('player')) game.highlight.map();
-        }.bind({source: source}));
       });
     }
     return this;
@@ -392,21 +389,21 @@ game.card = {
     damage = parseInt(damage, 10);
     this.find('.current .damage span').text(damage);
     this.data('current damage', damage);
-    if (this.hasClass('selected')) { this.select(); }
+    if (this.hasClass('selected')) { this.select({force: true}); }
     return this;
   },
   setCurrentHp: function (hp) {
     if (hp < 1) { hp = 0; }
     this.find('.current .hp span').text(hp);
     this.data('current hp', hp);
-    if (this.hasClass('selected')) { this.select(); }
+    if (this.hasClass('selected')) { this.select({force: true}); }
     return this;
   },
   setHp: function (hp) {
     if (hp < 1) { hp = 0; }
     this.find('.desc .hp').text(hp);
     this.data('hp', hp);
-    if (this.hasClass('selected')) { this.select(); }
+    if (this.hasClass('selected')) { this.select({force: true}); }
     return this;
   },
   setArmor: function (armor) {

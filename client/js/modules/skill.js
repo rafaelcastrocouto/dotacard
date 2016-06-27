@@ -46,15 +46,12 @@ game.skill = {
         if (source.hasClass('enemy')) {
           game.enemy.hand -= 1;
         } else {
-          if (game.mode !== 'library' && source.hasClass('player')) {
-            source.addClass('done');
-          }
-          if (target.hasClass('selected')) { target.select(); }
           game.timeout(400, function () {
             game.skill.aoe = '';
+            if (this.target.hasClass('selected')) { this.target.select({force: true}); }
             //$('.map .spot, .map .card').off('mouseover.highlight mouseleave.highlight');
             if (game.mode !== 'library') this.skill.discard();
-          }.bind({source: source, skill: skill}));
+          }.bind({source: source, skill: skill, target: target}));
         }
       }
     }
@@ -70,12 +67,15 @@ game.skill = {
         skill: skill,
         target: target
       });
-      if (target.hasClass('selected')) { target.select(); }
       game.skills[hero][skillid].passive(skill, target);
+      if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
+        game.audio.play(hero + '/' + skillid);
+      }
       if (skill.hasClass('enemy')) game.enemy.hand -= 1;
       game.timeout(400, function () {
+        if (this.target.hasClass('selected')) { this.target.select({force: true}); }
         this.skill.detach();
-      }.bind({skill: skill}));
+      }.bind({target: target, skill: skill}));
     }
     return this;
   },
@@ -92,33 +92,14 @@ game.skill = {
       };
       target.trigger('toggle', evt);
       game.skills[hero][skillid].toggle(skill, target);
+      if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
+        game.audio.play(hero + '/' + skillid);
+      }
       if (skill.hasClass('enemy')) {
         game.enemy.hand -= 1;
       }
-      if (target.hasClass('selected')) { target.select(); }
+      if (target.hasClass('selected')) { target.select({force: true}); }
     }
-    return this;
-  },
-  addBuff: function (target, data) {
-    var buff = $('<div>').addClass('buff ' + data.buff).attr({ title: data.name + ': ' + data.description });
-    $('<div>').appendTo(buff).addClass('img');
-    $('<div>').appendTo(buff).addClass('overlay');
-    buff.data('source', this);
-    target.find('.buffs').append(buff);
-    if (target.hasClass('selected')) { target.select(); }
-    return buff;
-  },
-  hasBuff: function (buff) {
-    var target = this;
-    return target.find('.buffs .' + buff).length;
-  },
-  removeBuff: function (buffs) {
-    var target = this;
-    $.each(buffs.split(' '), function () {
-      var buff = this;
-      target.find('.buffs .' + buff).remove();
-      if (target.hasClass('selected')) { target.select(); }
-    });
     return this;
   },
   discard: function () {

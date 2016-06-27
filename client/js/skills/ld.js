@@ -105,8 +105,7 @@ game.skills.ld = {
   },
   rabid: {
     cast: function (skill, source) {
-      if (!source.hasClass('rabid')) {
-        source.addClass('rabid');
+      if (!source.hasBuff('ld-rabid')) {
         source.addBuff(source, skill.data('buff'));
         var damage = source.data('current damage');
         source.setDamage(damage + skill.data('damage bonus'));

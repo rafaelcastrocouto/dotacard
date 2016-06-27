@@ -50,13 +50,13 @@ game.states.table = {
       left: d.left - t.left + 20,
       transform: 'translate(-50%, -50%) scale(0.3)'
     });
-    setTimeout(function () {
+    game.timeout(400, function () {
       $(this.skill).css({
         top: '',
         left: '',
         transform: ''
       });
-    }.bind({ skill: skill }), 500);
+    }.bind({ skill: skill }));
   },
   showResults: function () {
     game.states.table.selectedArea.hide();

@@ -155,6 +155,8 @@ game.skills.pud = {
         skill: skill
       });
       source.on('channel', game.skills.pud.ult.channel);
+      source.addBuff(source, skill.data('buff'));
+      source.addBuff(target, skill.data('buff'));
       target.addClass('disabled');
     },
     channel: function (event, eventData) {
@@ -166,10 +168,15 @@ game.skills.pud = {
       if (duration) {
         var type = skill.data('type');
         var dot = skill.data('dot');
+        if (game.mode !== 'library') game.audio.play('pud/ult-channel');
         source.damage(dot, target, type);
       } else {
-        target.removeClass('disabled');
+        game.skills.pud.ult.channelEnd(source, target);
       }
+    },
+    channelEnd: function (source, target) {
+      source.removeBuff('pud-ult');
+      target.removeBuff('pud-ult').removeClass('disabled');
     }
   }
 };

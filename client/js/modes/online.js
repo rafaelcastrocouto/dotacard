@@ -347,7 +347,7 @@ game.online = {
   },
   action: function () {
     $(this).addClass('done');
-    if ($('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length) {
+    if (game.turn.noAvailableMoves()) {
       game.online.endPlayerTurn();
     }
   },

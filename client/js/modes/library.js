@@ -166,9 +166,11 @@ game.library = {
   },
   action: function () {
     $(this).addClass('done');
-    if ($('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length) {
+    if (game.turn.noAvailableMoves()) {
       game.states.table.el.addClass('unturn');
-      game.turn.end('turn');
+      game.timeout(600, function () {
+        game.turn.end('turn');
+      });
     }
   },
   skip: function () {

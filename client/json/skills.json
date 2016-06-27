@@ -326,7 +326,7 @@
     },
     "ult": {
       "name": "Dismember",
-      "channel": true,
+      "channel": 2,
       "type": "Channel",
       "targets": ["Enemy"],
       "range": "Melee",

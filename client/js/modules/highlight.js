@@ -43,7 +43,7 @@ game.highlight = {
         if (skill.data('type') === game.data.ui.passive) {
           game.highlight.passive(source);
         } else if (skill.data('type') === game.data.ui.toggle) {
-          game.highlight.toggle(source);
+          game.highlight.toggle(skill, source);
         } else if (skill.data('type') === game.data.ui.active || 
                    skill.data('type') === game.data.ui.channel) {
           game.highlight.active(source, skill);
@@ -57,8 +57,8 @@ game.highlight = {
       source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.passive);
     }
   },
-  toggle: function (source) {
-    if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
+  toggle: function (skill, source) {
+    if (!skill.hasClass('done') && !source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
       source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.toggle);
     }
   },

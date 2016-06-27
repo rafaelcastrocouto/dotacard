@@ -58,6 +58,7 @@ game.audio = {
     'pud/hook',
     'pud/rot',
     'pud/ult',
+    'pud/ult-channel',
     'wk/attack',
     'wk/stun',
     'wk/ult',

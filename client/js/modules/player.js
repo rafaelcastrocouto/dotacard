@@ -50,8 +50,11 @@ game.player = {
         from !== to && 
         !card.hasClass('done')) {
       card.move(to);
-      if (game.mode == 'online') game.currentMoves.push('M:' + from + ':' + to);
-      game.highlight.clearMap();
+      if (game.mode == 'online') {
+        game.currentMoves.push('M:' + from + ':' + to);
+      }
+      if (game.mode !== 'library') game.card.unselect(null, true);
+      else if (!game.turn.noAvailableMoves()) game.card.unselect(null, true);
     }
   },
   attack: function () {
@@ -59,10 +62,17 @@ game.player = {
       source = game.selectedCard,
       from = game.map.getPosition(source),
       to = game.map.getPosition(target);
-    if (!game.states.table.el.hasClass('unturn') && source.data('damage') && from !== to && !source.hasClass('done') && target.data('current hp')) {
+    if (!game.states.table.el.hasClass('unturn') && 
+        source.data('damage') && 
+        from !== to && 
+        !source.hasClass('done') && 
+        target.data('current hp')) {
       source.attack(target);
-      if (game.mode == 'online') game.currentMoves.push('A:' + from + ':' + to);
-      game.highlight.clearMap();
+      if (game.mode == 'online') {
+        game.currentMoves.push('A:' + from + ':' + to);
+        source.addClass('done');
+      }
+      game.card.unselect(null, true);
     }
   },
   passive: function () {
@@ -73,14 +83,13 @@ game.player = {
       to = game.map.getPosition(target);
     if (hero && skillid && 
        !game.states.table.el.hasClass('unturn')) {
-      game.audio.play('activate');
       if (game.mode == 'online') game.currentMoves.push('P:' + to + ':' + skillid + ':' + hero);
       skill.passive(target);
+      game.card.unselect(null, true);
       game.states.table.animateCast(skill, target);
-      game.highlight.clearMap();
       game.timeout(400, function () {
-        this.card.select();
-      }.bind({card: target}));
+        this.select({force: true});
+      }.bind(target));
     }
   },
   toggle: function () {
@@ -89,15 +98,16 @@ game.player = {
       hero = skill.data('hero'),
       skillid = skill.data('skill'),
       to = game.map.getPosition(target);
-    if (hero && skillid && !game.states.table.el.hasClass('unturn')) {
-      game.audio.play('activate');
-      if (game.mode == 'online') game.currentMoves.push('T:' + to + ':' + skillid + ':' + hero);
+    if (hero && skillid && 
+        !game.states.table.el.hasClass('unturn')) {
       skill.toggle(target);
+      skill.addClass('done');
+      if (game.mode == 'online') game.currentMoves.push('T:' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, target);
-      game.highlight.clearMap();
+      game.card.unselect(null, true);
       game.timeout(400, function () {
-        this.card.select();
-      }.bind({card: target}));
+        this.select({force: true});
+      }.bind(target));
     }
   },
   cast: function () {
@@ -111,10 +121,14 @@ game.player = {
     if (hero && skillid && from && to && 
        !game.states.table.el.hasClass('unturn') && 
        !source.hasClass('done')) {
-      if (game.mode == 'online') game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       source.cast(skill, to);
+      if (game.mode == 'online') {
+        game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
+        source.addClass('done');
+      }
+      if (source.hasClass('player')) source.addClass('done');
       game.states.table.animateCast(skill, to);
-      game.highlight.clearMap();
+      game.card.unselect(null, true);
     }
   }
 };

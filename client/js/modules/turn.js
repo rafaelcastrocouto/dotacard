@@ -2,7 +2,7 @@ game.turn = {
   build: function () {
     if (!game.turn.builded) {
       game.turn.builded = true;
-      game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)').hide();
+      game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)');
       game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
     }
     game.time = 0;
@@ -17,7 +17,7 @@ game.turn = {
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      $('.map .card.player').removeClass('done');
+      $('.map .card.player, .table .skill').removeClass('done');
       game.tower.attack('enemy');
       game.player.buyHand();
       game.turn.start('turn');
@@ -98,6 +98,9 @@ game.turn = {
       }
       if (game[game.mode].endTurn) game[game.mode].endTurn(unturn);
     }
+  },
+  noAvailableMoves: function () {
+    return $('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length;
   },
   hours: function () {
     var convertedMin, intMin, stringMin,

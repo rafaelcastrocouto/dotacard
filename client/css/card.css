@@ -111,7 +111,7 @@
 .card .img {
   display: block;
   border-radius: 3px;
-  background-size: 100%;
+  background-size: cover;
   background-position: 50% 50%;
 }
 
@@ -311,7 +311,8 @@
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
   /*box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;*/
-  width: 34px; height: 34px;
+  width: 34px;
+  height: 34px;
 }
 
 
@@ -389,7 +390,6 @@
   transition: all 0.3s;
 }
 .table .selectedarea .card:hover .img {
-  background-size: cover;
   image-rendering: pixelated;
 }
 .table .selectedarea .cardback {
@@ -435,9 +435,12 @@
   transform: translate3d(-50%, -50%, 2px);
 }
 
+.map .card:hover {
+  transform: translate3d(-50%, -50%, 30px) rotateX(-10deg);
+}
 .map .card.selected,
 .map .card.source {
-  transform: translate3d(-50%, -40%, 100px) rotateX(-30deg);
+  transform: translate3d(-50%, -50%, 30px) rotateX(-10deg);
 }
 .card.enemy .current .hp span {
   background: #ed8c8c;
@@ -473,7 +476,6 @@
 .card.dragTargetClone.fromMap .portrait .img,
 .card.dragTargetClone.fromMap .portrait .overlay {
   height: 265px;
-  background-size: 225%;
 }
 .map .card .current,
 .card.dragTargetClone.fromMap .current {
