@@ -149,15 +149,18 @@ game.skills.pud = {
   ult: {
     cast: function (skill, source, target) {
       var channelDuration = skill.data('channel');
-      source.addClass('channeling').data('channeling', channelDuration);
+      source.addClass('channeling');
+      source.data('channeling', channelDuration);
       source.data('dismember', {
         target: target,
         skill: skill
       });
       source.on('channel', game.skills.pud.ult.channel);
+      source.on('channelEnd', game.skills.pud.ult.channelEnd);
       source.addBuff(source, skill.data('buff'));
       source.addBuff(target, skill.data('buff'));
       target.addClass('disabled');
+      source.trigger('channel', {source: source});
     },
     channel: function (event, eventData) {
       var source = eventData.source;
@@ -165,16 +168,14 @@ game.skills.pud = {
       var target = data.target;
       var skill = data.skill;
       var duration = source.data('channeling');
-      if (duration) {
-        var type = skill.data('type');
-        var dot = skill.data('dot');
-        if (game.mode !== 'library') game.audio.play('pud/ult-channel');
-        source.damage(dot, target, type);
-      } else {
-        game.skills.pud.ult.channelEnd(source, target);
-      }
+      var type = skill.data('damage type');
+      var dot = skill.data('dot');
+      source.damage(dot, target, type);
+      if (game.mode == 'library' && game.states.table.el.hasClass('unturn')) {}
+      else game.audio.play('pud/ult-channel');
     },
     channelEnd: function (source, target) {
+      source.data('dismember', null);
       source.removeBuff('pud-ult');
       target.removeBuff('pud-ult').removeClass('disabled');
     }

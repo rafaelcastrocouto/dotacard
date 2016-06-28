@@ -10,12 +10,12 @@ game.states.loading = {
     this.el.append(this.box);
   },
   start: function () {
-    game.states.loading.package();
-    if (window.AudioContext) game.audio.build();
     game.language.load(function () {
       game.states.loading.updated();
       game.states.loading.data();
     });
+    game.states.loading.package();
+    if (window.AudioContext) game.audio.build();
     game.states.loading.ping(function () {
       if (!game.offline) game.states.loading.analytics();
     });

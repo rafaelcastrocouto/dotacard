@@ -38,20 +38,22 @@ game.tutorial = {
       }
     }, 400);
   },
-  chooseStart: function () {
+  chooseStart: function (hero) {
+    if (hero) game.states.choose.selectHero(hero);
+    else game.states.choose.selectFirst();
     game.states.choose.pickedbox.show();
   },
   pick: function () {
     var availableSlots = $('.slot.available').length;
     game.tutorial.axebaloon.hide().fadeIn('slow');
     if (availableSlots === 4) {
-      game.tutorial.message.html(game.data.ui.axeheroes);
+      game.tutorial.message.html(game.data.ui.axechooseorder);
     } else if (availableSlots === 3) {
-      game.tutorial.message.html(game.data.ui.axeautodeck);
+      game.tutorial.message.html(game.data.ui.axeheroes);
     } else if (availableSlots === 2) {
-      game.tutorial.message.html(game.data.ui.axecardsperturn);
+      game.tutorial.message.html(game.data.ui.axeautodeck);
     } else if (availableSlots === 1) {
-      game.tutorial.message.html(game.data.ui.axemaxcards);
+      game.tutorial.message.html(game.data.ui.axemana);
     }
     game.player.mana = game.states.choose.mana();
     game.player.manaBuild();

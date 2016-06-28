@@ -7,7 +7,7 @@ game.chat = {
       }).appendTo(game.states.menu.el);
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
       game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 42}).keydown(function (e) { if (e.which === 13)  game.chat.send();});
-      game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text('Send');
+      game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
       game.chat.icon = $('<span>').text('Chat').addClass('chat-icon').appendTo(game.chat.el);
       setInterval(function () {
         game.db({ 'get': 'chat' }, function (chat) {

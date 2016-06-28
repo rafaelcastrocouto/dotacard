@@ -70,10 +70,9 @@ game.library = {
     game.player.kills = 0;
     game.enemy.kills = 0;
     game.turn.build();
+    game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
     game.timeout(400, function () {
-      game.states.table.el.removeClass('unturn');
-      game.turn.beginPlayer();
-      game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
+      game.timeout(400, game.online.beginPlayer);
     });
   },
   placePlayerHeroes: function () {

@@ -47,9 +47,7 @@ game.turn = {
       } else { card.trigger('enemyturnstart', { target: card }); }
       card.reduceStun();
     });
-    var ms = 800;
-    if (unturn === 'unturn' && game.mode === 'library') ms = 200;
-    game.timeout(ms, function () {
+    game.timeout(800, function () {
       game.turn.el.removeClass('show');
       if (unturn === 'turn') {
         game.states.table.el.removeClass('unturn');
@@ -87,8 +85,16 @@ game.turn = {
         card.heal(heal);
       });
       $('.card.heroes').each(function () {
-        var hero = $(this);
-        if (hero.data('channeling')) { hero.trigger('channel', { source: hero }); }
+        var hero = $(this),
+            duration = hero.data('channeling');
+        if (duration) { 
+          var channel = hero.data('channel');
+          if (duration === channel) {
+            duration -= 1;
+            hero.data('channeling', duration);
+          }
+          else hero.trigger('channel', { source: hero }); 
+        }
         hero.trigger('turnend', { target: hero });
       });
       if (unturn === 'unturn' &&

@@ -44,7 +44,7 @@ game.states.choose = {
       card.addClass('selected');
       if (game.mode !== 'library') card.addClass('draggable');
       else game.library.select(card, recover);
-      game.states.choose.pickDeck.css('margin-left', card.index() * card.width() / 2 * -1);
+      game.states.choose.pickDeck.css('margin-left', card.index() * -100);
       if (!card.hasClass('dead')) localStorage.setItem('choose', card.data('hero'));
     }
   },

@@ -37,7 +37,7 @@
     },
     "ult": {
       "name": "Campo Congelante",
-      "channel": 5,
+      "channel": 3,
       "type": "Canalização",
       "targets": ["Próprio"],
       "range": "Longe",
@@ -327,11 +327,11 @@
     },
     "ult": {
       "name": "Desmembrar",
-      "channel": true,
+      "channel": 3,
       "type": "Canalização",
       "targets": ["Inimigos"],
       "range": "Perto",
-      "dot": 6,
+      "dot": 10,
       "damage type": "Mágico",
       "cards": 2,
       "display": true,

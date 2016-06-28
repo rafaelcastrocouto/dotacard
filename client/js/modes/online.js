@@ -249,7 +249,6 @@ game.online = {
       game.turn.build();
       if (game.player.type === 'challenger') {
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
-        game.states.table.el.addClass('unturn');
         game.timeout(2000, game.turn.beginEnemy);
       } else {
         game.states.table.el.removeClass('unturn');

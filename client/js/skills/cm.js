@@ -90,7 +90,8 @@ game.skills.cm = {
       if (!game.states.table.el.hasClass('unturn')) {
           game.states.table.animateCast(skill, spot, game.states.table.playerCemitery);
       }
-      source.on('channel', game.skills.cm.ult.channel).data('cm-ult', skill);
+      source.on('channel', game.skills.cm.ult.channel);
+      source.data('cm-ult', skill);
       source.trigger('channel', {source: source});
     },
     channel: function (event, eventdata) {

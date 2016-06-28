@@ -12,7 +12,7 @@ game.states.table = {
     this.skip = $('<div>').appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
     this.surrender = $('<div>').appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', this.surrenderClick);
     this.back = $('<div>').hide().appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).on('mouseup touchend', this.backClick);
-    this.el.append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
+    this.el.addClass('unturn').append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
     game.tower.place();
@@ -69,13 +69,13 @@ game.states.table = {
     $('<h1>').appendTo(this.resultsbox).text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
     game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');
     game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results enemy');
-    $('.player.heroes.card').not('.zoom').each(function () {
+    $('.map .player.heroes.card').each(function () {
       var hero = $(this), heroid = $(this).data('hero'),
         img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
         text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
       $('<p>').appendTo(game.states.table.playerResults).addClass(heroid+' heroes').append(img, text);
     });
-    $('.enemy.heroes.card').not('.zoom').each(function () {
+    $('.map .enemy.heroes.card').each(function () {
       var hero = $(this), heroid = $(this).data('hero'),
         img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
         text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
@@ -114,6 +114,7 @@ game.states.table = {
     $('.table .deck').remove();
     $('.table .resultsbox').remove();
     this.selectedArea.removeClass('flip');
+    this.el.addClass('unturn');
     game.clearTimeouts();
   },
   end: function () {

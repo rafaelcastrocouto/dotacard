@@ -36,7 +36,7 @@
     },
     "ult": {
       "name": "Freezing Field",
-      "channel": 5,
+      "channel": 3,
       "type": "Channel",
       "targets": ["Self"],
       "range": "Long",
@@ -326,11 +326,11 @@
     },
     "ult": {
       "name": "Dismember",
-      "channel": 2,
+      "channel": 3,
       "type": "Channel",
       "targets": ["Enemy"],
       "range": "Melee",
-      "dot": 6,
+      "dot": 10,
       "damage type": "Magical",
       "cards": 2,
       "display": true,

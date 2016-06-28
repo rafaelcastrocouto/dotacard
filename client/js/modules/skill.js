@@ -31,7 +31,7 @@ game.skill = {
         }
         channelDuration = skill.data('channel');
         if (channelDuration) {
-          source.data('channeling', channelDuration).addClass('channeling');
+          source.data('channeling', channelDuration).data('channel', channelDuration).addClass('channeling');
           source.on('channel', function (event, eventdata) {
             channeler = eventdata.source;
             duration = channeler.data('channeling');
@@ -70,7 +70,7 @@ game.skill = {
       game.skills[hero][skillid].passive(skill, target);
       if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
         game.audio.play(hero + '/' + skillid);
-      }
+      } else game.audio.play('activate');
       if (skill.hasClass('enemy')) game.enemy.hand -= 1;
       game.timeout(400, function () {
         if (this.target.hasClass('selected')) { this.target.select({force: true}); }

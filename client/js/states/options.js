@@ -28,7 +28,7 @@ game.states.options = {
     $('<label>').appendTo(this.audio).append($('<span>').text(game.data.ui.sounds)).append(this.soundsinput);
     $(document).on('mouseup.volume', game.audio.volumeMouseUp);
     this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({title: game.data.ui.back}).on('mouseup touchend', game.states.backState);
-    this.opt = $('<small>').addClass('opt').hide().text('Options').appendTo(game.topbar).on('mouseup touchend', function () {game.states.changeTo('options');});
+    this.opt = $('<small>').addClass('opt').hide().text(game.data.ui.options).appendTo(game.topbar).on('mouseup touchend', function () {game.states.changeTo('options');});
     this.el.append(this.menu);
     game.screen.rememberResolution();
     game.audio.rememberVolume();
