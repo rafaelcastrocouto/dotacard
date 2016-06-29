@@ -37,7 +37,7 @@ game.states = {
           localStorage.setItem('state', state);
           if (newstate.chat && game.backState !== 'log') game.chat.el.appendTo(newstate.el);
           newstate.el.append(game.topbar).removeClass('hidden');
-        }, 105);
+        }, 305);
       }
       game.currentState = state;
       if (pre != 'loading' && pre != 'noscript') {
