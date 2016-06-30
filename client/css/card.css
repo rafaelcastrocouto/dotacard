@@ -378,18 +378,34 @@
   z-index: 8;
 }
 
-.table .selectedarea.flip:hover {
+.selectedarea .selectedcard {
+  width: 220px;
+  height: 330px;
+  transition: all 0.3s;
+  backface-visibility: hidden;
+  transform-style: preserve-3d;
+}
+.selectedarea .selectedcard.flip {
+  transform: rotateY(-180deg);
+}
+.selectedarea .selectedcard.flip:hover {
   z-index: 11;
 }
 .table .selectedarea .card {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(1.1) rotateY(-180deg);
-  backface-visibility: hidden;
-  transition: all 0.3s;
+  transform: translate3d(-50%, -50%, -1px) scale(1.1, 1.1) rotateY(180deg);
+  transition: all 0.15s;
 }
-.table .selectedarea .card:hover .img {
+.table .selectedarea.flip .card {
+  transform: translate(-50%, -50%) scale(1.1);
+}
+.table .selectedarea.flip:hover .card {
+  backface-visibility: visible; /* blurry fix */
+  transform: translate(-88%, -12%) scale(1.86);
+}
+.table .selectedarea.flip:hover .card .img {
   image-rendering: pixelated;
 }
 .table .selectedarea .cardback {
@@ -404,20 +420,8 @@
   border-radius: 8px;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(1.1);
-  backface-visibility: hidden;
+  transform: translate3d(-50%, -50%, 1px) scale(1.1);
   transition: all 0.3s;
-}
-
-.table .selectedarea.flip .card {
-  transform: translate(-50%, -50%) scale(1.1);
-}
-.table .selectedarea.flip .cardback {
-  transform: translate(-50%, -50%) scale(1.1) rotateY(180deg);
-}
-.table .selectedarea.flip:hover .card {
-  backface-visibility: visible; /* blurry fix */
-  transform: translate(-88%, -12%) scale(1.86);
 }
 .table .selectedarea .card .damaged,
 .table .selectedarea .card .heal {

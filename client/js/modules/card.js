@@ -124,26 +124,24 @@ game.card = {
   },
   select: function (event) {
     var card = $(this).closest('.card'); //console.trace('card select', card[0].className);
-    if ((card) && 
-        ( (event && event.force) ||
-          !card.hasClasses('attacktarget casttarget targetarea dead') )) {
-      game.card.unselect(function (del) {
+    if ((card) && (game.selectedCard ? card[0] !== game.selectedCard[0] : true) &&
+        ( (event && event.force) || !card.hasClasses('attacktarget casttarget targetarea dead') )) {
+      card.addClass('selected draggable');
+      game.card.unselect(function () {
+        var card = this;
         game.selectedCard = card;
         if (game.mode == 'tutorial') {
             if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
             else game.highlight.map();
         } else game.highlight.map();
-        card.clone().css({'transform': ''}).appendTo(game.states.table.selectedArea).addClass('zoom').removeClass('tutorialblink dead').clearEvents();
-        card.addClass('selected draggable');
+        game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink dead draggable dragTarget').clearEvents();
         card.trigger('select', { card: card });
-        game.timeout(del ? 300 : 0, function () {
-          game.states.table.selectedArea.addClass('flip');
-        });
-      }, event ? event.force : null);
+        game.states.table.selectedCard.addClass('flip');
+      }.bind(card), event ? event.force : null, true);
     }
     return card;
   },
-  unselect: function (cb, force) {
+  unselect: function (cb, force, select) {
     if (game.mode == 'library' && game.states.table.el.hasClass('unturn') && !force) {
       //console.trace(cb);
     } else {
@@ -153,12 +151,16 @@ game.card = {
       }
       game.skill.aoe = null;
       game.selectedCard = null;
-      game.states.table.selectedArea.removeClass('flip');
-      var del = $('.selectedarea .card');
-      if (del.length) setTimeout(del.remove.bind(del), 300);
-      if (cb && typeof(cb) == 'function') {
-        cb(!!del.length); 
-      }
+      game.states.table.selectedCard.removeClass('flip');
+      if (game.states.table.selectedClone && select) {
+        game.timeout(300, function () {
+          if (game.states.table.selectedClone) {
+            game.states.table.selectedClone.remove();
+            game.states.table.selectedClone = null;
+          }
+          if (cb && typeof(cb) == 'function') cb();
+        });
+      } else if (cb && typeof(cb) == 'function') cb();
     }
   },
   move: function (destiny) {

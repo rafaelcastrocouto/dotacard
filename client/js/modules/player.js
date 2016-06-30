@@ -1,8 +1,7 @@
 game.player = {
   manaBuild: function () {
     game.player.maxCards = Math.round(game.player.mana / 2);
-    game.player.cardsPerTurn = 1 + Math.round(game.player.mana / 10);
-    game.player.maxCards = Math.round(game.player.mana / 2);
+    game.player.cardsPerTurn = Math.round(game.player.mana / 5);
     game.player.skills = {};
   },
   buyCard: function () {

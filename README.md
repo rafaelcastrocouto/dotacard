@@ -12,17 +12,25 @@
 
 [7]: https://github.com/rafaelcastrocouto/dotacard/issues/9
 
+[8]: http://steamcommunity.com/sharedfiles/filedetails/?id=500624204
+
+[9]: http://dotacard.ga
+
 
 [![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
 
 [![Gitter](https://badges.gitter.im/Join Chat.svg)][6]
 
-[<h2>DOTACARD pre-alpha</h2>][1]
+[<h2>dotacard.ga</h2>][9]
 
 
 A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
 
 You are free to [fork][2] and help to build the game, you can even make a hero and [win real cash!][7]
+
+
+
+[![Steam Greenlight Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/greenlight-banner.png)][8]
 
 Please report any [sugestions or issues][4]
 
@@ -34,4 +42,4 @@ More information on how to play, setup your own server and more on our [Wiki pag
 
 _Powered by_
 
-[![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/banner-poweredby.jpg)][1]
+[![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/poweredby-banner.jpg)][1]

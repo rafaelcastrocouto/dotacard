@@ -234,7 +234,6 @@ game.highlight = {
   },
   clearMap: function () {
     game.states.table.map.removeClass('aoe');
-    $('.map .card').clearEvents('highlight').removeClass('source attacktarget casttarget targetarea');
-    $('.map .spot').clearEvents('highlight').removeClass('movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
+    $('.map .card, .map .spot').clearEvents('highlight').removeClass('source attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
   }
 };

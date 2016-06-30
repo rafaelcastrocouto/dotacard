@@ -30,8 +30,8 @@
   border-radius: 10px;
   perspective: 600px;
   z-index: 9;
+  transform: translateZ(0);
 }
-
 
 .table .buttonbox .button {
   position: absolute;

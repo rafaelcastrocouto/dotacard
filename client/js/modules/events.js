@@ -22,8 +22,9 @@ game.events = {
       top: event.clientY
     };
     if (event.originalEvent && event.originalEvent.changedTouches) {
-      position.left = event.originalEvent.changedTouches[0].clientX;
-      position.top = event.originalEvent.changedTouches[0].clientY;
+      var last = event.originalEvent.changedTouches.length - 1;
+      position.left = event.originalEvent.changedTouches[last].clientX;
+      position.top = event.originalEvent.changedTouches[last].clientY;
     }
     return position;
   },
@@ -35,7 +36,8 @@ game.events = {
           cardOffset = card.offset(), fromMap = '';
       if (card.closest('.map').length) fromMap = ' fromMap';
       game.events.dragging = card;
-      game.events.dragClone = card.clone().removeClass('dragTarget').hide().addClass('dragTargetClone ' + game.currentState + fromMap).appendTo(game.container);
+      game.events.draggingPosition = position;
+      game.events.dragClone = card.clone().hide().removeClass('dragTarget').addClass('dragTargetClone ' + game.currentState + fromMap).appendTo(game.container);
       game.events.dragOffset = {
         left: game.offset.left + (position.left - cardOffset.left),
         top: game.offset.top + (position.top - cardOffset.top)
@@ -43,8 +45,10 @@ game.events = {
     }
   },
   move: function(event) {
-    if (game.events.dragging) {
-      var position = game.events.getCoordinates(event);
+    var position = game.events.getCoordinates(event);
+    if (game.events.dragging && 
+        position.left !== game.events.draggingPosition.left &&
+        position.top !== game.events.draggingPosition.top) {
       game.events.dragging.addClass('dragTarget');
       game.events.dragClone.css({
         left: (position.left - game.events.dragOffset.left) + 'px',
@@ -66,8 +70,13 @@ game.events = {
   },
   clearEvents: function(name) {
     //console.trace('clear', name);
-    if (name) this.off('mousedown.' + name + ' mouseup.' + name + ' touchstart.' + name + ' touchend.' + name + ' mouseenter.' + name + ' mouseleave.' + name);
-    else this.off('mousedown mouseup touchstart touchend mouseenter mouseleave');
+    var events = 'mousedown mouseup touchstart touchend mouseenter mouseleave';
+    if (name) {
+      var n = '.'+name+' ',
+          events_dot_name = events.split(' ').join(n) + n;
+      this.off(events_dot_name);
+    }
+    else this.off(events);
     return this;
   },
   cancel: function(event) {
