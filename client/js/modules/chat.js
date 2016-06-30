@@ -13,7 +13,7 @@ game.chat = {
         game.db({ 'get': 'chat' }, function (chat) {
           game.chat.update(chat, true);
         });
-      }, 5000);
+      }, 2000);
     }
   },
   joined: function () {

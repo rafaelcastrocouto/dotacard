@@ -32,9 +32,9 @@
 
 .chat:hover, .chat.hover {
   top: auto;
-  bottom: 4px;
+  bottom: 0;
   left: 0;
-  height: 561px;
+  height: 500px;
   z-index: 12;
   width: 450px;
 }
@@ -51,7 +51,7 @@
 
 .chat .messages {
   height: calc(100% - 95px);
-  overflow-y: scroll;
+  overflow: hidden;
   padding: 4px;
   background: rgba(255,255,255,0.5);
   margin: 4px 2px;

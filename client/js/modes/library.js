@@ -161,13 +161,18 @@ game.library = {
     if (unturn === 'unturn') {
       game.tower.attack('player');
       game.turn.end('unturn');
+    } else {
+      if (!game.library.firstSelect) {
+        game.library.firstSelect = true;
+        game.library.hero.select();
+      }
     }
   },
   action: function () {
     $(this).addClass('done');
     if (game.turn.noAvailableMoves()) {
       game.states.table.el.addClass('unturn');
-      game.timeout(600, function () {
+      game.timeout(400, function () {
         game.turn.end('turn');
       });
     }

@@ -29,8 +29,13 @@ game.states = {
       var newstate,
         pre = game.currentState,
         oldstate = game.states[pre];
-      if (oldstate && oldstate.el) oldstate.el.addClass('hidden');
-      if (oldstate && oldstate.end) oldstate.end();
+      if (oldstate) {
+        setTimeout(function () {
+          if (this.el) this.el.addClass('hidden');
+          if (this.end) this.end();
+        }.bind(oldstate), 100);
+      }
+      
       newstate = game.states[state];
       if (newstate.el) {
         setTimeout(function () {

@@ -68,7 +68,7 @@ http.createServer(function(request, response) {
         var msg = query.data;
         msg = msg.substring(0, 42);
         chat.unshift(msg);
-        chat = chat.slice(0, 240);
+        chat = chat.slice(0, 7);
         send(response, JSON.stringify({messages: chat}));
         return;
       } //DEFAULT SET
