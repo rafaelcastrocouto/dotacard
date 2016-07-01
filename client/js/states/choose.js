@@ -63,6 +63,7 @@ game.states.choose = {
     if (!pick.data('disable') &&
         game.states.choose.pickEnabled &&
         game.mode !== 'library') {
+      game.states.choose.mydeck.attr('disabled', true);
       game.audio.play('activate');
       if (slot.hasClass('available')) {
         slot.removeClass('available');

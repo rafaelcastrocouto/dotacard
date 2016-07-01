@@ -18,11 +18,13 @@ game.enemy = {
       }
     }
   },
-  move: function () {
+  move: function (cb) {
     game.message.text(game.data.ui.enemymove);
     game.enemy.skills.deck.addClass('slide');
     var from, to, m, move, source, target, targets, hero, skillid, skill,
-      moves = game.currentData.moves.split('|');
+      //last = game.currentData.moves.length - 1,
+      moves = game.currentData.moves/*[last]*/.split('|');
+    game.moves.push(game.currentData.moves);
     for (m = 0; m < moves.length; m += 1) {
       move = moves[m].split(':');
       if (move[1] && move[2]) {
@@ -81,6 +83,6 @@ game.enemy = {
         }
       }
     }
-    if (game.mode == 'online') { setTimeout(game.online.endEnemyTurn, game.enemy.playtime * 1000); }
+    if (cb) { setTimeout(cb, game.enemy.playtime * 1000); }
   }
 };

@@ -29,7 +29,7 @@
       "range": "Ranged",
       "duration": 2,
       "dot": 4,
-      "damageT type": "Magical",
+      "damage type": "Magical",
       "cards": 5,
       "display": true,
       "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time"
@@ -47,7 +47,7 @@
       "damage type": "Magical",
       "cards": 1,
       "display": true,
-      "description": "Rylai channels icy explosions around her!"
+      "description": "Rylai channels a storm of icy explosions around her"
     }
   },
 
@@ -344,8 +344,8 @@
       "type": "Active",
       "targets": ["Spot"],
       "aoe": "Linear",
-      "aoewidth": 0,
-      "aoerange": 3,
+      "aoe width": 0,
+      "aoe range": 3,
       "cards": 4,
       "display": true,
       "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"

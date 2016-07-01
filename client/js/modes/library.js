@@ -72,7 +72,7 @@ game.library = {
     game.turn.build();
     game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
     game.timeout(400, function () {
-      game.timeout(400, game.online.beginPlayer);
+      game.online.beginPlayer(game.library.startTurn);
     });
   },
   placePlayerHeroes: function () {
@@ -185,7 +185,7 @@ game.library = {
   },
   endTurn: function (unturn) {
     if (unturn === 'unturn') 
-         game.turn.beginPlayer();
-    else game.turn.beginEnemy();
+         game.turn.beginPlayer(game.library.startTurn);
+    else game.turn.beginEnemy(game.library.startTurn);
   }
 };

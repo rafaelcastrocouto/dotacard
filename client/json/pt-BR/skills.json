@@ -1,5 +1,4 @@
 {
-
   "cm": {
     "slow": {
       "name": "Explosão Cristalina",
@@ -71,7 +70,7 @@
       "display": true,
       "description": "Invoca um poderoso Espírito Urso companheiro"
     },
-    "return": {
+    "bearreturn": {
       "name": "Retornar",
       "deck": "Temporária",
       "type": "Ativa",
@@ -84,9 +83,6 @@
       "name": "Raiva",
       "type": "Ativa",
       "targets": ["Próprio"],
-      "range": "Perto",
-      "aoe": "Radial",
-      "aoe range": "Perto",
       "damage bonus": 3,
       "duration": 3,
       "cards": 5,
@@ -97,6 +93,9 @@
       "name": "Rugido Feroz",
       "type": "Passiva",
       "targets": ["Próprio"],
+      "range": "Perto",
+      "aoe": "Radial",
+      "aoe range": "Perto",
       "cards": 3,
       "display": true,
       "description": "Ruge de forma tão feroz que os inimigos fogem de medo"
@@ -318,8 +317,8 @@
       "name": "Armadura de Corpos",
       "type": "Passiva",
       "targets": ["Próprio"],
-      "resistance bonus": 9,
-      "hp bonus": 1,
+      "percentage": 12,
+      "hp bonus": 3,
       "damage bonus": 1,
       "cards": 1,
       "display": true,

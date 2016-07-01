@@ -104,7 +104,7 @@
   "lose": "Game Over!",
   "leave": "Sure you wanna leave?",  
   "error": "Internal error",
-  "reload": "Connection to the setver was lost. Reload?",
+  "reload": "Connection to the server was lost. Reload?",
   "hp": "Hit points",
   "damage": "Damage",
   "armor": "Armor",

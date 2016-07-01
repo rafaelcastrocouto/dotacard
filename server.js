@@ -42,73 +42,58 @@ http.createServer(function(request, response) {
   if (pathname === 'db') {
     response.setHeader('Content-Type', 'application/json');
     var query = urlObj.query;
-    if (query.set){
-      //console.log('set: '+ query.set);
-      //WAITING
-      if (query.set === 'waiting'){
-        if (waiting.id === 'none'){
-          //console.log('Player' + waiting);
-          send(response, JSON.stringify(waiting));
-          waiting = query.data;
+    if (query.set){ //console.log('set: '+ query.set);
+      switch (query.set) {
+        case 'waiting':
+          if (waiting.id === 'none'){
+            //console.log('Player' + waiting);
+            send(response, JSON.stringify(waiting));
+            waiting = query.data;
+          } else {
+            //console.log('Online game started');
+            send(response, waiting);
+            waiting = {id: 'none'};
+          }
           return;
-        } else {
-          //console.log('Online game started');
-          send(response, waiting);
+        case 'back': //console.log('Choose back click')
           waiting = {id: 'none'};
+          send(response, JSON.stringify(waiting));
           return;
-        }
-      } else if (query.set === 'back') {
-        //console.log('Choose back click')
-        waiting = {id: 'none'};
-        send(response, JSON.stringify(waiting));
-        return;
+        case 'chat':
+          var msg = query.data;
+          msg = msg.substring(0, 42);
+          chat.unshift(msg);
+          chat = chat.slice(0, 7);
+          send(response, JSON.stringify({messages: chat}));
+          return;
+        default: //console.log('set', query.data)
+          db.set(query.set, query.data, function(data){
+            send(response, data);
+          });
+          return;
       }
-      //CHAT
-      else if (query.set === 'chat'){
-        var msg = query.data;
-        msg = msg.substring(0, 42);
-        chat.unshift(msg);
-        chat = chat.slice(0, 7);
-        send(response, JSON.stringify({messages: chat}));
-        return;
-      } //DEFAULT SET
-      else {
-        //console.log('set', query.data)
-        db.set(query.set, query.data, function(data){
-          send(response, data);
-        });
-        return;
+    } else if (query.get) { //console.log('get: '+ query.get);
+      switch (query.get) {
+        case 'server':
+          send(response, JSON.stringify({status: 'online'}));
+          return;
+        case 'chat':
+          send(response, JSON.stringify({messages: chat}));
+          return;
+        case 'lang':
+          send(response, JSON.stringify({lang: request.headers['accept-language'] || ''})); 
+          return;
+        default:
+          db.get(query.get, function(data) {
+            send(response, data); //console.log('get', data) 
+          });
+          return;
       }
-    } else if (query.get){
-      //console.log('get: '+ query.get);
-      //STATUS
-      if (query.get === 'server') { 
-        send(response, JSON.stringify({status: 'online'})); 
-        return;
-      }
-      //CHAT
-      if (query.get === 'chat') { 
-        send(response, JSON.stringify({messages: chat}));
-        return;
-      }
-      //LANGUAGE
-      if (query.get === 'lang') { 
-        send(response, JSON.stringify({lang: request.headers['accept-language'] || ''})); 
-        return;
-      }
-      //DEFAULT GET
-      db.get(query.get, function(data){ 
-        send(response, data);
-        //console.log('get', data) 
-      });
-      return;
-      //DB CHECK
-    } else { 
+    } else {
       send(response, 'Db works!');
       return;
     }
-  }
-  else { //STATIC
+  } else { //STATIC
     clientServer(request, response, function onNext(err) {
       rootServer(request, response, function onNext(err) {
         response.statusCode = 404;

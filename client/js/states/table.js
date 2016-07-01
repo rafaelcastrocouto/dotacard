@@ -85,7 +85,7 @@ game.states.table = {
     });
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
       game.clear();
-      game.timeout(1000, function () {
+      game.timeout(150, function () {
         game.states.changeTo('menu');
       });
     });
@@ -121,6 +121,6 @@ game.states.table = {
   },
   end: function () {
     this.time.hide();
-    game.turn.msg.hide();
+    if (game.turn.msg) game.turn.msg.hide();
   }
 };
