@@ -26,30 +26,26 @@ game.states.table = {
     this.time.show();
     this.camera.show();
     this.selectedArea.show();
+    this.selectedCard.removeClass('flip');
     if (game.mode) game[game.mode].setTable();
   },
   enableUnselect: function () {
     game.states.table.el.on('mousedown touchstart', function (event) { 
       var target = $(event.target); 
-      if (!target.closest('.selected').length && 
-          !target.closest('.selectedarea').length &&
-          !target.closest('.movearea').length &&
-          !target.closest('.attacktarget').length &&
-          !target.closest('.targetarea').length &&
-          !target.closest('.casttarget').length &&
-          !target.closest('.button').length) {
+      if (!target.closest('.card, .movearea, .targetarea').length) {
         game.card.unselect(event);
         if (game[game.mode].unselected) game[game.mode].unselected(event);
       }
     });
   },
   animateCast: function (skill, target) {
-    //todo: remove 'top/left', use only 'transform' to improve performance
     if (typeof target === 'string') { target = $('#' + target); }
-    var t = skill.offset(), d = target.offset();
+    var s = skill.offset(), t = target.offset();
+    var x = t.left - s.left, y = t.top - s.top;
+    //todo: remove 'top/left', use only 'transform' to improve performance
     skill.css({
-      top: d.top - t.top + 30,
-      left: d.left - t.left + 20,
+      top: y + 30,
+      left: x + 20, 
       transform: 'translate(-50%, -50%) scale(0.3)'
     });
     game.timeout(400, function () {

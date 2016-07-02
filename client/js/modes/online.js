@@ -248,8 +248,8 @@ game.online = {
       game.states.table.back.hide();
       game.turn.build();
       game.moves = [];
-      //game.online.setData('moves', []);
       if (game.player.type === 'challenger') {
+        game.states.table.el.addClass('unturn');
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         setTimeout(game.online.beginEnemy, 2000);
       } else {
@@ -265,7 +265,7 @@ game.online = {
         name: 'heroes',
         filter: game.player.picks,
         cb: function (deck) {
-          deck.addClass('player').appendTo(game.states.table.player);
+          deck.addClass('player').hide().appendTo(game.states.table.player);
           var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
@@ -347,9 +347,6 @@ game.online = {
   startTurn: function (unturn) {
     $('.card .damaged').remove();
     $('.card .heal').remove();
-    if (game.player.turn === 6) {
-      $('.card', game.states.table.playerUlts).appendTo(game.player.skills.deck); 
-    }
     game.turn.counter = game.timeToPlay;
     game.timeout(1000, function () { 
       game.turn.count(unturn, function () {

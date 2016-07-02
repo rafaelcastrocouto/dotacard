@@ -11,7 +11,8 @@ game.skills.am = {
       var source = eventdata.source;
       var target = eventdata.target;
       var hero = target.data('hero');
-      var side = source.data('side'); console.log(target.data('mana'));
+      var side = source.data('side');
+      var mana = target.data('mana') || 0;
       game.audio.play('am/burn');
       if (hero) {
         var damage = source.data('current damage') + target.data('mana');

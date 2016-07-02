@@ -76,7 +76,7 @@
   display: inline-block;
   /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   text-align: left;
-  transition: all 0.39s;
+  transition: all 0.3s;
   padding: 0;
   width: 200px;
   height: 300px;
@@ -381,12 +381,13 @@
 .selectedarea .selectedcard {
   width: 220px;
   height: 330px;
-  transition: all 0.3s;
+  transition: all 0.2s;
   backface-visibility: hidden;
   transform-style: preserve-3d;
+  transform: rotateY(-180deg);
 }
 .selectedarea .selectedcard.flip {
-  transform: rotateY(-180deg);
+  transform: rotateY(0);
 }
 .selectedarea .selectedcard.flip:hover {
   z-index: 11;
@@ -395,17 +396,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, -1px) scale(1.1, 1.1) rotateY(180deg);
-  transition: all 0.15s;
+  transform: translate3d(-50%, -50%, 1px) scale(1.1, 1.1);
 }
-.table .selectedarea.flip .card {
-  transform: translate(-50%, -50%) scale(1.1);
-}
-.table .selectedarea.flip:hover .card {
-  backface-visibility: visible; /* blurry fix */
+.table .selectedarea .selectedcard.flip .card:hover {
   transform: translate(-88%, -12%) scale(1.86);
 }
-.table .selectedarea.flip:hover .card .img {
+.table .selectedarea .selectedcard.flip .card:hover .img {
   image-rendering: pixelated;
 }
 .table .selectedarea .cardback {
@@ -420,8 +416,7 @@
   border-radius: 8px;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 1px) scale(1.1);
-  transition: all 0.3s;
+  transform: translate3d(-50%, -50%, -1px) scale(1.1) rotateY(180deg);;
 }
 .table .selectedarea .card .damaged,
 .table .selectedarea .card .heal {
@@ -439,13 +434,15 @@
   transform: translate3d(-50%, -50%, 2px);
 }
 
-.map .card:hover {
-  transform: translate3d(-50%, -50%, 30px) rotateX(-10deg);
-}
+.map .card:hover,
 .map .card.selected,
 .map .card.source {
   transform: translate3d(-50%, -50%, 30px) rotateX(-10deg);
 }
+.map .card.done.selected {
+  transform: translate3d(-50%, -50%, 0) rotateX(0);
+}
+
 .card.enemy .current .hp span {
   background: #ed8c8c;
   color: white;

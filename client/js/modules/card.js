@@ -41,9 +41,6 @@ game.card = {
       data['current hp'] = data.hp;
       $('<p>').addClass('hp').appendTo(current).html('HP <span>' + data.hp + '</span>');
     }
-    if (data.mana) {
-      $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
-    }
     range = '';
     if (data.damage) {
       if (data.range) {
@@ -61,6 +58,9 @@ game.card = {
     }
     if (data.resistance) {
       $('<p>').appendTo(desc).text(game.data.ui.resistance + ': ' + data.resistance + '%').addClass('resistance');
+    }
+    if (data.mana) {
+      $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
     }
     if (data.type) {
       $('<p>').appendTo(desc).text(game.data.ui.type + ': ' + data.type);
@@ -111,9 +111,7 @@ game.card = {
     return card;
   },
   place: function (target) {
-    if (!target.removeClass) {
-      target = $('#' + target);
-    }
+    if (!target.removeClass) target = $('#' + target);
     this.closest('.spot.block').removeClass('block').addClass('free');
     this.parent().find('.fx').each(function () {
       $(this).appendTo(target);
@@ -122,46 +120,41 @@ game.card = {
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
-  select: function (event) {
-    var card = $(this).closest('.card'); //console.trace('card select', card[0].className);
-    if ((card) && (game.selectedCard ? card[0] !== game.selectedCard[0] : true) &&
-        ( (event && event.force) || !card.hasClasses('attacktarget casttarget targetarea dead') )) {
-      card.addClass('selected draggable');
+  select: function () {//console.trace('card select', card[0].className);
+    var card = $(this).closest('.card'); 
+    if (card && 
+        !card.hasClasses('attacktarget casttarget targetarea dead') &&
+        (!event || !card.hasClass('selected'))) {
       game.card.unselect(function () {
         var card = this;
         game.selectedCard = card;
+        card.trigger('select', { card: card });
+        card.addClass('selected draggable');
         if (game.mode == 'tutorial') {
             if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
             else game.highlight.map();
         } else game.highlight.map();
         game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink dead draggable dragTarget').clearEvents();
-        card.trigger('select', { card: card });
         game.states.table.selectedCard.addClass('flip');
-      }.bind(card), event ? event.force : null, true);
+      }.bind(card));
     }
     return card;
   },
-  unselect: function (cb, force, select) {
-    if (game.mode == 'library' && game.states.table.el.hasClass('unturn') && !force) {
-      //console.trace(cb);
-    } else {
-      game.highlight.clearMap();
-      if (game.selectedCard) {
-        game.selectedCard.removeClass('selected draggable');
-      }
-      game.skill.aoe = null;
-      game.selectedCard = null;
-      game.states.table.selectedCard.removeClass('flip');
-      if (game.states.table.selectedClone && select) {
-        game.timeout(300, function () {
-          if (game.states.table.selectedClone) {
-            game.states.table.selectedClone.remove();
-            game.states.table.selectedClone = null;
-          }
-          if (cb && typeof(cb) == 'function') cb();
-        });
-      } else if (cb && typeof(cb) == 'function') cb();
-    }
+  unselect: function (cb) {
+    game.highlight.clearMap();
+    if (game.selectedCard) game.selectedCard.removeClass('selected draggable');
+    game.selectedCard = null;
+    game.states.table.selectedCard.removeClass('flip');
+    if (game.states.table.selectedClone) {
+      game.timeout(200, function () {
+        if (game.states.table.selectedClone) {
+          game.states.table.selectedClone.remove();
+          game.states.table.selectedClone = null;
+        }
+        if (cb && typeof(cb) == 'function') cb();
+      });
+    } else if (cb && typeof(cb) == 'function') cb();
+    
   },
   move: function (destiny) {
     if (typeof destiny === 'string') { destiny = $('#' + destiny); }
@@ -188,17 +181,13 @@ game.card = {
       if (card.data('movement bonus')) card.data('movement bonus', false);
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
-      game.timeout(390, function () {
+      game.timeout(300, function () {
 //         this.card.parent().find('.fx').each(function () {
 //           $(this).appendTo(this.destiny);
 //         });
         this.card.css({ transform: '' }).prependTo(this.destiny).addClass('draggable').on('mousedown touchstart', game.card.select);
-//        game.highlight.map();
         $('.map .spot').data('detour', false);
-      }.bind({
-        card: card,
-        destiny: destiny
-      }));
+      }.bind({ card: card, destiny: destiny }));
     }
     return card;
   },
@@ -215,7 +204,7 @@ game.card = {
     $('<div>').appendTo(buff).addClass('overlay');
     buff.data('source', this);
     target.find('.buffs').append(buff);
-    if (target.hasClass('selected')) { target.select({force: true}); }
+    if (target.hasClass('selected')) { target.select(); }
     return buff;
   },
   hasBuff: function (buff) {
@@ -227,7 +216,7 @@ game.card = {
     $.each(buffs.split(' '), function () {
       var buff = this;
       target.find('.buffs .' + buff).remove();
-      if (target.hasClass('selected')) { target.select({force: true}); }
+      if (target.hasClass('selected')) { target.select(); }
     });
     return this;
   },
@@ -243,16 +232,20 @@ game.card = {
         description: 'Unit is stunned and cannot move, attack or cast'
       });
       target.addClass('stunned').data('stun', stun);
+      if (target.hasClass('selected')) { target.select(); }
     }
     return this;
   },
   reduceStun: function () {
-    var hero = this, currentstun;
-    if (hero.hasClass('stunned')) {
-      currentstun = parseInt(hero.data('stun'), 10);
+    var target = this, currentstun;
+    if (target.hasClass('stunned')) {
+      currentstun = parseInt(target.data('stun'), 10);
       if (currentstun > 0) {
-        hero.data('stun', currentstun - 1);
-      } else { hero.trigger('stunend', { target: hero }).data('stun', null).removeClass('stunned').removeBuff('stun'); }
+        target.data('stun', currentstun - 1);
+      } else { 
+        target.trigger('stunend', { target: target }).data('stun', null).removeClass('stunned').removeBuff('stun');
+        if (target.hasClass('selected')) { target.select(); }
+      }
     }
     return this;
   },
@@ -263,21 +256,21 @@ game.card = {
     damage = parseInt(damage, 10);
     this.find('.current .damage span').text(damage);
     this.data('current damage', damage);
-    if (this.hasClass('selected')) { this.select({force: true}); }
+    if (this.hasClass('selected')) { this.select(); }
     return this;
   },
   setCurrentHp: function (hp) {
     if (hp < 1) { hp = 0; }
     this.find('.current .hp span').text(hp);
     this.data('current hp', hp);
-    if (this.hasClass('selected')) { this.select({force: true}); }
+    if (this.hasClass('selected')) { this.select(); }
     return this;
   },
   setHp: function (hp) {
     if (hp < 1) { hp = 0; }
     this.find('.desc .hp').text(hp);
     this.data('hp', hp);
-    if (this.hasClass('selected')) { this.select({force: true}); }
+    if (this.hasClass('selected')) { this.select(); }
     return this;
   },
   setArmor: function (armor) {
@@ -412,6 +405,8 @@ game.card = {
       var deaths = target.data('deaths') + 1;
       target.data('deaths', deaths);
       target.find('.deaths').text(deaths);
+      if (target.hasClass('selected')) { target.select(); }
+      else if (source.hasClass('selected')) { source.select(); }
     }
   },
   die: function (evt) {
@@ -421,7 +416,6 @@ game.card = {
     var pos = game.map.getPosition(this), deaths,
       spot = $('#' + pos);
     if (!spot.hasClass('cript')) { spot.removeClass('block').addClass('free'); }
-    if (this.hasClass('selected')) { this.select(); }
     if (this.hasClass('hero')) {
       deaths = this.data('deaths') + 1;
       this.data('deaths', deaths);

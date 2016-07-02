@@ -209,8 +209,8 @@
     },
     "ult": {
       "name": "Reincarnation",
-      "type": "Automatic",
-      "targets": ["Enemy"],
+      "type": "Passive",
+      "targets": ["Self"],
       "duration": 3,
       "aoe": "Radial",
       "aoe range": "Melee",

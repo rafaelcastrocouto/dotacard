@@ -138,7 +138,7 @@
       "targets": ["Próprio"],
       "cards": 1,
       "display": true,
-      "description": "A cada ataque o AnitMage obriga o oponente a descartar uma habilidade da unidade atacada"
+      "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
     },
     "shield": {
       "name": "Escudo Antimagia",
@@ -177,7 +177,7 @@
     "stun": {
       "name": "Explosão Maldita",
       "type": "Ativa",
-      "targets": ["Enemy"],
+      "targets": ["Inimigos"],
       "range": "Médio",
       "damage": 10,
       "damage type": "Mágico",
@@ -290,7 +290,7 @@
     "hook": {
       "name": "Gancho de Carne",
       "type": "Ativa",
-      "target": ["Local"],
+      "targets": ["Local"],
       "aoe": "Linear",
       "aoe width": 0,
       "aoe range": 3,

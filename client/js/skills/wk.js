@@ -95,7 +95,7 @@ game.skills.wk = {
       var damage = source.data('current damage');
       var chance = skill.data('chance') / 100;
       var bonus = skill.data('percentage') / 100;
-      if (/*game.random() < chance*/1) {
+      if (game.random() < chance) {
         game.audio.play('crit');
         damage *= bonus;
         source.data({

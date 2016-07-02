@@ -46,11 +46,9 @@ game.skill = {
         if (source.hasClass('enemy')) {
           game.enemy.hand -= 1;
         } else {
-          game.timeout(400, function () {
-            game.skill.aoe = '';
-            if (this.target.hasClass('selected')) { this.target.select({force: true}); }
-            //$('.map .spot, .map .card').off('mouseover.highlight mouseleave.highlight');
+          game.timeout(300, function () {
             if (game.mode !== 'library') this.skill.discard();
+            else game.card.unselect(null, true);
           }.bind({source: source, skill: skill, target: target}));
         }
       }
@@ -72,9 +70,11 @@ game.skill = {
         game.audio.play(hero + '/' + skillid);
       } else game.audio.play('activate');
       if (skill.hasClass('enemy')) game.enemy.hand -= 1;
-      game.timeout(400, function () {
-        if (this.target.hasClass('selected')) { this.target.select({force: true}); }
+      game.timeout(300, function () {
         this.skill.detach();
+        game.highlight.clearMap();
+        if (this.target.data('side') === 'player') this.target.select();
+        else if (this.target.hasClass('selected')) this.target.select();
       }.bind({target: target, skill: skill}));
     }
     return this;
@@ -98,12 +98,16 @@ game.skill = {
       if (skill.hasClass('enemy')) {
         game.enemy.hand -= 1;
       }
-      if (target.hasClass('selected')) { target.select({force: true}); }
+      game.timeout(300, function () {
+        if (this.target.data('side') === 'player') this.target.select();
+        else if (this.target.hasClass('selected')) this.target.select();
+      }.bind({target: target, skill: skill}));
     }
     return this;
   },
   discard: function () {
     if (this.hasClass('skill')) {
+      game.card.unselect(null, true);
       this.trigger('discard', {target: this});
       if (this.hasClass('player')) {
         this.appendTo(game.player.skills.cemitery);

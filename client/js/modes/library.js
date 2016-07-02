@@ -69,10 +69,13 @@ game.library = {
     game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
     game.player.kills = 0;
     game.enemy.kills = 0;
+    game.library.firstSelect = false;
     game.turn.build();
     game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
     game.timeout(400, function () {
-      game.online.beginPlayer(game.library.startTurn);
+      game.turn.beginPlayer(function () {
+        game.library.startTurn('turn');
+      });
     });
   },
   placePlayerHeroes: function () {
@@ -89,7 +92,6 @@ game.library = {
         card.on('action', game.library.action).on('death', function (e, evt) {
           game.timeout(450, function (e) {
             var card = $(this), o = $('#E5');
-            card.unselect();
             if (!card.hasBuff('wk-ult')) {
               if (o.hasClass('free')) card.place(o);
               else card.place(e.spot);
@@ -126,7 +128,7 @@ game.library = {
     game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
     game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
-    game.player.skills.cemitery = $('<div>').appendTo(game.states.table.player).addClass('player deck skills cemitery');
+    game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
     var hero = game.library.hero.data('hero');
     game.player.skills.deck = game.deck.build({
       name: 'skills',
@@ -158,14 +160,18 @@ game.library = {
     });
   },
   startTurn: function (unturn) {
-    if (unturn === 'unturn') {
-      game.tower.attack('player');
-      game.turn.end('unturn');
-    } else {
+    if (unturn === 'turn') {
       if (!game.library.firstSelect) {
         game.library.firstSelect = true;
         game.library.hero.select();
       }
+    } else {
+      game.tower.attack('player');
+      //if (playEnemy) game.states.table.el.removeClass('unturn');
+      //else ...
+      game.turn.end('unturn', function () {
+        game.library.endTurn('unturn');
+      });
     }
   },
   action: function () {
@@ -173,19 +179,29 @@ game.library = {
     if (game.turn.noAvailableMoves()) {
       game.states.table.el.addClass('unturn');
       game.timeout(400, function () {
-        game.turn.end('turn');
+        game.turn.end('turn', function () {
+          game.library.endTurn('turn');
+        });
       });
     }
   },
   skip: function () {
     if (!game.states.table.el.hasClass('unturn')) {
       game.states.table.el.addClass('unturn');
-      game.turn.end('turn');
+      game.turn.end('turn', function () {
+        game.library.endTurn('turn');
+      });
     }
   },
   endTurn: function (unturn) {
-    if (unturn === 'unturn') 
-         game.turn.beginPlayer(game.library.startTurn);
-    else game.turn.beginEnemy(game.library.startTurn);
+    if (unturn === 'unturn') {
+      game.turn.beginPlayer(function () {
+        game.library.startTurn('turn');
+      });
+    } else {
+      game.turn.beginEnemy(function () {
+        game.library.startTurn('unturn');
+      });
+    }
   }
 };

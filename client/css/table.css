@@ -7,13 +7,8 @@
   transform: translateZ(0);
 }
 
-.table .player.heroes.deck {
-  width: 160px;
-  left: 10px;
-}
 .table .player.skills.sidehand.deck {
-  left: 150px;
-  width: 160px;
+  width: 310px;
 }
 
 .table .player.skills.hand {

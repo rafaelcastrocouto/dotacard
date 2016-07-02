@@ -233,6 +233,10 @@ game.highlight = {
     }
   },
   clearMap: function () {
+    game.skill.aoe = null;
+    game.skill.aoerange = null;
+    game.skill.aoewidth = null;
+    game.skill.aoecastrange = null;
     game.states.table.map.removeClass('aoe');
     $('.map .card, .map .spot').clearEvents('highlight').removeClass('source attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
   }
