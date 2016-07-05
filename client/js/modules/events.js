@@ -70,7 +70,7 @@ game.events = {
   },
   clearEvents: function(name) {
     //console.trace('clear', name);
-    var events = 'mousedown mouseup touchstart touchend mouseenter mouseleave';
+    var events = 'mousedown mouseup touchstart touchend mouseover mouseleave';
     if (name) {
       var n = '.'+name+' ',
           events_dot_name = events.split(' ').join(n) + n;

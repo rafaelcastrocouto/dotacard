@@ -3,7 +3,7 @@ var game = {
   dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
-  message: $('<span>').addClass('message').html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen.</a>'),
+  message: $('<span>').addClass('message').html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen.'),
   triesCounter: $('<small>').addClass('triescounter'),
   timeToPick: 25,
   timeToPlay: 30,
@@ -68,13 +68,18 @@ var game = {
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
   },
   setMode: function (mode, recover) {
-    game.mode = mode;
-    localStorage.setItem('mode', mode);
-    if (mode) game[mode].build(recover);
+    if (mode) {
+      game.mode = mode;
+      localStorage.setItem('mode', mode);
+      game[mode].build(recover);
+    }
   },
   clear: function () {
+    if (game.backState && game.states[game.backState].clear) game.states[game.backState].clear();
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+    game.mode = false;
+    localStorage.removeItem('mode');
   },
   confirm: function (cb) {
     swal({
@@ -100,7 +105,7 @@ var game = {
   reset: function () {
     game.error(function(confirmed) { 
       if (confirmed) {
-        game.setMode('');
+        game.clear();
         localStorage.setItem('state', 'menu');
         location.reload(true);
       }

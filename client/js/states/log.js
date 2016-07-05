@@ -1,7 +1,10 @@
 game.states.log = {
   remembername: true,
   build: function () {
-    this.box = $('<div>').addClass('box').prepend($('.logo').clone());
+    this.box = $('<div>').addClass('box');
+    this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
+    this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
+    this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
     this.title = $('<h1>').appendTo(this.box).text(game.data.ui.choosename);
     this.form = $('<form>').appendTo(this.box).on('submit', function (event) { event.preventDefault(); return false; });
     this.input = $('<input>').appendTo(this.form).attr({placeholder: game.data.ui.logtype, type: 'text', required: 'required', minlength: 3, maxlength: 24, tabindex: 1}).keydown(function (event) { if (event.which === 13) { game.states.log.login(); } });
@@ -14,12 +17,12 @@ game.states.log = {
     this.el.append(this.box);
   },
   start: function () {
-    game.message.html('Version <small class="version">' + game.version + '</small>');
+    game.message.html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen. <small class="version">Version ' + game.version + '</small>');
     game.states.log.out.hide();
     game.states.options.opt.show();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
-    game.setMode('');
+    game.clear();
     game.timeout(200, function () {
       game.states.log.input.focus();
     });

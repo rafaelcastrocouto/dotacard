@@ -1,8 +1,12 @@
 game.enemy = {
   playtime: 3,
   manaBuild: function () {
+    game.enemy.mana = 0;
+    $('.map .enemy.heroes').each(function (i, card) {
+      game.enemy.mana += $(card).data('mana');
+    });
     game.enemy.maxCards = Math.round(game.enemy.mana / 2);
-    game.enemy.cardsPerTurn = 1 + Math.round(game.enemy.mana / 10);
+    game.enemy.cardsPerTurn = Math.round(game.enemy.mana / 5);
     game.enemy.hand = 0;
     game.enemy.skills = {};
   },
@@ -22,9 +26,8 @@ game.enemy = {
     game.message.text(game.data.ui.enemymove);
     game.enemy.skills.deck.addClass('slide');
     var from, to, m, move, source, target, targets, hero, skillid, skill,
-      //last = game.currentData.moves.length - 1,
-      moves = game.currentData.moves/*[last]*/.split('|');
-    game.moves.push(game.currentData.moves);
+      moves = game.currentMoves.split('|');
+    if (game.moves) game.moves.push(game.currentData.moves);
     for (m = 0; m < moves.length; m += 1) {
       move = moves[m].split(':');
       if (move[1] && move[2]) {

@@ -80,10 +80,7 @@ game.states.table = {
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
-      game.clear();
-      game.timeout(150, function () {
-        game.states.changeTo('menu');
-      });
+      game.states.changeTo('menu');
     });
   },
   skipClick: function () {
@@ -95,15 +92,16 @@ game.states.table = {
     }
   },
   surrenderClick: function () {
+    //online && tutorial
     game.confirm(function(confirmed) {
       if (confirmed && game.mode && game[game.mode].surrender) game[game.mode].surrender();
       else game.reset();
     });
   },
   backClick: function () {
-    //tutorial only
+    //library only
     game.clear();
-    game.setMode(game.mode);
+    game.setMode('library');
     game.states.changeTo('choose');
   },
   clear: function () {

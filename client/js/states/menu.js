@@ -26,6 +26,6 @@ game.states.menu = {
     game.triesCounter.text('');
     game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');    
     game.states.log.out.show();
-    game.setMode('');
+    game.clear();
   }
 };

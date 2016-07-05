@@ -13,17 +13,28 @@ game.highlight = {
       if (game.selectedCard.hasClasses('hero unit')) {
         game.selectedCard.strokeAttack();
         if (!game.states.table.el.hasClass('unturn')) {
-          if (game.tutorial.lesson != 'Enemy' && 
-              game.tutorial.lesson != 'Unselect') {
+          if (game.mode == 'tutorial') {
+            if (game.tutorial.lesson == 'Move') {
+              game.selectedCard.highlightMove();
+            } else if (game.tutorial.lesson == 'Attack') {
+              game.selectedCard.highlightAttack();
+            }
+          } else {
             game.selectedCard.highlightMove();
+            game.selectedCard.highlightAttack();
           }
-          game.selectedCard.highlightAttack();
         }
       } else if (game.selectedCard.hasClass('skill')) {
         game.selectedCard.highlightSource();
         game.selectedCard.strokeSkill();
         if (!game.states.table.el.hasClass('unturn')) {
-          game.selectedCard.highlightTargets();
+          if (game.mode == 'tutorial') {
+            if (game.tutorial.lesson == 'Skill' && game.selectedCard.hasClass('am-shield') ||
+                game.tutorial.lesson == 'Toggle' && game.selectedCard.hasClass('pud-rot') ||
+                game.tutorial.lesson == 'Cast' && game.selectedCard.hasClass('cm-slow')) {
+              game.selectedCard.highlightTargets();
+            }
+          } else game.selectedCard.highlightTargets();
         }
       } else if (game.selectedCard.hasClass('tower')) {
         game.selectedCard.strokeAttack();
@@ -177,6 +188,15 @@ game.highlight = {
     }
     return card;
   },
+  strokeAttack: function () {
+    var card = this, pos, range;
+    if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
+      pos = game.map.getPosition(card);
+      range = game.map.getRange(card.data('range'));
+      game.map.radialStroke(pos, range, card.data('side') + 'attack');
+    }
+    return card;
+  },
   strokeSkill: function () {  
     var skill = this,
       hero = skill.data('hero'),
@@ -196,7 +216,7 @@ game.highlight = {
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
         game.states.table.map.addClass('aoe');
-        $('.map .spot, .map .card').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
+        $('.map .spot').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
       if (skill.data('range')) {
         game.map.radialStroke(pos, game.map.getRange(skill.data('range')), 'skillarea');
@@ -204,32 +224,28 @@ game.highlight = {
     }
     return skill;
   },
-  strokeAttack: function () {
-    var card = this, pos, range;
-    if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
-      pos = game.map.getPosition(card);
-      range = game.map.getRange(card.data('range'));
-      game.map.radialStroke(pos, range, card.data('side') + 'attack');
-    }
-    return card;
-  },
   hover: function (event) {
+    var spot = $(this);
     if (game.states.table.map.hasClass('aoe')) {
-      var spot = $(this);
-      $('.map .spot').removeClass('skillarea skillcast top right left bottom');
-      if (!spot.hasClass('targetarea') || event.type === 'mouseleave') {
-        if (game.skill.aoe === 'Linear') {
-          game.map.crossStroke(game.castpos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
-        } else if (game.skill.aoe === 'Radial') {
-          game.map.radialStroke(game.castpos, game.skill.aoerange, 'skillarea');
-        }
-      } else {
-        if (game.skill.aoe === 'Linear') {
-          game.map.linearStroke(game.map.getPosition(spot), game.skill.aoerange, game.skill.aoewidth, 'skillcast');
-        } else if (game.skill.aoe === 'Radial') {
-          game.map.radialStroke(game.map.getPosition(spot), game.skill.aoecastrange, 'skillcast');
-        }
-      }
+      $('.map .spot').removeClass('skillarea skillcast stroke top right left bottom');
+      if (spot.hasClass('targetarea') || spot.find('.casttarget').length) {
+        game.highlight.strokeAtCursor(spot);
+      } else game.highlight.strokeAtCaster();
+      
+    }
+  },
+  strokeAtCursor: function (spot) {
+    if (game.skill.aoe === 'Linear') {
+      game.map.linearStroke(game.map.getPosition(spot), game.skill.aoerange, game.skill.aoewidth, 'skillcast');
+    } else if (game.skill.aoe === 'Radial') {
+      game.map.radialStroke(game.map.getPosition(spot), game.skill.aoecastrange, 'skillcast');
+    }
+  },
+  strokeAtCaster: function () {
+    if (game.skill.aoe === 'Linear') {
+      game.map.crossStroke(game.castpos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
+    } else if (game.skill.aoe === 'Radial') {
+      game.map.radialStroke(game.castpos, game.skill.aoerange, 'skillarea');
     }
   },
   clearMap: function () {
@@ -238,6 +254,6 @@ game.highlight = {
     game.skill.aoewidth = null;
     game.skill.aoecastrange = null;
     game.states.table.map.removeClass('aoe');
-    $('.map .card, .map .spot').clearEvents('highlight').removeClass('source attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
+    $('.map .card, .map .spot').clearEvents('highlight').removeClass('source stroke attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
   }
 };

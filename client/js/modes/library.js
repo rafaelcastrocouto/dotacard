@@ -1,7 +1,6 @@
 game.library = {
   build: function () {
-    if (!game.library.builded) {
-      game.library.builded = true;
+    if (!game.library.skills) {
       game.library.skills = game.deck.build({
         name: 'skills',
         display: true,
@@ -13,33 +12,32 @@ game.library = {
         }
       });
     }
-    game.library.start();
-  },
-  start: function () {
-    game.loader.removeClass('loading');
-    game.seed = new Date().valueOf();
-    game.id = btoa(game.seed);
-    game.message.text(game.data.ui.library);
-    game.states.choose.counter.show().text(game.data.ui.clickpick);
-    game.enemy.name = 'axe';
-    game.enemy.type = 'challenger';
-    game.player.type = 'challenged';
     game.states.choose.pickedbox.show();
     game.states.choose.librarytest.show();
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
-    game.states.choose.counter.text(game.data.ui.skills);
+    game.loader.removeClass('loading');
     $('.slot').removeClass('available');
+    game.library.start();
+  },
+  start: function () {
+    game.message.text(game.data.ui.library);
+    game.states.choose.counter.text(game.data.ui.skills);
+    game.seed = new Date().valueOf();
+    game.id = btoa(game.seed);
+    game.enemy.name = 'axe';
+    game.enemy.type = 'challenger';
+    game.player.type = 'challenged';
   },
   chooseStart: function (hero) {
-    if (hero) game.states.choose.selectHero(hero);
-    else game.states.choose.selectFirst();
+    if (hero) game.states.choose.selectHero(hero, 'force');
+    else game.states.choose.selectFirst('force');
   },
-  select: function (card, build) { 
+  select: function (card, force) { 
     var hero = card.data('hero'),
         heroSkills,
         disabled;
-    if (build || hero !== $('.choose .card.selected').data('hero')) {
+    if (force || hero !== $('.choose .card.selected').data('hero')) {
       game.player.picks = [hero];
       game.library.hero = card;
       disabled = card.hasClass('dead');
@@ -62,7 +60,6 @@ game.library = {
     }
     game.library.placePlayerHeroes();
     game.library.placeEnemyHeroes();
-    game.library.buildSkills();
     game.states.table.enableUnselect();
     game.states.table.surrender.hide();
     game.states.table.back.show();
@@ -73,13 +70,13 @@ game.library = {
     game.turn.build();
     game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));
     game.timeout(400, function () {
+      game.library.buildSkills();
       game.turn.beginPlayer(function () {
         game.library.startTurn('turn');
       });
     });
   },
   placePlayerHeroes: function () {
-    game.player.mana = 0;
     game.player.heroesDeck = game.deck.build({
       name: 'heroes',
       filter: game.player.picks,
@@ -87,8 +84,7 @@ game.library = {
         deck.addClass('player').appendTo(game.states.table.player);
         var card = deck.data('cards')[0];
         game.library.hero = card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select);
-        card.place(game.map.toId(4, 4));        
-        game.player.mana = card.data('mana');
+        card.place(game.map.toId(4, 4));
         card.on('action', game.library.action).on('death', function (e, evt) {
           game.timeout(450, function (e) {
             var card = $(this), o = $('#E5');
@@ -106,7 +102,6 @@ game.library = {
     });
   },
   placeEnemyHeroes: function () {
-    game.enemy.mana = 0;
     game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
     game.enemy.heroesDeck = game.deck.build({
       name: 'heroes',
@@ -118,7 +113,6 @@ game.library = {
           var p = game.enemy.picks.indexOf(card.data('hero'));
           card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select);
           card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
-          game.enemy.mana += card.data('mana');
         });
       }
     });
@@ -129,7 +123,9 @@ game.library = {
     game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
     game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
     game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
-    var hero = game.library.hero.data('hero');
+    var hero;
+    if (game.library.hero) hero = game.library.hero.data('hero');
+    else hero = localStorage.getItem('choose');
     game.player.skills.deck = game.deck.build({
       name: 'skills',
       filter: [hero],
@@ -203,5 +199,10 @@ game.library = {
         game.library.startTurn('unturn');
       });
     }
+  },
+  clear: function () {
+    game.seed = 0;
+    game.id = null;
+    game.moves = [];
   }
 };

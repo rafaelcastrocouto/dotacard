@@ -130,10 +130,7 @@ game.card = {
         game.selectedCard = card;
         card.trigger('select', { card: card });
         card.addClass('selected draggable');
-        if (game.mode == 'tutorial') {
-            if (card.hasClass('skill') && game.tutorial.lesson != 'Skill') {}
-            else game.highlight.map();
-        } else game.highlight.map();
+        game.highlight.map();
         game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink dead draggable dragTarget').clearEvents();
         game.states.table.selectedCard.addClass('flip');
       }.bind(card));

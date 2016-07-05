@@ -114,14 +114,19 @@ noscript {
   opacity: 1;
 }
 
-
 .game-container {
   position: absolute;
+  width: 970px;
+  height: 600px;
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   z-index: 2;
   color: #fff;
+  background: url("../img/banner.jpg");
+  background-size: 111%;
+  background-position: 50%;
+  border-radius: 4px;
 }
 
 .hidden {
@@ -169,18 +174,23 @@ noscript {
   100% {right: 3000px}
 }
 
+.loading .box {
+  width: 230px;
+  top: 92%;
+  padding: 0;
+}
+
+.box .loadtext {
+  margin-left: 0.5em;
+}
+
 .loadtext .message {
   margin-left: 8px;
 }
 
 .loadtext .message,
 .loadtext .progress {
-  position: relative;
-  bottom: 6px;
-}
-
-.states {
-  background-image: url("../img/bkg/polygon-light.jpg");
+  line-height: 22px;
 }
 
 .states, .state {
@@ -188,20 +198,13 @@ noscript {
   border-radius: 4px;
   width: 970px;
   height: 600px;
-  transform: translateZ(0);
 }
 
 .state {
   margin: 0 auto;
   position: relative;
   overflow: hidden;
-  border-radius: 4px;
-  transition: 0.1s opacity;
-  opacity: 1;
-}
-
-.state.hidden {
-  opacity: 0;
+  transform: translateZ(0);
 }
 
 .state p {

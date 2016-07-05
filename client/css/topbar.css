@@ -34,6 +34,7 @@
   border-radius: 50%;
   display: inline-block;
   visibility: hidden;
+  vertical-align: text-bottom;
 }
 .loader.loading {
   visibility: visible;

@@ -2,10 +2,7 @@ game.states.loading = {
   updating: 0,
   totalUpdate: 7, // language + ui.json + heroes.json + skills.json + buffs.json + package.json
   build: function () {
-    this.box = $('<div>').addClass('box');
-    this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
-    this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
-    this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
+    this.box = $('<div>').addClass('box');   
     this.h2 = $('<p>').appendTo(this.box).addClass('loadtext').html('<span class="loader loading"></span><span class="message">Updating: </span><span class="progress">0%</span>');
     this.el.append(this.box);
   },
@@ -27,13 +24,18 @@ game.states.loading = {
     if (game.states.loading.updating < game.states.loading.totalUpdate) {
       game.timeout(800, game.states.loading.progress);
     } else if (game.states.loading.updating === game.states.loading.totalUpdate) {
-      game.timeout(800, function () {
-        game.states.build();
-      });
+      game.states.loading.finished();
     }
   },
   updated: function () {
     game.states.loading.updating += 1;
+  },
+  finished: function () {
+    game.states.build(function () {
+      game.states.el.css('background-image','url("../img/bkg/polygon-light.jpg")');
+      game.chat.build();
+      game.history.recover();
+    });
   },
   json: function (name, cb) {
     $.ajax({

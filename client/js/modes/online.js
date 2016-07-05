@@ -1,20 +1,25 @@
 game.online = {
   build: function (recover) {
     game.loader.addClass('loading');
-    game.currentData = {};
+    game.states.choose.librarytest.hide();
+    game.states.choose.randombt.show().attr({disabled: true});
+    game.states.choose.mydeck.show().attr({disabled: true});
+    game.states.choose.pickedbox.hide();
     if (recover) game.online.recover();
-    else if (!game.online.builded) {
-      game.online.builded = true;
-      game.online.newId();
-      game.online.setData('id', game.id);
-      game.db({ // tell player wants to play
-        'set': 'waiting',
-        'data': game.currentData
-      }, function (waiting) {
-        if (waiting.id == 'none') game.online.wait();
-        else game.online.found(waiting);
-      });
-    }
+    else if (!game.online.builded) game.online.start();
+  },
+  start: function () {
+    game.online.builded = true;
+    game.currentData = {};
+    game.online.newId();
+    game.online.setData('id', game.id);
+    game.db({ // tell player wants to play
+      'set': 'waiting',
+      'data': game.currentData
+    }, function (waiting) {
+      if (waiting.id == 'none') game.online.wait();
+      else game.online.found(waiting);
+    });
   },
   newId: function () {
     game.seed = new Date().valueOf() + parseInt(Math.random() * 1000);
@@ -51,18 +56,7 @@ game.online = {
     localStorage.setItem('data', JSON.stringify(game.currentData));
   },
   chooseStart: function () {
-    if (!game.online.chooseStarted) {
-      game.online.chooseStarted = true;
-      game.states.choose.librarytest.hide();
-      game.states.choose.randombt.show().attr({disabled: true});
-      game.states.choose.mydeck.show().attr({disabled: true});
-      game.states.choose.pickedbox.hide();
-      game.states.choose.selectFirst();
-    }
-    if (game.currentData.status &&
-        game.currentData.status !== 'waiting') {
-      game.states.choose.pickedbox.show();
-    }
+    game.states.choose.selectFirst();
   },
   wait: function () {
     game.loader.addClass('loading');
@@ -133,16 +127,15 @@ game.online = {
   },
   pickCount: function () {
     game.states.choose.count -= 1;
-    if ($('.slot.available').length !== 0) {
+    if ($('.slot.available').length) {
       game.states.choose.counter.text(game.data.ui.pickdeck + ': ' + game.states.choose.count);
-    } else {
-      game.states.choose.counter.text(game.data.ui.startsin + ': ' + game.states.choose.count + ' ' + game.data.ui.cardsperturn + ': ' + game.player.cardsPerTurn);
     }
     if (game.states.choose.count < 0) {
       game.states.choose.counter.text(game.data.ui.getready);
       if (!game.online.picked) {
         game.states.choose.disablePick();
-        game.states.choose.randomFill(game.online.sendDeck);
+        game.states.choose.counter.text(game.data.ui.getready);
+        game.states.choose.randomFill(game.online.chooseEnd);
       }
     } else { game.timeout(1000, game.online.pickCount); }
   },
@@ -150,13 +143,14 @@ game.online = {
     if ($('.slot.available').length === 0) {
       if (!game.online.picked) {
         game.online.picked = true;
-        game.player.mana = game.states.choose.mana();
-        game.player.manaBuild();
-        game.states.choose.disablePick();
-        game.online.sendDeck();
+        game.online.chooseEnd();
       }
-      game.states.choose.counter.text(game.data.ui.startsin + ': ' + game.states.choose.count + ' ' + game.data.ui.cardsperturn + ': ' + game.player.cardsPerTurn);
-    } else { game.states.choose.counter.text(game.data.ui.pickdeck + ': ' + game.states.choose.count); }
+    }
+  },
+  chooseEnd: function () {
+    game.states.choose.disablePick();
+    game.states.choose.counter.text(game.data.ui.getready);
+    game.online.sendDeck(); 
   },
   sendDeck: function () {
     game.states.choose.pickDeck.css('margin-left', 0);
@@ -248,6 +242,7 @@ game.online = {
       game.states.table.back.hide();
       game.turn.build();
       game.moves = [];
+      game.timeout(400, game.library.buildSkills);
       if (game.player.type === 'challenger') {
         game.states.table.el.addClass('unturn');
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
@@ -260,7 +255,6 @@ game.online = {
   },
   placePlayerHeroes: function () {
     if (game.player.picks) {
-      game.player.mana = 0;
       game.player.heroesDeck = game.deck.build({
         name: 'heroes',
         filter: game.player.picks,
@@ -271,7 +265,6 @@ game.online = {
             var p = game.player.picks.indexOf(card.data('hero'));
             card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select).on('action', game.online.action);
             card.place(game.map.toId(x + p, y));
-            game.player.mana += card.data('mana');
           });
           game.timeout(400, game.online.buildSkills);
         }
@@ -280,7 +273,6 @@ game.online = {
   },
   placeEnemyHeroes: function () {
     if (game.enemy.picks) {
-      game.enemy.mana = 0;
       game.enemy.heroesDeck = game.deck.build({
         name: 'heroes',
         filter: game.enemy.picks,
@@ -291,7 +283,6 @@ game.online = {
             var p = game.enemy.picks.indexOf(card.data('hero'));
             card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select);
             card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
-            game.enemy.mana += card.data('mana');
           });
         }
       });
@@ -483,12 +474,12 @@ game.online = {
   },
   clear: function () {
     game.online.builded = false;
-    game.online.chooseStarted = false;
     game.online.started = false;
     game.seed = 0;
     game.id = null;
     game.moves = [];
-    localStorage.setItem('data', '');
-    localStorage.setItem('seed', '');
+    localStorage.removeItem('data');
+    localStorage.removeItem('seed');
+    localStorage.removeItem('challenge');
   }
 };

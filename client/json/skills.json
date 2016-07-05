@@ -1,4 +1,46 @@
 {
+  "am": {
+    "burn": {
+      "name": "Mana Break",
+      "type": "Passive",
+      "targets": ["Self"],
+      "cards": 1,
+      "display": true,
+      "description": "AntiMage attacks to enemy heroes have bonus damage equal to that hero mana and makes the enemy discard a skill card of that hero"
+    },
+    "shield": {
+      "name": "Spell Shield",
+      "type": "Passive",
+      "targets": ["Self"],
+      "percentage": 50,
+      "cards": 1,
+      "display": true,
+      "description": "Reduces all magic damage dealt to the AntiMage by half"
+    },
+    "blink": {
+      "name": "Blink",
+      "type": "Active",
+      "targets": ["Spot", "Free"],
+      "range": "Long",
+      "cards": 8,
+      "display": true,
+      "description": "Teleport AntiMage to the target spot"
+    },
+    "ult": {
+      "name": "Mana Void",
+      "type": "Active",
+      "targets": ["Enemy"],
+      "range": "Short",
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "damage type": "Magical",
+      "cards": 1,
+      "multiplier": 2,
+      "display": true,
+      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand (Max-Hand/2)"
+    }
+  },
+
   "cm": {
     "slow": {
       "name": "Crystal Nova",
@@ -48,6 +90,71 @@
       "cards": 1,
       "display": true,
       "description": "Rylai channels a storm of icy explosions around her"
+    }
+  },
+
+  "kotl": {
+    "illuminate": {
+      "name": "Illuminate",
+      "channel": 4,
+      "type": "Channel",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoe width": 1,
+      "aoe range": 5,
+      "damage": 5,
+      "damage type": "Magical",
+      "cards": 4,
+      "display": true,
+      "description": "Channels light to damage enemies in a line"
+    },
+    "leak": {
+      "name": "Mana Leak",
+      "type": "Active",
+      "targets": ["Enemy"],
+      "range": "Long",
+      "duration": 4,
+      "cards": 4,
+      "display": true,
+      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
+    },
+    "mana": {
+      "name": "Chakra Magic",
+      "type": "Active",
+      "targets": ["Ally", "Self"],
+      "range": "Ranged",
+      "cards": 4,
+      "display": true,
+      "description": "Gives the player two skill cards"
+    },
+    "ult": {
+      "name": "Spirit Form",
+      "type": "Active",
+      "targets": ["Self"],
+      "cards": 2,
+      "display": true,
+      "description": "Ezalor becomes one with the light!"
+    },
+    "blind": {
+      "name": "Blinding Light",
+      "deck": "Temporary",
+      "type": "Active",
+      "targets": ["Spot", "Self"],
+      "aoe": "Radial",
+      "aoe range": "Ranged",
+      "range": "Ranged",
+      "cards": 1,
+      "description": "Knock back and blind enemies, causing them to miss attacks"
+    },
+    "recall": {
+      "name": "Recall",
+      "deck": "Temporary",
+      "type": "Active",
+      "targets": ["Ally"],
+      "range": "Global",
+      "delay": 1,
+      "cards": 1,
+      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
     }
   },
 
@@ -131,158 +238,49 @@
     }
   },
 
-  "am": {
-    "burn": {
-      "name": "Mana Break",
-      "type": "Passive",
-      "targets": ["Self"],
-      "cards": 1,
-      "display": true,
-      "description": "AntiMage attacks to enemy heroes have bonus damage equal to that hero mana and makes the enemy discard a skill card of that hero"
-    },
-    "shield": {
-      "name": "Spell Shield",
-      "type": "Passive",
-      "targets": ["Self"],
-      "percentage": 50,
-      "cards": 1,
-      "display": true,
-      "description": "Reduces all magic damage dealt to the AntiMage by half"
-    },
-    "blink": {
-      "name": "Blink",
-      "type": "Active",
-      "targets": ["Spot", "Free"],
-      "range": "Long",
-      "cards": 8,
-      "display": true,
-      "description": "Teleport AntiMage to the target spot"
-    },
-    "ult": {
-      "name": "Mana Void",
-      "type": "Active",
-      "targets": ["Enemy"],
-      "range": "Short",
-      "aoe": "Radial",
-      "aoe range": "Ranged",
-      "damage type": "Magical",
-      "cards": 1,
-      "multiplier": 2,
-      "display": true,
-      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand (Max-Hand/2)"
-    }
-  },
-
-  "wk": {
+  "nyx": {
     "stun": {
-      "name": "Wraithfire Blast",
+      "name": "Impale",
       "type": "Active",
-      "targets": ["Enemy"],
-      "range": "Short",
-      "damage": 10,
-      "damage type": "Magical",
-      "dot duration": 2,
-      "dot": 4,
-      "stun duration": 2,
-      "cards": 7,
-      "display": true,
-      "description": "Stun and then damage over time and slows an enemy"
-    },
-    "lifesteal": {
-      "name": "Vampiric Aura",
-      "type": "Passive",
-      "targets": ["Self"],
-      "percentage": 30,
-      "cards": 1,
-      "display": true,
-      "description": "Drain the life of enemy on every attack"
-    },
-    "crit": {
-      "name": "Mortal Strike",
-      "type": "Passive",
-      "targets": ["Self"],
-      "chance": 15,
-      "percentage": 300,
-      "cards": 1,
-      "display": true,
-      "description": "Chance of critical damage"
-    },
-    "ult": {
-      "name": "Reincarnation",
-      "type": "Passive",
-      "targets": ["Self"],
-      "duration": 3,
-      "aoe": "Radial",
-      "aoe range": "Melee",
-      "delay": 2,
-      "cards": 1,
-      "display": true,
-      "description": "No one can kill the Wraith King!"
-    }
-  },
-
-  "kotl": {
-    "illuminate": {
-      "name": "Illuminate",
-      "channel": 4,
-      "type": "Channel",
       "targets": ["Spot"],
       "aoe": "Linear",
-      "aoe width": 1,
-      "aoe range": 5,
-      "damage": 5,
-      "damage type": "Magical",
+      "aoe width": 0,
+      "aoe range": 3,
       "cards": 4,
       "display": true,
-      "description": "Channels light to damage enemies in a line"
+      "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
     },
-    "leak": {
-      "name": "Mana Leak",
+    "burn": {
+      "name": "Mana Burn",
       "type": "Active",
       "targets": ["Enemy"],
-      "range": "Long",
-      "duration": 4,
-      "cards": 4,
-      "display": true,
-      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
-    },
-    "mana": {
-      "name": "Chakra Magic",
-      "type": "Active",
-      "targets": ["Ally", "Self"],
       "range": "Ranged",
-      "cards": 4,
+      "multiplier": 4,
+      "damage type": "Magical",
+      "cards": 8,
       "display": true,
-      "description": "Gives the player two skill cards"
+      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"
     },
-    "ult": {
-      "name": "Spirit Form",
+    "spike": {
+      "name": "Spiked Carapace",
       "type": "Active",
       "targets": ["Self"],
-      "cards": 2,
+      "duration": 2,
+      "damage type": "Pure",
+      "cards": 5,
       "display": true,
-      "description": "Ezalor becomes one with the light!"
+      "description": "Reflects and negates damage received, while stunning the source of damage"
     },
-    "blind": {
-      "name": "Blinding Light",
-      "deck": "Temporary",
+    "ult": {
+      "name": "Vendetta",
       "type": "Active",
-      "targets": ["Spot", "Self"],
-      "aoe": "Radial",
-      "aoe range": "Ranged",
-      "range": "Ranged",
+      "targets": ["Self"],
+      "duration": 8,
+      "damage": 20,
+      "damage type": "Physical",
       "cards": 1,
-      "description": "Knock back and blind enemies, causing them to miss attacks"
-    },
-    "recall": {
-      "name": "Recall",
-      "deck": "Temporary",
-      "type": "Active",
-      "targets": ["Ally"],
-      "range": "Global",
-      "delay": 1,
-      "cards": 1,
-      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
+      "display": true,
+      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"
     }
   },
 
@@ -338,49 +336,51 @@
     }
   },
 
-  "nyx": {
+  "wk": {
     "stun": {
-      "name": "Impale",
-      "type": "Active",
-      "targets": ["Spot"],
-      "aoe": "Linear",
-      "aoe width": 0,
-      "aoe range": 3,
-      "cards": 4,
-      "display": true,
-      "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
-    },
-    "burn": {
-      "name": "Mana Burn",
+      "name": "Wraithfire Blast",
       "type": "Active",
       "targets": ["Enemy"],
-      "range": "Ranged",
-      "multiplier": 4,
+      "range": "Short",
+      "damage": 10,
       "damage type": "Magical",
-      "cards": 8,
+      "dot duration": 2,
+      "dot": 4,
+      "stun duration": 2,
+      "cards": 7,
       "display": true,
-      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"
+      "description": "Stun and then damage over time and slows an enemy"
     },
-    "spike": {
-      "name": "Spiked Carapace",
-      "type": "Active",
+    "lifesteal": {
+      "name": "Vampiric Aura",
+      "type": "Passive",
       "targets": ["Self"],
-      "duration": 2,
-      "damage type": "Pure",
-      "cards": 5,
-      "display": true,
-      "description": "Reflects and negates damage received, while stunning the source of damage"
-    },
-    "ult": {
-      "name": "Vendetta",
-      "type": "Active",
-      "targets": ["Self"],
-      "duration": 8,
-      "damage": 20,
-      "damage type": "Physical",
+      "percentage": 30,
       "cards": 1,
       "display": true,
-      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"
+      "description": "Drain the life of enemy on every attack"
+    },
+    "crit": {
+      "name": "Mortal Strike",
+      "type": "Passive",
+      "targets": ["Self"],
+      "chance": 15,
+      "percentage": 300,
+      "cards": 1,
+      "display": true,
+      "description": "Chance of critical damage"
+    },
+    "ult": {
+      "name": "Reincarnation",
+      "type": "Passive",
+      "targets": ["Self"],
+      "duration": 3,
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "delay": 2,
+      "cards": 1,
+      "display": true,
+      "description": "No one can kill the Wraith King!"
     }
   }
 

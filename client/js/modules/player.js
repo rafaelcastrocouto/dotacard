@@ -1,5 +1,9 @@
 game.player = {
   manaBuild: function () {
+    game.player.mana = 0;
+    $('.map .player.heroes').each(function (i, card) {
+      game.player.mana += $(card).data('mana');
+    });
     game.player.maxCards = Math.round(game.player.mana / 2);
     game.player.cardsPerTurn = Math.round(game.player.mana / 5);
     game.player.skills = {};
@@ -92,7 +96,6 @@ game.player = {
     if (hero && skillid && 
         !game.states.table.el.hasClass('unturn')) {
       skill.toggle(target);
-      if (source.hasClass('player')) skill.addClass('done');
       if (game.mode == 'online') game.currentMoves.push('T:' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, target);
     }

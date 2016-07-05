@@ -6,9 +6,9 @@ game.map = {
     var map = $('<div>').addClass('map').css({width: game.width * 212, height: game.height * 312}), w, h, tr;
     for (h = 0; h < opt.height; h += 1) {
       game.map.spots[h] = [];
-      tr = $('<div>').addClass('row').appendTo(map);
+      tr = $('<div>').addClass('row ' + 'trow'+(h+1)).appendTo(map);
       for (w = 0; w < opt.width; w += 1) {
-        game.map.spots[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot').appendTo(tr).on('contextmenu', game.events.cancel);
+        game.map.spots[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot ' + 'row'+(h+1) + ' col'+game.map.letters[w]).appendTo(tr).on('contextmenu', game.events.cancel);
       }
     }
     game.map.builded = true;

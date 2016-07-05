@@ -1,4 +1,46 @@
 {
+  "am": {
+    "burn": {
+      "name": "Quebra de Mana",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "cards": 1,
+      "display": true,
+      "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
+    },
+    "shield": {
+      "name": "Escudo Antimagia",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "percentage": 50,
+      "cards": 1,
+      "display": true,
+      "description": "Reduz todo damo mágico pela metade"
+    },
+    "blink": {
+      "name": "Blink",
+      "type": "Ativa",
+      "targets": ["Local", "Livre"],
+      "range": "Longe",
+      "cards": 8,
+      "display": true,
+      "description": "Teleporta instantâneamente"
+    },
+    "ult": {
+      "name": "Mana Void",
+      "type": "Ativa",
+      "targets": ["Inimigos"],
+      "range": "Médio",
+      "aoe": "Radial",
+      "aoe range": "Perto",
+      "damage type": "Mágico",
+      "cards": 1,
+      "multiplier": 2,
+      "display": true,
+      "description": "Causa dano em área ao redor de uma unidade inimiga. O dano é igual a metade no número de cartas que o jogador poderia ter em suas mãos (Max-Hand/2)"
+    }
+  },
+
   "cm": {
     "slow": {
       "name": "Explosão Cristalina",
@@ -48,6 +90,71 @@
       "cards": 1,
       "display": true,
       "description": "Rylai canaliza uma tempestade de neve ao seu redor"
+    }
+  },
+
+  "kotl": {
+    "illuminate": {
+      "name": "Iluminar",
+      "channel": 4,
+      "type": "Canalização",
+      "targets": ["Local"],
+      "aoe": "Linear",
+      "aoe width": 1,
+      "aoe range": 5,
+      "damage": 5,
+      "damage type": "Mágico",
+      "cards": 4,
+      "display": true,
+      "description": "Canaliza luz causando dano em área"
+    },
+    "leak": {
+      "name": "Vazamento de Mana",
+      "type": "Ativa",
+      "targets": ["Inimigos"],
+      "range": "Longe",
+      "duration": 4,
+      "cards": 4,
+      "display": true,
+      "description": "Amaldiçoa uma unidade inimiga obrigando o inimigo a descartar uma carta de habilidade a cada movimento, caso o inimigo não tenha mais cartas a unidade é atordoada"
+    },
+    "mana": {
+      "name": "Magia do Chakra",
+      "type": "Ativa",
+      "target": ["Próprio", "Aliados"],
+      "ranges": "Distante",
+      "cards": 4,
+      "display": true,
+      "description": "O jogador compra duas cartas de habilidade"
+    },
+    "ult": {
+      "name": "Forma Espiritual",
+      "type": "Ativa",
+      "targets": ["Próprio"],
+      "cards": 2,
+      "display": true,
+      "description": "Ezalor se torna um com a luz!"
+    },
+    "blind": {
+      "name": "Luz Cegante",
+      "deck": "Temporária",
+      "type": "Ativa",
+      "targets": ["Local", "Próprio"],
+      "aoe": "Radial",
+      "aoe range": "Distante",
+      "range": "Distante",
+      "cards": 1,
+      "description": "Uma luz cegante arremessa as unidades inimigas, fazendo com que errem ataques."
+    },
+    "recall": {
+      "name": "Revocar",
+      "deck": "Temporária",
+      "type": "Ativa",
+      "targets": ["Aliados"],
+      "range": "Global",
+      "delay": 1,
+      "cards": 1,
+      "description": "Caso não sofra dano por um turno, teletransporta o herói alvo para a sua posição"
     }
   },
 
@@ -131,158 +238,49 @@
     }
   },
 
-  "am": {
-    "burn": {
-      "name": "Quebra de Mana",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "cards": 1,
-      "display": true,
-      "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
-    },
-    "shield": {
-      "name": "Escudo Antimagia",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "percentage": 50,
-      "cards": 1,
-      "display": true,
-      "description": "Reduz todo damo mágico pela metade"
-    },
-    "blink": {
-      "name": "Blink",
-      "type": "Ativa",
-      "targets": ["Local", "Livre"],
-      "range": "Longe",
-      "cards": 8,
-      "display": true,
-      "description": "Teleporta instantâneamente"
-    },
-    "ult": {
-      "name": "Mana Void",
-      "type": "Ativa",
-      "targets": ["Inimigos"],
-      "range": "Médio",
-      "aoe": "Radial",
-      "aoerange": "Distante",
-      "damage type": "Mágico",
-      "cards": 1,
-      "multiplier": 2,
-      "display": true,
-      "description": "Causa dano em área ao redor de uma unidade inimiga. O dano é igual a metade no número de cartas que o jogador poderia ter em suas mãos (Max-Hand/2)"
-    }
-  },
-
-  "wk": {
+  "nyx": {
     "stun": {
-      "name": "Explosão Maldita",
+      "name": "Impalar",
       "type": "Ativa",
-      "targets": ["Inimigos"],
-      "range": "Médio",
-      "damage": 10,
-      "damage type": "Mágico",
-      "dot duration": 2,
-      "dot": 4,
-      "stun duration": 2,
-      "cards": 7,
-      "display": true,
-      "description": "Atordoa e depois causa dano por turno à uma unidade inimiga"
-    },
-    "lifesteal": {
-      "name": "Aura Vampírica",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "percentage": 30,
-      "cards": 1,
-      "display": true,
-      "description": "Drena a vida dos inimigos a cada ataque"
-    },
-    "crit": {
-      "name": "Golpe Mortal",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "chance": 15,
-      "percentage": 300,
-      "cards": 1,
-      "display": true,
-      "description": "Chance de dano crítico"
-    },
-    "ult": {
-      "name": "Reencarnação",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "duration": 3,
-      "aoe": "Radial",
-      "aoe range": "Perto",
-      "delay": 2,
-      "cards": 1,
-      "display": true,
-      "description": "Ninguém pode matar o Rei!"
-    }
-  },
-
-  "kotl": {
-    "illuminate": {
-      "name": "Iluminar",
-      "channel": 4,
-      "type": "Canalização",
       "targets": ["Local"],
       "aoe": "Linear",
-      "aoe width": 1,
-      "aoe range": 5,
-      "damage": 5,
-      "damage type": "Mágico",
+      "aoe width": 0,
+      "aoe range": 3,
       "cards": 4,
       "display": true,
-      "description": "Canaliza luz causando dano em área"
+      "description": "Espinhos rochosos emergem da terra, unidades inimigas atingidas são atordoadas e recebem dano"
     },
-    "leak": {
-      "name": "Vazamento de Mana",
+    "burn": {
+      "name": "Mana Burn",
       "type": "Ativa",
       "targets": ["Inimigos"],
-      "range": "Longe",
-      "duration": 4,
-      "cards": 4,
+      "range": "Distante",
+      "multiplier": 4,
+      "damage type": "Mágico",
+      "cards": 8,
       "display": true,
-      "description": "Amaldiçoa uma unidade inimiga obrigando o inimigo a descartar uma carta de habilidade a cada movimento, caso o inimigo não tenha mais cartas a unidade é atordoada"
+      "description": "Causa dano ao alvo obriga o oponente a descartar uma habilidade do alvo"
     },
-    "mana": {
-      "name": "Magia do Chakra",
-      "type": "Ativa",
-      "target": ["Próprio", "Aliados"],
-      "ranges": "Distante",
-      "cards": 4,
-      "display": true,
-      "description": "O jogador compra duas cartas de habilidade"
-    },
-    "ult": {
-      "name": "Forma Espiritual",
+    "spike": {
+      "name": "Carapaça",
       "type": "Ativa",
       "targets": ["Próprio"],
-      "cards": 2,
+      "duration": 2,
+      "damage type": "Pure",
+      "cards": 5,
       "display": true,
-      "description": "Ezalor se torna um com a luz!"
+      "description": "Reflete e nega o dano recebido e atordoa o atacante"
     },
-    "blind": {
-      "name": "Luz Cegante",
-      "deck": "Temporária",
+    "ult": {
+      "name": "Vendetta",
       "type": "Ativa",
-      "targets": ["Local", "Próprio"],
-      "aoe": "Radial",
-      "aoe range": "Distante",
-      "range": "Distante",
+      "targets": ["Próprio"],
+      "duration": 8,
+      "damage": 20,
+      "damage type": "Physical",
       "cards": 1,
-      "description": "Uma luz cegante arremessa as unidades inimigas, fazendo com que errem ataques."
-    },
-    "recall": {
-      "name": "Revocar",
-      "deck": "Temporária",
-      "type": "Ativa",
-      "targets": ["Aliados"],
-      "range": "Global",
-      "delay": 1,
-      "cards": 1,
-      "description": "Caso não sofra dano por um turno, teletransporta o herói alvo para a sua posição"
+      "display": true,
+      "description": "Nyx Assassin fica invisível e o dano do seu próximo ataque é aumentado"
     }
   },
 
@@ -338,49 +336,51 @@
     }
   },
 
-  "nyx": {
+  "wk": {
     "stun": {
-      "name": "Impalar",
-      "type": "Ativa",
-      "targets": ["Local"],
-      "aoe": "Linear",
-      "aoe width": 0,
-      "aoe range": 3,
-      "cards": 4,
-      "display": true,
-      "description": "Espinhos rochosos emergem da terra, unidades inimigas atingidas são atordoadas e recebem dano"
-    },
-    "burn": {
-      "name": "Mana Burn",
+      "name": "Explosão Maldita",
       "type": "Ativa",
       "targets": ["Inimigos"],
-      "range": "Distante",
-      "multiplier": 4,
+      "range": "Médio",
+      "damage": 10,
       "damage type": "Mágico",
-      "cards": 8,
+      "dot duration": 2,
+      "dot": 4,
+      "stun duration": 2,
+      "cards": 7,
       "display": true,
-      "description": "Causa dano ao alvo obriga o oponente a descartar uma habilidade do alvo"
+      "description": "Atordoa e depois causa dano por turno à uma unidade inimiga"
     },
-    "spike": {
-      "name": "Carapaça",
-      "type": "Ativa",
+    "lifesteal": {
+      "name": "Aura Vampírica",
+      "type": "Passiva",
       "targets": ["Próprio"],
-      "duration": 2,
-      "damage type": "Pure",
-      "cards": 5,
-      "display": true,
-      "description": "Reflete e nega o dano recebido e atordoa o atacante"
-    },
-    "ult": {
-      "name": "Vendetta",
-      "type": "Ativa",
-      "targets": ["Próprio"],
-      "duration": 8,
-      "damage": 20,
-      "damage type": "Physical",
+      "percentage": 30,
       "cards": 1,
       "display": true,
-      "description": "Nyx Assassin fica invisível e o dano do seu próximo ataque é aumentado"
+      "description": "Drena a vida dos inimigos a cada ataque"
+    },
+    "crit": {
+      "name": "Golpe Mortal",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "chance": 15,
+      "percentage": 300,
+      "cards": 1,
+      "display": true,
+      "description": "Chance de dano crítico"
+    },
+    "ult": {
+      "name": "Reencarnação",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "duration": 3,
+      "aoe": "Radial",
+      "aoe range": "Perto",
+      "delay": 2,
+      "cards": 1,
+      "display": true,
+      "description": "Ninguém pode matar o Rei!"
     }
   }
 
