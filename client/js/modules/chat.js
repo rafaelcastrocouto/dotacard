@@ -2,18 +2,12 @@ game.chat = {
   build: function () {
     if (!game.chat.builded) {
       game.chat.builded = true;
-      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').hover(function () {
-        game.chat.input.focus();
-      }).appendTo(game.states.menu.el);
+      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').hover(game.chat.hover).appendTo(game.states.menu.el);
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
-      game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 42}).keydown(function (e) { if (e.which === 13)  game.chat.send();});
+      game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 42}).keydown(game.chat.keydown);
       game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
-      game.chat.icon = $('<span>').text('Chat').addClass('chat-icon').appendTo(game.chat.el);
-      setInterval(function () {
-        game.db({ 'get': 'chat' }, function (chat) {
-          game.chat.update(chat);
-        });
-      }, 2000);
+      game.chat.icon = $('<span>').text('Chat 🗩').addClass('chat-icon').appendTo(game.chat.el);
+      setInterval(game.chat.check, 2000);
     }
   },
   joined: function () {
@@ -21,6 +15,17 @@ game.chat = {
       'set': 'chat',
       'data': game.player.name + ' ' + game.data.ui.joined
     }, function (chat) {
+      game.chat.update(chat);
+    });
+  },
+  hover: function () {
+    game.db({ 'get': 'chat' }, function (chat) {
+      game.chat.update(chat);
+      game.chat.input.focus();
+    });
+  },
+  check: function () {
+    game.db({ 'get': 'chat' }, function (chat) {
       game.chat.update(chat);
     });
   },
@@ -45,10 +50,16 @@ game.chat = {
         'data': game.player.name + ': ' + msg
       }, function (chat) {
         game.chat.update(chat);
+        game.loader.removeClass('loading');
         setTimeout(function () {
           game.chat.button.attr('disabled', false);
         }, 2000);
       });
+    }
+  },
+  keydown: function (event) {
+    if (event.which === 13 && !game.chat.button.attr('disabled')) {
+      game.chat.send();
     }
   }
 };

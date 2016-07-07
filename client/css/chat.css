@@ -1,9 +1,9 @@
 
 .chat {
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
   position: absolute;
   height: 38px;
-  width: 64px;
+  width: 80px;
   transform: translate3d(0%,0%, 0);
   bottom: 4px;
   left: -4px;
@@ -34,7 +34,7 @@
   top: auto;
   bottom: 0;
   left: 0;
-  height: 500px;
+  height: 480px;
   z-index: 12;
   width: 450px;
 }
