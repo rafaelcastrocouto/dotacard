@@ -18,7 +18,7 @@ game.screen = {
     if (!resolution || resolution.constructor.name !== 'String') {
       resolution = $('input[name=resolution]:checked', '.screenresolution').val();
     }
-    game.states.el.removeClass('low high medium default').addClass(resolution);
+    game.container.removeClass('low high medium default').addClass(resolution);
     localStorage.setItem('resolution', resolution);
   },
 };

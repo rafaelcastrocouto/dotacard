@@ -6,14 +6,14 @@
   vertical-align: top;
 }
 
-.states.low {
-  transform: scale(0.8);
+.game-container.low {
+  transform: translate3d(-50%, -50%, 0) scale(0.75);
 }
-.states.high {
-  transform: scale(1.7);
+.game-container.high {
+  transform: translate3d(-50%, -50%, 0) scale(1.5);
 }
-.states.medium {
-  transform: scale(1.2);
+.game-container.medium {
+  transform: translate3d(-50%, -50%, 0) scale(1.2);
 }
 
 .options label {

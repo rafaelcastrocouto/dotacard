@@ -94,8 +94,9 @@ game.states.table = {
   surrenderClick: function () {
     //online && tutorial
     game.confirm(function(confirmed) {
-      if (confirmed && game.mode && game[game.mode].surrender) game[game.mode].surrender();
-      else game.reset();
+      if (confirmed && game.mode && game[game.mode].surrender) {
+        game[game.mode].surrender();
+      }
     });
   },
   backClick: function () {

@@ -19,8 +19,7 @@
   transform: translateZ(0);
 }
 
-.choose .topbar,
-.table .topbar {
+.loading .topbar, .choose .topbar, .table .topbar {
   background: rgba(0,0,0,0.5);
   text-shadow: 0 1px #444;
 }

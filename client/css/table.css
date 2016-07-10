@@ -17,8 +17,8 @@
 }
 
 .table .selectedarea {
-  width: 220px;
-  height: 330px;
+  width: 200px;
+  height: 300px;
   position: absolute;
   top: 30px;
   right: 5px;
@@ -30,9 +30,16 @@
 
 .table .buttonbox .button {
   position: absolute;
-  right: 5px;
+  right: 0;
   top: auto !important;
-  width: 175px;
+  width: 168px;
+}
+
+.table .buttonbox .surrender {
+  background: #b99;
+}
+.table .buttonbox .surrender:hover {
+  background: #d99;
 }
 
 .table .skip, .table .skip[disabled]:active {
@@ -65,10 +72,10 @@
   position: absolute;
   top: 24px;
   left: 0;
-  width: 740px;
+  width: 760px;
   height: 450px;
   background: #666;
-  perspective: 840px;
+  perspective: 730px;
   overflow: hidden;
   transform: translateZ(0);
 }

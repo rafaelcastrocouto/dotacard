@@ -19,9 +19,8 @@
 
 .pickbox .card.selected {
   margin: 0 22px;
-  transform: translate3d(-50%, -50%, 0) scale(1.16);
+  transform: translate3d(-50%, -50%, 0) scale(1);
 }
-
 
 .pickedbox .card {
   animation: pickedboxslidedown 0.5s;
@@ -49,7 +48,7 @@
 }
 
 .card.dragTargetClone.choose {
-  transform: translate(40px, 50px) scale(0.8);
+  transform: translate(30px, 40px) scale(0.75);
 }
 
 .choose .card .kd,
@@ -379,8 +378,8 @@
 }
 
 .selectedarea .selectedcard {
-  width: 220px;
-  height: 330px;
+  width: 200px;
+  height: 300px;
   transition: all 0.2s;
   backface-visibility: hidden;
   transform-style: preserve-3d;
@@ -396,18 +395,18 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 1px) scale(1.1, 1.1);
+  transform: translate3d(-50%, -50%, 1px);
 }
 .table .selectedarea .selectedcard.flip .card:hover {
-  transform: translate(-88%, -12%) scale(1.86);
+  transform: translate(-87%, -13%) scale(1.75);
 }
 .table .selectedarea .selectedcard.flip .card:hover .img {
-  image-rendering: pixelated;
+  /* image-rendering: pixelated; */
 }
 .table .selectedarea .cardback {
   background: #111;
   background-image: url(../img/cardback.jpg);
-  background-size: 101% 101%;
+  background-size: cover;
   background-position: 50%;
   position: absolute;
   padding: 0;
@@ -416,7 +415,7 @@
   border-radius: 8px;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, -1px) scale(1.1) rotateY(180deg);;
+  transform: translate3d(-50%, -50%, -1px) rotateY(180deg);
 }
 .table .selectedarea .card .damaged,
 .table .selectedarea .card .heal {

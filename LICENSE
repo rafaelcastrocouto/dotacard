@@ -1,4 +1,19 @@
-DOTACARD is released under the MIT License.
+DOTACARD is released under the MIT License. 
+MIT +no-false-attribs License
+
+----------------------------------------------------------
+
+DOTACARD versions may include or require the following libraries, which may have other licenses.
+
+"jQuery", John Resig, http://jquery.com
+"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
+"Google-analytics", Google, http://www.google.com/analytics
+"Nodejs", Joyent, http://nodejs.org
+
+----------------------------------------------------------
+
+"Dota", the "Dota 2" logo, and "Defense of the Ancients" are trademarks and/or 
+registered trademarks of Valve Corporation, http://www.valvesoftware.com/legal.html
 
 ----------------------------------------------------------
 
@@ -6,8 +21,6 @@ The MIT License
 
 Copyright 2014, Rafael Castro Couto
 All rights reserved.
-
-MIT +no-false-attribs License
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -21,6 +34,8 @@ conditions:
 The above copyright notice and this permission notice shall be
 included in all copies or substantial portions of the Software.
 
+----------------------------------------------------------
+
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
 OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -30,20 +45,8 @@ WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
 FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
 OTHER DEALINGS IN THE SOFTWARE.
 
+----------------------------------------------------------
+
 Contributors to this project agree to grant all rights to the 
 copyright holder of the primary product. 
 Attribution is maintained in the source control history of the product.
-
-----------------------------------------------------------
-
-"Dota", the "Dota 2" logo, and "Defense of the Ancients" are trademarks and/or 
-registered trademarks of Valve Corporation, http://www.valvesoftware.com/legal.html
-
-----------------------------------------------------------
-
-DOTACARD versions may include or require the following libraries, which may have other licenses.
-
-"jQuery", John Resig, http://jquery.com
-"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
-"Google-analytics", Google, http://www.google.com/analytics
-"Nodejs", Joyent, http://nodejs.org
