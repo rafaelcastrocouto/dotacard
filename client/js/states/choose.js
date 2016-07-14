@@ -42,8 +42,8 @@ game.states.choose = {
     if (card.hasClass && card.hasClass('heroes')) {
       $('.choose .selected').removeClass('selected draggable');
       card.addClass('selected');
-      if (game.mode !== 'library') card.addClass('draggable');
-      else game.library.select(card, recover);
+      if (game.mode !== 'library' && !card.hasClass('dead')) card.addClass('draggable');
+      else if (game.mode == 'library') game.library.select(card, recover);
       game.states.choose.pickDeck.css('margin-left', card.index() * -1 * game.states.choose.size);
       if (!card.hasClass('dead')) localStorage.setItem('choose', card.data('hero'));
     }
@@ -94,9 +94,12 @@ game.states.choose = {
     }).appendTo('.pickdeck');
   },
   savedDeck:  function () {
-    var deck = localStorage.getItem('mydeck').split(',');
-    if (deck && deck.length == 5 && !$(this).attr('disabled')) {
-      game.states.choose.remember(deck);
+    if (!$(this).attr('disabled')) {
+      $(this).attr('disabled', true);
+      var deck = localStorage.getItem('mydeck').split(',');
+      if (deck && deck.length == 5) {
+        game.states.choose.remember(deck);
+      }
     }
   },
   remember: function (deck) {
@@ -116,7 +119,10 @@ game.states.choose = {
   },
   randomClick: function () {
     //online only
-    if (!$(this).attr('disabled')) game.states.choose.randomFill(game.online.chooseEnd); 
+    if (!$(this).attr('disabled')) {
+      $(this).attr('disabled', true);
+      game.states.choose.randomFill(game.online.chooseEnd); 
+    }
   },
   randomFill: function (cb) {
     $('.slot').each(function () {
@@ -136,19 +142,28 @@ game.states.choose = {
     game.states.changeTo('table');
   },
   backClick: function () {
+    var cb = function () {
+      game.clear();
+      game.states.changeTo('menu');
+    };
     if (game.mode == 'online') {
       game.db({
         'set': 'back',
         'data': game.id
-      }, function () { game.states.changeTo('menu'); });
-    } else game.states.changeTo('menu');
+      }, cb);
+    } else cb();
   },
   clear: function () {
     $('.slot .card.heroes').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);
     if (game.library.skills) $('.slot .card.skills').appendTo(game.library.skills);
     $('.slot').addClass('available').show();
+    this.mydeck.attr('disabled', false);
+    this.randombt.attr('disabled', false);
     this.counter.hide();
     this.pickedbox.hide();
+    this.librarytest.hide();
+    this.randombt.hide();
+    this.mydeck.hide();
     game.states.choose.sort();
   }
 };

@@ -38,6 +38,9 @@ var game = {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
+  isPlayerTurn: function () {
+    return !game.states.table.el.hasClass('unturn');
+  },
   otherSide: function (side) {
     if (side.data) side = side.data('side');
     return (side === 'enemy') ? 'player' : 'enemy';
@@ -75,7 +78,6 @@ var game = {
     }
   },
   clear: function () {
-    if (game.backState && game.states[game.backState].clear) game.states[game.backState].clear();
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
     game.mode = false;

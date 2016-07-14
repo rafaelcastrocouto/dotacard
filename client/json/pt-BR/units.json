@@ -4,8 +4,8 @@
       "name": "Espírito Urso",
       "hp": 80,
       "damage": 3,
-      "armor": 33,
-      "resistance": 25,
+      "armor": 3,
+      "resistance": 2,
       "type": "Summon",
       "range": "Perto",
       "passive": "Garras Entrelaçantes, Demolir",
@@ -17,18 +17,16 @@
       "name": "Centauro",
       "attribute": "Creep",
       "range": "Perto",
-      "hp": 135,
-      "regen": 2,
+      "hp": 65,
       "mana": 3,
-      "damage": 5,
+      "damage": 6,
       "skills": "Pisão de Guerra"
      },
     "golem": {
       "name": "Golem",
       "attribute": "Creep",
       "range": "Perto",
-      "hp": 135,
-      "regen": 1,
+      "hp": 55,
       "damage": 5,
       "passive": "Imunidade Mágica"
     }

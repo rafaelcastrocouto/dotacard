@@ -1,3 +1,7 @@
+.card > * {
+  pointer-events: none;
+}
+
 .card h1 {
   font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
@@ -19,7 +23,7 @@
 
 .pickbox .card.selected {
   margin: 0 22px;
-  transform: translate3d(-50%, -50%, 0) scale(1);
+  transform: translate3d(-50%, -50%, 0);
 }
 
 .pickedbox .card {
@@ -32,6 +36,7 @@
   0% {top: 36%;}
   100% {top: 50%;}
 }
+
 .pickedbox .card.heroes h1,
 .pickedbox .card.heroes .current,
 .pickedbox .card.heroes .desc,
@@ -46,34 +51,9 @@
 .pickedbox .card.heroes:hover .portrait .img {
   background-size: 260%;
 }
-
-.card.dragTargetClone.choose {
-  transform: translate(30px, 40px) scale(0.75);
-}
-
-.choose .card .kd,
-.card.dragTargetClone.choose .kd,
-.choose .card .damaged,
-.choose .card .heal {
-  display: none;
-}
-.card.dragTarget {
-  transition: all 0s;
-  visibility: hidden;
-  pointer-events: none;
-}
-.card.dragTargetClone {
-  transition: all 0s;
-  position: absolute;
-  z-index: 25;
-  transform-origin: 0 0;
-  pointer-events: none;
-}
-
 .card {
   position: relative;
   display: inline-block;
-  /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   text-align: left;
   transition: all 0.3s;
   padding: 0;
@@ -191,12 +171,10 @@
 .card.player {
   background: #74c47b;
 }
-.card.enemy {
-  /* cursor: url("../img/cursor/cursor-red.png"), url("../img/cursor/cursor-red.cur"), pointer; */
+.card.enemy {  
   background: #c23636;
 }
 .card.skills {
-  /* cursor: url("../img/cursor/cursor.png"), url("../img/cursor/cursor.cur"), pointer; */
   background: #378cd6;
 }
 .card.player.heroes.selected,
@@ -319,7 +297,7 @@
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0) scale(0.4);
-  margin-right: -190px;
+  margin-right: -140px;
   left: 40px;
 }
 .table .deck .card:hover {
@@ -328,14 +306,28 @@
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
 }
-.table .player.skills.sidehand.deck .card {
-  margin-right: -140px;
-  float: right;
+
+
+.table .enemy .hand .card,
+.table .enemy .sidehand .card {
+  background-image: url(../img/cardback.jpg);
+  background-size: cover;
+}
+.table .enemy .hand .card {
+  margin-right: -158px;
+}
+.table .enemy .sidehand .card {
+  margin-right: -150px;
+}
+.table .enemy .showMoves .card {
+  margin-right: -110px;
+}
+.table .enemy .hand .card > *,
+.table .enemy .sidehand .card > * {
+  display: none;
 }
 
-.table .player.skills.hand .card {
-  margin-right: -140px;
-}
+
 /*
 .table .player.skills.hand .card:nth-child(1) {
   transform: scale(0.4) rotate(-18deg);
@@ -449,14 +441,50 @@
 
 /*DRAG*/
 
+.choose .card .kd,
+.card.dragTargetClone.choose .kd,
+.choose .card .damaged,
+.choose .card .heal {
+  display: none;
+}
+.card.dragTarget {
+  transition: all 0s;
+  visibility: hidden;
+  pointer-events: none;
+}
+.card.dragTargetClone {
+  transition: transform 0.2s;
+  position: absolute;
+  z-index: 25;
+  transform-origin: 0 0;
+  pointer-events: none;
+}
+
+.card.dragTargetClone.choose {
+  transform: scale(0.75);
+}
+.card.dragTargetClone.choose.drop {
+  transform: scale(0.5);
+  box-shadow: 0 0 0 5px white;
+}
 .card.dragTargetClone.table {
+  transform: scale(0.35);
+}
+.card.dragTargetClone.table.drop {
+  transform: scale(0.3);
+  box-shadow: 0 0 0 10px white;
+}
+.card.skills.dragTargetClone.table {
   transform: scale(0.4);
+}
+.card.skills.dragTargetClone.table.drop {
+  transform: scale(0.3);
+  box-shadow: 0 0 0 10px white;
 }
 
 .map .card legend, 
 .card.dragTargetClone.fromMap legend {
-  opacity: 0;
-  height: 12px;
+  display: none;
 }
 
 .map .card h1,
@@ -470,6 +498,7 @@
 .map .card fieldset,
 .card.dragTargetClone.fromMap fieldset {
   padding: 0;
+  margin: 18px 5px;
 }
 .map .card .portrait .img,
 .map .card .portrait .overlay,
@@ -492,9 +521,6 @@
   padding-right: 1px;
   width: 21px;
 }
-/*.map .card:hover .portrait .img {
-   background-size: 260%; 
-}*/
 
 /*TOWERS*/
 
@@ -507,14 +533,14 @@
 
 /*UNITS*/
 
-.card.tree {
+.card.trees {
   background: #5ba22f;
 }
 
-.card.tree.rad .img {
+.card.trees.rad .img {
   background-image: url("../img/trees/tree.jpg");
 }
 
-.card.tree.dire .img {
+.card.trees.dire .img {
   background-image: url("../img/trees/tree_dire.jpg");
 }

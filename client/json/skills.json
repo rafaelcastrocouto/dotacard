@@ -12,10 +12,10 @@
       "name": "Spell Shield",
       "type": "Passive",
       "targets": ["Self"],
-      "percentage": 50,
+      "resistance": 6,
       "cards": 1,
       "display": true,
-      "description": "Reduces all magic damage dealt to the AntiMage by half"
+      "description": "Reduces all magic damage received by six points"
     },
     "blink": {
       "name": "Blink",
@@ -180,7 +180,7 @@
     "bearreturn": {
       "name": "Return",
       "deck": "Temporary",
-      "type": "Active",
+      "type": "Instantaneous",
       "targets": ["Summoner", "Spot", "Free"],
       "range": "Melee",
       "cards": 1,
@@ -315,8 +315,8 @@
       "name": "Flesh Heap",
       "type": "Passive",
       "targets": ["Self"],
-      "percentage": 12,
-      "hp bonus": 3,
+      "resistance": 2,
+      "hp bonus": 2,
       "damage bonus": 1,
       "cards": 1,
       "display": true,

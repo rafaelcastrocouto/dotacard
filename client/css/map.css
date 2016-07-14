@@ -30,7 +30,7 @@
   transform-style: preserve-3d;
 }
 .map .spot:hover {
-  background: rgba(255,255,255,0.08);
+  background: rgba(255,255,255,0.1);
 }
 
 .map .spot.playerarea {
@@ -78,6 +78,7 @@
 .map .spot.movearea {
   cursor: pointer;
 }
+.map .spot.movearea.drop,
 .map .spot.movearea:hover {
   background: rgba(100,255,100,0.3);
 }
@@ -190,6 +191,11 @@
 }
 .targetarea {
   cursor: pointer;
+}
+
+.map .spot.targetarea.drop,
+.map .spot.targetarea:hover {
+  background: rgba(100,100,255,0.3);
 }
 
 .targetarea:after,

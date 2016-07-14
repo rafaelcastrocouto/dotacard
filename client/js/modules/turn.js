@@ -10,6 +10,7 @@ game.turn = {
     game.enemy.turn = 0;
     game.player.kills = 0;
     game.enemy.kills = 0;
+    game.moves = [];
   },
   beginPlayer: function (cb) {
     if (!game.states.table.el.hasClass('over')) {
@@ -17,9 +18,7 @@ game.turn = {
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      $('.map .card.player, .table .skill').removeClass('done');
-      game.tower.attack('enemy');
-      game.player.buyHand();
+      $('.map .card').removeClass('done');
       game.turn.start('turn', cb);
     }
   },
@@ -27,12 +26,11 @@ game.turn = {
     if (!game.states.table.el.hasClass('over')) {
       game.enemy.turn += 1;
       game.message.text(game.data.ui.enemyturn);
-      $('.map .card.enemy').removeClass('done');
-      game.enemy.buyHand();
       game.turn.start('unturn', cb);
     }
   },
   start: function (unturn, cb) {
+    game.currentMoves = [];
     game.time = game.player.turn + game.enemy.turn;
     game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card.dead').each(function () {
@@ -57,7 +55,7 @@ game.turn = {
       if (cb) cb();
     });
   },
-  count: function (unturn, cb) {
+  count: function (unturn, cb1, cb2) {
     if (game.turn.counter >= 0) {
       game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
       game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
@@ -65,11 +63,11 @@ game.turn = {
         game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
       } else {
         game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-        if (game.mode === 'online') game.online.preGetTurnData();
       }
-      if (game.turn.counter === 0) cb();
+      if (game.turn.counter === 0) cb2(unturn);
       else if (game.turn.counter > 0) {
-        game.timeout(1000, game.turn.count.bind(this, unturn, cb));
+        if (cb1) cb1(unturn);
+        game.timeout(1000, game.turn.count.bind(this, unturn, cb1, cb2));
         game.time += 0.9 / game.timeToPlay;
         game.turn.counter -= 1;
       }
@@ -80,9 +78,7 @@ game.turn = {
       game.states.table.skip.attr('disabled', true);
       game.message.text(game.data.ui.turnend);
       $('.spot.fountain').find('.card').each(function () {
-        var card = $(this),
-          heal  = card.data('hp') * 0.1;
-        card.heal(heal);
+        $(this).heal(10);
       });
       $('.card.heroes').each(function () {
         var hero = $(this),
@@ -102,11 +98,12 @@ game.turn = {
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         game.timeout(800, function () { game.turn.el.removeClass('show'); });
       }
-      if (cb) cb();
+      game.moves.push(game.currentMoves.join('|'));
+      if (cb) cb(unturn);
     }
   },
   noAvailableMoves: function () {
-    return $('.map .player.card:not(.tower)').length == $('.map .player.card.done:not(.tower)').length;
+    return $('.map .player.card:not(.towers)').length == $('.map .player.card.done:not(.towers)').length;
   },
   hours: function () {
     var convertedMin, intMin, stringMin,

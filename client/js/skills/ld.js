@@ -17,7 +17,7 @@ game.skills.ld = {
         bear.on('damage', game.skills.ld.bearreturn.breakreturn);
         bear.on('death', game.skills.ld.summon.death);
       }
-      var returnskillcard = $('.table .'+side+'.skill.ld-bearreturn');
+      var returnskillcard = $('.table .'+side+'.skills.ld-bearreturn');
       returnskillcard.appendTo(game.player.skills.sidehand);
       bear.setCurrentHp(bear.data('hp'));
       bear.place(target);
@@ -67,14 +67,14 @@ game.skills.ld = {
       var bear = eventdata.target;
       var killer = eventdata.source;
       var side = target.data('side');
-      var ld = $('.table .'+target+'.hero.ld');
+      var ld = $('.table .'+target+'.heroes.ld');
       killer.damage(ld, ld.data('hp') * 0.1, 'Pure');
     }
   },
   bearreturn: {
      cast: function (skill, source, target) {
       var side = source.data('side');
-      var ld = $('.table .'+side+'.hero.ld');
+      var ld = $('.table .'+side+'.heroes.ld');
       var bear = ld.data('bear');
       bear.css({opacity: 0});
       if (!game.states.table.el.hasClass('unturn')) { skill.css({opacity: 0}); }
@@ -86,7 +86,7 @@ game.skills.ld = {
     breakreturn: function (event, eventdata) {
       var bear = eventdata.target;
       var side = bear.data('side');
-      var returnskillcard = $('.table .'+side+'.skill.ld-return');
+      var returnskillcard = $('.table .'+side+'.skills.ld-return');
       returnskillcard.appendTo(game.states.table.playerTemp);
       bear.data('current-return-cooldown', bear.data('ld-return-cooldown'));
       bear.on('turnstart.ld-return', game.skills.ld.bearreturn.turnstart);
@@ -194,9 +194,9 @@ game.skills.ld = {
     cast: function (skill, source) {
       skill.appendTo(game.player.skills.temp);
       var side = source.data('side');
-      var transform = $('.table .'+side+'.skill.ld-transform');
+      var transform = $('.table .'+side+'.skills.ld-transform');
       transform.appendTo(game.player.skills.sidehand);
-      var cry = $('.table .'+side+'.skill.ld-cry');
+      var cry = $('.table .'+side+'.skills.ld-cry');
       cry.appendTo(game.player.skills.sidehand);
       var ldhp = source.data('hp');
       var relativehp = source.data('current hp') / ldhp;
@@ -214,9 +214,9 @@ game.skills.ld = {
     cast: function (skill, source) {
       skill.appendTo(game.player.skills.temp);
       var side = source.data('side');
-      var ult = $('.table .'+side+'.skill.ld-ult');
+      var ult = $('.table .'+side+'.skills.ld-ult');
       ult.appendTo(game.player.skills.sidehand);
-      var cry = $('.table .'+side+'.skill.ld-cry');
+      var cry = $('.table .'+side+'.skills.ld-cry');
       cry.appendTo(game.player.skills.temp);
       var ldhp = source.data('hp');
       var relativehp = source.data('current hp') / ldhp;

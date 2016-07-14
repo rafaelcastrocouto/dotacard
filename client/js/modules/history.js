@@ -23,6 +23,7 @@ game.history = {
       game.states.log.out.show();
       game.states.options.opt.show();
       game.player.name = log;
+      game.chat.set(game.data.ui.reconnected);
       if (mode) game.setMode(mode, recovering);
       game.history.jumpTo(state, recovering);
     } else {

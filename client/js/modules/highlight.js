@@ -10,7 +10,7 @@ game.highlight = {
   },
   map: function () {
     if (game.selectedCard) {
-      if (game.selectedCard.hasClasses('hero unit')) {
+      if (game.selectedCard.hasClasses('heroes units')) {
         game.selectedCard.strokeAttack();
         if (!game.states.table.el.hasClass('unturn')) {
           if (game.mode == 'tutorial') {
@@ -24,7 +24,7 @@ game.highlight = {
             game.selectedCard.highlightAttack();
           }
         }
-      } else if (game.selectedCard.hasClass('skill')) {
+      } else if (game.selectedCard.hasClass('skills')) {
         game.selectedCard.highlightSource();
         game.selectedCard.strokeSkill();
         if (!game.states.table.el.hasClass('unturn')) {
@@ -36,21 +36,21 @@ game.highlight = {
             }
           } else game.selectedCard.highlightTargets();
         }
-      } else if (game.selectedCard.hasClass('tower')) {
+      } else if (game.selectedCard.hasClass('towers')) {
         game.selectedCard.strokeAttack();
       }
     }
   },
   source: function () {
     var skill = this, hero = skill.data('hero');
-    if (hero) $('.map .card.player.hero.' + hero).addClass('source');
+    if (hero) $('.map .card.player.heroes.' + hero).addClass('source');
     return skill;
   },
   targets: function () {
     var skill = this, hero = skill.data('hero');
     if (hero) {
       var source = $('.map .source');
-      if (source.hasClasses('hero unit')) {
+      if (source.hasClasses('heroes units')) {
         if (skill.data('type') === game.data.ui.passive) {
           game.highlight.passive(source);
         } else if (skill.data('type') === game.data.ui.toggle) {
@@ -164,7 +164,7 @@ game.highlight = {
   },
   move: function () {
     var card = this, speed;
-    if (card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done static dead stunned frozen entangled disabled sleeping cycloned taunted')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done static dead stunned frozen entangled disabled sleeping cycloned taunted')) {
       speed = card.data('current speed');
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
@@ -178,7 +178,7 @@ game.highlight = {
   },
   attack: function () {
     var card = this, pos, range;
-    if (card.hasClass('player') && card.hasClasses('unit hero') && !card.hasClasses('enemy done dead stunned frozen')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned frozen')) {
       pos = game.map.getPosition(card);
       range = game.map.getRange(card.data('range'));
       game.map.inRange(pos, range, function (neighbor) {

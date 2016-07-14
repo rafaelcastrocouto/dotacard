@@ -33,9 +33,8 @@ game.skills.am = {
   },
   shield: {
     passive: function (skill, source) {
-      source.data('resistance', skill.data('percentage') / 100);
       source.addBuff(source, skill.data('buff'));
-      source.find('.resistance').text(game.data.ui.resistance + ': ' + (source.data('resistance') * 100) + '%');
+      source.setResistance(skill.data('resistance'));
     }
   },
   blink: {

@@ -8,8 +8,8 @@ game.states.table = {
     this.selectedCard = $('<div>').addClass('selectedcard').appendTo(this.selectedArea);
     this.cardBack = $('<div>').addClass('cardback').appendTo(this.selectedCard);
     //this.neutrals = $('<div>').appendTo(this.el).addClass('neutraldecks');
-    this.player = $('<div>').addClass('playerdecks');
-    this.enemy = $('<div>').addClass('enemydecks');
+    this.player = $('<div>').addClass('playerdecks player');
+    this.enemy = $('<div>').addClass('enemydecks enemy');
     this.buttonbox = $('<div>').addClass('buttonbox');
     this.skip = $('<div>').appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
     this.surrender = $('<div>').appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', this.surrenderClick);
@@ -20,7 +20,6 @@ game.states.table = {
     game.tower.place();
     game.tree.place();
     game.units.place();
-    game.chat.build();
     game.chat.el.appendTo(this.el);
     if (game.turn.msg) game.turn.msg.show();
     this.time.show();
@@ -29,12 +28,46 @@ game.states.table = {
     this.selectedCard.removeClass('flip');
     if (game.mode) game[game.mode].setTable();
   },
+  buildSkills: function (side, single) {
+    game[side].mana = 0;
+    $('.map .'+side+'.heroes').each(function (i, card) {
+      game[side].mana += $(card).data('mana');
+    });
+    game[side].maxCards = Math.round(game[side].mana / 2);
+    game[side].cardsPerTurn = Math.round(game[side].mana / 5);
+    game[side].skills = {};
+    game[side].skills.hand = $('<div>').appendTo(game.states.table[side]).addClass('deck skills hand');
+    game[side].skills.sidehand = $('<div>').appendTo(game.states.table[side]).addClass('deck skills sidehand');
+    game[side].skills.ult = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills ult');
+    game[side].skills.temp = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills temp');
+    game[side].skills.cemitery = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills cemitery');
+    game[side].skills.deck = game.deck.build({
+      name: 'skills',
+      multi: !single,
+      filter: game[side].picks,
+      cb: function (deck) {
+        deck.addClass('available').hide().appendTo(game.states.table[side]);
+        $.each(deck.data('cards'), function (i, skill) {
+          var side = this;
+          skill.addClass(side).data('side', side).on('mousedown touchstart', game.card.select);
+          if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game[side].skills.temp);
+          else if (skill.data('skill') === 'ult') skill.appendTo(game[side].skills.ult);
+          else if (skill.data('type') === game.data.ui.toggle) skill.appendTo(game[side].skills.sidehand);
+          else if (skill.data('type') === game.data.ui.instant) skill.appendTo(game[side].skills.sidehand);
+        }.bind(side));
+      }
+    });
+    if (side === 'enemy') {
+      game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
+      $('.enemy .skills').attr({ title: '' }).off('mousedown touchstart');
+    }
+  },
   enableUnselect: function () {
-    game.states.table.el.on('mousedown touchstart', function (event) { 
+    game.states.table.el.on('mousedown touchstart', function () { 
       var target = $(event.target); 
       if (!target.closest('.card, .movearea, .targetarea').length) {
-        game.card.unselect(event);
-        if (game[game.mode].unselected) game[game.mode].unselected(event);
+        game.card.unselect();
+        if (game.mode && game[game.mode].unselected) game[game.mode].unselected();
       }
     });
   },
@@ -59,7 +92,7 @@ game.states.table = {
   showResults: function () {
     game.states.table.selectedArea.hide();
     game.states.table.camera.hide();
-    $('.table .button').hide();
+    $('.table .buttonbox').hide();
     $('.table .deck').hide();
     game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
     $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
@@ -80,15 +113,15 @@ game.states.table = {
       $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
     });
     $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
+      game.clear();
       game.states.changeTo('menu');
     });
   },
   skipClick: function () {
     if (!game.states.table.skip.attr('disabled')) {
+      game.states.table.skip.attr('disabled', true);
       game.highlight.clearMap();
-      if (game.mode == 'online') game.turn.counter = 0;
-      if (game.mode == 'tutorial') game.tutorial.skip();
-      if (game.mode == 'library') game.library.skip();
+      if (game[game.mode].skip) game[game.mode].skip();
     }
   },
   surrenderClick: function () {
@@ -109,13 +142,14 @@ game.states.table = {
     game.map.clear();
     $('.table .card').remove();
     $('.table .deck').remove();
-    $('.table .resultsbox').remove();
+    if (this.resultsbox) this.resultsbox.remove();
+    this.buttonbox.show();
     this.selectedArea.removeClass('flip');
-    this.el.addClass('unturn');
+    this.el.addClass('unturn').removeClass('over');
     game.clearTimeouts();
   },
   end: function () {
-    this.time.hide();
+    if (this.time) this.time.hide();
     if (game.turn.msg) game.turn.msg.hide();
   }
 };

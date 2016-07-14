@@ -352,6 +352,6 @@ game.map = {
   },
   clear: function () {
     game.highlight.clearMap();
-    $('.map .spot').removeClass('block').addClass('free');
+    $('.map .spot').removeClass('block playerarea enemyarea fountain jungle').addClass('free');
   }
 };

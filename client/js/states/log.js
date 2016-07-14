@@ -23,9 +23,8 @@ game.states.log = {
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.clear();
-    game.timeout(200, function () {
-      game.states.log.input.focus();
-    });
+    game.timeout(200, function () { game.states.log.input.focus(); });
+    
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),
@@ -40,8 +39,7 @@ game.states.log = {
       localStorage.setItem('log', name);
       localStorage.setItem('logged', 'true');
       game.states.log.button.attr('disabled', true);
-      game.chat.build();
-      game.chat.joined();
+      game.chat.set(game.data.ui.joined);
       game.states.changeTo('menu');
     } else {
       game.states.log.input.focus();

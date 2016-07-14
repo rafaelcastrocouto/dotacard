@@ -2,6 +2,7 @@ game.events = {
   build: function() {
     game.offset = game.container.offset();
     $.fn.clearEvents = game.events.clearEvents;
+    $.fn.getScale = game.events.getScale;
     game.card.bindJquery();
     game.skill.bindJquery();
     game.highlight.bindJquery();
@@ -28,7 +29,7 @@ game.events = {
     }
     return position;
   },
-  hit: function(event) {
+  hit: function(event) { //console.trace('hit');
     var target = $(event.target), 
         card = target.closest('.card');
     if (card && card.hasClass('draggable')) {
@@ -38,9 +39,10 @@ game.events = {
       game.events.dragging = card;
       game.events.draggingPosition = position;
       game.events.dragClone = card.clone().hide().removeClass('dragTarget').addClass('dragTargetClone ' + game.currentState + fromMap).appendTo(game.container);
+      game.events.dragScale = card.getScale();
       game.events.dragOffset = {
-        left: game.offset.left + (position.left - cardOffset.left),
-        top: game.offset.top + (position.top - cardOffset.top)
+        'left': (position.left - cardOffset.left) / game.events.dragScale,
+        'top': (position.top - cardOffset.top) / game.events.dragScale
       };
     }
   },
@@ -50,10 +52,18 @@ game.events = {
         position.left !== game.events.draggingPosition.left &&
         position.top !== game.events.draggingPosition.top) {
       game.events.dragging.addClass('dragTarget');
+      var scale = game.events.dragClone.getScale();
+      if (game.events.dragClone.hasClass('fromMap')) scale = 1;
       game.events.dragClone.css({
-        left: (position.left - game.events.dragOffset.left) + 'px',
-        top: (position.top - game.events.dragOffset.top) + 'px'
+        'left': (position.left - game.offset.left) - (game.events.dragOffset.left * scale) + 'px',
+        'top': (position.top - game.offset.top) - (game.events.dragOffset.top * scale) + 'px'
       }).show();
+      var target = $(document.elementFromPoint(position.left, position.top));
+      $('.drop').removeClass('drop');
+      if (target.hasClasses('slot targetarea casttarget movearea attacktarget')) {
+        game.events.dragClone.addClass('drop');
+        target.addClass('drop');
+      }
     }
   },
   end: function(event) {
@@ -69,7 +79,6 @@ game.events = {
     }
   },
   clearEvents: function(name) {
-    //console.trace('clear', name);
     var events = 'mousedown mouseup touchstart touchend mouseover mouseleave';
     if (name) {
       var n = '.'+name+' ',
@@ -85,5 +94,11 @@ game.events = {
   },
   leave: function() {
     if (game.mode == 'online') return game.data.ui.leave;
+  },
+  getScale: function () {
+    var sc = $(this).css('transform').split('(')[1],
+        s = 1;
+    if (sc && sc.split) s = sc.split(',')[0];
+    return Number(s);
   }
 };

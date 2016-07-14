@@ -12,10 +12,10 @@
       "name": "Escudo Antimagia",
       "type": "Passiva",
       "targets": ["Próprio"],
-      "percentage": 50,
+      "resistance": 6,
       "cards": 1,
       "display": true,
-      "description": "Reduz todo damo mágico pela metade"
+      "description": "Reduz todo dano mágico recebido em seis pontos"
     },
     "blink": {
       "name": "Blink",
@@ -180,7 +180,7 @@
     "bearreturn": {
       "name": "Retornar",
       "deck": "Temporária",
-      "type": "Ativa",
+      "type": "Instantânea",
       "targets": ["Invocador", "Local", "Livre"],
       "range": "Perto",
       "cards": 1,
@@ -315,8 +315,8 @@
       "name": "Armadura de Corpos",
       "type": "Passiva",
       "targets": ["Próprio"],
-      "percentage": 12,
-      "hp bonus": 3,
+      "resistance": 2,
+      "hp bonus": 2,
       "damage bonus": 1,
       "cards": 1,
       "display": true,

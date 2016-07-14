@@ -4,8 +4,8 @@
       "name": "Spirit Bear",
       "hp": 80,
       "damage": 3,
-      "armor": 33,
-      "resistance": 25,
+      "armor": 3,
+      "resistance": 2,
       "type": "Summon",
       "range": "Melee",
       "passive": "Entangling Claws, Demolish",
@@ -17,18 +17,16 @@
       "name": "Centaur",
       "attribute": "Creep",
       "range": "Melee",
-      "hp": 135,
-      "regen": 2,
+      "hp": 65,
       "mana": 3,
-      "damage": 5,
+      "damage": 6,
       "skills": "War Stomp"
      },
     "golem": {
       "name": "Golem",
       "attribute": "Creep",
       "range": "Melee",
-      "hp": 135,
-      "regen": 1,
+      "hp": 55,
       "damage": 5,
       "passive": "Spell Immunity"
     }

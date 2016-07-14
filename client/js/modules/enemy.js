@@ -1,33 +1,36 @@
 game.enemy = {
   playtime: 3,
-  manaBuild: function () {
-    game.enemy.mana = 0;
-    $('.map .enemy.heroes').each(function (i, card) {
-      game.enemy.mana += $(card).data('mana');
-    });
-    game.enemy.maxCards = Math.round(game.enemy.mana / 2);
-    game.enemy.cardsPerTurn = Math.round(game.enemy.mana / 5);
-    game.enemy.hand = 0;
-    game.enemy.skills = {};
-  },
   buyCard: function () {
-    game.enemy.hand += 1;
-    game.random();
+    var availableSkills = $('.enemy .available .card'),
+      card = game.deck.randomCard(availableSkills),
+      heroid,
+      hero,
+      to,
+      skillid;
+    if (availableSkills.length < game.enemy.cardsPerTurn) {
+      $('.enemy .cemitery .card').appendTo(game.enemy.skills.deck);
+      availableSkills = $('.enemy .available .card');
+    }
+    if (card.data('type') === game.data.ui.toggle) {
+      card.appendTo(game.enemy.skills.sidehand);
+    } else {
+      card.appendTo(game.enemy.skills.hand);
+    }
   },
   buyHand: function () {
     var i;
     for (i = 0; i < game.enemy.cardsPerTurn; i += 1) {
-      if (game.enemy.hand < game.enemy.maxCards) {
+      if (game.enemy.skills.hand.children().length < game.enemy.maxCards) {
         game.enemy.buyCard();
       }
     }
   },
-  move: function (cb) {
+  move: function () {
     game.message.text(game.data.ui.enemymove);
-    game.enemy.skills.deck.addClass('slide');
+    game.enemy.skills.showMoves.addClass('slide');
     var from, to, m, move, source, target, targets, hero, skillid, skill,
-      moves = game.currentMoves.split('|');
-    if (game.moves) game.moves.push(game.currentData.moves);
+        moves = game.currentData.moves.split('|');
+    game.currentMoves = moves;
     for (m = 0; m < moves.length; m += 1) {
       move = moves[m].split(':');
       if (move[1] && move[2]) {
@@ -50,7 +53,8 @@ game.enemy = {
           hero = move[4];
           source = $('#' + from + ' .card');
           target = $('#' + to);
-          skill = $('.enemy.skills .' + hero + '-' + skillid).show();
+          skill = $('.enemydecks .skills.' + hero + '-' + skillid).first();
+          skill.clone().appendTo(game.enemy.skills.showMoves);
           targets = skill.data('targets');
           if (targets) {
             if (targets.indexOf(game.data.ui.enemy) >= 0 ||
@@ -67,7 +71,8 @@ game.enemy = {
           skillid = move[2];
           hero = move[3];
           target = $('#' + to + ' .card');
-          skill = $('.enemy.skills .' + hero + '-' + skillid).show();
+          skill = $('.enemydecks .skills.' + hero + '-' + skillid).first();
+          skill.clone().appendTo(game.enemy.skills.showMoves);
           if (game.skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
             skill.passive(skill, target);
             game.enemy.hand -= 1;
@@ -78,7 +83,8 @@ game.enemy = {
           skillid = move[2];
           hero = move[3];
           target = $('#' + to + ' .card');
-          skill = $('.enemy.skills .' + hero + '-' + skillid).show();
+          skill = $('.enemydecks .skills.' + hero + '-' + skillid).first();
+          skill.clone().appendTo(game.enemy.skills.showMoves);
           if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
             skill.toggle(skill, target);
             game.enemy.hand -= 1;
@@ -86,6 +92,13 @@ game.enemy = {
         }
       }
     }
-    if (cb) { setTimeout(cb, game.enemy.playtime * 1000); }
+    console.log(moves);
+    game.timeout(game.enemy.playtime * 1000, function () {
+      game.enemy.skills.showMoves.removeClass('slide');
+      game.timeout(400, function () {
+        game.enemy.skills.showMoves.empty();
+        game.online.endTurn('unturn');
+      });
+    });
   }
 };

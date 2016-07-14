@@ -1,26 +1,58 @@
 
-.table .deck {
+.table .playerdecks {
   position: absolute;
-  height: 120px;
-  bottom: -10px;
+  height: 94px;
+  width: 100%;
+  bottom: 0;
   z-index: 6;
   transform: translateZ(0);
 }
 
-.table .player.skills.sidehand.deck {
-  width: 310px;
+.table .enemydecks {
+  position: absolute;
+  height: 160px;
+  width: 100%;
+  top: 24px;
+  z-index: 6;
+  transform: translateZ(0);
+  overflow: hidden;
 }
 
-.table .player.skills.hand {
+.table .enemydecks .deck {
+  top: -98px;
+}
+
+.table .deck {
+  height: 120px;
+  position: absolute;
+}
+
+.table .player .skills.sidehand {
+  margin-right: 30px;
+  right: 630px;
+  width: auto;
+}
+.table .enemy .skills.sidehand {
+  margin-right: 38px;
+  right: 668px;
+  width: auto;
+}
+
+.table .player .skills.hand {
   right: 10px;
   width: 620px;
+}
+
+.table .enemy .skills.hand {
+  right: 244px;
+  width: 424px;
 }
 
 .table .selectedarea {
   width: 200px;
   height: 300px;
   position: absolute;
-  top: 30px;
+  top: 28px;
   right: 5px;
   border-radius: 10px;
   perspective: 600px;
@@ -28,11 +60,16 @@
   transform: translateZ(0);
 }
 
-.table .buttonbox .button {
+.table .buttonbox {
   position: absolute;
   right: 0;
-  top: auto !important;
-  width: 168px;
+  top: 334px;
+  width: 210px;
+}
+
+.table .buttonbox .button {
+  display: block;
+  margin-bottom: 14px;
 }
 
 .table .buttonbox .surrender {
@@ -57,20 +94,20 @@
   bottom: 177px;
 }
 
-.table .deck.skills.enemy {
+.table .enemy .showMoves {
   z-index: 6;
-  top: 40px;
-  left: -10px;
   transition: all 1s;
+  left: -900px;
+  top: 10px;
 }
-.table .deck.skills.enemy.slide {
-  z-index: 6;
-  left: 100px;
+
+.table .enemy .showMoves.slide {
+  left: 80px;
 }
 
 .table .camera {
   position: absolute;
-  top: 24px;
+  top: 50px;
   left: 0;
   width: 760px;
   height: 450px;

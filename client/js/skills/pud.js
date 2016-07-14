@@ -26,7 +26,7 @@ game.skills.pud = {
           }
         }
       }
-      if(hooked && hooked.hasClasses('hero unit')) {
+      if(hooked && hooked.hasClasses('heroes units')) {
         source.damage(skill.data('damage'), hooked, skill.data('damage type'));
         w = game.map.getX(hooked.parent());
         h = game.map.getY(hooked.parent());
@@ -128,7 +128,7 @@ game.skills.pud = {
   },
   passive: {
     passive: function (skill, source) {
-      var resistance = source.data('resistance') + skill.data('resistance bonus');
+      var resistance = source.data('resistance') + skill.data('resistance');
       source.data('resistance', resistance);
       source.addBuff(source, skill.data('buff'));
       game.skills.pud.passive.kill.call({skill: skill, source: source});
@@ -137,12 +137,11 @@ game.skills.pud = {
     kill: function () {
       var skill = this.skill;
       var source = this.source;
-      var kills = source.data('kills');
       var damage = source.data('damage');
-      var bonusDamage = (skill.data('damage bonus') * kills);
-      source.setDamage(damage + bonusDamage);
+      var bonus = skill.data('damage bonus');
+      source.setDamage(damage + bonus);
       var hp = source.data('hp');
-      var bonusHp = (skill.data('hp bonus') * kills);
+      var bonusHp = skill.data('hp bonus');
       source.setCurrentHp(hp + bonusHp);
     }
   },

@@ -144,6 +144,7 @@ noscript {
   border-radius: 5px;
   background: rgba(0,0,0,0.5);
 }
+
 .box div p {
   display: block;
 }
@@ -178,6 +179,16 @@ noscript {
   width: 230px;
   top: 92%;
   padding: 0;
+}
+
+.notfound .box {
+  width: 500px;
+  top: 92%;
+  padding: 5px;
+}
+
+.notfound .box p {
+  margin: 0;
 }
 
 .box .loadtext {

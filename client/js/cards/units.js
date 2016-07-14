@@ -10,7 +10,7 @@ game.units = {
       cb: function (deck) {
         deck.addClass('neutral units cemitery').hide().appendTo(game.states.table.neutrals);
         $.each(deck.data('cards'), function (i, card) {
-          card.addClass('neutral unit').data('side', 'neutral').on('mousedown touchstart', game.card.select);
+          card.addClass('neutral').data('side', 'neutral').on('mousedown touchstart', game.card.select);
         });
       }
     });
@@ -20,7 +20,7 @@ game.units = {
       cb: function (deck) {
         deck.addClass('player units cemitery').hide().appendTo(game.states.table.player);
         $.each(deck.data('cards'), function (i, card) {
-          card.addClass('player unit').data('side', 'player').on('mousedown touchstart', game.card.select);
+          card.addClass('player').data('side', 'player').on('mousedown touchstart', game.card.select);
           if (game.mode == 'library') card.on('action', game.library.action); 
         });
       }

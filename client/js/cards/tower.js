@@ -1,13 +1,13 @@
 game.tower = {
   build: function (side, pos) {
     var tower = game.card.build({
-      className: 'tower towers static ' + side,
+      className: 'towers static ' + side,
       side: side,
       name: game.data.ui.tower,
       attribute: game.data.ui.building,
       range: game.data.ui.ranged,
       description: game.data.ui.towerDescription,
-      damage: 15,
+      damage: 16,
       hp: 80
     });
     tower.on('mousedown touchstart', game.card.select);

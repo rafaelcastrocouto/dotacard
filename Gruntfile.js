@@ -1,3 +1,7 @@
+// Use this file to bundle and minify the game js and css
+// Install grunt and it's dependencies listed in package.json
+// Run "grunt" in the game root folder
+
 module.exports = function(grunt) {
   grunt.initConfig({
     'pkg': grunt.file.readJSON('package.json'),

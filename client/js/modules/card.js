@@ -22,7 +22,7 @@ game.card = {
     $.fn.reborn = game.card.reborn;
   },
   build: function (data) {
-    var card, leg, fieldset, portrait, current, desc, range;
+    var card, leg, fieldset, portrait, current, desc, range = '';
     card = $('<div>').addClass('card ' + data.className);
     leg = $('<legend>').text(data.name);
     fieldset = $('<fieldset>');
@@ -41,7 +41,6 @@ game.card = {
       data['current hp'] = data.hp;
       $('<p>').addClass('hp').appendTo(current).html('HP <span>' + data.hp + '</span>');
     }
-    range = '';
     if (data.damage) {
       if (data.range) {
         range = ' (' + data.range + ')';
@@ -50,48 +49,20 @@ game.card = {
       data['current damage'] = data.damage;
       $('<p>').addClass('damage').appendTo(current).html('DMG <span>' + data.damage + '</span>');
     }
-    if (data.range && !range) {
-      $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
-    }
-    if (data.armor) {
-      $('<p>').appendTo(desc).text(game.data.ui.armor + ': ' + data.armor + '%').addClass('armor');
-    }
-    if (data.resistance) {
-      $('<p>').appendTo(desc).text(game.data.ui.resistance + ': ' + data.resistance + '%').addClass('resistance');
-    }
-    if (data.mana) {
-      $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
-    }
-    if (data.type) {
-      $('<p>').appendTo(desc).text(game.data.ui.type + ': ' + data.type);
-    }
-    if (data.chance) {
-      $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.chance + '%');
-    }
-    if (data.percentage) {
-      $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.percentage + '%');
-    }
-    if (data.delay) {
-      $('<p>').appendTo(desc).text(game.data.ui.delay + ': ' + data.delay);
-    }
-    if (data.damageType) {
-      $('<p>').appendTo(desc).text(game.data.ui.damageType + ': ' + data.damageType);
-    }
-    if (data.duration) {
-      $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.duration + ' ' + game.data.ui.turns);
-    }
-    if (data.dot) {
-      $('<p>').appendTo(desc).text(game.data.ui.dot + ': ' + data.dot);
-    }
-    if (data.multiplier) {
-      $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.multiplier + 'X');
-    }
-    if (data['hp bonus']) {
-      $('<p>').appendTo(desc).text('HP Bonus: ' + data['hp bonus']);
-    }
-    if (data['armor bonus']) {
-      $('<p>').appendTo(desc).text('Armor Bonus: ' + data['armor bonus'] + '%');
-    }
+    if (data.range && !range) $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
+    if (data.armor)           $('<p>').appendTo(desc).text(game.data.ui.armor + ': ' + data.armor).addClass('armor');
+    if (data.resistance)      $('<p>').appendTo(desc).text(game.data.ui.resistance + ': ' + data.resistance).addClass('resistance');
+    if (data.mana)            $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
+    if (data.type)            $('<p>').appendTo(desc).text(game.data.ui.type + ': ' + data.type);
+    if (data.chance)          $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.chance + '%');
+    if (data.percentage)      $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.percentage + '%');
+    if (data.delay)           $('<p>').appendTo(desc).text(game.data.ui.delay + ': ' + data.delay);
+    if (data.damageType)      $('<p>').appendTo(desc).text(game.data.ui.damageType + ': ' + data.damageType);
+    if (data.duration)        $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.duration + ' ' + game.data.ui.turns);
+    if (data.dot)             $('<p>').appendTo(desc).text(game.data.ui.dot + ': ' + data.dot);
+    if (data.multiplier)  $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.multiplier + 'X');
+    if (data['hp bonus'])  $('<p>').appendTo(desc).text('HP Bonus: ' + data['hp bonus']);
+    if (data['armor bonus'])  $('<p>').appendTo(desc).text('Armor Bonus: ' + data['armor bonus'] + '%');
     if (data.description) {
       card.attr({ title: data.name + ': ' + data.description });
       $('<p>').appendTo(desc).addClass('description').text(data.description);
@@ -101,9 +72,7 @@ game.card = {
       data.deaths = 0;
       $('<p>').addClass('kd').appendTo(desc).html(game.data.ui.kd + ': <span class="kills">0</span>/<span class="deaths">0</span>');
     }
-    if (data.buffs) {
-      $('<div>').addClass('buffs').appendTo(fieldset);
-    }
+    if (data.buffs) $('<div>').addClass('buffs').appendTo(fieldset);
     $.each(data, function (item, value) {
       card.data(item, value);
     });
@@ -120,38 +89,46 @@ game.card = {
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
-  select: function () {//console.trace('card select', card[0].className);
+  select: function () {//console.trace('card select');
     var card = $(this).closest('.card'); 
     if (card && 
         !card.hasClasses('attacktarget casttarget targetarea dead') &&
         (!event || !card.hasClass('selected'))) {
-      game.card.unselect(function () {
-        var card = this;
-        game.selectedCard = card;
-        card.trigger('select', { card: card });
-        card.addClass('selected draggable');
-        game.highlight.map();
-        game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink dead draggable dragTarget').clearEvents();
-        game.states.table.selectedCard.addClass('flip');
-      }.bind(card));
+      if (!game.selectedCard) game.card.setSelected(card);
+      else {
+        game.highlight.clearMap();
+        game.selectedCard.removeClass('selected draggable');
+        if (game.states.table.selectedClone) {
+          game.states.table.selectedClone.remove();
+          game.states.table.selectedClone = null;
+        }
+        game.card.setSelected(card);
+      }
+      if (!card.hasClasses('done enemy tree tower')) card.addClass('draggable');
     }
     return card;
   },
-  unselect: function (cb) {
+  setSelected: function (card) {
+    game.selectedCard = card;
+    card.addClass('selected');
+    game.highlight.map();
+    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget').clearEvents();
+    game.states.table.selectedCard.addClass('flip');
+    card.trigger('select', { card: card });
+  },
+  unselect: function () {
     game.highlight.clearMap();
-    if (game.selectedCard) game.selectedCard.removeClass('selected draggable');
+    if (game.selectedCard) game.selectedCard.removeClass('selected');
     game.selectedCard = null;
     game.states.table.selectedCard.removeClass('flip');
-    if (game.states.table.selectedClone) {
+    if (game.states.table.selectedClone) { 
       game.timeout(200, function () {
         if (game.states.table.selectedClone) {
           game.states.table.selectedClone.remove();
           game.states.table.selectedClone = null;
         }
-        if (cb && typeof(cb) == 'function') cb();
       });
-    } else if (cb && typeof(cb) == 'function') cb();
-    
+    }
   },
   move: function (destiny) {
     if (typeof destiny === 'string') { destiny = $('#' + destiny); }
@@ -271,8 +248,14 @@ game.card = {
     return this;
   },
   setArmor: function (armor) {
-    this.find('.desc .armor').text(game.data.ui.armor + ': ' + armor + '%');
+    this.find('.desc .armor').text(game.data.ui.armor + ': ' + armor);
     this.data('armor', armor);
+    if (this.hasClass('selected')) { this.select(); }
+    return this;
+  },
+  setResistance: function (res) {
+    this.find('.desc .resistance').text(game.data.ui.resistance + ': ' + res);
+    this.data('resistance', res);
     if (this.hasClass('selected')) { this.select(); }
     return this;
   },
@@ -307,82 +290,86 @@ game.card = {
     return this;
   },
   damage: function (damage, target, type) {
-    if (damage < 1) { return this; } 
-    else { damage = Math.ceil(damage); }
     var source = this, evt, x, y, position, spot, resistance, armor, hp, currentDamage;
-    if (source.data('crit')) {
-      damage = source.data('crit damage');
-      source.data('crit', false);
-    }
-    if (!type) { type = game.data.ui.physical; }
-    resistance = 1 - target.data('resistance') / 100;
-    if (type === game.data.ui.magical && resistance) { damage = Math.round(damage * resistance); }
-    armor = 1 - target.data('armor') / 100;
-    if (type === game.data.ui.physical && armor) { damage = Math.round(damage * armor); }
-    if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-    hp = target.data('current hp') - damage;
-    target.setCurrentHp(hp);
-    position = game.map.getPosition(target);
-    x = game.map.getX(position);
-    y = game.map.getY(position);
-    spot = game.map.getSpot(x, y);
-    evt = {
-      source: this,
-      target: target,
-      spot: spot,
-      x: x,
-      y: y,
-      position: position,
-      damage: damage,
-      type: type
-    };
-    target.trigger('damage', evt);
-    if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
-    if (source.data('crit')) {
-      damageFx = target.find('.damaged.critical');
-      if (!damageFx.length) {
-        damageFx = $('<span>').addClass('damaged critical').appendTo(target);
-      } else {
-        damage += parseInt(damageFx.text(), 10);
+    if (damage > 0) {
+      if (source.data('crit')) {
+        damage = source.data('crit damage');
+        source.data('crit', false);
       }
-    } else {
-      damageFx = target.find('.damaged').not('.critical');
-      if (!damageFx.length) {
-        damageFx = $('<span>').addClass('damaged').appendTo(target);
-      } else {
-        damage += parseInt(damageFx.text(), 10);
+      if (!type) { type = game.data.ui.physical; }
+      if (type === game.data.ui.magical) {
+        resistance = target.data('resistance');
+        if (resistance) damage = damage - resistance;
+      } else if (type === game.data.ui.physical) { 
+        armor = target.data('armor');
+        if (armor) damage = damage - armor; 
       }
+      if (damage < 1) damage = 1;
+      if (typeof target === 'string') { target = $('#' + target + ' .card'); }
+      hp = target.data('current hp') - damage;
+      target.setCurrentHp(hp);
+      position = game.map.getPosition(target);
+      x = game.map.getX(position);
+      y = game.map.getY(position);
+      spot = game.map.getSpot(x, y);
+      evt = {
+        source: this,
+        target: target,
+        spot: spot,
+        x: x,
+        y: y,
+        position: position,
+        damage: damage,
+        type: type
+      };
+      target.trigger('damage', evt);
+      if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
+      if (source.data('crit')) {
+        damageFx = target.find('.damaged.critical');
+        if (!damageFx.length) {
+          damageFx = $('<span>').addClass('damaged critical').appendTo(target);
+        } else {
+          damage += parseInt(damageFx.text(), 10);
+        }
+      } else {
+        damageFx = target.find('.damaged').not('.critical');
+        if (!damageFx.length) {
+          damageFx = $('<span>').addClass('damaged').appendTo(target);
+        } else {
+          damage += parseInt(damageFx.text(), 10);
+        }
+      }
+      damageFx.text(damage);
+      game.timeout(2000, function () {
+        this.remove();
+      }.bind(damageFx));
     }
-    damageFx.text(damage);
-    game.timeout(2000, function () {
-      this.remove();
-    }.bind(damageFx));
     return this;
   },
   heal: function (healhp) {
-    if (healhp < 1) { return this; } 
-    else { healhp = Math.ceil(healhp); }
-    var healFx, currentHeal,
-      currenthp = this.data('current hp'),
-      maxhp = this.data('hp'),
-      hp = currenthp + healhp;
-    if (hp > maxhp) {
-      healhp = maxhp - currenthp;
-      this.setCurrentHp(maxhp);
-    } else {
-      this.setCurrentHp(hp);
+    if (healhp > 0) {
+      var healFx, currentHeal,
+        currenthp = this.data('current hp'),
+        maxhp = this.data('hp'),
+        hp = currenthp + healhp;
+      if (hp > maxhp) {
+        healhp = maxhp - currenthp;
+        this.setCurrentHp(maxhp);
+      } else {
+        this.setCurrentHp(hp);
+      }
+      healFx = this.find('.heal');
+      if (healFx.length && game.mode !== 'library') {
+        currentHeal = parseInt(healFx.text(), 10);
+        healFx.text(currentHeal + healhp);
+      } else {
+        healFx.remove();
+        healFx = $('<span>').addClass('heal').text(healhp).appendTo(this);
+      }
+      game.timeout(2000, function () {
+        this.remove();
+      }.bind(healFx));
     }
-    healFx = this.find('.heal');
-    if (healFx.length && game.mode !== 'library') {
-      currentHeal = parseInt(healFx.text(), 10);
-      healFx.text(currentHeal + healhp);
-    } else {
-      healFx.remove();
-      healFx = $('<span>').addClass('heal').text(healhp).appendTo(this);
-    }
-    game.timeout(2000, function () {
-      this.remove();
-    }.bind(healFx));
     return this;
   },
   kill: function (evt) {

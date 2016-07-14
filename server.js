@@ -60,10 +60,12 @@ http.createServer(function(request, response) {
           send(response, JSON.stringify(waiting));
           return;
         case 'chat':
-          var msg = query.data;
-          msg = msg.substring(0, 42);
+          var msg = {
+            data: query.data.substring(0, 42), 
+            user: query.user.substring(0, 24)
+          };
           chat.unshift(msg);
-          chat = chat.slice(0, 7);
+          chat = chat.slice(0, 6);
           send(response, JSON.stringify({messages: chat}));
           return;
         default: //console.log('set', query.data)

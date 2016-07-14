@@ -5,7 +5,7 @@ game.skill = {
     $.fn.toggle = game.skill.toggle;
     $.fn.discard = game.skill.discard;
   },
-  cast: function (skill, target) {
+  cast: function (skill, target) { //console.trace('cast')
     var source = this, targets, duration, channeler, channelDuration,
       hero = skill.data('hero'),
       skillid = skill.data('skill');
@@ -46,9 +46,9 @@ game.skill = {
         if (source.hasClass('enemy')) {
           game.enemy.hand -= 1;
         } else {
-          game.timeout(300, function () {
+          game.timeout(300, function () { //console.trace('castend')
             if (game.mode !== 'library') this.skill.discard();
-            else game.card.unselect(null, true);
+            //else this.source.select();
           }.bind({source: source, skill: skill, target: target}));
         }
       }
@@ -106,8 +106,8 @@ game.skill = {
     return this;
   },
   discard: function () {
-    if (this.hasClass('skill')) {
-      game.card.unselect(null, true);
+    if (this.hasClass('skills')) {
+      game.card.unselect();
       this.trigger('discard', {target: this});
       if (this.hasClass('player')) {
         this.appendTo(game.player.skills.cemitery);

@@ -1,7 +1,7 @@
 game.tree = {
   build: function (spot, side) {
     var tree = game.card.build({
-      className: 'tree static neutral ' + side,
+      className: 'trees static neutral ' + side,
       name: game.data.ui.tree,
       attribute: game.data.ui.tree,
       description: game.data.ui.forest

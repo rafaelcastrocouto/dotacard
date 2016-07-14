@@ -38,16 +38,7 @@ game.online = {
       game.online.setData('id', game.id);
       if (game.currentData.status === 'waiting') {
         game.online.wait();
-      } else if (game.currentData.status === 'battle') {
-        var now = new Date().valueOf();
-        var seconds = parseInt((game.currentData.expire - now) / 1000, 10);
-        if (seconds > 1) {
-          setTimeout(function () {
-            var challenge = localStorage.getItem('challenge');
-            game.online.battle(game.currentData[challenge], challenge, seconds);
-          }, 1000);
-        } else game.reset();
-      }
+      } else game.reset();
     }
     // todo
   },
@@ -73,20 +64,25 @@ game.online = {
     });
   },
   searching: function () {
-    game.db({ 'get': game.id }, function (found) {
-      // asking challenger name
-      if (found.challenger) {
-        game.triesCounter.text('');
-        game.online.setData('challenger', found.challenger);
-        game.online.battle(found.challenger, 'challenger');
-      } else {
-        game.triesCounter.text(game.tries += 1);
-        if (game.tries > game.waitLimit) {
-          game.message.text(game.data.ui.noenemy);
-          game.timeout(2000, game.states.changeTo ,'menu');
-        } else { game.timeout(1000, game.online.searching); }
-      }
-    });
+    if (game.id && game.currentData.status == 'waiting') {
+      game.db({ 'get': game.id }, function (found) {
+        // asking challenger name
+        var name = found.challenger;
+        if (name) game.online.newChallenger(name);
+        else {
+          game.triesCounter.text(game.tries += 1);
+          if (game.tries > game.waitLimit) {
+            game.message.text(game.data.ui.noenemy);
+            game.timeout(2000, game.states.changeTo ,'menu');
+          } else { game.timeout(1000, game.online.searching); }
+        }
+      });
+    }
+  },
+  newChallenger: function (name) {
+      game.triesCounter.text('');
+      game.online.setData('challenger', name);
+      game.online.battle('challenger', name);
   },
   found: function (waiting) {
     game.message.text(game.data.ui.gamefound);
@@ -94,35 +90,33 @@ game.online = {
     game.online.setId(waiting.id);
     // ask challenged name
     game.db({ 'get': waiting.id }, function (found) {
-      game.online.setData('challenged', found.challenged);
+      var name = found.challenged;
+      game.online.setData('challenged', name);
       game.online.setData('challenger', game.player.name);
       // tell challenger name
       game.db({
         'set': game.id,
         'data': game.currentData
       }, function () {
-        game.online.battle(found.challenged, 'challenged');
+        game.online.battle('challenged', name);
       });
     });
   },
-  battle: function (enemy, challenge, recover) {
+  battle: function (type, name, recover) { //console.trace('battle')
     game.loader.removeClass('loading');
     game.tries = 0;
     game.online.picked = false;
-    game.enemy.name = enemy;
-    game.enemy.type = challenge;
+    game.enemy.name = name;
+    game.enemy.type = type;
     game.message.html(game.data.ui.battlefound + ' <b>' + game.player.name + '</b> vs <b class="enemy">' + game.enemy.name + '</b>');
     game.states.choose.counter.show();
     game.states.choose.randombt.attr({disabled: false});
     if (localStorage.getItem('mydeck')) game.states.choose.mydeck.attr({disabled: false});
     game.states.choose.enablePick();
     game.online.setData('status', 'battle');
-    localStorage.setItem('challenge', challenge);
-    if (!recover) {
-      game.audio.play('battle');
-      game.states.choose.count = game.timeToPick;
-      game.online.setData('expire', new Date().valueOf() + (game.timeToPick*1000) );
-    } else game.states.choose.count = recover;
+    game.audio.play('battle');
+    game.states.choose.count = game.timeToPick;
+    game.online.setData('expire', new Date().valueOf() + (game.timeToPick*1000) );
     game.timeout(1000, game.online.pickCount);
   },
   pickCount: function () {
@@ -158,74 +152,35 @@ game.online = {
     var picks = game.player.picks.join('|');
     // check if enemy picked
     game.db({ 'get': game.id }, function (found) {
-      if (game.player.type === 'challenged') {
-        game.online.setData('challengedDeck', picks);
-        if (found.challengerDeck) {
-          game.db({
-            'set': game.id,
-            'data': game.currentData
-          }, function () {
-            game.online.foundChallengerDeck(found);
-          });
-        } else game.db({
-          'set': game.id,
-          'data': game.currentData
-        }, game.online.getChallengerDeck);
-      } else if (game.player.type === 'challenger') {
-        game.online.setData('challengerDeck', picks);
-        if (found.challengedDeck) {
-          game.db({
-            'set': game.id,
-            'data': game.currentData
-          }, function () {
-            game.online.foundChallengedDeck(found);
-          });
-        } else game.db({
-          'set': game.id,
-          'data': game.currentData
-        }, game.online.getChallengedDeck);
-      }
+      game.online.setData(game.player.type + 'Deck', picks);
+      if (found[game.enemy.type + 'Deck']) {
+        cb = function () { game.online.foundDeck(game.enemy.type, found); };
+      } else cb = function () { game.online.loadDeck(game.enemy.type); };
+      game.db({
+        'set': game.id,
+        'data': game.currentData
+      }, cb);
     });
   },
-  getChallengerDeck: function () {
+  loadDeck: function (type) {
     game.message.text(game.data.ui.loadingdeck);
     game.loader.addClass('loading');
     game.db({ 'get': game.id }, function (found) {
-      if (found.challengerDeck) {
-        game.online.foundChallengerDeck(found);
+      if (found[type + 'Deck']) {
+        game.online.foundDeck(type, found);
       } else {
         game.triesCounter.text(game.tries += 1);
         if (game.tries > game.connectionLimit) {
           game.reset();
-        } else { game.timeout(1000, game.online.getChallengerDeck); }
+        } else { game.timeout(1000, game.online.loadDeck.bind(this, type)); }
       }
     });
   },
-  getChallengedDeck: function () {
-    game.message.text(game.data.ui.loadingdeck);
-    game.loader.addClass('loading');
-    game.db({ 'get': game.id }, function (found) {
-      if (found.challengedDeck) {
-        game.online.foundChallengedDeck(found);
-      } else {
-        game.triesCounter.text(game.tries += 1);
-        if (game.tries > game.connectionLimit) {
-          game.reset();
-        } else { game.timeout(1000, game.online.getChallengedDeck); }
-      }
-    });
-  },
-  foundChallengerDeck: function (found) {
+  foundDeck: function (type, found) {
     game.triesCounter.text('');
-    game.online.setData('challengerDeck', found.challengerDeck);
-    game.enemy.picks = found.challengerDeck.split('|');
-    game.states.choose.clear();
-    game.states.changeTo('table');
-  },
-  foundChallengedDeck: function (found) {
-    game.triesCounter.text('');
-    game.online.setData('challengedDeck', found.challengedDeck);
-    game.enemy.picks = found.challengedDeck.split('|');
+    var typeDeck = type + 'Deck';
+    game.online.setData(typeDeck, found[typeDeck]);
+    game.enemy.picks = found[typeDeck].split('|');
     game.states.choose.clear();
     game.states.changeTo('table');
   },
@@ -241,15 +196,17 @@ game.online = {
       game.states.table.surrender.show();
       game.states.table.back.hide();
       game.turn.build();
-      game.moves = [];
-      game.timeout(400, game.library.buildSkills);
+      game.timeout(100, function () {
+        game.states.table.buildSkills('player');
+        game.states.table.buildSkills('enemy');
+      });
       if (game.player.type === 'challenger') {
         game.states.table.el.addClass('unturn');
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
-        setTimeout(game.online.beginEnemy, 2000);
+        game.timeout(1000, game.online.beginEnemy);
       } else {
         game.states.table.el.removeClass('unturn');
-        setTimeout(game.online.beginPlayer, 2000);
+        game.timeout(1000, game.online.beginPlayer);
       }
     }
   },
@@ -263,10 +220,9 @@ game.online = {
           var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
-            card.addClass('player hero').data('side', 'player').on('mousedown touchstart', game.card.select).on('action', game.online.action);
+            card.addClass('player').data('side', 'player').on('mousedown touchstart', game.card.select).on('action', game.online.action);
             card.place(game.map.toId(x + p, y));
           });
-          game.timeout(400, game.online.buildSkills);
         }
       });
     }
@@ -281,58 +237,30 @@ game.online = {
           var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.enemy.picks.indexOf(card.data('hero'));
-            card.addClass('enemy hero').data('side', 'enemy').on('mousedown touchstart', game.card.select);
+            card.addClass('enemy').data('side', 'enemy').on('mousedown touchstart', game.card.select);
             card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
           });
         }
       });
     }
   },
-  buildSkills: function (single) {
-    game.player.manaBuild();
-    game.player.skills.hand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills hand');
-    game.player.skills.sidehand = $('<div>').appendTo(game.states.table.player).addClass('player deck skills sidehand');
-    game.player.skills.ult = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills ult');
-    game.player.skills.temp = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills temp');
-    game.player.skills.cemitery = $('<div>').hide().appendTo(game.states.table.player).addClass('player deck skills cemitery');
-    game.player.skills.deck = game.deck.build({
-      name: 'skills',
-      multi: true,
-      filter: game.player.picks,
-      cb: function (deck) {
-        deck.addClass('player available').hide().appendTo(game.states.table.player);
-        $.each(deck.data('cards'), function (i, skill) {
-          skill.addClass('player skill').data('side', 'player').on('mousedown touchstart', game.card.select);
-          if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game.player.skills.temp);
-          else if (skill.data('skill') === 'ult') skill.appendTo(game.player.skills.ult);
-          else if (skill.data('type') === game.data.ui.toggle) skill.appendTo(game.player.skills.sidehand);
-          else if (skill.data('type') === game.data.ui.automatic) {
-            game.timeout(16, function () { skill.passive(game.map.getPosition(game.library.hero)); });
-          }
-        });
-      }
-    });
-    game.enemy.manaBuild();
-    game.enemy.skills.deck = game.deck.build({
-      name: 'skills',
-      filter: game.enemy.picks,
-      cb: function (deck) {
-        deck.addClass('enemy hand cemitery toggle').appendTo(game.states.table.enemy);
-        $.each(deck.data('cards'), function (i, skill) {
-          skill.hide().addClass('enemy skill').data('side', 'enemy');
-        });
-      }
-    });
-  },
+/*
+  beginPlayer > turn.beginPlayer > startTurn > turn.count >
+    * skip || no-moves-available > preEndPlayer >
+    endTurn > game.turn.end > sendTurnData >
+
+  beginEnemy > turn.beginEnemy > startTurn > turn.count >
+    * preEndEnemy || getTurnData >
+    beginEnemyMoves > endTurn > game.turn.end > beginPlayer...
+*/
   beginPlayer: function () {
-    game.currentMoves = [];
     game.turn.beginPlayer(function () {
       game.online.startTurn('turn');
-    });
-  },
-  beginEnemy: function () {
-    game.turn.beginEnemy(function () {
-      game.online.startTurn('unturn');
+      if (game.player.turn === 6) {
+        $('.card', game.player.skills.ult).appendTo(game.player.skills.deck);
+      } 
+      game.player.buyHand();
+      game.tower.attack('enemy');
     });
   },
   startTurn: function (unturn) {
@@ -340,60 +268,90 @@ game.online = {
     $('.card .heal').remove();
     game.turn.counter = game.timeToPlay;
     game.timeout(1000, function () { 
-      game.turn.count(unturn, function () {
-        game.online.endTurn(unturn);
+      game.turn.count(unturn, function (unturn) {
+        /*every count*/
+        if (unturn == 'unturn') game.online.preGetTurnData();
+      }, function (unturn) {
+        /*on count end*/
+        if (unturn == 'unturn') {
+          game.tries = 0;
+          game.loader.addClass('loading');
+          game.message.text(game.data.ui.loadingturn);
+          game.online.getTurnData();
+        } else game.online.endTurn('turn');
       }); 
     });
   },
   action: function () {
-    $(this).addClass('done');
-    if (game.turn.noAvailableMoves()) {
-      game.online.endPlayerTurn();
-    }
+    game.timeout(400, function () {
+      if (game.turn.noAvailableMoves()) {
+        game.online.preEndPlayer();
+      }
+    });
   },
   skip: function () {
-    if (!game.states.table.el.hasClass('unturn')) {
-      game.online.endPlayerTurn();
+    if ( game.isPlayerTurn() ) {
+      game.turn.counter = -1;
+      game.online.preEndPlayer();
     }
   },
-  endPlayerTurn: function () {
+  preEndPlayer: function () {
     game.turn.counter = -1;
     game.states.table.el.addClass('unturn');
-    game.turn.end('turn', function () {
-      game.online.endTurn('turn');
+    game.online.endTurn('turn');
+  },
+  endTurn: function (unturn) { //console.trace('endturn')
+    $('.card .damaged').remove();
+    $('.card .heal').remove();
+    game.turn.end(unturn, function (unturn) {
+      if (unturn === 'unturn') {
+        game.online.beginPlayer();
+      } else {
+        game.online.sendTurnData();
+      }
+    });
+  },
+  sendTurnData: function () {
+    var challengeTurn = game.player.type + 'Turn';
+    game.message.text(game.data.ui.uploadingturn);
+    game.online.setData('moves', game.currentMoves.join('|'));
+    game.online.setData(challengeTurn, game.player.turn);
+    game.db({ 'get': game.id }, function (data) {
+      if (data.surrender) {
+        game.online.win();
+      } else {
+        game.db({
+          'set': game.id,
+          'data': game.currentData
+        }, game.online.beginEnemy);
+      }
+    });
+  },
+  beginEnemy: function () {
+    game.turn.beginEnemy(function () {
+      game.online.startTurn('unturn');
+      if (game.enemy.turn === 6) {
+        $('.card', game.enemy.skills.ult).appendTo(game.enemy.skills.deck);
+      }
+      game.enemy.buyHand();
     });
   },
   preGetTurnData: function () {
     game.db({ 'get': game.id }, function (data) {
       var challengeTurn = game.enemy.type + 'Turn';
-      if (data[challengeTurn] === game.enemy.turn) {
-        game.turn.counter = -1;
-        game.online.beginEnemyTurn(challengeTurn, data, function () {
-          game.turn.end('unturn',  function () {
-            game.online.endTurn('unturn', 'pre');
-          });
-        });
-      }
+      if (data[challengeTurn] === game.enemy.turn) 
+        game.online.preEndEnemy(data);
     });
   },
-  endTurn: function (unturn, pre) {
-    $('.card .damaged').remove();
-    $('.card .heal').remove();
-    if (unturn === 'unturn') {
-      game.loader.addClass('loading');
-      game.message.text(game.data.ui.loadingturn);
-      game.tries = 0;
-      if (pre) game.enemy.move(game.online.endEnemyTurn);
-      else game.timeout(1000, game.online.getTurnData);
-    } else game.timeout(1000, game.online.sendTurnData);
+  preEndEnemy: function (data) {
+    game.turn.counter = -1;
+    game.online.beginEnemyMoves(data, 'pre');
   },
   getTurnData: function () {
     game.db({ 'get': game.id }, function (data) {
       var challengeTurn = game.enemy.type + 'Turn';
       if (data[challengeTurn] === game.enemy.turn) {
-        game.online.beginEnemyTurn(challengeTurn, data, function () {
-          game.enemy.move(game.online.endEnemyTurn);
-        });
+        game.online.beginEnemyMoves(data);
       } else {
         game.tries += 1;
         game.triesCounter.text(game.tries);
@@ -403,49 +361,15 @@ game.online = {
       }
     });
   },
-  beginEnemyTurn: function (challengeTurn, data, cb) {
+  beginEnemyMoves: function (data) {
     if (data.surrender) {
       game.online.win();
     } else {
       game.triesCounter.text('');
-      game.online.setData(challengeTurn, data[challengeTurn]);
+      game.online.setData(game.enemy.type, game.enemy.turn);
       game.online.setData('moves', data.moves);
-      if (cb) cb();
+      game.enemy.move();
     }
-  },
-  endEnemyTurn: function () {
-    if (!game.states.table.el.hasClass('over')) {
-      game.enemy.skills.deck.removeClass('slide');
-      $('.card.enemy.heroes').removeClass('done');
-      $('.enemy.skills .card').hide();
-      game.online.beginPlayer();
-    }
-  },
-  sendTurnData: function (over) {
-    var challengeTurn = game.player.type + 'Turn';
-    if (!over) {
-      game.message.text(game.data.ui.uploadingturn);
-      game.online.setData(challengeTurn, game.player.turn);
-    //game.currentData.moves.push(game.currentMoves.join('|'))
-    }
-    if (game.currentMoves) {
-      game.moves.push(game.currentMoves.join('|'));
-      game.online.setData('moves', game.currentMoves.join('|'));
-    }
-    game.db({ 'get': game.id }, function (data) {
-      if (!over && data.surrender) {
-        game.online.win();
-      } else {
-        game.db({
-          'set': game.id,
-          'data': game.currentData
-        }, function () {
-          if (!over) game.turn.beginEnemy(function () {
-            game.online.startTurn('unturn');
-          });
-        });
-      }
-    });
   },
   win: function () {
     game.winner = game.player.name;
