@@ -43,14 +43,9 @@ game.skill = {
             }
           });
         }
-        if (source.hasClass('enemy')) {
-          game.enemy.hand -= 1;
-        } else {
-          game.timeout(300, function () { //console.trace('castend')
-            if (game.mode !== 'library') this.skill.discard();
-            //else this.source.select();
-          }.bind({source: source, skill: skill, target: target}));
-        }
+        game.timeout(300, function () { //console.trace('castend')
+          if (game.mode !== 'library') this.skill.discard();
+        }.bind({skill: skill}));
       }
     }
     return this;
@@ -66,10 +61,7 @@ game.skill = {
         target: target
       });
       game.skills[hero][skillid].passive(skill, target);
-      if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
-        game.audio.play(hero + '/' + skillid);
-      } else game.audio.play('activate');
-      if (skill.hasClass('enemy')) game.enemy.hand -= 1;
+      game.audio.play('activate');
       game.timeout(300, function () {
         this.skill.detach();
         game.highlight.clearMap();
@@ -112,8 +104,7 @@ game.skill = {
       if (this.hasClass('player')) {
         this.appendTo(game.player.skills.cemitery);
       } else {
-        this.appendTo(game.enemy.skills.deck);
-        game.enemy.hand -= 1;
+        this.appendTo(game.enemy.skills.cemitery);
       }
     }
   },

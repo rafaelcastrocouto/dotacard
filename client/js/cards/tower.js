@@ -7,6 +7,8 @@ game.tower = {
       attribute: game.data.ui.building,
       range: game.data.ui.ranged,
       description: game.data.ui.towerDescription,
+      armor: 4,
+      resistance: 100,
       damage: 16,
       hp: 80
     });

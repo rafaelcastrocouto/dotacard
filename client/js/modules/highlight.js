@@ -25,6 +25,8 @@ game.highlight = {
           }
         }
       } else if (game.selectedCard.hasClass('skills')) {
+        if (game.selectedCard.closest('.hand').length &&
+            game.mode == 'online') game.states.table.discard.attr('disabled', false);
         game.selectedCard.highlightSource();
         game.selectedCard.strokeSkill();
         if (!game.states.table.el.hasClass('unturn')) {
@@ -147,24 +149,26 @@ game.highlight = {
   },
   active: function (source, skill) { 
     var targets = skill.data('targets');
-    if (!source.hasClasses('dead done stunned frozen silenced hexed disabled sleeping cycloned taunted')) {
-      if (targets.indexOf(game.data.ui.self) >= 0) game.highlight.self(source);
-      if (targets.indexOf(game.data.ui.ally) >= 0) game.highlight.ally(source, skill);
-      if (targets.indexOf(game.data.ui.enemy) >= 0) game.highlight.enemy(source, skill);
-      if (targets.indexOf(game.data.ui.sumonner) >= 0) game.highlight.summoner(source, skill);
-      if (targets.indexOf(game.data.ui.spot) >= 0) {
-        if (targets.indexOf(game.data.ui.free) >= 0) game.highlight.freeSpots(source, skill);
-        else {
-          var aoe = skill.data('aoe');
-          if (aoe === 'Radial') game.highlight.radial(source, skill);
-          if (aoe === 'Linear') game.highlight.linear(source, skill);
+    if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
+      if (!(source.hasClass('rooted') && skill.hasClass('am-blink'))) {
+        if (targets.indexOf(game.data.ui.self) >= 0) game.highlight.self(source);
+        if (targets.indexOf(game.data.ui.ally) >= 0) game.highlight.ally(source, skill);
+        if (targets.indexOf(game.data.ui.enemy) >= 0) game.highlight.enemy(source, skill);
+        if (targets.indexOf(game.data.ui.sumonner) >= 0) game.highlight.summoner(source, skill);
+        if (targets.indexOf(game.data.ui.spot) >= 0) {
+          if (targets.indexOf(game.data.ui.free) >= 0) game.highlight.freeSpots(source, skill);
+          else {
+            var aoe = skill.data('aoe');
+            if (aoe === 'Radial') game.highlight.radial(source, skill);
+            if (aoe === 'Linear') game.highlight.linear(source, skill);
+          }
         }
       }
     }
   },
   move: function () {
     var card = this, speed;
-    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done static dead stunned frozen entangled disabled sleeping cycloned taunted')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done static dead stunned rooted entangled disabled sleeping cycloned taunted')) {
       speed = card.data('current speed');
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
@@ -178,7 +182,7 @@ game.highlight = {
   },
   attack: function () {
     var card = this, pos, range;
-    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned frozen')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned rooted disarmed')) {
       pos = game.map.getPosition(card);
       range = game.map.getRange(card.data('range'));
       game.map.inRange(pos, range, function (neighbor) {
@@ -215,7 +219,7 @@ game.highlight = {
           game.skill.aoerange = game.map.getRange(skill.data('range'));
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
-        game.states.table.map.addClass('aoe');
+        game.map.el.addClass('aoe');
         $('.map .spot').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
       if (skill.data('range')) {
@@ -226,7 +230,7 @@ game.highlight = {
   },
   hover: function (event) {
     var spot = $(this);
-    if (game.states.table.map.hasClass('aoe')) {
+    if (game.map.el.hasClass('aoe')) {
       $('.map .spot').removeClass('skillarea skillcast stroke top right left bottom');
       if (spot.hasClass('targetarea') || spot.find('.casttarget').length) {
         game.highlight.strokeAtCursor(spot);
@@ -253,7 +257,7 @@ game.highlight = {
     game.skill.aoerange = null;
     game.skill.aoewidth = null;
     game.skill.aoecastrange = null;
-    game.states.table.map.removeClass('aoe');
+    game.map.el.removeClass('aoe');
     $('.map .card, .map .spot').clearEvents('highlight').removeClass('source stroke attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right');
   }
 };

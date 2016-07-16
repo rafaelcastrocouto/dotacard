@@ -10,12 +10,13 @@
 
 .table .enemydecks {
   position: absolute;
-  height: 160px;
+  height: 214px;
   width: 100%;
   top: 24px;
   z-index: 6;
   transform: translateZ(0);
   overflow: hidden;
+  pointer-events: none;
 }
 
 .table .enemydecks .deck {
@@ -98,11 +99,11 @@
   z-index: 6;
   transition: all 1s;
   left: -900px;
-  top: 10px;
+  top: 50px;
 }
 
 .table .enemy .showMoves.slide {
-  left: 80px;
+  left: 90px;
 }
 
 .table .camera {

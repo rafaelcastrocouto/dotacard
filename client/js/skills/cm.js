@@ -57,7 +57,7 @@ game.skills.cm = {
   freeze: {
     cast: function (skill, source, target) {
       source.addBuff(target, skill.data('buff'));
-      target.addClass('frozen');
+      target.addClass('frozen rooted disarmed');
       target.data('cm-freeze', {
         source: source,
         skill: skill,
@@ -77,7 +77,7 @@ game.skills.cm = {
         data.duration = duration;
         target.data('cm-freeze', data);
       } else {
-        target.removeClass('frozen');
+        target.removeClass('frozen rooted disarmed');
         target.data('cm-freeze', null);
         target.off('turnend.cm-freeze');
         target.removeBuff('cm-freeze');

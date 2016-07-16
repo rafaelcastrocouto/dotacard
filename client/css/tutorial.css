@@ -10,26 +10,10 @@
   transform: translateZ(0);
 }
 
-.choose .tutorial.axe {
-  width: 502px;
-}
-.choose .tutorial.axe .img {
-  background-repeat: no-repeat;
-  background-position: 170px 30px;  
-}
-
 .tutorial.axe.up {
   bottom: 0px;
 }
 
-.tutorial.axe.left {
-  right: auto;
-  left: 0;
-  transform: scaleX(-1);
-}
-.tutorial.axe.left .txt  {
-  transform: scaleX(-1);
-}
 .tutorial.axe .img {
   z-index: 10;
   background-image: url("../img/tutorial/axe.png");
@@ -47,8 +31,8 @@
   width: 175px;
   border-radius: 50%;
   position: absolute;
-  bottom: 215px;
-  right: -10px;
+  bottom: 240px;
+  right: 200px;
 }
 .tutorial.axe .baloon:before,
 .tutorial.axe .baloon:after {
@@ -57,26 +41,27 @@
   position: absolute;
   display: block;
   bottom: -23px;
-  left: calc(50% - 33px);
   height: 20px;
 }
 .tutorial.axe .baloon:before {
   width: 40px;
   border-style: solid;
-  border-width: 0 8px 4px 0;
+  border-width: 0 0 4px 8px;
   border-color: #777;
   background: transparent;
-  border-radius: 0 0 80px;
-  box-shadow: inset -20px 0 0 #fff;
+  border-radius: 0 0 0 80px;
+  box-shadow: inset 20px 0 0 #fff;
+  left: calc(50% - 18px);
 }
 .tutorial.axe .baloon:after {
   width: 15px;
   border-style: solid;
-  border-width: 0 8px 4px 0;
+  border-width: 0 0 4px 8px;
   border-color: #777;
   background: transparent;
-  border-radius: 40px 0 50px 0;
+  border-radius: 0 0 0 50px;
   display: block;
+  left: calc(50% + 8px);
 }
 
 .tutorial.axe .txt {
@@ -95,6 +80,7 @@
   animation: tutorialblink 1s infinite;
 }
 
+
 @keyframes tutorialblink {
   0%, 100% {box-shadow: 0 0 0 6px rgba(0,0,0,0);}
   50% {box-shadow: 0 0 0 6px white;}
@@ -108,4 +94,42 @@
 @keyframes maptutorialblink {
   0%, 100% {box-shadow: 0 0 0 16px rgba(0,0,0,0);}
   50% {box-shadow: 0 0 0 16px white;}
+}
+
+.skills.tutorialblink {
+  box-shadow: 0 0 0 10px white;
+  animation: skillstutorialblink 1s infinite;
+}
+@keyframes skillstutorialblink {
+  0%, 100% {box-shadow: 0 0 0 10px rgba(0,0,0,0);}
+  50% {box-shadow: 0 0 0 10px white;}
+}
+
+
+.tutorial.axe.left {
+  right: auto;
+  left: -140px;
+  transform: scaleX(-1);
+}
+.tutorial.axe.left .txt  {
+  transform: scaleX(-1);
+}
+.tutorial.axe.left .baloon {
+  right: 160px;
+  bottom: 260px;
+}
+
+.choose .tutorial.axe {
+  width: 502px;
+}
+.choose .tutorial.axe .img {
+  background-repeat: no-repeat;
+  background-position: 170px 30px;  
+}
+.choose .tutorial.axe .baloon {
+  transform: scaleX(-1);
+  right: -12px;
+}
+.choose .tutorial.axe .txt {
+  transform: scaleX(-1);
 }

@@ -5,8 +5,8 @@ var game = {
   loader: $('<span>').addClass('loader'),
   message: $('<span>').addClass('message').html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen.'),
   triesCounter: $('<small>').addClass('triescounter'),
-  timeToPick: 25,
-  timeToPlay: 30,
+  timeToPick: 40,
+  timeToPlay: 60,
   waitLimit: 300,
   connectionLimit: 120,
   dayLength: 12,
@@ -83,9 +83,9 @@ var game = {
     game.mode = false;
     localStorage.removeItem('mode');
   },
-  confirm: function (cb) {
+  confirm: function (cb, text) {
     swal({
-      title: game.data.ui.leave,
+      title: text || game.data.ui.sure,
       type: 'warning',
       showCancelButton: true,
       buttonsStyling: false,

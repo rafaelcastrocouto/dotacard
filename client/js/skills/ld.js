@@ -36,9 +36,9 @@ game.skills.ld = {
       var target = eventdata.target;
       var skill = source.data('ld-entangle-skill');
       var chance = skill.data('entangle chance') / 100;
-      if(game.random() < chance && !target.hasClass('entangled')) {
+      if(game.random() < chance && !target.hasClass('rooted')) {
         source.addBuff(target, game.data.buffs.ld.entangle);
-        target.addClass('entangled');
+        target.addClass('rooted');
         target.data('ld-entangle', {
           duration: skill.data('entangle duration'),
           source: source,
@@ -57,7 +57,7 @@ game.skills.ld = {
         target.data('ld-entangle', data);
         source.damage(skill.data('entangle damage'), target, 'Physical');
       } else {
-        target.removeClass('entangled');
+        target.removeClass('rooted');
         target.off('turnend.ld-entangle');
         target.data('ld-entangle', null);
         target.removeBuff('ld-entangle');

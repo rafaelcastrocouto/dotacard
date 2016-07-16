@@ -3,6 +3,7 @@ game.turn = {
     if (!game.turn.builded) {
       game.turn.builded = true;
       game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)');
+      game.turn.time = $('<p>').appendTo(game.topbar).addClass('time').text(game.data.ui.time + ': 0:00 Day');
       game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
     }
     game.time = 0;
@@ -11,6 +12,7 @@ game.turn = {
     game.player.kills = 0;
     game.enemy.kills = 0;
     game.moves = [];
+    game.turn.tickTime();
   },
   beginPlayer: function (cb) {
     if (!game.states.table.el.hasClass('over')) {
@@ -31,8 +33,6 @@ game.turn = {
   },
   start: function (unturn, cb) {
     game.currentMoves = [];
-    game.time = game.player.turn + game.enemy.turn;
-    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time, 10) + ')');
     $('.card.dead').each(function () {
       var dead = $(this);
       if (game.time > dead.data('reborn')) { dead.reborn(); }
@@ -45,6 +45,7 @@ game.turn = {
       } else { card.trigger('enemyturnstart', { target: card }); }
       card.reduceStun();
     });
+    game.timeout(400, game.turn.tickTime);
     game.timeout(800, function () {
       game.turn.el.removeClass('show');
       if (unturn === 'turn') {
@@ -57,24 +58,20 @@ game.turn = {
   },
   count: function (unturn, cb1, cb2) {
     if (game.turn.counter >= 0) {
-      game.states.table.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
-      game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + Math.round(game.time) + ')');
-      if (unturn !== 'unturn') {
-        game.message.text(game.data.ui.yourturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-      } else {
-        game.message.text(game.data.ui.enemyturncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-      }
+      var turncount = game.data.ui.yourturncount;
+      if (unturn !== 'unturn') turncount = game.data.ui.enemyturncount;
+      game.message.text(turncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
       if (game.turn.counter === 0) cb2(unturn);
       else if (game.turn.counter > 0) {
         if (cb1) cb1(unturn);
         game.timeout(1000, game.turn.count.bind(this, unturn, cb1, cb2));
-        game.time += 0.9 / game.timeToPlay;
         game.turn.counter -= 1;
       }
     }
   },
   end: function (unturn, cb) {
     if (!game.states.table.el.hasClass('over')) {
+      game.turn.tickTime();
       game.states.table.skip.attr('disabled', true);
       game.message.text(game.data.ui.turnend);
       $('.spot.fountain').find('.card').each(function () {
@@ -105,23 +102,28 @@ game.turn = {
   noAvailableMoves: function () {
     return $('.map .player.card:not(.towers)').length == $('.map .player.card.done:not(.towers)').length;
   },
+  tickTime: function () { 
+    game.time += 0.5; // console.trace('t', game.time, game.turn.hours() );
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time) + ')');
+    game.turn.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
+  },
   hours: function () {
     var convertedMin, intMin, stringMin,
-      hours = game.time % game.dayLength,
-      perCentHours = hours / game.dayLength,
-      convertedHours = perCentHours * 24,
-      intHours = parseInt(convertedHours, 10),
-      minutes = convertedHours - intHours;
-    if (minutes < 0) { minutes = 0; }
+      hours = game.time % (game.dayLength * 2),
+      intHours = parseInt(hours, 10),
+      minutes = hours - intHours;
     convertedMin = minutes * 60;
     intMin = parseInt(convertedMin, 10);
     stringMin = intMin < 10 ? '0' + intMin : intMin;
     return intHours + ':' + stringMin;
   },
   dayNight: function () {
-    var hours = game.time % game.dayLength;
-    if (hours < game.dayLength / 2) {
+    var hours = game.time % game.dayLength * 2;
+    if (hours < game.dayLength) {
       return game.data.ui.day;
-    } else { return game.data.ui.night; }
+    } else { 
+    game.map.el.addClass('night');
+    return game.data.ui.night; 
+    }
   }
 };

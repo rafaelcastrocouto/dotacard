@@ -12,6 +12,7 @@ game.map = {
       }
     }
     game.map.builded = true;
+    game.map.el = map;
     return map;
   },
   toId: function (w, h) {

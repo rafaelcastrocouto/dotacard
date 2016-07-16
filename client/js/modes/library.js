@@ -42,12 +42,13 @@ game.library = {
       disabled = card.hasClass('dead');
       game.states.choose.counter.text(card.data('name') + ' ' + game.data.ui.skills);
       $('.slot .card.skills').appendTo(game.library.skills);
-      $('.library.skills .card.'+hero).each(function (i) {
-        $(game.states.choose.pickedbox.children()[i]).show().append(this);
-        if (disabled) $(this).addClass('dead');
+      heroSkills = $('.library.skills .card.'+hero);
+      $('.slot').each(function (i) {
+        var skill = $(heroSkills[i]);
+        if (disabled) skill.addClass('dead');
+        skill.appendTo(this);
       });
-      game.states.choose.pickedbox.hide();
-      game.states.choose.pickedbox.fadeIn('slow');
+      game.states.choose.pickedbox.hide().fadeIn('slow');
       $('.slot:empty').hide();
     }
   },
@@ -59,9 +60,9 @@ game.library = {
     game.library.placePlayerHeroes();
     game.library.placeEnemyHeroes();
     game.states.table.enableUnselect();
-    game.states.table.surrender.hide();
     game.states.table.back.show();
-    game.states.table.time.text(game.data.ui.time + ': 0:00 ' + game.data.ui.day);
+    game.states.table.skip.attr('disabled', true).show();
+    game.states.table.discard.attr('disabled', true).show();
     game.player.kills = 0;
     game.enemy.kills = 0;
     game.library.firstSelect = false;
@@ -119,8 +120,8 @@ game.library = {
     if (unturn === 'turn') {
       if (!game.library.firstSelect) {
         game.library.firstSelect = true;
-        $('.card', game.player.skills.ult).appendTo(game.player.skills.hand);
         $('.card', game.player.skills.deck).appendTo(game.player.skills.hand);
+        $('.card', game.player.skills.ult).appendTo(game.player.skills.hand);
         game.library.hero.select();
       }
       game.tower.attack('enemy');

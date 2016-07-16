@@ -13,9 +13,7 @@ game.states.loading = {
     });
     game.states.loading.package();
     if (window.AudioContext) game.audio.build();
-    game.states.loading.ping(function () {
-      if (!game.offline) game.states.loading.analytics();
-    });
+    game.states.loading.ping();
     game.states.loading.progress();
   },
   progress: function () {
@@ -110,8 +108,5 @@ game.states.loading = {
         if (cb) { cb(); }
       }
     });
-  },
-  analytics: function () {
-    $('<script src="analytics/google.analytics.min.js">').appendTo('body');
   }
 };

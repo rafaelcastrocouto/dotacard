@@ -8,23 +8,23 @@
       "display": true,
       "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
     },
-    "shield": {
-      "name": "Escudo Antimagia",
-      "type": "Passiva",
-      "targets": ["Próprio"],
-      "resistance": 6,
-      "cards": 1,
-      "display": true,
-      "description": "Reduz todo dano mágico recebido em seis pontos"
-    },
     "blink": {
       "name": "Blink",
       "type": "Ativa",
       "targets": ["Local", "Livre"],
       "range": "Longe",
-      "cards": 8,
+      "cards": 6,
       "display": true,
       "description": "Teleporta instantâneamente"
+    },
+    "shield": {
+      "name": "Escudo Antimagia",
+      "type": "Passiva",
+      "targets": ["Próprio"],
+      "resistance bonus": 3,
+      "cards": 1,
+      "display": true,
+      "description": "Resistência a dano mágico aumentada em três pontos"
     },
     "ult": {
       "name": "Mana Void",

@@ -12,18 +12,17 @@ game.skills.am = {
       var target = eventdata.target;
       var hero = target.data('hero');
       var side = source.data('side');
+      var otherSide = target.data('side');
       var mana = target.data('mana') || 0;
       game.audio.play('am/burn');
       if (hero) {
         var damage = source.data('current damage') + target.data('mana');
         source.data('current damage', damage);
       }
-      if (side === 'enemy' && hero) {
-        var cards = game.states.table.playerHand.children('.'+hero);
-        if(cards.length > 0) {
-          var card = game.deck.randomCard(cards, 'noseed');
-          card.discard();
-        }
+      var cards = $('.'+otherSide+' .hand .'+hero);
+      if(cards.length > 0) {
+        var card = game.deck.randomCard(cards);
+        card.discard();
       }
     },
     afterattack: function (event, eventdata) {
@@ -34,7 +33,8 @@ game.skills.am = {
   shield: {
     passive: function (skill, source) {
       source.addBuff(source, skill.data('buff'));
-      source.setResistance(skill.data('resistance'));
+      var resistance = source.data('resistance') + skill.data('resistance bonus');
+      source.setResistance(resistance);
     }
   },
   blink: {
@@ -50,7 +50,7 @@ game.skills.am = {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
       var otherSide = game.otherSide(source);
-      var damage = game.enemy.maxCards - game.enemy.hand;
+      var damage = game[otherSide].maxCards - $('.'+otherSide+' .hand .card').length;
       damage *= skill.data('multiplier');
       game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
         var card = neighbor.find('.card.'+otherSide);

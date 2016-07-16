@@ -3,11 +3,11 @@
   "am": {
     "burn": {
       "name": "Quebra de Mana",
-      "description": "O inimigo tem que descartar um habilidade do herói atacado"
+      "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
     },
     "shield": {
       "name": "Escudo Antimagia",
-      "description": "Reduz o dano mágico pela metade"
+      "description": "Resistência a dano mágico aumentada em três pontos"
     }
   },
 

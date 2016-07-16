@@ -26,15 +26,20 @@
 
 A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
 
-You are free to [fork][2] and help to build the game, you can even make a hero and [win real cash!][7]
+You are free to [fork][2] or [download](https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip) and help to build the game, you can even make a hero and [win real cash!][7]
 
-Please report any [sugestions or issues][4]
+In our Wiki page you can ckeck out the [game rules](https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#game-rules) and much more.
 
-More information on how to play, setup your own server and more on our [Wiki page][5]
-
+Please report any [sugestions or issues][4] here at github.
 
 [![Steam Greenlight Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/greenlight-banner.png)][8]
 
+**Local server setup**
+
+    npm install
+    node server.js
+
+More information on how to [setup your own server][5]
 
 *Powered by*
 

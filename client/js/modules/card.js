@@ -16,6 +16,7 @@ game.card = {
     $.fn.heal = game.card.heal;
     $.fn.setDamage = game.card.setDamage;
     $.fn.setArmor = game.card.setArmor;
+    $.fn.setResistance = game.card.setResistance;
     $.fn.setHp = game.card.setHp;
     $.fn.setCurrentHp = game.card.setCurrentHp;
     $.fn.die = game.card.die;
@@ -120,6 +121,7 @@ game.card = {
     game.highlight.clearMap();
     if (game.selectedCard) game.selectedCard.removeClass('selected');
     game.selectedCard = null;
+    game.states.table.discard.attr('disabled', true);
     game.states.table.selectedCard.removeClass('flip');
     if (game.states.table.selectedClone) { 
       game.timeout(200, function () {

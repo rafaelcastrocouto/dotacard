@@ -1,7 +1,6 @@
 game.states.table = {
   chat: true,
   build: function () {
-    this.time = $('<p>').appendTo(game.topbar).addClass('time').text(game.data.ui.time + ': 0:00 Day').hide();
     this.camera = $('<div>').addClass('camera');
     this.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(this.camera);
     this.selectedArea = $('<div>').addClass('selectedarea');
@@ -11,9 +10,10 @@ game.states.table = {
     this.player = $('<div>').addClass('playerdecks player');
     this.enemy = $('<div>').addClass('enemydecks enemy');
     this.buttonbox = $('<div>').addClass('buttonbox');
-    this.skip = $('<div>').appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
-    this.surrender = $('<div>').appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', this.surrenderClick);
+    this.surrender = $('<div>').hide().appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', this.surrenderClick);
+    this.skip = $('<div>').hide().appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
     this.back = $('<div>').hide().appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).on('mouseup touchend', this.backClick);
+    this.discard = $('<div>').hide().appendTo(this.buttonbox).addClass('discard button').attr({disabled: true}).text(game.data.ui.discard).on('mouseup touchend', this.discardClick);
     this.el.addClass('unturn').append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
@@ -21,8 +21,10 @@ game.states.table = {
     game.tree.place();
     game.units.place();
     game.chat.el.appendTo(this.el);
-    if (game.turn.msg) game.turn.msg.show();
-    this.time.show();
+    if (game.turn.el) {
+      game.turn.time.show();
+      game.turn.msg.show();
+    }
     this.camera.show();
     this.selectedArea.show();
     this.selectedCard.removeClass('flip');
@@ -65,7 +67,7 @@ game.states.table = {
   enableUnselect: function () {
     game.states.table.el.on('mousedown touchstart', function () { 
       var target = $(event.target); 
-      if (!target.closest('.card, .movearea, .targetarea').length) {
+      if (!target.closest('.button, .card, .movearea, .targetarea').length) {
         game.card.unselect();
         if (game.mode && game[game.mode].unselected) game[game.mode].unselected();
       }
@@ -90,32 +92,34 @@ game.states.table = {
     }.bind({ skill: skill }));
   },
   showResults: function () {
-    game.states.table.selectedArea.hide();
-    game.states.table.camera.hide();
-    $('.table .buttonbox').hide();
-    $('.table .deck').hide();
-    game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
-    $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
-    $('<h1>').appendTo(this.resultsbox).text(game.data.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));
-    $('<h1>').appendTo(this.resultsbox).text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
-    game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');
-    game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results enemy');
-    $('.map .player.heroes.card').each(function () {
-      var hero = $(this), heroid = $(this).data('hero'),
-        img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
-        text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
-      $('<p>').appendTo(game.states.table.playerResults).addClass(heroid+' heroes').append(img, text);
-    });
-    $('.map .enemy.heroes.card').each(function () {
-      var hero = $(this), heroid = $(this).data('hero'),
-        img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
-        text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
-      $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
-    });
-    $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
-      game.clear();
-      game.states.changeTo('menu');
-    });
+    if (!game.states.table.resultsbox) {
+      game.states.table.selectedArea.hide();
+      game.states.table.camera.hide();
+      game.states.table.buttonbox.hide();
+      $('.table .deck').hide();
+      game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
+      $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
+      $('<h1>').appendTo(this.resultsbox).text(game.data.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));
+      $('<h1>').appendTo(this.resultsbox).text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
+      game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');
+      game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results enemy');
+      $('.map .player.heroes.card').each(function () {
+        var hero = $(this), heroid = $(this).data('hero'),
+          img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
+          text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
+        $('<p>').appendTo(game.states.table.playerResults).addClass(heroid+' heroes').append(img, text);
+      });
+      $('.map .enemy.heroes.card').each(function () {
+        var hero = $(this), heroid = $(this).data('hero'),
+          img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
+          text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
+        $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
+      });
+      $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
+        game.clear();
+        game.states.changeTo('menu');
+      });
+    }
   },
   skipClick: function () {
     if (!game.states.table.skip.attr('disabled')) {
@@ -130,7 +134,7 @@ game.states.table = {
       if (confirmed && game.mode && game[game.mode].surrender) {
         game[game.mode].surrender();
       }
-    });
+    }, game.data.ui.leave);
   },
   backClick: function () {
     //library only
@@ -138,18 +142,32 @@ game.states.table = {
     game.setMode('library');
     game.states.changeTo('choose');
   },
+  discardClick: function () {
+    if (!game.states.table.discard.attr('disabled') &&
+        game.selectedCard &&
+        game.selectedCard.hasClass('skills') && 
+        game.isPlayerTurn() ) {
+      game.player.discard(game.selectedCard);
+      game.states.table.discard.attr('disabled', true);
+    }
+  },
   clear: function () {
     game.map.clear();
     $('.table .card').remove();
     $('.table .deck').remove();
-    if (this.resultsbox) this.resultsbox.remove();
-    this.buttonbox.show();
+    if (this.resultsbox) {
+      this.resultsbox.remove();
+      this.resultsbox = null;
+    }
+    this.buttonbox.show().children().hide();
     this.selectedArea.removeClass('flip');
     this.el.addClass('unturn').removeClass('over');
     game.clearTimeouts();
   },
   end: function () {
-    if (this.time) this.time.hide();
-    if (game.turn.msg) game.turn.msg.hide();
+    if (game.turn.el) {
+      game.turn.msg.hide();
+      game.turn.time.hide();
+    }
   }
 };

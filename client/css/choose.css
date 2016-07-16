@@ -38,7 +38,7 @@
 }
 
 .choose .pickedbox .skills:hover {
-  transform: translate3d(-50%, -70%, 0) scale(1.1);
+  transform: translate3d(-50%, -70%, 0) scale(1);
 }
 
 .choose .slot {

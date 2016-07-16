@@ -55,7 +55,7 @@
   position: relative;
   display: inline-block;
   text-align: left;
-  transition: all 0.3s;
+  transition: all 0.3s, filter 2s, -webkit-filter 2s;
   padding: 0;
   width: 200px;
   height: 300px;
@@ -177,6 +177,7 @@
 .card.skills {
   background: #378cd6;
 }
+
 .card.player.heroes.selected,
 .card.player.towers.selected {
   box-shadow: 0 0 0 10px springgreen;
@@ -284,6 +285,7 @@
   display: inline-block;
   margin-right: 3px;
   position: relative;
+  pointer-events: auto;
 }
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
@@ -312,6 +314,7 @@
 .table .enemy .sidehand .card {
   background-image: url(../img/cardback.jpg);
   background-size: cover;
+  pointer-events: auto;
 }
 .table .enemy .hand .card {
   margin-right: -158px;
@@ -320,7 +323,9 @@
   margin-right: -150px;
 }
 .table .enemy .showMoves .card {
-  margin-right: -110px;
+  margin-right: -100px;
+  background: #8768a6;
+  transform: translate3d(-50%, -50%, 0) scale(0.7);
 }
 .table .enemy .hand .card > *,
 .table .enemy .sidehand .card > * {
@@ -388,6 +393,7 @@
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 1px);
+  cursor: default;
 }
 .table .selectedarea .selectedcard.flip .card:hover {
   transform: translate(-87%, -13%) scale(1.75);

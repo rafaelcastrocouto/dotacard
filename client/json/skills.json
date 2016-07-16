@@ -8,23 +8,23 @@
       "display": true,
       "description": "AntiMage attacks to enemy heroes have bonus damage equal to that hero mana and makes the enemy discard a skill card of that hero"
     },
-    "shield": {
-      "name": "Spell Shield",
-      "type": "Passive",
-      "targets": ["Self"],
-      "resistance": 6,
-      "cards": 1,
-      "display": true,
-      "description": "Reduces all magic damage received by six points"
-    },
     "blink": {
       "name": "Blink",
       "type": "Active",
       "targets": ["Spot", "Free"],
       "range": "Long",
-      "cards": 8,
+      "cards": 6,
       "display": true,
       "description": "Teleport AntiMage to the target spot"
+    },
+    "shield": {
+      "name": "Spell Shield",
+      "type": "Passive",
+      "targets": ["Self"],
+      "resistance bonus": 3,
+      "cards": 1,
+      "display": true,
+      "description": "Magic resistance incerased by three points"
     },
     "ult": {
       "name": "Mana Void",
@@ -37,7 +37,7 @@
       "cards": 1,
       "multiplier": 2,
       "display": true,
-      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand (Max-Hand/2)"
+      "description": "Damages area around an enemy for twice the number of cards the enemy player could have in his hand (Max hand = Total mana/2)"
     }
   },
 

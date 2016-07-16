@@ -95,5 +95,12 @@ game.player = {
       game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, to);
     }
+  },
+  discard: function (skill) {
+    var hero = skill.data('hero'),
+        skillid = skill.data('skill');
+    game.currentMoves.push('D:' + skillid + ':' + hero);
+    game.states.table.discard.attr('disabled', true);
+    skill.discard();
   }
 };

@@ -3,11 +3,11 @@
   "am": {
     "burn": {
       "name": "Mana Break",
-      "description": "Enemy must discard a skill of the attacked hero"
+      "description": "AntiMage attacks to enemy heroes have bonus damage equal to that hero mana and makes the enemy discard a skill card of that hero"
     },
     "shield": {
       "name": "Spell Shield",
-      "description": "Reduces all magic damage by half"
+      "description": "Magic resistance incerased by three point"
     }
   },
 
