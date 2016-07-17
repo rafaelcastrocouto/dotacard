@@ -55,7 +55,7 @@
   position: relative;
   display: inline-block;
   text-align: left;
-  transition: all 0.3s, filter 2s, -webkit-filter 2s;
+  transition: all 0.3s;
   padding: 0;
   width: 200px;
   height: 300px;

@@ -1,6 +1,6 @@
 {
   "name": "dotacard",
-  "version": "0.6.4",
+  "version": "0.6.6",
   "author": "rafaelcastrocouto",
   "description": "DotaCard game",
   "homepage": "http://dotacard.ga",
@@ -12,7 +12,9 @@
   },
   "main": "server.js",
   "scripts": { "start": "node server.js" },
-  "bugs": { "url": "https://github.com/rafaelcastrocouto/dotacard/issues" },
+  "bugs": { 
+    "url": "https://github.com/rafaelcastrocouto/dotacard/issues"
+  },
   "keywords": ["cardgame", "game","games","card","cards","dota"],
   "dependencies": { "serve-static": "~1.10.2" },
   "devDependencies": {

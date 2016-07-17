@@ -18,14 +18,14 @@
   -webkit-filter: brightness(0.8) hue-rotate(60deg);
 }
 
-.map.night .card {
+.map.night .spot {
   filter: brightness(1.1) hue-ro
   tate(-60deg);
   -webkit-filter: brightness(1.1) hue-rotate(-60deg);
 }
 
 .unturn .map {
-  opacity: 0.85;
+/*   opacity: 0.85; */
 }
 
 .map .row {
@@ -40,6 +40,7 @@
   display: inline-block;
   transform: translate3d(0, 0, 1px);
   transform-style: preserve-3d;
+  transition: all 0.3s, filter 2s, -webkit-filter 2s
 }
 .map .spot:hover {
   background: rgba(255,255,255,0.1);

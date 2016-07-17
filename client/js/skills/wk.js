@@ -4,9 +4,6 @@ game.skills.wk = {
       var wk = source;
       var stun = skill.data('stun duration');
       var dot = skill.data('dot duration');
-      if(!game.states.table.el.hasClass('unturn')) {
-          game.states.table.animateCast(skill, target, game.states.table.playerCemitery);
-      }
       wk.damage(skill.data('damage'), target, skill.data('damage type'));
       wk.addStun(target, stun);
       target.on('turnend.wk-stun', this.dot).data('wk-stun', {
@@ -119,13 +116,14 @@ game.skills.wk = {
       var wk = eventdata.target;
       var spot = eventdata.spot;
       var skill = wk.data('wk-ult-skill');
+      var range = skill.data('aoe range');
       spot.addClass('cript block');
       wk.on('turnstart.wk-ult', game.skills.wk.ult.resurrect).data('wk-ult', {
         skill: skill,
         spot: spot,
         duration: skill.data('delay')
       });
-      game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
+      game.map.inRange(spot, range, function (neighbor) {
         var otherSide = game.otherSide(wk);
         var card = neighbor.find('.card.'+otherSide);
         if(card.length) {

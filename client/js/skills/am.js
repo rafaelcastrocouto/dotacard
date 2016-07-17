@@ -49,10 +49,11 @@ game.skills.am = {
   ult: {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
+      var range = skill.data('aoe range');
       var otherSide = game.otherSide(source);
       var damage = game[otherSide].maxCards - $('.'+otherSide+' .hand .card').length;
       damage *= skill.data('multiplier');
-      game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
+      game.map.inRange(spot, range, function (neighbor) {
         var card = neighbor.find('.card.'+otherSide);
         if (card.length) {
           source.damage(damage, card, skill.data('damage type'));

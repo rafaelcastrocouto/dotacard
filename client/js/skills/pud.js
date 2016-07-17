@@ -82,8 +82,9 @@ game.skills.pud = {
       var spot = game.map.getPosition(source);
       var otherSide = game.otherSide(source);
       var skill = source.data('pud-rot');
+      var range = skill.data('aoe range');
       source.damage(skill.data('damage'), source, skill.data('damage type'));
-      game.map.inRange(spot, game.map.getRange(skill.data('aoe range')), function (neighbor) {
+      game.map.inRange(spot, range, function (neighbor) {
         var card = neighbor.find('.card.'+otherSide);
         if(card.length) {
           source.damage(skill.data('damage'), card, skill.data('damage type'));

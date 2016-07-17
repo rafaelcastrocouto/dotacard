@@ -189,9 +189,9 @@ game.map = {
       }
     }
   },
-  inRange: function (spot, r, cb) {
+  inRange: function (spot, range, cb) {
     game.map.atRange(spot, 0, cb);
-    game.map.around(spot, r, cb);
+    game.map.around(spot, game.map.getRange(range), cb);
   },
   around: function (spot, r, cb) {
     game.map.atRange(spot, r, cb);

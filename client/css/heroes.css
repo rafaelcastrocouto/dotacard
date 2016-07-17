@@ -13,7 +13,8 @@
 .pud-hook .img {
   background-image: url("../img/skills/pud/hook.jpg");
 }
-.pud-rot .img {
+.pud-rot .img,
+.map .pud-rot .portrait .img {
   background-image: url("../img/skills/pud/rot.jpg");
 }
 .pud-passive .img {
@@ -21,20 +22,6 @@
 }
 .pud-ult .img {
   background-image: url("../img/skills/pud/dismember.jpg");
-}
-.map .pud-rot fieldset:before {
-  width: 190px;
-  height: 260px;
-  display: block;
-  content: "";
-  position: absolute;
-  box-shadow: 0 0 60px 20px yellowgreen;
-  border-radius: 60px;
-  animation: rot 0.8s infinite;
-}
-@keyframes rot {
-  0%, 100% {box-shadow: 0 0 40px 20px yellowgreen;}
-  50% {box-shadow: 0 0 40px 30px yellowgreen;}
 }
 
 .nyx {

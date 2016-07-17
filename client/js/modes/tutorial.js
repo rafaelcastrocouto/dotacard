@@ -147,6 +147,7 @@ game.tutorial = {
     $('.skills.am-shield').first().appendTo(game.player.skills.hand);
   },
   selectEnemyLesson: function () {
+    game.map.el.removeClass('night');
     game.turn.time.text(game.data.ui.time + ': 1:00 ' + game.data.ui.day);
     game.turn.msg.text(game.data.ui.turns + ': 1/0 (1)');
     game.tutorial.axebaloon.fadeIn('slow');

@@ -66,7 +66,7 @@ game.library = {
     game.player.kills = 0;
     game.enemy.kills = 0;
     game.library.firstSelect = false;
-    game.turn.build();
+    game.turn.build(5);
     game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));    
     game.timeout(100, function () {
       game.states.table.buildSkills('player', 'single');

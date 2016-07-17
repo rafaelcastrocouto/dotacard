@@ -1,12 +1,12 @@
 game.turn = {
-  build: function () {
+  build: function (time) {
     if (!game.turn.builded) {
       game.turn.builded = true;
       game.turn.msg = $('<p>').appendTo(game.topbar).addClass('turns').text(game.data.ui.turns + ': 0/0 (0)');
       game.turn.time = $('<p>').appendTo(game.topbar).addClass('time').text(game.data.ui.time + ': 0:00 Day');
       game.turn.el = $('<h1>').addClass('turntitle').appendTo(game.states.table.el);
     }
-    game.time = 0;
+    game.time = time || 0;
     game.player.turn = 0;
     game.enemy.turn = 0;
     game.player.kills = 0;
@@ -118,12 +118,13 @@ game.turn = {
     return intHours + ':' + stringMin;
   },
   dayNight: function () {
-    var hours = game.time % game.dayLength * 2;
-    if (hours < game.dayLength) {
+    var hours = game.time % (game.dayLength * 2);
+    if (hours >= 6 && hours < 18) {
+      game.map.el.removeClass('night');
       return game.data.ui.day;
-    } else { 
-    game.map.el.addClass('night');
-    return game.data.ui.night; 
+    } else {
+      game.map.el.addClass('night');
+      return game.data.ui.night; 
     }
   }
 };

@@ -196,7 +196,7 @@ game.online = {
       game.states.table.surrender.show();
       game.states.table.discard.attr('disabled', true).show();
       game.states.table.skip.show();
-      game.turn.build();
+      game.turn.build(5);
       game.timeout(100, function () {
         game.states.table.buildSkills('player');
         game.states.table.buildSkills('enemy');

@@ -139,5 +139,10 @@ game.audio = {
     var x = event.clientX - game.states.options.volumecontrol.offset().left,
         v = parseInt(x / 4.8, 10) / 10;
     game.audio.setVolume(game.audio.volumetarget, v);
+  },
+  volumeControl: function (name) {
+    game.states.options[name+'control'] = $('<div>').addClass('volumecontrol');
+    game.states.options[name+'input'] = $('<div>').addClass('volume').data('volume', name).on('mousedown.volume', game.audio.volumeMouseDown).append(game.states.options[name+'control']);
+    $('<label>').appendTo(game.states.options.audio).append($('<span>').text(game.data.ui[name])).append(game.states.options[name+'input']);
   }
 };

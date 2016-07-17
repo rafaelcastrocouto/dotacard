@@ -79,7 +79,7 @@ game.highlight = {
     source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
   },
   ally: function (source, skill) {
-    var range = game.map.getRange(skill.data('range'));
+    var range = skill.data('range');
     if (range === game.data.ui.global) {
       $('.map .player').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
@@ -93,7 +93,7 @@ game.highlight = {
     }
   },
   enemy: function (source, skill) {
-    var range = game.map.getRange(skill.data('range'));
+    var range = skill.data('range');
     if (range === game.data.ui.global) {
       $('.map .enemy').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
@@ -184,7 +184,7 @@ game.highlight = {
     var card = this, pos, range;
     if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned rooted disarmed')) {
       pos = game.map.getPosition(card);
-      range = game.map.getRange(card.data('range'));
+      range = card.data('range');
       game.map.inRange(pos, range, function (neighbor) {
         var card = $('.card', neighbor);
         if (card.hasClass('enemy')) { card.addClass('attacktarget').on('mouseup.highlight touchend.highlight', game.player.attack); }

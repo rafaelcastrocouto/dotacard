@@ -23,5 +23,19 @@ game.language = {
     game.language.current = lang;
     game.language.dir = lang + '/';
     localStorage.setItem('lang', lang);
+  },
+  select: function () {
+    var s = $('<select>').on('change', game.language.click);
+    $(game.language.available).each(function (i, lang) {
+      $('<option>').val(lang).text(lang).appendTo(s).attr('selected', lang == localStorage.getItem('lang'));
+    });
+    return s;
+  },
+  click: function () {
+    var lang = $(this).val();
+        detectLanguage = game.language.available.indexOf(lang);
+    if (detectLanguage > 0) localStorage.setItem('lang', lang);
+    else localStorage.removeItem('lang');
+    game.confirm(function () { location.reload(); });
   }
 };

@@ -2,7 +2,7 @@ game.skills.ld = {
   summon: {
     cast: function (skill, source, target) {
       var side = source.data('side');
-      var bear = $('.table .'+side+'.unit.ld.spiritbear');
+      var bear = $('.table .'+side+'.units.ld.spiritbear');
       if(!bear.hasClass('summoned')) {
         bear.addClass('summoned');
         source.data('bear', bear);
@@ -159,8 +159,8 @@ game.skills.ld = {
     scare: function (source, skill) {
       var otherSide = game.otherSide(source);
       var spot = game.map.getPosition(source);
-      var aoerange = game.map.getRange(skill.data('aoe range'));
-      game.map.inRange(spot, aoerange, function (neighbor) {
+      var range = skill.data('aoe range');
+      game.map.inRange(spot, range, function (neighbor) {
         var card = neighbor.find('.card.' + otherSide);
         if(card.length) {
           source.addBuff(card, skill.data('buff'));
