@@ -1,19 +1,44 @@
 game.player = {
+  placeHeroes: function () {
+    game.player.heroesDeck = game.deck.build({
+      name: 'heroes',
+      filter: game.player.picks,
+      cb: function (deck) {
+        deck.addClass('player').appendTo(game.states.table.player);
+        if (game.mode == 'library') {
+          var card = deck.data('cards')[0];
+          game.library.hero = card.addClass('player').on('mousedown touchstart', game.card.select);
+          card.place(game.map.toId(4, 4));
+          card.on('action', game.library.action).on('death', game.library.action);
+        } else {
+          var x = 1, y = 4;
+          $.each(deck.data('cards'), function (i, card) {
+            var p = game.player.picks.indexOf(card.data('hero'));
+            card.addClass('player').on('mousedown touchstart', game.card.select);
+            card.place(game.map.toId(x + p, y));
+            if (game.mode == 'online') card.on('action', game.online.action);
+            if (game.mode == 'tutorial') card.on('select', game.tutorial.selected);
+          });
+        }
+      }
+    });
+  },
   buyCard: function () {
-    var availableSkills = $('.player .available .card'),
-      card = game.deck.randomCard(availableSkills),
+    var availableSkills = $('.table .player .available .card'),
+      card,
       heroid,
       hero,
       to,
       skillid;
     if (availableSkills.length < game.player.cardsPerTurn) {
-      $('.player .cemitery .card').appendTo(game.player.skills.deck);
-      availableSkills = $('.player .available .card');
+      $('.table .player .cemitery .card').appendTo(game.player.skills.deck);
+      availableSkills = $('.table .player .available .card');
     }
-    if (card.data('type') === game.data.ui.toggle) {
-      card.appendTo(game.player.skills.sidehand);
-    } else {
+    card = availableSkills.randomCard();
+    if (card.data('hand') === game.data.ui.right) {
       card.appendTo(game.player.skills.hand);
+    } else {
+      card.appendTo(game.player.skills.sidehand);
     }
   },
   buyHand: function () {
@@ -91,7 +116,10 @@ game.player = {
        !game.states.table.el.hasClass('unturn') && 
        !source.hasClass('done')) {
       source.cast(skill, to);
-      if (source.hasClass('player')) source.addClass('done').removeClass('draggable');
+      if (source.hasClass('player') &&
+          skill.data('type') !== game.data.ui.instant) {
+        source.addClass('done').removeClass('draggable');
+      }
       game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, to);
     }
@@ -102,5 +130,11 @@ game.player = {
     game.currentMoves.push('D:' + skillid + ':' + hero);
     game.states.table.discard.attr('disabled', true);
     skill.discard();
+  },
+  cardsInHand: function () {
+    return game.player.skills.hand.children().length;
+  },
+  maxSkillCards: function () {
+    return game.player.maxCards;
   }
 };

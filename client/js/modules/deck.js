@@ -4,22 +4,21 @@ game.deck = {
       filter = op.filter,
       cb = op.cb,
       multi = op.multi,
-      display = op.display,
+      deckFilter = op.deckFilter,
       deck = $('<div>').addClass('deck ' + name);
     if (!game[name]) {
       game.states.loading.json(name, function () {
-        game.deck.createCards(deck, name, cb, filter, multi, display);
+        game.deck.createDeck(deck, name, cb, filter, multi);
       });
-    } else { game.deck.createCards(deck, name, cb, filter, multi, display); }
+    } else { game.deck.createDeck(deck, name, cb, filter, multi, deckFilter); }
     return deck;
   },
-  createCards: function (deck, name, cb, filter, multi, display) {
-    if (name === 'heroes') { game.deck.createHeroesCards(deck, name, cb, filter); }
-    if (name === 'skills') { game.deck.createSkillsCards(deck, name, cb, filter, multi, display); }
-    if (name === 'units') { game.deck.createUnitsCards(deck, name, cb, filter); }
+  createDeck: function (deck, name, cb, filter, multi, deckFilter) {
+    if (name === 'heroes') { game.deck.createHeroesDeck(deck, cb, filter); }
+    if (name === 'skills') { game.deck.createSkillsDeck(deck, cb, filter, multi, deckFilter); }
   },
-  createHeroesCards: function (deck, name, cb, filter) {
-    var deckData = game.data[name],
+  createHeroesDeck: function (deck, cb, filter) {
+    var deckData = game.data.heroes,
       cards = [],
       card;
     $.each(deckData, function (heroid, herodata) {
@@ -32,12 +31,11 @@ game.deck = {
       if (found || !filter) {
         herodata.hero = heroid;
         herodata.speed = 2;
-        herodata['current speed'] = 2;
         herodata.kd = true;
-        herodata.buffs = true;
+        herodata.buffsBox = true;
         herodata.className = [
           heroid,
-          name
+          'heroes'
         ].join(' ');
         card = game.card.build(herodata).appendTo(deck);
         cards.push(card);
@@ -46,8 +44,8 @@ game.deck = {
     deck.data('cards', cards);
     if (cb) { cb(deck); }
   },
-  createSkillsCards: function (deck, name, cb, filter, multi, display) {
-    var deckData = game.data[name],
+  createSkillsDeck: function (deck, cb, filter, multi, deckFilter) {
+    var deckData = game.data.skills,
       cards = [];
     $.each(deckData, function (hero, skills) {
       var found = false;
@@ -58,17 +56,25 @@ game.deck = {
       }
       if (found || !filter) {
         $.each(skills, function (skill, skillData) {
-          if (!display || (display && skillData.display)) {
+          if (!deckFilter || (deckFilter && skillData.deck == deckFilter)) {
             var k;
             skillData.hero = hero;
             skillData.skill = skill;
+            skillData.skillId = hero + '-' + skill;
             skillData.className = [
               hero + '-' + skill,
-              name,
+              'skills',
               hero
             ].join(' ');
-            if (game.data.buffs[hero] && game.data.buffs[hero][skill]) {
-              skillData.buff = game.data.buffs[hero][skill];
+            if (skillData.buff) {
+              skillData.buff.buffId = hero + '-' + skill;
+              skillData.buff.className = hero + '-' + skill;
+            }
+            if (skillData.buffs) for (var buffs in skillData.buffs) {
+              for (var buff in skillData.buffs[buffs]) {
+                skillData.buffs[buffs][buff].buffId = hero +'-'+ skill +'.'+ buffs +'-'+ buff;
+                skillData.buffs[buffs][buff].className = hero +'-'+ skill +' '+ buffs +'-'+ buff
+              }
             }
             if (multi) {
               for (k = 0; k < skillData.cards; k += 1) {
@@ -81,37 +87,5 @@ game.deck = {
     });
     deck.data('cards', cards);
     if (cb) { cb(deck); }
-  },
-  createUnitsCards: function (deck, name, cb, filter) {
-    var deckData = game.data[name],
-      cards = [];
-    $.each(deckData, function (groupid, groupdata) {
-      var found = false;
-      if (filter) {
-        $.each(filter, function (i, pick) {
-          if (pick === groupid) { found = true; }
-        });
-      }
-      if (found || !filter) {
-        $.each(groupdata, function (unitid, unitdata) {
-          unitdata.className = [
-            unitid,
-            name,
-            groupid
-          ].join(' ');
-          unitdata.hero = groupid;
-          unitdata.speed = 2;
-          unitdata['current speed'] = 2;
-          unitdata.buffs = true;
-          cards.push(game.card.build(unitdata).appendTo(deck));
-        });
-      }
-    });
-    deck.data('cards', cards);
-    if (cb) { cb(deck); }
-  },
-  randomCard: function (cards, noseed) {
-    if (noseed) { return $(cards[parseInt(Math.random() * cards.length, 10)]); }
-    return $(cards[parseInt(game.random() * cards.length, 10)]);
   }
 };

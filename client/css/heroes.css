@@ -14,16 +14,25 @@
   background-image: url("../img/skills/pud/hook.jpg");
 }
 .pud-rot .img,
-.map .pud-rot .portrait .img {
+.map .pud-rot .portrait .img,
+.pud-rot.rot-source .img {
   background-image: url("../img/skills/pud/rot.jpg");
 }
 .pud-passive .img {
   background-image: url("../img/skills/pud/passive.jpg");
 }
-.pud-ult .img {
+.pud-ult .img,
+.map .pud-ult .portrait .img,
+.pud-rot.ult-source .img {
   background-image: url("../img/skills/pud/dismember.jpg");
 }
-
+.map .pud-ult .portrait .img {
+  background-size: 300%;
+  background-position: 80% 90%;
+}
+.map .pud-ult.pud-rot .portrait .img {
+  background-image: url("../img/skills/pud/dismember-rot.jpg");
+}
 .nyx {
   background: #145;
 }
@@ -68,15 +77,14 @@
   background: #62a64e;
 }
 .ld.heroes .portrait .img,
-.ld-transform .img {
+.ld-ult.on .portrait .img {
   background-image: url("../img/heroes/ld.jpg");
 }
 .ld.transformed.heroes .portrait .img,
 .ld-ult .img {
   background-image: url("../img/skills/ld/ult.jpg");
 }
-.ld-summon .img,
-.spiritbear .img {
+.ld-summon .img {
   background-image: url("../img/skills/ld/lone_druid_spirit_bear.jpg");
 }
 .ld-bearreturn .img {
@@ -91,10 +99,11 @@
 .ld-cry .img {
   background-image: url("../img/skills/ld/lone_druid_battle_cry.jpg");
 }
-.ld-entangle .img {
+.ld-summon.entangle-source .img {
   background-image: url("../img/skills/ld/lone_druid_entangle.jpg");
 }
-.ld-demolish .img {
+.ld-summon.demolish-source .img,
+.ld-summon.demolish-target .img {
   background-image: url("../img/skills/ld/lone_druid_demolish.jpg");
 }
 
@@ -166,4 +175,8 @@
 }
 .cm-ult .img {
   background-image: url("../img/skills/cm/crystal_maiden_freezing_field.jpg");
+}
+.map .cm-ult .portrait .img {
+  background-size: 300%;
+  background-position: -130% 90%;
 }

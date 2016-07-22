@@ -1,12 +1,16 @@
 game.card = {
   bindJquery: function () {
+    $.fn.side = game.card.side;
+    $.fn.opponent = game.card.opponent;
     $.fn.place = game.card.place;
     $.fn.select = game.card.select;
     $.fn.unselect = game.card.unselect;
     $.fn.move = game.card.move;
     $.fn.animateMove = game.card.animateMove;
+    $.fn.selfBuff = game.card.selfBuff;
     $.fn.addBuff = game.card.addBuff;
     $.fn.hasBuff = game.card.hasBuff;
+    $.fn.getBuff = game.card.getBuff;
     $.fn.removeBuff = game.card.removeBuff;
     $.fn.stopChanneling = game.card.stopChanneling;
     $.fn.addStun = game.card.addStun;
@@ -19,13 +23,18 @@ game.card = {
     $.fn.setResistance = game.card.setResistance;
     $.fn.setHp = game.card.setHp;
     $.fn.setCurrentHp = game.card.setCurrentHp;
+    $.fn.setSpeed = game.card.setSpeed;
     $.fn.die = game.card.die;
     $.fn.reborn = game.card.reborn;
+    $.fn.randomCard = game.card.randomCard;
+    $.fn.getDirection = game.card.getDirection;
   },
   build: function (data) {
-    var card, leg, fieldset, portrait, current, desc, range = '';
+    var card, legend, fieldset, portrait, current, desc;
+    if (data.hand == game.data.ui.left) data.className += ' left-hand';
+    if (data.deck == game.data.ui.temp) data.className += ' temp';
     card = $('<div>').addClass('card ' + data.className);
-    leg = $('<legend>').text(data.name);
+    legend = $('<legend>').text(data.name);
     fieldset = $('<fieldset>');
     portrait = $('<div>').addClass('portrait').appendTo(fieldset);
     $('<div>').appendTo(portrait).addClass('img');
@@ -33,60 +42,83 @@ game.card = {
     if (data.attribute) {
       $('<h1>').appendTo(fieldset).text(data.attribute);
     } else if (game.data.heroes[data.hero]) {
-      $('<h1>').appendTo(fieldset).text(game.data.heroes[data.hero].name);
+      $('<h1>').appendTo(fieldset).text(data.type);
     }
     current = $('<div>').addClass('current').appendTo(fieldset);
-    desc = $('<div>').addClass('desc').appendTo(fieldset);
     if (data.hp) {
-      $('<p>').addClass('hp').appendTo(desc).text(game.data.ui.hp + ': ' + data.hp);
-      data['current hp'] = data.hp;
       $('<p>').addClass('hp').appendTo(current).html('HP <span>' + data.hp + '</span>');
+      data['current hp'] = data.hp;
     }
-    if (data.damage) {
-      if (data.range) {
-        range = ' (' + data.range + ')';
-      }
-      $('<p>').addClass('damage').appendTo(desc).text(game.data.ui.damage + ': ' + data.damage + range);
-      data['current damage'] = data.damage;
+    if (data.damage) { 
       $('<p>').addClass('damage').appendTo(current).html('DMG <span>' + data.damage + '</span>');
+      data['current damage'] = data.damage;
     }
-    if (data.range && !range) $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
-    if (data.armor)           $('<p>').appendTo(desc).text(game.data.ui.armor + ': ' + data.armor).addClass('armor');
-    if (data.resistance)      $('<p>').appendTo(desc).text(game.data.ui.resistance + ': ' + data.resistance).addClass('resistance');
-    if (data.mana)            $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
-    if (data.type)            $('<p>').appendTo(desc).text(game.data.ui.type + ': ' + data.type);
-    if (data.chance)          $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.chance + '%');
-    if (data.percentage)      $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.percentage + '%');
-    if (data.delay)           $('<p>').appendTo(desc).text(game.data.ui.delay + ': ' + data.delay);
-    if (data.damageType)      $('<p>').appendTo(desc).text(game.data.ui.damageType + ': ' + data.damageType);
-    if (data.duration)        $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.duration + ' ' + game.data.ui.turns);
-    if (data.dot)             $('<p>').appendTo(desc).text(game.data.ui.dot + ': ' + data.dot);
-    if (data.multiplier)  $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.multiplier + 'X');
-    if (data['hp bonus'])  $('<p>').appendTo(desc).text('HP Bonus: ' + data['hp bonus']);
-    if (data['armor bonus'])  $('<p>').appendTo(desc).text('Armor Bonus: ' + data['armor bonus'] + '%');
+    desc = $('<div>').addClass('desc').appendTo(fieldset);
+    if (data.dot)                   $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.dot));
+    if (data.buff && data.buff.dot) $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.buff.dot));
+    if (data.hand)                  $('<p>').appendTo(desc).text(data.deck+' (' + data.hand + ')');
+    if (data['damage type'])        $('<p>').appendTo(desc).text(game.data.ui.damage+': ' + data['damage type']);
+    if (data.aoe)                   $('<p>').appendTo(desc).text(game.data.ui.aoe+': ' + data.aoe + ' ('+data['aoe range']+')');
+    if (data.range)                 $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
+    if (data['cast range'])         $('<p>').appendTo(desc).text(game.data.ui['cast range'] + ': ' + data['cast range']);
+    if (data.armor) {
+      $('<p>').appendTo(desc).text(game.data.ui.armor + ': ' + data.armor).addClass('armor');
+      data['current armor'] = data.armor;
+    }
+    if (data.resistance) {
+      $('<p>').appendTo(desc).text(game.data.ui.resistance + ': ' + data.resistance).addClass('resistance');
+      data['current resistance'] = data.resistance;
+    }
+    if (data.mana > 1) $('<p>').appendTo(desc).text(game.data.ui.mana + ': ' + data.mana);
+    if (data.speed) {
+      data['current speed'] = data.speed;
+      //$('<p>').appendTo(desc).text(game.data.ui.speed + ': ' + data.speed);
+    }
+    if (data.buff) {
+      if (data.buff.chance)              $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.buff.chance + '%');
+      if (data.buff.percentage)          $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.buff.percentage + '%');
+      if (data.buff.duration)            $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.buff.duration + ' ' + game.data.ui.turns);
+      if (data.buff.multiplier)          $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.buff.multiplier + 'X');
+      if (data.buff['hp bonus'])         $('<p>').appendTo(desc).text('HP '+game.data.ui.bonus+': ' + data.buff['hp bonus']);
+      if (data.buff['damage bonus'])     $('<p>').appendTo(desc).text(game.data.ui.damage+' '+game.data.ui.bonus+': ' + data.buff['damage bonus']);
+      if (data.buff['armor bonus'])      $('<p>').appendTo(desc).text(game.data.ui.armor+' '+game.data.ui.bonus+': ' + data.buff['armor bonus']);
+      if (data.buff['resistance bonus']) $('<p>').appendTo(desc).text(game.data.ui.resistance+' '+game.data.ui.bonus+': ' + data.buff['resistance bonus']);
+    }
+    //if (data.cards)      $('<p>').appendTo(desc).text(game.data.ui.cards+': ' + data.cards);
     if (data.description) {
+      $('<p>').appendTo(desc).addClass('description').text('“'+data.description+'”');
       card.attr({ title: data.name + ': ' + data.description });
-      $('<p>').appendTo(desc).addClass('description').text(data.description);
     }
     if (data.kd) {
+      $('<p>').addClass('kd').appendTo(desc).html(game.data.ui.kd + ': <span class="kills">0</span>/<span class="deaths">0</span>');
       data.kills = 0;
       data.deaths = 0;
-      $('<p>').addClass('kd').appendTo(desc).html(game.data.ui.kd + ': <span class="kills">0</span>/<span class="deaths">0</span>');
     }
-    if (data.buffs) $('<div>').addClass('buffs').appendTo(fieldset);
+    if (data.buffsBox) $('<div>').addClass('buffs').appendTo(fieldset);
     $.each(data, function (item, value) {
       card.data(item, value);
     });
-    card.append(leg).append(fieldset);
+    card.append(legend).append(fieldset);
     return card;
+  },
+  side: function (side) {
+    if (this.hasClass('player')) return 'player';
+    if (this.hasClass('enemy')) return 'enemy';
+    else return 'neutral';
+  },
+  opponent: function (side) {
+    if (this.hasClass('player')) return 'enemy';
+    if (this.hasClass('enemy')) return 'player';
   },
   place: function (target) {
     if (!target.removeClass) target = $('#' + target);
-    this.closest('.spot.block').removeClass('block').addClass('free');
+    this.closest('.spot').addClass('free');
     this.parent().find('.fx').each(function () {
       $(this).appendTo(target);
     });
-    this.appendTo(target.removeClass('free').addClass('block'));
+    this.appendTo(target.removeClass('free'));
+    game.highlight.clearMap();
+    game.highlight.map();
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
@@ -105,7 +137,7 @@ game.card = {
         }
         game.card.setSelected(card);
       }
-      if (!card.hasClasses('done enemy tree tower')) card.addClass('draggable');
+      if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
     }
     return card;
   },
@@ -141,19 +173,8 @@ game.card = {
       card.removeClass('draggable').off('mousedown touchstart');
       game.highlight.clearMap();
       card.stopChanneling();
-      card.closest('.spot').removeClass('block').addClass('free');
-      destiny.removeClass('free').addClass('block');
-      if (!destiny.data('detour')) {
-        card.animateMove(destiny);
-      } else {
-        card.animateMove(destiny.data('detour'));
-        game.timeout(100, function () {
-          this.card.animateMove(this.destiny);
-        }.bind({
-          card: card,
-          destiny: destiny
-        }));
-      }
+      card.closest('.spot').addClass('free');
+      card.animateMove(destiny);
       if (card.data('movement bonus')) card.data('movement bonus', false);
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
@@ -161,8 +182,8 @@ game.card = {
 //         this.card.parent().find('.fx').each(function () {
 //           $(this).appendTo(this.destiny);
 //         });
+        this.destiny.removeClass('free');
         this.card.css({ transform: '' }).prependTo(this.destiny).addClass('draggable').on('mousedown touchstart', game.card.select);
-        $('.map .spot').data('detour', false);
       }.bind({ card: card, destiny: destiny }));
     }
     return card;
@@ -174,11 +195,43 @@ game.card = {
       dx = (tx - fx) * 100, dy = (ty - fy) * 100;
     this.css({ transform: 'translate3d(' + (dx - 50) + '%, ' + (dy - 40) + '%, 100px) rotateX(-30deg)' });
   },
-  addBuff: function (target, data) {
-    var buff = $('<div>').addClass('buff ' + (data.buff.buff || data.buff)).attr({ title: data.name + ': ' + data.description });
+  selfBuff: function (skill, buffs) { //console.trace(this, skill, buffs)
+    return this.addBuff(this, skill, buffs);
+  },
+  addBuff: function (target, skill, buffs) { //console.trace(target, skill, buffs)
+    // get buff data
+    var data = skill;
+    if (!data.name) {
+      if (buffs) { 
+        var buffsId = buffs.split('-');
+        data = skill.data('buffs')[buffsId[0]][buffsId[1]];
+      } else if (skill.data && skill.data('buff')) {
+        data = skill.data('buff');
+      }
+      data.name = skill.data('name');
+    }
+    if (data.duration) data.temp = true;
+    if (!data.source) data.source = this;
+    if (!data.skill) data.skill = skill;
+    if (!data.target) data.target = target;
+    // remove duplicated buff
+    if (data.name !== 'Stun') target.removeBuff(data.buffId);
+    // create new buff
+    var buff = $('<div>').addClass('buff ' + data.className).data('buff', data).attr({ title: data.name + ': ' + data.description });
+    $.each(data, function (item, value) { buff.data(item, value); });
     $('<div>').appendTo(buff).addClass('img');
     $('<div>').appendTo(buff).addClass('overlay');
-    buff.data('source', this);
+    // apply buff effects
+    if (data['hp bonus']) {
+      target.setHp(target.data('hp') + data['hp bonus']);
+      target.setCurrentHp(target.data('current hp') + data['hp bonus']);
+    }
+    if (data['damage bonus']) target.setDamage(target.data('current damage') + data['damage bonus']);
+    if (data['armor bonus']) target.setArmor(target.data('current armor') + data['armor bonus']);
+    if (data['resistance bonus']) target.setResistance(target.data('current resistance') + data['resistance bonus']);
+    if (data['speed bonus']) target.setSpeed(target.data('current speed') + data['speed bonus']);
+    if (data['speed slow']) target.setSpeed(target.data('current speed') - data['speed slow']);
+    // append buff
     target.find('.buffs').append(buff);
     if (target.hasClass('selected')) { target.select(); }
     return buff;
@@ -187,16 +240,34 @@ game.card = {
     var target = this;
     return target.find('.buffs .' + buff).length;
   },
+  getBuff: function (buff) {
+    return this.find('.buffs .' + buff);
+  },
   removeBuff: function (buffs) {
     var target = this;
-    $.each(buffs.split(' '), function () {
-      var buff = this;
-      target.find('.buffs .' + buff).remove();
+    $.each(buffs.split(' '), function (i, buffId) {
+      var buff = target.find('.buffs > .' + buffId);
+      if (buff) {
+        var data = buff.data('buff');
+        if (data) {
+          if (data['hp bonus']) {
+            target.setHp(target.data('hp') - data['hp bonus']);
+            target.setCurrentHp(target.data('current hp') - data['hp bonus']);
+          }
+          if (data['damage bonus']) target.setDamage(target.data('current damage') - data['damage bonus']);
+          if (data['armor bonus']) target.setArmor(target.data('current armor') - data['armor bonus']);
+          if (data['resistance bonus']) target.setResistance(target.data('current resistance') - data['resistance bonus']);
+          if (data['speed bonus']) target.setSpeed(target.data('current speed') - data['speed bonus']);
+          if (data['speed slow']) target.setSpeed(target.data('current speed') + data['speed slow']);
+        }
+        buff.remove();
+      }
       if (target.hasClass('selected')) { target.select(); }
     });
     return this;
   },
-  addStun: function (target, stun) {
+  addStun: function (target, skill) {
+    var stun = skill.data('stun');
     if (target.hasClass('stunned')) {
       var currentstun = target.data('stun');
       if (!currentstun || stun > currentstun) { target.data('stun', stun); }
@@ -204,7 +275,10 @@ game.card = {
       target.stopChanneling();
       this.addBuff(target, {
         name: 'Stun',
-        buff: 'stun',
+        buffId: 'stun',
+        className: 'stun',
+        source: this,
+        skill: skill,
         description: 'Unit is stunned and cannot move, attack or cast'
       });
       target.addClass('stunned').data('stun', stun);
@@ -226,7 +300,12 @@ game.card = {
     return this;
   },
   stopChanneling: function () {
-    this.trigger('channelEnd').data('channel', null).data('channeling', null).removeClass('channeling').off('channel');
+    if (this.hasClass('channeling')) {
+      this.trigger('channelEnd', this.data('channel event'));
+      this.data('channel', null).data('channeling', null).data('channel skill', null).data('channel event', null);
+      this.off('channel').off('channelEnd');
+      this.removeClass('channeling');
+    }
   },
   setDamage: function (damage) {
     damage = parseInt(damage, 10);
@@ -236,14 +315,14 @@ game.card = {
     return this;
   },
   setCurrentHp: function (hp) {
-    if (hp < 1) { hp = 0; }
+    if (hp < 1) { hp = 1; }
     this.find('.current .hp span').text(hp);
     this.data('current hp', hp);
     if (this.hasClass('selected')) { this.select(); }
     return this;
   },
   setHp: function (hp) {
-    if (hp < 1) { hp = 0; }
+    if (hp < 1) { hp = 1; }
     this.find('.desc .hp').text(hp);
     this.data('hp', hp);
     if (this.hasClass('selected')) { this.select(); }
@@ -251,14 +330,18 @@ game.card = {
   },
   setArmor: function (armor) {
     this.find('.desc .armor').text(game.data.ui.armor + ': ' + armor);
-    this.data('armor', armor);
+    this.data('current armor', armor);
     if (this.hasClass('selected')) { this.select(); }
     return this;
   },
   setResistance: function (res) {
     this.find('.desc .resistance').text(game.data.ui.resistance + ': ' + res);
-    this.data('resistance', res);
+    this.data('current resistance', res);
     if (this.hasClass('selected')) { this.select(); }
+    return this;
+  },
+  setSpeed: function (speed) {
+    this.data('current speed', speed);
     return this;
   },
   attack: function (target) {
@@ -273,39 +356,30 @@ game.card = {
         source: source,
         target: target
       };
+      var damage = source.data('current damage');
       source.trigger('attack', evt).trigger('action', evt);
-      game.timeout(10, function () {
-        var damage = source.data('current damage');
-        if (source.data('crit')) {
-          damage = source.data('crit damage');
-        }
-        source.damage(damage, target, game.data.ui.physical);
-        source.trigger('afterattack', evt);
-        if (source.hasClass('tower')) {
-          name = 'tower';
-        } else if (source.hasClass('bear')) {
-          name = 'bear';
-        } else { name = source.data('hero'); }
-        game.audio.play(name + '/attack');
-      });
+      if (!source.data('critical-attack')) source.damage(damage, target, game.data.ui.physical);
+      source.data('critical-attack', false);
+      if (source.hasClass('tower')) name = 'tower';
+      else if (source.hasClass('bear')) name = 'bear';
+      else  name = source.data('hero'); 
+      game.audio.play(name + '/attack');
     }
     return this;
   },
   damage: function (damage, target, type) {
     var source = this, evt, x, y, position, spot, resistance, armor, hp, currentDamage;
     if (damage > 0) {
-      if (source.data('crit')) {
-        damage = source.data('crit damage');
-        source.data('crit', false);
-      }
       if (!type) { type = game.data.ui.physical; }
       if (type === game.data.ui.magical) {
-        resistance = target.data('resistance');
+        resistance = target.data('current resistance');
         if (resistance) damage = damage - resistance;
-      } else if (type === game.data.ui.physical) { 
-        armor = target.data('armor');
+      }
+      if (type === game.data.ui.physical || type === 'critical') { 
+        armor = target.data('current armor');
         if (armor) damage = damage - armor; 
       }
+      if (type === 'critical') source.data('critical-attack', true);
       if (damage < 1) damage = 1;
       if (typeof target === 'string') { target = $('#' + target + ' .card'); }
       hp = target.data('current hp') - damage;
@@ -326,7 +400,9 @@ game.card = {
       };
       target.trigger('damage', evt);
       if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
-      if (source.data('crit')) {
+      if (type === 'critical') {
+        source.data('critical-attack', true);
+        game.audio.play('crit');
         damageFx = target.find('.damaged.critical');
         if (!damageFx.length) {
           damageFx = $('<span>').addClass('damaged critical').appendTo(target);
@@ -378,22 +454,22 @@ game.card = {
     var target = evt.target,
         source = evt.source;
     target.addClass('dead').removeClass('target done').setCurrentHp(0);
-    game.timeout(400, function () {
-      this.source.trigger('kill', this);
-      this.target.die(this);
-    }.bind(evt));
     if (source.hasClass('hero') && target.hasClass('hero')) {
-      game[source.data('side')].kills += 1;
+      game[source.side()].kills += 1;
       var kills = source.data('kills') + 1;
       source.data('kills', kills);
       source.find('.kills').text(kills);
-      game[target.data('side')].deaths += 1;
+      game[target.side()].deaths += 1;
       var deaths = target.data('deaths') + 1;
       target.data('deaths', deaths);
       target.find('.deaths').text(deaths);
       if (target.hasClass('selected')) { target.select(); }
       else if (source.hasClass('selected')) { source.select(); }
     }
+    game.timeout(400, function () {
+      this.source.trigger('kill', this);
+      this.target.die(this);
+    }.bind(evt));
   },
   die: function (evt) {
     this.trigger('death', evt);
@@ -401,8 +477,8 @@ game.card = {
     this.addClass('dead').removeClass('target done').setCurrentHp(0);
     var pos = game.map.getPosition(this), deaths,
       spot = $('#' + pos);
-    if (!spot.hasClass('cript')) { spot.removeClass('block').addClass('free'); }
-    if (this.hasClass('hero')) {
+    if (!spot.hasClass('cript')) { spot.addClass('free'); }
+    if (this.hasClass('heroes')) {
       deaths = this.data('deaths') + 1;
       this.data('deaths', deaths);
       this.find('.deaths').text(deaths);
@@ -419,29 +495,30 @@ game.card = {
     } else { this.remove(); }
     return this;
   },
-  reborn: function (spot) {
-    var hp = this.data('hp'), x, y, freeSpot;
+  reborn: function (spot) { //console.trace(this, spot)
+    if (spot && spot.hasClass) spot = spot[0].id;
+    var hp = this.data('hp'), x, y;
     if (!spot) {
       if (this.hasClass('player')) {
-        x = 0;
-        y = 3;
+        x = 4;
+        y = 4;
         spot = game.map.toId(x, y);
-        while ($('#' + spot).hasClass('block')) {
-          x += 1;
+        while (!$('#' + spot).hasClass('free')) {
+          x -= 1;
           spot = game.map.toId(x, y);
         }
       } else if (this.hasClass('enemy')) {
-        x = 11;
+        x = 4;
         y = 1;
         spot = game.map.toId(x, y);
-        while ($('#' + spot).hasClass('block')) {
-          x -= 1;
+        while (!$('#' + spot).hasClass('free')) {
+          x += 1;
           spot = game.map.toId(x, y);
         }
       }
     }
-    if (spot && spot.length) {      
-      var side = this.data('side');
+    if (spot && spot.length) {  
+      var side = this.side();
       var tower = game[side].tower;
       var unit = this.data('killer');
       unit.damage(1, tower);
@@ -452,5 +529,23 @@ game.card = {
       this.trigger('reborn');
       return this;
     }
+  },
+  randomCard: function (noseed) {
+    if (this.length) {
+      if (noseed) { return $(this[parseInt(Math.random() * this.length, 10)]); }
+      return $(this[parseInt(game.random() * this.length, 10)]);
+    } else return this;
+  },
+  getDirection: function (target) {
+    var sourcex = game.map.getX(this),
+        sourcey = game.map.getY(this),
+        targetx = game.map.getX(target),
+        targety = game.map.getY(target);
+        dirx = 0, diry = 0;
+    if (sourcey - targety > 0) { diry = -1; }
+    if (sourcey - targety < 0) { diry = 1; }
+    if (sourcex - targetx > 0) { dirx = -1; }
+    if (sourcex - targetx < 0) { dirx = 1; }
+    return {x: dirx, y: diry};
   }
 };

@@ -18,7 +18,7 @@ var game = {
   id: null,
   timeoutArray: [],
   skills: {},
-  data: {}, //json {buffs, heroes, skills, ui, units}
+  data: {}, //json {heroes, skills, ui}
   mode: '', //online, tutorial, campain
   currentData: {}, // current game data
   currentState: 'noscript', //unsupported, load, log, menu, options, choose, table
@@ -42,9 +42,15 @@ var game = {
   isPlayerTurn: function () {
     return !game.states.table.el.hasClass('unturn');
   },
-  otherSide: function (side) {
-    if (side.data) side = side.data('side');
-    return (side === 'enemy') ? 'player' : 'enemy';
+  isUnitTurn: function (unit) {
+    var side = unit.side(),
+        playerTurn = game.isPlayerTurn();
+    if (side == 'player' && playerTurn) return true;
+    if (side == 'enemy' && !playerTurn) return true;
+    return false;
+  },
+  opponent: function (side) {
+    return (side == 'player') ? 'enemy' : 'player';
   },
   db: function (send, cb) {
     if (typeof send.data !== 'string') {

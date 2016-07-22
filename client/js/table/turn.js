@@ -33,9 +33,11 @@ game.turn = {
   },
   start: function (unturn, cb) {
     game.currentMoves = [];
-    $('.card.dead').each(function () {
+    $('.table .card.dead').each(function () {
       var dead = $(this);
-      if (game.time > dead.data('reborn')) { dead.reborn(); }
+      if (game.time > dead.data('reborn') || game.mode == 'library') { 
+        dead.reborn(); 
+      }
     });
     $('.card').each(function () {
       var card = $(this);
@@ -77,17 +79,10 @@ game.turn = {
       $('.spot.fountain').find('.card').each(function () {
         $(this).heal(10);
       });
-      $('.card.heroes').each(function () {
-        var hero = $(this),
-            duration = hero.data('channeling');
-        if (duration) { 
-          var channel = hero.data('channel');
-          if (duration === channel) {
-            duration -= 1;
-            hero.data('channeling', duration);
-          }
-          else hero.trigger('channel', { source: hero }); 
-        }
+      $('.card.heroes').each(function (i, card) {
+        var hero = $(card);
+        if (hero.hasClass('channeling')) game.turn.channel(hero);
+        game.turn.buffs(hero);
         hero.trigger('turnend', { target: hero });
       });
       if (unturn === 'unturn' &&
@@ -98,6 +93,29 @@ game.turn = {
       game.moves.push(game.currentMoves.join('|'));
       if (cb) cb(unturn);
     }
+  },
+  channel: function (hero) {
+    var duration = hero.data('channeling');
+    if (duration) {
+      var channel = hero.data('channel');
+      if (duration < channel) hero.trigger('channel', hero.data('channel event')); 
+      duration -= 1;
+      hero.data('channeling', duration);
+    } else hero.stopChanneling();
+  },
+  buffs: function (hero) {
+    var buffs = hero.find('.buffs > .buff');
+    buffs.each(function (i, buffElement) {
+      var buff = $(buffElement);
+      var duration = buff.data('duration'),
+          data = buff.data('buff');
+      if (duration) {
+        duration -= 1;
+        buff.data('duration', duration);
+      } else if (data && data.temp && data.buffId) {
+        hero.removeBuff(data.buffId);
+      }
+    });
   },
   noAvailableMoves: function () {
     return $('.map .player.card:not(.towers)').length == $('.map .player.card.done:not(.towers)').length;

@@ -126,33 +126,41 @@
   right: 5px;
 }
 .card .current p {
-  margin: 0;
   font-size: 12px;
   font-weight: bold;
   display: inline-block;
 }
 .card .current span {
   text-align: center;
-  display: inline-block;
   border-radius: 50%;
   width: 20px;
-  height: 18px;
-  padding: 0;
-  padding-top: 4px;
+  height: 22px;
   padding-right: 2px;
+  line-height: 22px;
+  display: inherit;
 }
 .card .current .hp span {
   background: #beeb71;
 }
-.card .current .damage span {
+.card .current .damage span,
+.card .desc .dot span {
   background: #ed8c8c;
   color: white;
 }
-
 .card .desc {
   clear: left;
 }
-
+.card .desc .dot span {
+  width: 14px; height: 14px;
+  line-height: 14px;
+  position: absolute;
+  display: inline-block;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px #ed8c8c;
+  margin: 0 5px;
+  font-weight: bold;
+  text-align: center;
+}
 .card div p {
   cursor: inherit;
   text-align: justify;
@@ -166,6 +174,9 @@
 .card .description {
   font-style: italic;
   font-size: 10px;
+  letter-spacing: -1px;
+  word-spacing: 1px;
+  margin-top: 4px;
 }
 
 .card.player {
@@ -175,9 +186,17 @@
   background: #c23636;
 }
 .card.skills {
-  background: #378cd6;
+  background: #277cd6;
 }
-
+.card.left-hand.skills {
+  background: #67bcd6;
+}
+.card.temp.skills {
+  background: #775cc6;
+}
+.card.temp.left-hand.skills {
+  background: #977ce6;
+}
 .card.player.heroes.selected,
 .card.player.towers.selected {
   box-shadow: 0 0 0 10px springgreen;
@@ -215,7 +234,6 @@
 .map .card.enemy.heroes.done.selected {
   box-shadow: 0 0 0 10px gold;
 }
-
 .card .damaged {
   z-index: 16;
   color: gold;
@@ -302,13 +320,17 @@
   margin-right: -140px;
   left: 40px;
 }
-.table .deck .card:hover {
+.table .deck .card:hover,
+.table .deck .card.on:hover {
   transform: translate(-50%, -50%) scale(0.5);
+}
+
+.table .deck .card.on {
+  transform: translate(-50%, -53.5%) scale(0.4);
 }
 .table .deck .card.selected {
   transform: translate(-50%, -50%) scale(0.5);
 }
-
 
 .table .enemy .hand .card,
 .table .enemy .sidehand .card {
@@ -440,7 +462,7 @@
   transform: translate3d(-50%, -50%, 0) rotateX(0);
 }
 
-.card.enemy .current .hp span {
+.map .card.enemy .current .hp span {
   background: #ed8c8c;
   color: white;
 }

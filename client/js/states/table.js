@@ -19,7 +19,6 @@ game.states.table = {
   start: function (recover) {
     game.tower.place();
     game.tree.place();
-    game.units.place();
     game.chat.el.appendTo(this.el);
     if (game.turn.el) {
       game.turn.time.show();
@@ -29,40 +28,6 @@ game.states.table = {
     this.selectedArea.show();
     this.selectedCard.removeClass('flip');
     if (game.mode) game[game.mode].setTable();
-  },
-  buildSkills: function (side, single) {
-    game[side].mana = 0;
-    $('.map .'+side+'.heroes').each(function (i, card) {
-      game[side].mana += $(card).data('mana');
-    });
-    game[side].maxCards = Math.round(game[side].mana / 2);
-    game[side].cardsPerTurn = Math.round(game[side].mana / 5);
-    game[side].skills = {};
-    game[side].skills.hand = $('<div>').appendTo(game.states.table[side]).addClass('deck skills hand');
-    game[side].skills.sidehand = $('<div>').appendTo(game.states.table[side]).addClass('deck skills sidehand');
-    game[side].skills.ult = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills ult');
-    game[side].skills.temp = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills temp');
-    game[side].skills.cemitery = $('<div>').hide().appendTo(game.states.table[side]).addClass('deck skills cemitery');
-    game[side].skills.deck = game.deck.build({
-      name: 'skills',
-      multi: !single,
-      filter: game[side].picks,
-      cb: function (deck) {
-        deck.addClass('available').hide().appendTo(game.states.table[side]);
-        $.each(deck.data('cards'), function (i, skill) {
-          var side = this;
-          skill.addClass(side).data('side', side).on('mousedown touchstart', game.card.select);
-          if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game[side].skills.temp);
-          else if (skill.data('skill') === 'ult') skill.appendTo(game[side].skills.ult);
-          else if (skill.data('type') === game.data.ui.toggle) skill.appendTo(game[side].skills.sidehand);
-          else if (skill.data('type') === game.data.ui.instant) skill.appendTo(game[side].skills.sidehand);
-        }.bind(side));
-      }
-    });
-    if (side === 'enemy') {
-      game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
-      $('.enemy .skills').attr({ title: '' }).off('mousedown touchstart');
-    }
   },
   enableUnselect: function () {
     game.states.table.el.on('mousedown touchstart', function () { 

@@ -12,10 +12,10 @@
   left: 50%;
   transform: translateX(-50%);
   overflow: hidden;
-  padding: 10px 0;
+  padding: 0;
   text-align: center;
   border-radius: 4px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.6);
 }
 
 .choose .pickbox .deck {
@@ -28,12 +28,12 @@
 .choose .pickedbox {
   height: 190px;
   position: absolute;
-  bottom: 5px;
+  bottom: 20px;
   left: 105px;
-  padding: 2px;
+  padding: 4px 2px;
   text-align: center;
   border-radius: 4px;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0,0.6);
   transform: translateZ(0);
 }
 
@@ -48,7 +48,7 @@
   width: 100px;
   height: 150px;
   margin: 4px;
-  background: rgba(0,0,0,0.33);
+  background: rgba(255,255,255,0.08);
   cursor: pointer;
 }
 
@@ -58,11 +58,12 @@
 
 .choose .buttonbox {
   position: absolute;
-  right: 110px;
+  right: 100px;
   bottom: 15px;
-  width: 200px;
+  width: 220px;
 }
-.choose .buttonbox .button {
+
+.buttonbox .button {
   display: block;
-  margin-top: 15px;
+  margin-bottom: 15px;
 }

@@ -26,7 +26,9 @@ game.highlight = {
         }
       } else if (game.selectedCard.hasClass('skills')) {
         if (game.selectedCard.closest('.hand').length &&
-            game.mode == 'online') game.states.table.discard.attr('disabled', false);
+            game.mode == 'online') {
+          game.states.table.discard.attr('disabled', false);
+        }
         game.selectedCard.highlightSource();
         game.selectedCard.strokeSkill();
         if (!game.states.table.el.hasClass('unturn')) {
@@ -58,7 +60,8 @@ game.highlight = {
         } else if (skill.data('type') === game.data.ui.toggle) {
           game.highlight.toggle(skill, source);
         } else if (skill.data('type') === game.data.ui.active || 
-                   skill.data('type') === game.data.ui.channel) {
+                   skill.data('type') === game.data.ui.channel ||
+                   skill.data('type') === game.data.ui.instant) {
           game.highlight.active(source, skill);
         }
       }
@@ -79,7 +82,7 @@ game.highlight = {
     source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
   },
   ally: function (source, skill) {
-    var range = skill.data('range');
+    var range = skill.data('cast range');
     if (range === game.data.ui.global) {
       $('.map .player').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
@@ -93,7 +96,7 @@ game.highlight = {
     }
   },
   enemy: function (source, skill) {
-    var range = skill.data('range');
+    var range = skill.data('cast range');
     if (range === game.data.ui.global) {
       $('.map .enemy').addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
     } else {
@@ -108,7 +111,7 @@ game.highlight = {
   },
   summoner: function (source, skill) {
     var pos = game.map.getPosition(source.data(game.data.ui.sumonner)),
-        range = game.map.getRange(skill.data('range'));
+        range = game.map.getRange(skill.data('cast range'));
     game.map.around(pos, range, function (neighbor) {
       if (neighbor.hasClass('free')) {
         neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
@@ -117,7 +120,7 @@ game.highlight = {
   },
   freeSpots: function (source, skill) {
     var pos = game.map.getPosition(source),
-        range = game.map.getRange(skill.data('range'));
+        range = game.map.getRange(skill.data('cast range'));
     game.map.around(pos, range, function (neighbor) {
       if (neighbor.hasClass('free')) {
         neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
@@ -126,13 +129,12 @@ game.highlight = {
   },
   radial: function (source, skill) {
     var pos = game.map.getPosition(source),
-        range = game.map.getRange(skill.data('range'));
+        range = game.map.getRange(skill.data('cast range'));
     game.map.around(pos, range, function (neighbor) {
-      neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
-      if (neighbor.hasClass('block')) {
-        var card = $('.card', neighbor);
-        card.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
-      }
+      var card = neighbor.find('.card');
+      if (card.length) {
+        card.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
+      } else neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
     });
   },
   linear: function (source, skill) {
@@ -140,11 +142,10 @@ game.highlight = {
         range = skill.data('aoe range'),
         width = skill.data('aoe width');
     game.map.atCross(pos, range, width, function (neighbor) {
-      neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
-      if (neighbor.hasClass('block')) {
-        var card = $('.card', neighbor);
-        card.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
-      }
+      var card = neighbor.find('.card');
+      if (card.length) {
+        card.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.cast);
+      } else neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
     });
   },
   active: function (source, skill) { 
@@ -173,7 +174,7 @@ game.highlight = {
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
       game.map.atMovementRange(card, Math.round(speed), function (neighbor) {
-        if (!neighbor.hasClass('block')) { 
+        if (neighbor.hasClass('free')) { 
           neighbor.addClass('movearea').on('mouseup.highlight touchend.highlight', game.player.move); 
         }
       });
@@ -197,7 +198,7 @@ game.highlight = {
     if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
       pos = game.map.getPosition(card);
       range = game.map.getRange(card.data('range'));
-      game.map.radialStroke(pos, range, card.data('side') + 'attack');
+      game.map.radialStroke(pos, range, card.side() + 'attack');
     }
     return card;
   },
@@ -216,14 +217,16 @@ game.highlight = {
           game.skill.aoerange = skill.data('aoe range');
           game.map.crossStroke(pos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
         } else if (game.skill.aoe === 'Radial') {
-          game.skill.aoerange = game.map.getRange(skill.data('range'));
+          var range = skill.data('cast range') || skill.data('stroke range');
+          game.skill.aoerange = game.map.getRange(range);
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
         game.map.el.addClass('aoe');
         $('.map .spot').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
-      if (skill.data('range')) {
-        game.map.radialStroke(pos, game.map.getRange(skill.data('range')), 'skillarea');
+      var range = skill.data('cast range') || skill.data('stroke range');
+      if (range) {
+        game.map.radialStroke(pos, game.map.getRange(range), 'skillarea');
       }
     }
     return skill;

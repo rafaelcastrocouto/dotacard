@@ -1,19 +1,36 @@
 game.enemy = {
+  placeHeroes: function () {
+    game.enemy.heroesDeck = game.deck.build({
+      name: 'heroes',
+      filter: game.enemy.picks,
+      cb: function (deck) {
+        deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
+        var x = 1, y = 4;
+        $.each(deck.data('cards'), function (i, card) {
+          var p = game.enemy.picks.indexOf(card.data('hero'));
+          card.addClass('enemy').on('mousedown touchstart', game.card.select);
+          card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
+          if (game.mode == 'tutorial') card.on('select', game.tutorial.selected);
+        });
+      }
+    });
+  },
   buyCard: function () {
-    var availableSkills = $('.enemy .available .card'),
-      card = game.deck.randomCard(availableSkills),
+    var availableSkills = $('.table .enemy .available .card'),
+      card,
       heroid,
       hero,
       to,
       skillid;
     if (availableSkills.length < game.enemy.cardsPerTurn) {
-      $('.enemy .cemitery .card').appendTo(game.enemy.skills.deck);
-      availableSkills = $('.enemy .available .card');
+      $('.table .enemy .cemitery .card').appendTo(game.enemy.skills.deck);
+      availableSkills = $('.table .enemy .available .card');
     }
-    if (card.data('type') === game.data.ui.toggle) {
-      card.appendTo(game.enemy.skills.sidehand);
-    } else {
+    card = availableSkills.randomCard();
+    if (card.data('hand') === game.data.ui.right) {
       card.appendTo(game.enemy.skills.hand);
+    } else {
+      card.appendTo(game.enemy.skills.sidehand);
     }
   },
   buyHand: function () {
@@ -115,5 +132,11 @@ game.enemy = {
       if (game.mode == 'tutorial') game.tutorial.playerTurn();
       if (game.mode == 'online') game.online.endTurn('unturn');
     });
+  },
+  cardsInHand: function () {
+    return game.enemy.skills.hand.children().length;
+  },
+  maxSkillCards: function () {
+    return game.enemy.maxCards;
   }
 };

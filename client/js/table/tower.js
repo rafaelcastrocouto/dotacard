@@ -29,7 +29,7 @@ game.tower = {
   },
   attack: function (side) {
     var from, to,
-      attacker = game.otherSide(side),
+      attacker = game.opponent(side),
       lowestHp = {
         notfound: true,
         data: function (c) { return Infinity; }

@@ -191,15 +191,15 @@ game.online = {
       game.loader.addClass('loading');
       game.message.text(game.data.ui.battle);
       game.audio.play('horn');
-      game.online.placePlayerHeroes();
-      game.online.placeEnemyHeroes();
+      game.player.placeHeroes();
+      game.enemy.placeHeroes();
       game.states.table.surrender.show();
       game.states.table.discard.attr('disabled', true).show();
       game.states.table.skip.show();
-      game.turn.build(5);
+      game.turn.build(6);
       game.timeout(100, function () {
-        game.states.table.buildSkills('player');
-        game.states.table.buildSkills('enemy');
+        game.skill.build('player');
+        game.skill.build('enemy');
       });
       if (game.player.type === 'challenger') {
         game.states.table.el.addClass('unturn');
@@ -209,40 +209,6 @@ game.online = {
         game.states.table.el.removeClass('unturn');
         game.timeout(1000, game.online.beginPlayer);
       }
-    }
-  },
-  placePlayerHeroes: function () {
-    if (game.player.picks) {
-      game.player.heroesDeck = game.deck.build({
-        name: 'heroes',
-        filter: game.player.picks,
-        cb: function (deck) {
-          deck.addClass('player').hide().appendTo(game.states.table.player);
-          var x = 1, y = 4;
-          $.each(deck.data('cards'), function (i, card) {
-            var p = game.player.picks.indexOf(card.data('hero'));
-            card.addClass('player').data('side', 'player').on('mousedown touchstart', game.card.select).on('action', game.online.action);
-            card.place(game.map.toId(x + p, y));
-          });
-        }
-      });
-    }
-  },
-  placeEnemyHeroes: function () {
-    if (game.enemy.picks) {
-      game.enemy.heroesDeck = game.deck.build({
-        name: 'heroes',
-        filter: game.enemy.picks,
-        cb: function (deck) {
-          deck.addClass('enemy').hide().appendTo(game.states.table.enemy);
-          var x = 1, y = 4;
-          $.each(deck.data('cards'), function (i, card) {
-            var p = game.enemy.picks.indexOf(card.data('hero'));
-            card.addClass('enemy').data('side', 'enemy').on('mousedown touchstart', game.card.select);
-            card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
-          });
-        }
-      });
     }
   },
 /*
