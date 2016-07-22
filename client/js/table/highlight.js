@@ -206,8 +206,8 @@ game.highlight = {
     var skill = this,
       hero = skill.data('hero'),
       source = $('.map .source'),
-      range,
-      pos = game.map.getPosition(source);
+      pos = game.map.getPosition(source),
+      range = skill.data('cast range') || skill.data('stroke range');
     if (hero && pos && !source.hasClasses('dead done stunned')) {
       if (skill.data('aoe')) {
         game.castpos = pos;
@@ -217,14 +217,12 @@ game.highlight = {
           game.skill.aoerange = skill.data('aoe range');
           game.map.crossStroke(pos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
         } else if (game.skill.aoe === 'Radial') {
-          var range = skill.data('cast range') || skill.data('stroke range');
           game.skill.aoerange = game.map.getRange(range);
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
         game.map.el.addClass('aoe');
         $('.map .spot').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
-      var range = skill.data('cast range') || skill.data('stroke range');
       if (range) {
         game.map.radialStroke(pos, game.map.getRange(range), 'skillarea');
       }

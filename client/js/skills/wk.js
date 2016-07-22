@@ -1,7 +1,6 @@
 game.skills.wk = {
   stun: {
     cast: function (skill, source, target) {
-      var source = source;
       source.addStun(target, skill);
       source.damage(skill.data('damage'), target, skill.data('damage type'));
       target.data('wk-dot-count', 3);
@@ -9,21 +8,21 @@ game.skills.wk = {
     },
     turnend: function (event, eventdata) {
       var target = eventdata.target;
-      var count = target.data('wk-dot-count');
-      console.log(count)
+      var count = target.data('wk-dot-count'),
+          buff, source, skill;
       if (target.hasBuff('wk-stun')) {
-        var buff = target.getBuff('wk-stun');
-        var source = buff.data('source');
-        var skill = buff.data('skill');
+        buff = target.getBuff('wk-stun');
+        source = buff.data('source');
+        skill = buff.data('skill');
         source.damage(buff.data('dot'), target, buff.data('damage type'));
       }
-      if (count == 2) {
-        var buff = target.getBuff('stun');
-        var source = buff.data('source');
-        var skill = buff.data('skill');
+      if (count === 2) {
+        buff = target.getBuff('stun');
+        source = buff.data('source');
+        skill = buff.data('skill');
         source.addBuff(target, skill);
       }
-      if (count == 0) {
+      if (count === 0) {
         target.data('wk-dot-count', null);
         target.off('turnend.wk-stun');
       }

@@ -73,7 +73,7 @@ game.deck = {
             if (skillData.buffs) for (var buffs in skillData.buffs) {
               for (var buff in skillData.buffs[buffs]) {
                 skillData.buffs[buffs][buff].buffId = hero +'-'+ skill +'.'+ buffs +'-'+ buff;
-                skillData.buffs[buffs][buff].className = hero +'-'+ skill +' '+ buffs +'-'+ buff
+                skillData.buffs[buffs][buff].className = hero +'-'+ skill +' '+ buffs +'-'+ buff;
               }
             }
             if (multi) {

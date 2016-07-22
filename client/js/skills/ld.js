@@ -102,19 +102,17 @@ game.skills.ld = {
   },
   ult: {
     toggle: function (skill, source) {
+      var side = source.side();
+      var cry = $('.table .'+side+' .skills.ld-cry');
       if (!source.hasClass('transformed')) {
         source.addClass('transformed');
         skill.addClass('on');
-        var side = source.side();
-        var cry = $('.table .'+side+' .skills.ld-cry');
         cry.appendTo(game.player.skills.hand);
         source.selfBuff(skill);
         source.data('range', game.data.ui.melee);
       } else {
         source.removeClass('transformed');
         skill.removeClass('on');
-        var side = source.side();
-        var cry = $('.table .'+side+' .skills.ld-cry');
         cry.discard();
         source.removeBuff('ld-ult');
         source.data('range', game.data.ui.short);

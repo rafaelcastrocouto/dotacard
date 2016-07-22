@@ -356,7 +356,6 @@ game.card = {
         source: source,
         target: target
       };
-      var damage = source.data('current damage');
       source.trigger('attack', evt).trigger('action', evt);
       if (!source.data('critical-attack')) source.damage(damage, target, game.data.ui.physical);
       source.data('critical-attack', false);
@@ -537,15 +536,13 @@ game.card = {
     } else return this;
   },
   getDirection: function (target) {
-    var sourcex = game.map.getX(this),
-        sourcey = game.map.getY(this),
-        targetx = game.map.getX(target),
-        targety = game.map.getY(target);
-        dirx = 0, diry = 0;
-    if (sourcey - targety > 0) { diry = -1; }
-    if (sourcey - targety < 0) { diry = 1; }
-    if (sourcex - targetx > 0) { dirx = -1; }
-    if (sourcex - targetx < 0) { dirx = 1; }
-    return {x: dirx, y: diry};
+    var p1 =  { x: game.map.getX(this),   y: game.map.getY(this) },
+        p2 =  { x: game.map.getX(target), y: game.map.getY(target) },
+        dir = { x: 0, y: 0 };
+    if (p1.y - p2.y > 0) { dir.y = -1; }
+    if (p1.y - p2.y < 0) { dir.y =  1; }
+    if (p1.x - p2.x > 0) { dir.x = -1; }
+    if (p1.x - p2.x < 0) { dir.x =  1; }
+    return dir;
   }
 };

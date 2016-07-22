@@ -311,7 +311,7 @@ game.tutorial = {
       $('.player .sidehand .pud-rot').removeClass('tutorialblink');
       $('.map .player.pud').removeClass('tutorialblink');
       $('.player .hand').addClass('tutorialblink');
-      $('.player .hand .cm-slow').on('select', game.tutorial.selected)
+      $('.player .hand .cm-slow').on('select', game.tutorial.selected);
       $('.map .player.heroes.ld').addClass('done');
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
