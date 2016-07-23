@@ -8,24 +8,15 @@ game.skills.wk = {
     },
     turnend: function (event, eventdata) {
       var target = eventdata.target;
-      var count = target.data('wk-dot-count'),
-          buff, source, skill;
-      if (target.hasBuff('wk-stun')) {
-        buff = target.getBuff('wk-stun');
-        source = buff.data('source');
-        skill = buff.data('skill');
-        source.damage(buff.data('dot'), target, buff.data('damage type'));
-      }
-      if (count === 2) {
-        buff = target.getBuff('stun');
-        source = buff.data('source');
-        skill = buff.data('skill');
-        source.addBuff(target, skill);
-      }
-      if (count === 0) {
-        target.data('wk-dot-count', null);
-        target.off('turnend.wk-stun');
-      }
+      var count = target.data('wk-dot-count');
+      var dotBuff = target.getBuff('wk-stun');
+      var stunBuff = target.getBuff('stun');
+      var buff = $(stunBuff[0] || dotBuff[0]);
+      var source = buff.data('source');
+      var skill = buff.data('skill');
+      if (dotBuff.length) source.damage(dotBuff.data('dot'), target, dotBuff.data('damage type'));
+      if (count === 2) source.addBuff(target, skill);
+      if (count === 0) target.off('turnend.wk-stun').data('wk-dot-count', null);
       target.data('wk-dot-count', count - 1);
     }
   },
@@ -76,34 +67,41 @@ game.skills.wk = {
       var chance = buff.data('chance') / 100;
       var bonus = (buff.data('percentage') / 100);
       if (game.random() < chance) {
-        damage *= bonus;
-        source.damage(damage, target, 'critical');
+        source.damage(damage * bonus, target, 'critical');
       }
     }
   },
   ult: {
     passive: function (skill, source) {
-      source.selfBuff(skill);
+      source.selfBuff(skill, 'ult-source');
       source.on('death.wk-ult', this.death);
     },
     death: function (event, eventdata) {
       var wk = eventdata.target;
       var spot = eventdata.spot;
+      var side = wk.side();
       spot.addClass('cript block');
-      wk.on('turnstart.wk-ult', game.skills.wk.ult.turnstart);
+      wk.on(side + 'turnstart.wk-ult', game.skills.wk.ult.turnstart);
       wk.data('wk-ult-spot', spot);
       wk.off('death.wk-ult');
     },
     turnstart: function (event, eventdata) {
       var wk = eventdata.target;
+      var buff = wk.getBuff('wk-ult');
+      var range = buff.data('range');
+      var skill = buff.data('skill');
       var spot = wk.data('wk-ult-spot');
-      if (game.isUnitTurn(wk)) {
-        spot.removeClass('cript');
-        wk.removeBuff('wk-ult');
-        wk.off('turnstart.wk-ult');
-        wk.data('wk-ult-spot', null);
-        wk.reborn(spot);
-      }
+      var side = wk.side();
+      spot.removeClass('cript');
+      wk.reborn(spot, 'notowerpenalty');
+      wk.opponentsInRange(range, function (target) {
+        wk.addBuff(target, skill, 'ult-targets');
+      });
+      wk.removeBuff('wk-ult');
+      wk.off(side + 'turnstart.wk-ult');
+      wk.data('wk-ult-spot', null);
+      if (game.mode == 'library') skill.appendTo(game[side].skills.sidehand);
+      else skill.appendTo(game[side].skills.sidehand);
     }
   }
 };

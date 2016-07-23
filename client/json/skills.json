@@ -499,8 +499,18 @@
       "targets": ["Self"],
       "cards": 1,
       "description": "Wraith King will come back to full HP on next player turn after being killed",
-      "buff": {
-        "description": "No one can kill the Wraith King!"
+      "buffs": {
+        "ult": {
+          "source": {
+            "range": "Melee",
+            "description": "No one can kill the Wraith King!"
+          },
+          "targets": {
+            "duration": 2,
+            "speed slow": 1,
+            "description": "Slowed by the return of the King!"
+          }
+        }
       }
     }
   }

@@ -42,13 +42,6 @@ var game = {
   isPlayerTurn: function () {
     return !game.states.table.el.hasClass('unturn');
   },
-  isUnitTurn: function (unit) {
-    var side = unit.side(),
-        playerTurn = game.isPlayerTurn();
-    if (side == 'player' && playerTurn) return true;
-    if (side == 'enemy' && !playerTurn) return true;
-    return false;
-  },
   opponent: function (side) {
     return (side == 'player') ? 'enemy' : 'player';
   },

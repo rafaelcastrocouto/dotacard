@@ -35,16 +35,16 @@ game.turn = {
     game.currentMoves = [];
     $('.table .card.dead').each(function () {
       var dead = $(this);
-      if (game.time > dead.data('reborn') || game.mode == 'library') { 
-        dead.reborn(); 
+      if (game.time > dead.data('reborn') || 
+          (game.mode == 'library' && !dead.hasBuff('wk-ult')) ) { 
+        dead.reborn();
       }
     });
     $('.card').each(function () {
       var card = $(this);
       card.trigger('turnstart', { target: card });
-      if (!game.states.table.el.hasClass('unturn')) {
-        card.trigger('playerturnstart', { target: card });
-      } else { card.trigger('enemyturnstart', { target: card }); }
+      if (unturn == 'turn') card.trigger('playerturnstart', { target: card });
+      else card.trigger('enemyturnstart', { target: card });
       card.reduceStun();
     });
     game.timeout(400, game.turn.tickTime);

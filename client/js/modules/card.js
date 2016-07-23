@@ -252,7 +252,9 @@ game.card = {
         if (data) {
           if (data['hp bonus']) {
             target.setHp(target.data('hp') - data['hp bonus']);
-            target.setCurrentHp(target.data('current hp') - data['hp bonus']);
+            var hp = target.data('current hp') - data['hp bonus'];
+            if (hp < 1) hp = 1;
+            target.setCurrentHp(hp);
           }
           if (data['damage bonus']) target.setDamage(target.data('current damage') - data['damage bonus']);
           if (data['armor bonus']) target.setArmor(target.data('current armor') - data['armor bonus']);
@@ -315,7 +317,7 @@ game.card = {
     return this;
   },
   setCurrentHp: function (hp) {
-    if (hp < 1) { hp = 1; }
+    if (hp < 0) { hp = 0; }
     this.find('.current .hp span').text(hp);
     this.data('current hp', hp);
     if (this.hasClass('selected')) { this.select(); }
@@ -381,8 +383,6 @@ game.card = {
       if (type === 'critical') source.data('critical-attack', true);
       if (damage < 1) damage = 1;
       if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-      hp = target.data('current hp') - damage;
-      target.setCurrentHp(hp);
       position = game.map.getPosition(target);
       x = game.map.getX(position);
       y = game.map.getY(position);
@@ -397,6 +397,8 @@ game.card = {
         damage: damage,
         type: type
       };
+      hp = target.data('current hp') - damage;
+      target.setCurrentHp(hp);
       target.trigger('damage', evt);
       if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
       if (type === 'critical') {
@@ -473,7 +475,8 @@ game.card = {
   die: function (evt) {
     this.trigger('death', evt);
     this.data('killer', evt.source);
-    this.addClass('dead').removeClass('target done').setCurrentHp(0);
+    this.addClass('dead').removeClass('target done');
+    this.unselect();
     var pos = game.map.getPosition(this), deaths,
       spot = $('#' + pos);
     if (!spot.hasClass('cript')) { spot.addClass('free'); }
@@ -481,7 +484,7 @@ game.card = {
       deaths = this.data('deaths') + 1;
       this.data('deaths', deaths);
       this.find('.deaths').text(deaths);
-      this.data('reborn', game.time + game.deadLength);
+      if (!spot.hasClass('cript')) this.data('reborn', game.time + game.deadLength);
       if (this.hasClass('player')) {
         this.appendTo(game.player.heroesDeck);
       } else if (this.hasClass('enemy')) { this.appendTo(game.enemy.heroesDeck); }
@@ -494,7 +497,7 @@ game.card = {
     } else { this.remove(); }
     return this;
   },
-  reborn: function (spot) { //console.trace(this, spot)
+  reborn: function (spot, nopenalty) { //console.trace(this, spot)
     if (spot && spot.hasClass) spot = spot[0].id;
     var hp = this.data('hp'), x, y;
     if (!spot) {
@@ -520,7 +523,7 @@ game.card = {
       var side = this.side();
       var tower = game[side].tower;
       var unit = this.data('killer');
-      unit.damage(1, tower);
+      if (!nopenalty) unit.damage(1, tower);
       this.data('reborn', null);
       this.setCurrentHp(hp);
       this.removeClass('dead');

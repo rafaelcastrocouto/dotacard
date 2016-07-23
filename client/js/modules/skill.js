@@ -168,8 +168,8 @@ game.skill = {
     }
     return this;
   },
-  opponentsInRange: function (range, cb) {
-    var spot = game.map.getPosition(this);
+  opponentsInRange: function (range, cb, spot) {
+    if (!spot) spot = game.map.getPosition(this);
     var side = this.side();
     var opponent = game.opponent(side);
     game.map.inRange(spot, range, function (neighbor) {
