@@ -34,7 +34,7 @@ More information on how to [setup your own server][10]
 
 [4]: https://github.com/rafaelcastrocouto/dotacard/fork
 
-[5]https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip
+[5]: https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip
 
 [6]: https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#how-to-develop-a-new-hero
 
