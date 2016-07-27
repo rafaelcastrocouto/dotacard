@@ -3,41 +3,54 @@
     "burn": {
       "name": "Quebra de Mana",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
+      "damage": "?",
+      "damage type": "Puro",
       "cards": 1,
-      "display": true,
-      "description": "A cada ataque o AnitMage recebe bonus de ataque igual à mana da unidade atacada obriga o oponente a descartar uma habilidade dessa unidade"
+      "description": "Ataques recebem bonus de dano igual ao valor de mana do alvo e obriga o oponente descartar uma habilidade do alvo",
+      "buff": {
+        "description": "Ataque com bonus de dano igual ao valor de mana do alvo e obriga o oponente descartar uma habilidade do alvo"
+      }
     },
     "blink": {
       "name": "Blink",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local", "Livre"],
-      "range": "Longe",
+      "cast range": "Longe",
       "cards": 6,
-      "display": true,
-      "description": "Teleporta instantâneamente"
+      "description": "Teleporta o AntiMage para o destino Instantâneaâneamente"
     },
     "shield": {
       "name": "Escudo Antimagia",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "resistance bonus": 3,
       "cards": 1,
-      "display": true,
-      "description": "Resistência a dano mágico aumentada em três pontos"
+      "description": "Aumenta a resistência a danos mágicos",
+      "buff": {
+        "resistance bonus": 3,
+        "description": "Resistência mágica aumentada"
+      }
     },
     "ult": {
       "name": "Mana Void",
       "type": "Ativa",
-      "targets": ["Inimigos"],
-      "range": "Médio",
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
+      "cast range": "Médio",
       "aoe": "Radial",
       "aoe range": "Perto",
+      "damage": "?",
       "damage type": "Mágico",
       "cards": 1,
       "multiplier": 2,
-      "display": true,
-      "description": "Causa dano em área ao redor de uma unidade inimiga. O dano é igual a metade no número de cartas que o jogador poderia ter em suas mãos (Max-Hand/2)"
+      "description": "Causa dano em área na posição de uma unidade inimiga. O dano é igual ao dobro no número de cartas que o jogador poderia ter em sua mão direita (Max-Hand/2)"
     }
   },
 
@@ -45,59 +58,87 @@
     "slow": {
       "name": "Explosão Cristalina",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local", "Próprio"],
-      "range": "Distante",
+      "cast range": "Distante",
       "aoe": "Radial",
       "aoe range": "Perto",
-      "duration": 3,
       "damage": 12,
       "damage type": "Mágico",
       "cards": 5,
-      "display": true,
-      "description": "Uma explosão de gelo que causa dano e diminui a velocidade dos inimigos"
+      "description": "Uma explosão de gelo que causa dano em area e diminui a velocidade dos inimigos",
+      "buff": {
+        "speed slow": 1,
+        "duration": 3,
+        "description": "Movimento restrito pela explosão cristalina",
+        "purgeable": true
+      }
     },
     "aura": {
       "name": "Aura Arcana",
       "type": "Passiva",
-      "target": ["Próprio"],
+      "hand": "Esquerda",
+      "deck": "Comprar",
+      "targets": ["Próprio"],
       "cards": 1,
-      "display": true,
-      "description": "O jogador compra uma carta a mais por turno"
+      "description": "O jogador compra uma carta de habilidade a mais por turno",
+      "buff": {
+        "description": "Uma carta de habilidade bonus por turno"
+      }
     },
     "freeze": {
       "name": "Congelamento",
       "type": "Ativa",
-      "targets": ["Inimigos"],
-      "range": "Distante",
-      "duration": 2,
-      "dot": 4,
-      "damage type": "Mágico",
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
+      "cast range": "Distante",
       "cards": 5,
-      "display": true,
-      "description": "Congela uma unidade inimiga, que pode se mover ou atacar e recebe dano por turno"
+      "description": "Congela uma unidade inimiga (disarma e bloqueia o movimento), causa dano por turno e interrompe canalização",
+      "buff": {
+        "duration": 3,
+        "dot": 4,
+        "damage type": "Mágico",
+        "description": "Congeladoa (disarmado e sem movimento) e recebendo dano por turno"
+      }
     },
     "ult": {
       "name": "Campo Congelante",
-      "channel": 3,
       "type": "Canalização",
+      "Canalização": 3,
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "range": "Longe",
       "aoe": "Radial",
       "aoe range": "Longe",
-      "duration": 2,
+      "stroke range": "Longe",
       "damage": 7,
       "damage type": "Mágico",
       "cards": 1,
-      "display": true,
-      "description": "Rylai canaliza uma tempestade de neve ao seu redor"
+      "description": "Rylai canaliza uma tempestade de neve ao seu redor cauzando dano em área",
+      "buffs": {
+        "ult": {
+          "source": {
+            "description": "Let it go! Let it go!"
+          },
+          "targets": {
+            "duration": 2,
+            "speed slow": 1,
+            "description": "Movimento restrito pelo campo congelante"
+          }
+        }
+      }
     }
   },
 
   "kotl": {
     "illuminate": {
       "name": "Iluminar",
-      "channel": 4,
       "type": "Canalização",
+      "Canalização": 4,
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local"],
       "aoe": "Linear",
       "aoe width": 1,
@@ -105,51 +146,55 @@
       "damage": 5,
       "damage type": "Mágico",
       "cards": 4,
-      "display": true,
       "description": "Canaliza luz causando dano em área"
     },
     "leak": {
       "name": "Vazamento de Mana",
       "type": "Ativa",
-      "targets": ["Inimigos"],
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
       "range": "Longe",
       "duration": 4,
       "cards": 4,
-      "display": true,
       "description": "Amaldiçoa uma unidade inimiga obrigando o inimigo a descartar uma carta de habilidade a cada movimento, caso o inimigo não tenha mais cartas a unidade é atordoada"
     },
     "mana": {
       "name": "Magia do Chakra",
       "type": "Ativa",
-      "target": ["Próprio", "Aliados"],
-      "ranges": "Distante",
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Aliados", "Próprio"],
+      "range": "Distante",
       "cards": 4,
-      "display": true,
       "description": "O jogador compra duas cartas de habilidade"
     },
     "ult": {
       "name": "Forma Espiritual",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "cards": 2,
-      "display": true,
       "description": "Ezalor se torna um com a luz!"
     },
     "blind": {
       "name": "Luz Cegante",
-      "deck": "Temporária",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Temporária",
       "targets": ["Local", "Próprio"],
       "aoe": "Radial",
       "aoe range": "Distante",
       "range": "Distante",
       "cards": 1,
-      "description": "Uma luz cegante arremessa as unidades inimigas, fazendo com que errem ataques."
+      "description": "Uma luz cegante arremessa as unidades inimigas, fazendo com que errem ataques"
     },
     "recall": {
-      "name": "Revocar",
-      "deck": "Temporária",
+      "name": "Recall",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Temporária",
       "targets": ["Aliados"],
       "range": "Global",
       "delay": 1,
@@ -160,81 +205,107 @@
 
   "ld": {
     "summon": {
-      "name": "Espírito Urso",
+      "name": "Espírito Ursor",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local", "Livre"],
-      "range": "Perto",
-      "hp": 135,
-      "damage": 2,
       "cards": 2,
-      "armor": 20,
-      "resistance": 50,
-      "entangle chance": 20,
-      "entangle damage": 6,
-      "entangle duration": 3,
-      "demolish percentage": 40,
-      "return cooldown": 3,
-      "display": true,
-      "description": "Invoca um poderoso Espírito Urso companheiro"
+      "cast range": "Perto",
+      "hp": 80,
+      "range": "Perto",
+      "damage": 3,
+      "armor": 3,
+      "resistance": 3,
+      "death damage": 10,
+      "description": "Invoca um poderoso Espírito Urso companheiro Entangling claws and Demolish. O jogador compra uma carta temporária 'Retornar'",
+      "buffs": {
+        "demolish": {
+          "source": {
+            "name": "Demolir",
+            "tower bonus": 3,
+            "description": "O Espírito Urso causa o dobo de dano adicional à edificações"
+          }
+        },
+        "entangle": {
+          "source": {
+            "name": "Garras Entrelaçantes",
+            "chance": 20,
+            "description": "Os ataques do Espírito Urso têm chance de fazer com que raízes prendam o inimigo, imobilizando e causando dano por turno. Interrompe canalização"
+          },
+          "target": {
+            "dot": 5,
+            "duration": 3,
+            "description": "Preso pelas Garras Entrelaçantes e recebendo dano por turno"
+          }
+        }
+      }
     },
     "bearreturn": {
       "name": "Retornar",
-      "deck": "Temporária",
       "type": "Instantânea",
+      "hand": "Esquerda",
+      "deck": "Temporária",
       "targets": ["Local", "Livre"],
-      "range": "Perto",
+      "cast range": "Perto",
       "cards": 1,
-      "description": "Teleporta o Espírito Urso de volta para o Druida"
+      "description": "Teleporta o Espírito Urso de volta para o Druida. Esta carta deve ser descartada quando o Espírito Urso morre"
     },
     "rabid": {
-      "name": "Raiva",
+      "name": "Rabid",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "damage bonus": 3,
-      "duration": 3,
       "cards": 5,
-      "display": true,
-      "description": "Aumenta o ataque e o movimento do Druida e do Espírito Urso"
+      "description": "Aumenta o ataque e o movimento do Druida e do Espírito Urso",
+      "buff": {
+        "duration": 3,
+        "damage bonus": 3,
+        "speed bonus": 1,
+        "description": "Bonus de ataque e o movimento"
+      }
     },
     "roar": {
-      "name": "Rugido Feroz",
-      "type": "Passiva",
+      "name": "Rugido Fero",
+      "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "range": "Perto",
       "aoe": "Radial",
       "aoe range": "Perto",
       "cards": 3,
-      "display": true,
-      "description": "Ruge de forma tão feroz que os inimigos fogem de medo"
+      "description": "Ruge de forma tão feroz que os inimigos fogem de medo. Interrompe canalização"
     },
     "ult": {
       "name": "Forma Real",
       "type": "Alternar",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "cards": 1,
-      "armor bonus": 16,
-      "hp bonus": 20,
-      "display": true,
-      "description": "O Duida se tranforma em um urso furioso"
+      "description": "O Duida se tranforma em um urso furioso com bonus de HP e armadura. O jogador recebe a carta temporária 'Grito de Guerra'",
+      "buff": {
+        "hp bonus": 9,
+        "armor bonus": 2,
+        "description": "Forma Real"
+      }
     },
     "cry": {
       "name": "Grito de Guerra",
-      "deck": "Temporária",
       "type": "Ativa",
-      "targets": ["Próprio"],
-      "duration": 4,
-      "armor bonus": 2,
-      "damage bonus": 5,
-      "cards": 1,
-      "description": "Aumenta o ataque do Druida e do Espírito Urso"
-    },
-    "transform": {
-      "name": "Forma de Druida",
+      "hand": "Direita",
       "deck": "Temporária",
-      "type": "Alternar",
       "targets": ["Próprio"],
       "cards": 1,
-      "description": "O Druida volta a sua forma humana"
+      "description": "Aumenta o ataque e a armadura do Druida e do Espírito Urso",
+      "buff": {
+        "duration": 4,
+        "armor bonus": 2,
+        "damage bonus": 5,
+        "description": "Bonus de ataque e a armadura"
+      }
     }
   },
 
@@ -242,44 +313,48 @@
     "stun": {
       "name": "Impalar",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local"],
       "aoe": "Linear",
       "aoe width": 0,
       "aoe range": 3,
       "cards": 4,
-      "display": true,
       "description": "Espinhos rochosos emergem da terra, unidades inimigas atingidas são atordoadas e recebem dano"
     },
     "burn": {
       "name": "Mana Burn",
       "type": "Ativa",
-      "targets": ["Inimigos"],
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
       "range": "Distante",
       "multiplier": 4,
       "damage type": "Mágico",
       "cards": 8,
-      "display": true,
-      "description": "Causa dano ao alvo obriga o oponente a descartar uma habilidade do alvo"
+      "description": "Causa dano igual ao mana do alvo multiplicado e obriga o oponente a descartar uma habilidade do alvo"
     },
     "spike": {
-      "name": "Carapaça",
-      "type": "Ativa",
+      "name": "Spiked Carapace",
+      "type": "Instantânea",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "duration": 2,
-      "damage type": "Pure",
+      "damage type": "Puro",
       "cards": 5,
-      "display": true,
       "description": "Reflete e nega o dano recebido e atordoa o atacante"
     },
     "ult": {
       "name": "Vendetta",
-      "type": "Ativa",
+      "type": "Instantânea",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "duration": 8,
       "damage": 20,
       "damage type": "Physical",
       "cards": 1,
-      "display": true,
       "description": "Nyx Assassin fica invisível e o dano do seu próximo ataque é aumentado"
     }
   },
@@ -288,6 +363,8 @@
     "hook": {
       "name": "Gancho de Carne",
       "type": "Ativa",
+      "hand": "Direita",
+      "deck": "Comprar",
       "targets": ["Local"],
       "aoe": "Linear",
       "aoe width": 0,
@@ -295,44 +372,73 @@
       "damage": 18,
       "damage type": "Puro",
       "cards": 6,
-      "display": true,
       "description": "Lança um gancho que agarra a primeira unidade que encontrar, arrastando-a de volta e causando dano caso seja uma unidade inimiga"
     },
     "rot": {
       "name": "Podridão",
       "type": "Alternar",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
       "aoe": "Radial",
       "aoe range": "Perto",
+      "stroke range": "Perto",
       "damage": 5,
       "damage type": "Mágico",
-      "duration": 1,
       "cards": 1,
-      "display": true,
-      "description": "Uma nuvem tóxica que causa dano as unidades inimigas e ao próprio Pudge. O dano acontece somente no fim do turno."
+      "description": "Uma nuvem tóxica que causa dano as unidades inimigas e ao próprio Pudge. O dano acontece somente no fim do turno",
+      "buffs": {
+        "rot": {
+          "source": {
+            "description": "Emanando podridão"
+          },
+          "targets": {
+            "speed slow": 1,
+            "duration": 2,
+            "description": "Movimento restrito pela Podridão"
+          }
+        }
+      }
     },
-    "passive": {
+    "Passiva": {
       "name": "Armadura de Corpos",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "resistance": 2,
-      "hp bonus": 2,
-      "damage bonus": 1,
       "cards": 1,
-      "display": true,
-      "description": "Reduz o dano mágico e aumenta o HP e o Dano a cada morte ao redor do Pudge"
+      "description": "Reduz o dano mágico e aumenta o HP e o Dano a cada uindade que o Pudge mata",
+      "buff": {
+        "hp per kill": 2,
+        "damage per kill": 1,
+        "resistance bonus": 2,
+        "description": "Dano mágico reduzido e HP e o Dano aumentados por morte"
+      }
     },
     "ult": {
       "name": "Desmembrar",
-      "channel": 3,
       "type": "Canalização",
-      "targets": ["Inimigos"],
-      "range": "Perto",
+      "Canalização": 3,
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
+      "cast range": "Perto",
       "dot": 10,
       "damage type": "Mágico",
       "cards": 2,
-      "display": true,
-      "description": "Pudge devora uma unidade inimiga, desativando-a e causando dano por turno"
+      "description": "Pudge devora uma unidade inimiga, desativando o alvo e causando dano por turno. Interrompe canalização",
+      "buffs": {
+        "ult": { 
+          "source": {
+            "duration": 3,
+            "description": "Desmembrar - Canalizando"
+          },
+          "target": {
+            "duration": 3,
+            "description": "Desativado e recebendo dano por turno"
+          }
+        }
+      }
     }
   },
 
@@ -340,47 +446,72 @@
     "stun": {
       "name": "Explosão Maldita",
       "type": "Ativa",
-      "targets": ["Inimigos"],
-      "range": "Médio",
+      "hand": "Direita",
+      "deck": "Comprar",
+      "targets": ["Inimigo"],
+      "cast range": "Médio",
       "damage": 10,
       "damage type": "Mágico",
-      "dot duration": 2,
-      "dot": 4,
-      "stun duration": 2,
+      "stun": 2,
       "cards": 7,
-      "display": true,
-      "description": "Atordoa e depois causa dano por turno à uma unidade inimiga"
+      "description": "Atordoa e depois causa dano por turno à uma unidade inimiga",
+      "buff": {
+        "damage type": "Mágico",
+        "speed slow": 1,
+        "duration": 2,
+        "dot": 5,
+        "description": "Dano por turno da Explosão Maldita",
+        "purgeable": true
+      }
     },
     "lifesteal": {
       "name": "Aura Vampírica",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "percentage": 30,
       "cards": 1,
-      "display": true,
-      "description": "Drena a vida dos inimigos a cada ataque"
+      "description": "Drena uma porcentagem da vida dos inimigos a cada ataque",
+      "buff": {
+        "percentage": 30,
+        "description": "Drena vida a cada ataque"
+      }
     },
     "crit": {
-      "name": "Golpe Mortal",
+      "name": "Mortal Strike",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "chance": 15,
-      "percentage": 300,
       "cards": 1,
-      "display": true,
-      "description": "Chance de dano crítico"
+      "description": "Os ataques do Wraith King têm chance de causar dano crítico",
+      "buff": {
+        "chance": 15,
+        "percentage": 300,
+        "description": "Chance de dano crítico"
+      }
     },
     "ult": {
       "name": "Reencarnação",
       "type": "Passiva",
+      "hand": "Esquerda",
+      "deck": "Comprar",
       "targets": ["Próprio"],
-      "duration": 3,
-      "aoe": "Radial",
-      "aoe range": "Perto",
-      "delay": 2,
       "cards": 1,
-      "display": true,
-      "description": "Ninguém pode matar o Rei!"
+      "description": "Wraith King volta à vida com HP cheio após ser assassinato",
+      "buffs": {
+        "ult": {
+          "source": {
+            "range": "Perto",
+            "description": "Ninguém pode matar o Rei!"
+          },
+          "targets": {
+            "duration": 2,
+            "speed slow": 1,
+            "description": "Movimento restrito pela Reencarnação"
+          }
+        }
+      }
     }
   }
 
