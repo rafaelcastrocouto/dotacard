@@ -184,6 +184,8 @@ game.online = {
     game.states.choose.clear();
     game.states.changeTo('table');
   },
+
+
   setTable: function () {
     if (!game.online.started) {
       game.online.started = true;
@@ -197,7 +199,7 @@ game.online = {
       game.states.table.discard.attr('disabled', true).show();
       game.states.table.skip.show();
       game.turn.build(6);
-      game.timeout(100, function () {
+      game.timeout(400, function () {
         game.skill.build('player');
         game.skill.build('enemy');
       });

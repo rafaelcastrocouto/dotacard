@@ -42,8 +42,8 @@ game.player = {
     }
   },
   buyHand: function () {
-    var i;
-    for (i = 0; i < game.player.cardsPerTurn; i += 1) {
+    if (game.player.cardsPerTurn === 0) game.skill.calcMana('player');
+    for (var i = 0; i < game.player.cardsPerTurn; i += 1) {
       if (game.player.skills.hand.children().length < game.player.maxCards) {
         game.player.buyCard();
       }

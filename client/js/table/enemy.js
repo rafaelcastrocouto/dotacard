@@ -34,8 +34,8 @@ game.enemy = {
     }
   },
   buyHand: function () {
-    var i;
-    for (i = 0; i < game.enemy.cardsPerTurn; i += 1) {
+    if (game.enemy.cardsPerTurn === 0) game.skill.calcMana('enemy');
+    for (var i = 0; i < game.enemy.cardsPerTurn; i += 1) {
       if (game.enemy.skills.hand.children().length < game.enemy.maxCards) {
         game.enemy.buyCard();
       }

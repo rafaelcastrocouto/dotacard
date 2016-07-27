@@ -11,10 +11,6 @@ game.skill = {
     $.fn.firstCardInLine = game.skill.firstCardInLine;
   },
   build: function (side, single) {
-    game[side].mana = 0;
-    $('.map .'+side+'.heroes').each(function (i, card) {
-      game[side].mana += $(card).data('mana');
-    });
     game[side].maxCards = Math.round(game[side].mana / 2);
     game[side].cardsPerTurn = Math.round(game[side].mana / 5);
     game[side].skills = {};
@@ -42,6 +38,13 @@ game.skill = {
       game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
       $('.enemy .skills').attr({ title: '' }).off('mousedown touchstart');
     }
+    game.skill.calcMana(side);
+  },
+  calcMana: function (side) {
+    game[side].mana = 0;
+    $('.map .'+side+'.heroes').each(function (i, card) {
+      game[side].mana += $(card).data('mana');
+    });
   },
   cast: function (skill, target) { //console.trace('cast')
     var source = this, targets, duration, channeler, channelDuration,
