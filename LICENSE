@@ -1,26 +1,5 @@
-DOTACARD is released under the MIT License. 
-MIT +no-false-attribs License
-
-----------------------------------------------------------
-
-DOTACARD versions may include or require the following libraries, which may have other licenses.
-
-"jQuery", John Resig, http://jquery.com
-"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
-"Google-analytics", Google, http://www.google.com/analytics
-"Nodejs", Joyent, http://nodejs.org
-
-----------------------------------------------------------
-
-"Dota", the "Dota 2" logo, and "Defense of the Ancients" are trademarks and/or 
-registered trademarks of Valve Corporation, http://www.valvesoftware.com/legal.html
-
-----------------------------------------------------------
-
-The MIT License
-
+The MIT License (MIT)
 Copyright 2014, Rafael Castro Couto
-All rights reserved.
 
 Permission is hereby granted, free of charge, to any person
 obtaining a copy of this software and associated documentation
@@ -50,3 +29,20 @@ OTHER DEALINGS IN THE SOFTWARE.
 Contributors to this project agree to grant all rights to the 
 copyright holder of the primary product. 
 Attribution is maintained in the source control history of the product.
+
+----------------------------------------------------------
+
+DOTACARD versions may include or require the following libraries, 
+which may have other licenses of their own.
+
+"jQuery", John Resig, http://jquery.com
+"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
+"Google-analytics", Google, http://www.google.com/analytics
+"Nodejs", Joyent, http://nodejs.org
+
+----------------------------------------------------------
+
+"Dota", the "Dota 2" logo, and "Defense of the Ancients" are trademarks and/or 
+registered trademarks of Valve Corporation, http://www.valvesoftware.com/legal.html
+
+----------------------------------------------------------

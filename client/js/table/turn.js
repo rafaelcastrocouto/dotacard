@@ -52,8 +52,8 @@ game.turn = {
       game.turn.el.removeClass('show');
       if (unturn === 'turn') {
         game.states.table.el.removeClass('unturn');
-        game.states.table.skip.attr('disabled', false);
         game.highlight.map();
+        game.states.table.skip.attr('disabled', false);
       }
       if (cb) cb();
     });
@@ -61,7 +61,7 @@ game.turn = {
   count: function (unturn, cb1, cb2) {
     if (game.turn.counter >= 0) {
       var turncount = game.data.ui.yourturncount;
-      if (unturn !== 'unturn') turncount = game.data.ui.enemyturncount;
+      if (unturn === 'unturn') turncount = game.data.ui.enemyturncount;
       game.message.text(turncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
       if (game.turn.counter === 0) cb2(unturn);
       else if (game.turn.counter > 0) {

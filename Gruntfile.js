@@ -1,6 +1,7 @@
+// Require grunt and it's dependencies listed in package.json
+// run "npm install" in the game root folder
 // Use this file to bundle and minify the game js and css
-// Install grunt and it's dependencies listed in package.json
-// Run "grunt" in the game root folder
+// run "grunt" in the game root folder
 
 module.exports = function(grunt) {
   grunt.initConfig({

@@ -40,7 +40,7 @@ More information on how to [setup your own server][10]
 
 [7]: https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#game-rules
 
-[8]: https://github.com/rafaelcastrocouto/dotacard/issues
+[8]: https://github.com/rafaelcastrocouto/dotacard/issues/new
 
 [9]: http://steamcommunity.com/sharedfiles/filedetails/?id=500624204
 

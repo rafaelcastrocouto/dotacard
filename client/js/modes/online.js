@@ -211,15 +211,13 @@ game.online = {
       }
     }
   },
+
 /*
   beginPlayer > turn.beginPlayer > startTurn > turn.count >
     * skip || no-moves-available > preEndPlayer >
     endTurn > game.turn.end > sendTurnData >
-
-  beginEnemy > turn.beginEnemy > startTurn > turn.count >
-    * preEndEnemy || getTurnData >
-    beginEnemyMoves > endTurn > game.turn.end > beginPlayer...
 */
+
   beginPlayer: function () {
     game.turn.beginPlayer(function () {
       game.online.startTurn('turn');
@@ -227,7 +225,6 @@ game.online = {
         $('.card', game.player.skills.ult).appendTo(game.player.skills.deck);
       } 
       game.player.buyHand();
-      game.tower.attack('enemy');
     });
   },
   startTurn: function (unturn) {
@@ -263,8 +260,10 @@ game.online = {
     }
   },
   preEndPlayer: function () {
-    game.turn.counter = -1;
+    game.highlight.clearMap();
+    game.tower.attack('enemy');
     game.states.table.el.addClass('unturn');
+    game.turn.counter = -1;
     game.online.endTurn('turn');
   },
   endTurn: function (unturn) { //console.trace('endturn')
@@ -294,6 +293,13 @@ game.online = {
       }
     });
   },
+
+/*
+  beginEnemy > turn.beginEnemy > startTurn > turn.count >
+    * preEndEnemy || getTurnData >
+    beginEnemyMoves > endTurn > game.turn.end > beginPlayer...
+*/
+
   beginEnemy: function () {
     game.turn.beginEnemy(function () {
       game.online.startTurn('unturn');
