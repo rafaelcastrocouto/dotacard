@@ -400,7 +400,7 @@
         }
       }
     },
-    "Passiva": {
+    "passive": {
       "name": "Armadura de Corpos",
       "type": "Passiva",
       "hand": "Esquerda",
