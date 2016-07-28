@@ -6,11 +6,13 @@
   width: 100%;
   box-sizing: border-box;
   padding: 3px;
-  color: white;
+  color: #eee;
   height: 24px;
   font-size: 16px;
   line-height: 16px;
   text-shadow: 0 1px #888;
+  overflow: hidden;
+  z-index: 15;
 }
 
 .topbar * {
@@ -20,8 +22,8 @@
 }
 
 .loading .topbar, .choose .topbar, .table .topbar {
-  background: rgba(0,0,0,0.5);
-  text-shadow: 0 1px #444;
+  background: rgba(0,0,0,0.6);
+  text-shadow: 0 1px #222;
 }
 .loader {
   width: 12px;
@@ -73,7 +75,7 @@
 }
 
 .unturn .topbar .message {
-  text-shadow: 0 0 6px white;
+  color: white;
 }
 
 .topbar .logout {

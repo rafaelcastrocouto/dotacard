@@ -50,6 +50,7 @@ body {
   box-shadow: 0 -50px 100px rgba(0,0,0,0.7) inset;
   overflow: hidden;
   tap-highlight-color: rgba(0,0,0,0);
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
 p {
@@ -126,7 +127,6 @@ noscript {
   background: url("../img/banner.jpg");
   background-size: 111%;
   background-position: 50%;
-  border-radius: 4px;
 }
 
 .hidden {
@@ -136,8 +136,8 @@ noscript {
 .box {
   position: absolute;
   box-sizing: border-box;
-  top: 50%; left: 50%;
-  width: 728px;
+  top: 50%;
+  left: 50%;
   transform: translate(-50%, -50%);
   padding: 40px 80px;
   text-align: center;
@@ -204,9 +204,12 @@ noscript {
   line-height: 22px;
 }
 
+.states.finished {
+  background-image: url("../img/bkg/polygon-light.jpg");
+}
+
 .states, .state {
   background-size: cover;
-  border-radius: 4px;
   width: 970px;
   height: 600px;
 }
@@ -340,6 +343,10 @@ label span {
   vertical-align: super;
 }
 
+.log .box {
+  padding: 50px 140px;
+}
+
 .log form {
   margin-top: 1px;
 }
@@ -356,13 +363,15 @@ label span {
   cursor: pointer;
 }
 
+.menu h1 {
+  margin-bottom: 6px;
+}
+
 .menu .box {
   width: 450px;
   height: 450px;
 }
 .menu .box .button {
-  display: block;
-  margin: 12px auto;
   width: 216px;
 }
 

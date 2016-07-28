@@ -1,178 +1,107 @@
 game.skills.wk = {
   stun: {
     cast: function (skill, source, target) {
-      var wk = source;
-      var stun = skill.data('stun duration');
-      var dot = skill.data('dot duration');
-      wk.damage(skill.data('damage'), target, skill.data('damage type'));
-      wk.addStun(target, stun);
-      target.on('turnend.wk-stun', this.dot).data('wk-stun', {
-        duration: stun + dot,
-        source: source,
-        skill: skill
-      });
+      source.addStun(target, skill);
+      source.damage(skill.data('damage'), target, skill.data('damage type'));
+      target.data('wk-dot-count', 3);
+      target.on('turnend.wk-stun', this.turnend);
     },
-    dot: function (event, eventdata) {
+    turnend: function (event, eventdata) {
       var target = eventdata.target;
-      var data = target.data('wk-stun');
-      var source = data.source;
-      var skill = data.skill;
-      var dotduration = skill.data('dot duration');
-      var duration = data.duration;
-      var speed;
-      if(duration > 0) {
-        if(duration === dotduration + 1) {
-          source.addBuff(target, skill.data('buff'), dotduration);
-          speed = target.data('speed') - 1;
-          target.data('current speed', speed);
-        }
-        if(duration <= dotduration) {
-          source.damage(skill.data('dot'), target, skill.data('damage type')); 
-        }
-        data.duration -= 1;
-        target.data('wk-stun', data);
-      } else {
-        speed = target.data('speed') + 1;
-        target.data('current speed', speed);
-        target.removeBuff('wk-stun');
-        target.off('turnend.wk-stun');
-        target.data('wk-stun', null);
-      }
+      var count = target.data('wk-dot-count');
+      var dotBuff = target.getBuff('wk-stun');
+      var stunBuff = target.getBuff('stun');
+      var buff = $(stunBuff[0] || dotBuff[0]);
+      var source = buff.data('source');
+      var skill = buff.data('skill');
+      if (dotBuff.length) source.damage(dotBuff.data('dot'), target, dotBuff.data('damage type'));
+      if (count === 2) source.addBuff(target, skill);
+      if (count === 0) target.off('turnend.wk-stun').data('wk-dot-count', null);
+      target.data('wk-dot-count', count - 1);
     }
   },
   lifesteal: {
     passive: function (skill, source) {
-      var side = source.data('side');
+      var side = source.side();
       var team = $('.table .card.heroes.'+side);
       team.on('attack.wk-lifesteal', this.attack);
-      team.data('wk-lifesteal', skill);
-      source.addBuff(team, skill.data('buff'));
+      source.addBuff(team, skill);
       source.on('death.wk-lifesteal', this.death);
       source.on('reborn.wk-lifesteal', this.reborn);
+      source.data('wk-lifesteal', skill);
     },
     attack: function (event, eventdata) { 
       var source = eventdata.source;
       var target = eventdata.target;
       var damage = source.data('current damage');
-      var skill = source.data('wk-lifesteal');
-      var bonus = skill.data('percentage') / 100;
-      window.temp = skill;
+      var buff = source.getBuff('wk-lifesteal');
+      var bonus = buff.data('percentage') / 100;
       source.heal(damage * bonus);
     },
     death: function (event, eventdata) {
       var source = eventdata.target;
-      var side = source.data('side');
+      var side = source.side();
       var team = $('.table .card.heroes.'+side);
       team.removeBuff('wk-lifesteal');
       team.off('attack.wk-lifesteal');
-      team.data('wk-lifesteal', null);
     },
     reborn: function (event, eventdata) {
       var source = eventdata.target;
       var skill = source.data('wk-lifesteal');
-      var side = source.data('side');
+      var side = source.side();
       var team = $('.table .card.heroes.'+side);
-      source.addBuff(team, skill.data('buff'));
+      source.addBuff(team, skill);
       team.on('attack.wk-lifesteal', this.attack);
-      team.data('wk-lifesteal', skill);
     }
   },
   crit: {
     passive: function (skill, source) {
-      source.addBuff(source, skill.data('buff'));
-      source.on({
-        'attack.crit': this.attack,
-        'afterattack.crit': this.afterattack
-      }).data('wk-crit', skill);
+      source.selfBuff(skill);
+      source.on('attack.wk-crit', this.attack);
     },
     attack: function (event, eventdata) {
       var source = eventdata.source;
       var target = eventdata.target;
-      var skill = source.data('wk-crit');
+      var buff = source.getBuff('wk-crit');
       var damage = source.data('current damage');
-      var chance = skill.data('chance') / 100;
-      var bonus = skill.data('percentage') / 100;
+      var chance = buff.data('chance') / 100;
+      var bonus = (buff.data('percentage') / 100);
       if (game.random() < chance) {
-        game.audio.play('crit');
-        damage *= bonus;
-        source.data({
-          'crit': true,
-          'crit damage': damage
-        });
+        source.damage(damage * bonus, target, 'critical');
       }
-    },
-    afterattack: function (event, eventdata) {
-      var source = eventdata.source;
-      source.data('current damage', source.data('damage'));
     }
   },
   ult: {
     passive: function (skill, source) {
-      source.addBuff(source, skill.data('buff'));
+      source.selfBuff(skill, 'ult-source');
       source.on('death.wk-ult', this.death);
-      source.data('wk-ult-skill', skill);
     },
     death: function (event, eventdata) {
       var wk = eventdata.target;
       var spot = eventdata.spot;
-      var skill = wk.data('wk-ult-skill');
-      var range = skill.data('aoe range');
+      var side = wk.side();
       spot.addClass('cript block');
-      wk.on('turnstart.wk-ult', game.skills.wk.ult.resurrect).data('wk-ult', {
-        skill: skill,
-        spot: spot,
-        duration: skill.data('delay')
-      });
-      game.map.inRange(spot, range, function (neighbor) {
-        var otherSide = game.otherSide(wk);
-        var card = neighbor.find('.card.'+otherSide);
-        if(card.length) {
-          wk.addBuff(card, skill.data('buff'));
-          var speed = card.data('speed') - 1;
-          card.data('current speed', speed);
-          card.on('turnstart.wk-ult', game.skills.wk.ult.turnstart);
-          card.data('wk-ult', skill.data('duration'));
-        }
-      });
+      wk.on(side + 'turnstart.wk-ult', game.skills.wk.ult.turnstart);
+      wk.data('wk-ult-spot', spot);
       wk.off('death.wk-ult');
     },
-    resurrect: function (event, eventdata) {
-      var wk = eventdata.target;
-      var data = wk.data('wk-ult');
-      var skill = data.skill;
-      var spot = data.spot;
-      var duration = data.duration;
-      var side = wk.data('side');
-      if(duration > 0) {
-        data.duration -= 1;
-        wk.data('wk-ult', data);
-      } else {
-        game.skills.wk.ult.reborn(wk, spot);
-      }
-    },
-    reborn: function (wk, spot) {
-      if (!spot) {
-        spot = $('.table .cript')[0].id;
-      }
-
-      $('#'+spot).removeClass('cript');
-      wk.reborn(spot).data('wk-ult', null);
-      wk.off('turnstart.wk-ult');
-      wk.removeBuff('wk-ult');
-    },
     turnstart: function (event, eventdata) {
-      var target = eventdata.target;
-      var duration = target.data('wk-ult');
-      if(duration > 0) {
-        duration -= 1;
-        target.data('wk-ult', duration);
-      } else {
-        var speed = target.data('current speed') + 1;
-        target.data('current speed', speed);
-        target.off('turnstart.wk-ult');
-        target.data('wk-ult', null);
-        target.removeBuff('wk-ult');
-      }
+      var wk = eventdata.target;
+      var buff = wk.getBuff('wk-ult');
+      var range = buff.data('range');
+      var skill = buff.data('skill');
+      var spot = wk.data('wk-ult-spot');
+      var side = wk.side();
+      spot.removeClass('cript');
+      wk.reborn(spot, 'notowerpenalty');
+      wk.opponentsInRange(range, function (target) {
+        wk.addBuff(target, skill, 'ult-targets');
+      });
+      wk.removeBuff('wk-ult');
+      wk.off(side + 'turnstart.wk-ult');
+      wk.data('wk-ult-spot', null);
+      if (game.mode == 'library') skill.appendTo(game[side].skills.sidehand);
+      else skill.appendTo(game[side].skills.sidehand);
     }
   }
 };

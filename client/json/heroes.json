@@ -8,9 +8,7 @@
     "mana": 3,
     "damage": 9,
     "armor": 3,
-    "resistance": 3,
-    "skills": "Blink, Mana Burn, Mana Void",
-    "passive": "Mana Break, Spell Shield"
+    "resistance": 3
   },
 
   "cm":{
@@ -21,10 +19,7 @@
     "mana": 4,
     "damage": 8,
     "armor": 2,
-    "resistance": 2,
-    "skills": "Crystal Nova, Frostbite, Freezing Field",
-    "passive": "Arcane Aura",
-    "buffs": "Crystal Nova Slow, Frostbitten, Freezing Field"
+    "resistance": 2
   },
 
   "ld":{
@@ -35,10 +30,7 @@
     "mana": 2,
     "damage": 9,
     "armor": 3,
-    "resistance": 2,
-    "skills": "Spirit Bear, Savage Roar, Rabid, True Form",
-    "temporary": "Battle Cry",
-    "buffs": "Rabid, Savage Roar, Battle Cry, True Form"
+    "resistance": 2
   },
 
   "pud":{
@@ -49,11 +41,7 @@
     "mana": 2,
     "damage": 10,
     "armor": 2,
-    "resistance": 2,
-    "skills": "Meat Hook, Dismember",
-    "passive": "Flesh Heap",
-    "permanent": "Rot",
-    "buffs": "Dismember Hold"
+    "resistance": 2
   },
 
   "wk":{
@@ -64,10 +52,7 @@
     "mana": 3,
     "damage": 10,
     "armor": 2,
-    "resistance": 2,
-    "skills": "Wraithfire Blast, Reincarnation",
-    "passive": "Mortal Strike, Vampiric Aura",
-    "buffs": "Wraithfire Blast Stun, Wraithfire Blast Burn, Vampiric Aura, Reincarnation Slow"
+    "resistance": 2
   },
 
   "kotl":{
@@ -79,10 +64,7 @@
     "mana": 4,
     "damage": 9,
     "armor": 2,
-    "resistance": 2,
-    "skills": "Illuminate, Mana Leak, Chakra Magic, Spirit Form",
-    "temporary": "Blinding Light, Recall",
-    "buffs": "Mana Leaking, Blinded, Recalling"
+    "resistance": 2
   },
 
   "nyx":{
@@ -94,10 +76,7 @@
     "mana": 3,
     "damage": 8,
     "armor": 3,
-    "resistance": 2,
-    "skills": "Impale, Mana Burn, Spiked Carapace, Vendetta",
-    "passive": "Arcane Aura",
-    "buffs": "Impale Stun, Spiked Stun, Vendetta"
+    "resistance": 2
   }
 
 }

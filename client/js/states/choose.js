@@ -128,7 +128,7 @@ game.states.choose = {
     $('.slot').each(function () {
       var slot = $(this), card;
       if (slot.hasClass('available')) {
-        card = game.deck.randomCard($('.pickbox .card').not('.dead'), 'noseed');
+        card = $('.pickbox .card').not('.dead').randomCard('noseed');
         slot.append(card).removeClass('available selected');
         game.player.picks[slot.data('slot')] = card.data('hero');
       }

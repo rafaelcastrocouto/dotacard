@@ -21,14 +21,14 @@ game.map = {
     }
   },
   getX: function (id) {
-    if (id && typeof id.attr == 'function') { id = id.attr('id'); }
+    if (id && typeof id.attr == 'function') id = id.attr('id') || id.parent().attr('id');
     if (id) {
       var w = game.map.letters.indexOf(id[0]);
       if (w >= 0 && w < game.width) { return w; }
     }
   },
   getY: function (id) {
-    if (id && typeof id.attr == 'function') { id = id.attr('id'); }
+    if (id && typeof id.attr == 'function') id = id.attr('id') || id.parent().attr('id');
     if (id) {
       var h = parseInt(id[1], 10) - 1;
       if (h >= 0 && h < game.height) { return h; }
@@ -159,7 +159,14 @@ game.map = {
           if (s || m) fil(w - x, h - y);
         }
       }
-      if (range === 3 && !card.hasClass('phased')) {
+      if (range === 3 && card.hasClass('phased')) {
+        a = [{ a: w, b: h + 2 },
+             { a: w, b: h - 2 },
+             { a: w - 2, b: h },
+             { a: w + 2, b: h }
+          ];
+        fil(o.a, o.b);
+      } else if (range === 3 && !card.hasClass('phased')) {
         a = [{ a: w, b: h + 2, c: w, d: h + 1, e: w + 1, f: h + 1, g: w - 1, h: h + 1 },
              { a: w, b: h - 2, c: w, d: h - 1, e: w + 1, f: h - 1, g: w - 1, h: h - 1 },
              { a: w - 2, b: h, c: w - 1, d: h, e: w - 1, f: h + 1, g: w - 1, h: h - 1 },
@@ -169,21 +176,8 @@ game.map = {
           o = a[i];
           m = game.map.getSpot(o.a, o.b);
           s = game.map.getSpot(o.c, o.d);
-          if (s && s.hasClass('free')) {
-            if (m) { m.data('detour', false); }
+          if (s && s.hasClass('free') && m && m.hasClass('free')) {
             fil(o.a, o.b);
-          } else {
-            s = game.map.getSpot(o.e, o.f);
-            if (s && s.hasClass('free')) {
-              if (m) { m.data('detour', s); }
-              fil(o.a, o.b);
-            } else {
-              s = game.map.getSpot(o.g, o.h);
-              if (s && s.hasClass('free')) {
-                if (m) { m.data('detour', s); }
-                fil(o.a, o.b);
-              }
-            }
           }
         }
       }
@@ -353,6 +347,7 @@ game.map = {
   },
   clear: function () {
     game.highlight.clearMap();
-    $('.map .spot').removeClass('block playerarea enemyarea fountain jungle').addClass('free');
+    game.map.el.removeClass('night');
+    $('.map .spot').removeClass('block playerarea enemyarea fountain jungle cript').addClass('free');
   }
 };

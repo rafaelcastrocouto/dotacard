@@ -1,19 +1,21 @@
 game.states.loading = {
   updating: 0,
-  totalUpdate: 7, // language + ui.json + heroes.json + skills.json + buffs.json + package.json
+  totalUpdate: 5, // language + ui.json + heroes.json + skills.json + package.json
   build: function () {
     this.box = $('<div>').addClass('box');   
     this.h2 = $('<p>').appendTo(this.box).addClass('loadtext').html('<span class="loader loading"></span><span class="message">Updating: </span><span class="progress">0%</span>');
     this.el.append(this.box);
   },
   start: function () {
-    game.language.load(function () {
-      game.states.loading.updated();
-      game.states.loading.data();
-    });
+    game.states.loading.ping();
     game.states.loading.package();
     if (window.AudioContext) game.audio.build();
-    game.states.loading.ping();
+    game.language.load(function () {
+      game.states.loading.updated();
+      game.states.loading.json('ui');
+      game.states.loading.json('heroes');
+      game.states.loading.json('skills');
+    });
     game.states.loading.progress();
   },
   progress: function () {
@@ -30,7 +32,7 @@ game.states.loading = {
   },
   finished: function () {
     game.states.build(function () {
-      game.states.el.css('background-image','url("../img/bkg/polygon-light.jpg")');
+      game.states.el.addClass('finished');
       game.chat.build();
       game.history.recover();
     });
@@ -59,39 +61,6 @@ game.states.loading = {
         $.each(data, function (name) {
           game[name] = this;
         });
-      }
-    });
-  },
-  data: function () {
-    game.states.loading.json('ui');
-    game.states.loading.json('heroes');
-    game.states.loading.json('units');
-    game.states.loading.json('skills', function () {
-      var hero, skill;
-      for (hero in game.data.skills) {
-        if (game.data.skills.hasOwnProperty(hero)) {
-          for (skill in game.data.skills[hero]) {
-            if (game.data.skills[hero].hasOwnProperty(skill)) {
-              game.data.skills[hero][skill].buff = hero + '-' + skill;
-              game.data.skills[hero][skill].hero = hero;
-              game.data.skills[hero][skill].skill = skill;
-            }
-          }
-        }
-      }
-    });
-    game.states.loading.json('buffs', function () {
-      var hero, buff;
-      for (hero in game.data.buffs) {
-        if (game.data.buffs.hasOwnProperty(hero)) {
-          for (buff in game.data.buffs[hero]) {
-            if (game.data.buffs[hero].hasOwnProperty(buff)) {
-              game.data.buffs[hero][buff].buff = hero + '-' + buff;
-              game.data.buffs[hero][buff].hero = hero;
-              game.data.buffs[hero][buff].skill = buff;
-            }
-          }
-        }
       }
     });
   },

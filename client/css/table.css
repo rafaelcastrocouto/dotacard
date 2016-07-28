@@ -15,7 +15,7 @@
   top: 24px;
   z-index: 6;
   transform: translateZ(0);
-  overflow: hidden;
+  /* overflow: hidden; */
   pointer-events: none;
 }
 
@@ -26,6 +26,7 @@
 .table .deck {
   height: 120px;
   position: absolute;
+  border-radius: 4px;
 }
 
 .table .player .skills.sidehand {
@@ -40,8 +41,9 @@
 }
 
 .table .player .skills.hand {
-  right: 10px;
-  width: 620px;
+  left: 340px;
+  width: auto;
+  padding-right: 20px;
 }
 
 .table .enemy .skills.hand {
@@ -53,7 +55,7 @@
   width: 200px;
   height: 300px;
   position: absolute;
-  top: 28px;
+  top: 30px;
   right: 5px;
   border-radius: 10px;
   perspective: 600px;
@@ -64,13 +66,8 @@
 .table .buttonbox {
   position: absolute;
   right: 0;
-  top: 334px;
+  top: 336px;
   width: 210px;
-}
-
-.table .buttonbox .button {
-  display: block;
-  margin-bottom: 14px;
 }
 
 .table .buttonbox .surrender {
@@ -78,13 +75,6 @@
 }
 .table .buttonbox .surrender:hover {
   background: #d99;
-}
-
-.table .skip, .table .skip[disabled]:active {
-  bottom: 125px;
-}
-.table .skip:active {
-  bottom: 122px;
 }
 
 .table .surrender, .table .surrender[disabled]:active, 
@@ -131,7 +121,7 @@
 /*RESULTS*/
 
 .table .resultsbox {
-  padding: 40px;
+  width: 800px;
 }
 
 .table .result {
