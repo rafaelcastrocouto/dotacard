@@ -1,0 +1,518 @@
+{
+  "am": {
+    "burn": {
+      "name": "Mana Break",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "damage": "?",
+      "damage type": "Pure",
+      "cards": 1,
+      "description": "Every attack has damage bonus equal to target's mana and makes the enemy discard a skill card of that hero",
+      "buff": {
+        "description": "Damage increased by the target's mana and makes the enemy discard a skill card of that hero"
+      }
+    },
+    "blink": {
+      "name": "Blink",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot", "Free"],
+      "cast range": "Long",
+      "cards": 6,
+      "description": "Teleport AntiMage to the target spot"
+    },
+    "shield": {
+      "name": "Spell Shield",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Increases the resistance to magic attacks",
+      "buff": {
+        "resistance bonus": 3,
+        "description": "Magic resistance increased"
+      }
+    },
+    "ult": {
+      "name": "Mana Void",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "cast range": "Short",
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "damage": "?",
+      "damage type": "Magical",
+      "cards": 1,
+      "multiplier": 2,
+      "description": "Area damage on target for twice the number of skill cards the enemy could have in his right hand. Interrupts target channel"
+    }
+  },
+
+  "cm": {
+    "slow": {
+      "name": "Crystal Nova",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot", "Self"],
+      "cast range": "Ranged",
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "damage": 12,
+      "damage type": "Magical",
+      "cards": 5,
+      "description": "A burst of damaging frost that slows enemies in the target area",
+      "buff": {
+        "speed slow": 1,
+        "duration": 3,
+        "description": "Slowed by a burst of damaging frost",
+        "purgeable": true
+      }
+    },
+    "aura": {
+      "name": "Arcane Aura",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Give a bonus skill card per turn to the player",
+      "buff": {
+        "description": "Player buys one extra skill card per turn"
+      }
+    },
+    "freeze": {
+      "name": "Frostbite",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "cast range": "Ranged",
+      "cards": 5,
+      "description": "Encases an enemy unit in ice, prohibiting movement and attack, while dealing damage over time. Interrupts target channel",
+      "buff": {
+        "duration": 3,
+        "dot": 4,
+        "damage type": "Magical",
+        "description": "Frozen (disarmed and rooted) and receiving damage over time"
+      }
+    },
+    "ult": {
+      "name": "Freezing Field",
+      "type": "Channel",
+      "channel": 3,
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "aoe": "Radial",
+      "aoe range": "Long",
+      "stroke range": "Long",
+      "damage": 7,
+      "damage type": "Magical",
+      "cards": 1,
+      "description": "Rylai channels a storm of icy explosions that deals damage to enemies around her",
+      "buffs": {
+        "ult": {
+          "source": {
+            "description": "Let it go! Let it go!"
+          },
+          "targets": {
+            "duration": 2,
+            "speed slow": 1,
+            "description": "Slowed and damaged by icy explosions"
+          }
+        }
+      }
+    }
+  },
+
+  "kotl": {
+    "illuminate": {
+      "name": "Illuminate",
+      "type": "Channel",
+      "channel": 4,
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoe width": 1,
+      "aoe range": 5,
+      "damage": 5,
+      "damage type": "Magical",
+      "cards": 4,
+      "description": "Channels light to damage enemies in a line"
+    },
+    "leak": {
+      "name": "Mana Leak",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "range": "Long",
+      "duration": 4,
+      "cards": 4,
+      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
+    },
+    "mana": {
+      "name": "Chakra Magic",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Ally", "Self"],
+      "range": "Ranged",
+      "cards": 4,
+      "description": "Gives the player two skill cards"
+    },
+    "ult": {
+      "name": "Spirit Form",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 2,
+      "description": "Ezalor becomes one with the light!"
+    },
+    "blind": {
+      "name": "Blinding Light",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Temporary",
+      "targets": ["Spot", "Self"],
+      "aoe": "Radial",
+      "aoe range": "Ranged",
+      "range": "Ranged",
+      "cards": 1,
+      "description": "Knock back and blind enemies, causing them to miss attacks"
+    },
+    "recall": {
+      "name": "Recall",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Temporary",
+      "targets": ["Ally"],
+      "range": "Global",
+      "delay": 1,
+      "cards": 1,
+      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
+    }
+  },
+
+  "ld": {
+    "summon": {
+      "name": "Spirit Bear",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot", "Free"],
+      "cards": 2,
+      "cast range": "Melee",
+      "hp": 80,
+      "range": "Melee",
+      "damage": 3,
+      "armor": 3,
+      "resistance": 3,
+      "death damage": 10,
+      "description": "Summons a powerful Spirit Bear with Entangling claws and Demolish. Player gets one Return skill card",
+      "buffs": {
+        "demolish": {
+          "source": {
+            "name": "Demolish",
+            "tower bonus": 3,
+            "description": "Increases the power of the Spirit Bear, causing it to deal double damage to buildings"
+          }
+        },
+        "entangle": {
+          "source": {
+            "name": "Entangling Claws",
+            "chance": 20,
+            "description": "Attacks have a chance to cause roots to burst from the ground, immobilizing the attacked enemy unit, and dealing damage per second. Interrupts target channel"
+          },
+          "target": {
+            "dot": 5,
+            "duration": 3,
+            "description": "Rooted and receiving damage per second"
+          }
+        }
+      }
+    },
+    "bearreturn": {
+      "name": "Return",
+      "type": "Instant",
+      "hand": "Left",
+      "deck": "Temporary",
+      "targets": ["Spot", "Free"],
+      "cast range": "Melee",
+      "cards": 1,
+      "description": "Teleports the Spirit Bear back to the Lone Druid. Player must discard if the bear is killed;"
+    },
+    "rabid": {
+      "name": "Rabid",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 5,
+      "description": "Increases the attack and movement speed of Lone Druid and the Spirit Bear",
+      "buff": {
+        "duration": 3,
+        "damage bonus": 3,
+        "speed bonus": 1,
+        "description": "Attack and movement speed increased"
+      }
+    },
+    "roar": {
+      "name": "Savage Roar",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "range": "Melee",
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "cards": 3,
+      "description": "Roars causing enemies to flee in terror. Unit retreats one spot if the position is free. Interrupts targets channel"
+    },
+    "ult": {
+      "name": "True Form",
+      "type": "Toggle",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Lone Druid morphs himself into a raging bear with increased HP and armor. Also gains the Battle Cry skill card",
+      "buff": {
+        "hp bonus": 9,
+        "armor bonus": 2,
+        "description": "Bear form active"
+      }
+    },
+    "cry": {
+      "name": "Battle Cry",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Temporary",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Increases the attack and armor of Syllabear and the Spirit Bear",
+      "buff": {
+        "duration": 4,
+        "armor bonus": 2,
+        "damage bonus": 5,
+        "description": "Attack and armor increased"
+      }
+    }
+  },
+
+  "nyx": {
+    "stun": {
+      "name": "Impale",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoe width": 0,
+      "aoe range": 3,
+      "cards": 4,
+      "description": "Rock spikes burst along a straight path, hitted enemies are stunned and take damage"
+    },
+    "burn": {
+      "name": "Mana Burn",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "range": "Ranged",
+      "multiplier": 4,
+      "damage type": "Magical",
+      "cards": 8,
+      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"
+    },
+    "spike": {
+      "name": "Spiked Carapace",
+      "type": "Instant",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "duration": 2,
+      "damage type": "Pure",
+      "cards": 5,
+      "description": "Reflects and negates damage received, while stunning the source of damage"
+    },
+    "ult": {
+      "name": "Vendetta",
+      "type": "Instant",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "duration": 8,
+      "damage": 20,
+      "damage type": "Physical",
+      "cards": 1,
+      "description": "Nyx Assassin becomes invisible and gains bonus on next attack"
+    }
+  },
+
+  "pud": {
+    "hook": {
+      "name": "Meat Hook",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Spot"],
+      "aoe": "Linear",
+      "aoe width": 0,
+      "aoe range": 3,
+      "damage": 18,
+      "damage type": "Pure",
+      "cards": 6,
+      "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy. Interrupts target channel"
+    },
+    "rot": {
+      "name": "Rot",
+      "type": "Toggle",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "aoe": "Radial",
+      "aoe range": "Melee",
+      "stroke range": "Melee",
+      "damage": 5,
+      "damage type": "Magical",
+      "cards": 1,
+      "description": "A toxic cloud that deals damage and slows enemies. Damage is dealt at the turn end, Pudge will also be damaged",
+      "buffs": {
+        "rot": {
+          "source": {
+            "description": "Rot is active"
+          },
+          "targets": {
+            "speed slow": 1,
+            "duration": 2,
+            "description": "Slowed by Pudge's rot"
+          }
+        }
+      }
+    },
+    "passive": {
+      "name": "Flesh Heap",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Gives Pudge bonus HP and damage on every kill and reduces magic damage",
+      "buff": {
+        "hp per kill": 2,
+        "damage per kill": 1,
+        "resistance bonus": 2,
+        "description": "HP and attack increased per kill and bonus magic resistace"
+      }
+    },
+    "ult": {
+      "name": "Dismember",
+      "type": "Channel",
+      "channel": 3,
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "cast range": "Melee",
+      "dot": 10,
+      "damage type": "Magical",
+      "cards": 2,
+      "description": "Pudge chows down on an enemy, disabling and dealing damage over time. Interrupts target channel",
+      "buffs": {
+        "ult": { 
+          "source": {
+            "duration": 3,
+            "description": "Channeling - Dismember"
+          },
+          "target": {
+            "duration": 3,
+            "description": "Disabled and receiving damage over time"
+          }
+        }
+      }
+    }
+  },
+
+  "wk": {
+    "stun": {
+      "name": "Wraithfire Blast",
+      "type": "Active",
+      "hand": "Right",
+      "deck": "Buy",
+      "targets": ["Enemy"],
+      "cast range": "Short",
+      "damage": 10,
+      "damage type": "Magical",
+      "stun": 2,
+      "cards": 7,
+      "description": "Damage and stun a target then slows and deals over time",
+      "buff": {
+        "damage type": "Magical",
+        "speed slow": 1,
+        "duration": 2,
+        "dot": 5,
+        "description": "Wraithfire damage over time",
+        "purgeable": true
+      }
+    },
+    "lifesteal": {
+      "name": "Vampiric Aura",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Every attack will drain a percentage of the enemy life",
+      "buff": {
+        "percentage": 30,
+        "description": "Drain life on every attack"
+      }
+    },
+    "crit": {
+      "name": "Mortal Strike",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Wraith King attacks will have a chance of inflicting critical damage bonus",
+      "buff": {
+        "chance": 15,
+        "percentage": 300,
+        "description": "Chance of critical damage"
+      }
+    },
+    "ult": {
+      "name": "Reincarnation",
+      "type": "Passive",
+      "hand": "Left",
+      "deck": "Buy",
+      "targets": ["Self"],
+      "cards": 1,
+      "description": "Wraith King will come back to full HP on next player turn after being killed",
+      "buffs": {
+        "ult": {
+          "source": {
+            "range": "Melee",
+            "description": "No one can kill the Wraith King!"
+          },
+          "targets": {
+            "duration": 2,
+            "speed slow": 1,
+            "description": "Slowed by the return of the King!"
+          }
+        }
+      }
+    }
+  }
+
+}

@@ -19,7 +19,6 @@ game.states.table = {
   start: function (recover) {
     game.tower.place();
     game.tree.place();
-    game.chat.el.appendTo(this.el);
     if (game.turn.el) {
       game.turn.time.show();
       game.turn.msg.show();

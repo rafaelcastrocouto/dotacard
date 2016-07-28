@@ -2,11 +2,11 @@ game.chat = {
   build: function () {
     if (!game.chat.builded) {
       game.chat.builded = true;
-      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').hover(game.chat.hover).appendTo(game.states.menu.el);
+      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').appendTo(game.states.menu.el).hover(game.chat.hover);
+      $('<iframe src="https://discordapp.com/widget?id=208322860333268993&theme=dark&username='+game.player.name+'" width="350" height="400" allowtransparency="true" frameborder="0">').appendTo(game.chat.el);
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
       game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 42}).keydown(game.chat.keydown);
       game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
-      setInterval(game.chat.check, 2000);
     }
   },
   hover: function () {

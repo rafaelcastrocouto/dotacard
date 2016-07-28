@@ -17,14 +17,14 @@ game.states.log = {
     this.el.append(this.box);
   },
   start: function () {
-    game.message.html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen. <small class="version">Version ' + game.version + '</small>');
+    game.message.html('');
+    game.alert(game.data.ui.alphaalert + game.version + '</small>');
     game.states.log.out.hide();
     game.states.options.opt.show();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.clear();
     game.timeout(200, function () { game.states.log.input.focus(); });
-    
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),
@@ -40,6 +40,7 @@ game.states.log = {
       localStorage.setItem('logged', 'true');
       game.states.log.button.attr('disabled', true);
       game.chat.set(game.data.ui.joined);
+      game.chat.build();
       game.states.changeTo('menu');
     } else {
       game.states.log.input.focus();
