@@ -76,6 +76,7 @@
   font-size: 14px;
   text-transform: uppercase;
   margin: 3px 0 0 10px;
+  line-height: 20px;
 }
 
 .card fieldset {
@@ -115,15 +116,20 @@
 
 .card h1 {
   cursor: inherit;
-  margin: 4px 0 2px;
+  margin: 8px 0 0;
   font-size: 12px;
   font-weight: bold;
   float: left;
+  line-height: 12px;
+}
+
+.card.heroes h1 {
+  margin: 8px 0;
 }
 .card .current {
-  margin: 1px;
   position: absolute;
   right: 5px;
+  margin: 0 2px;
 }
 .card .current p {
   font-size: 12px;
@@ -176,7 +182,8 @@
   font-size: 10px;
   letter-spacing: -1px;
   word-spacing: 1px;
-  margin-top: 4px;
+  margin-top: 2px;
+  margin-right: 2px;
 }
 
 .card.player {

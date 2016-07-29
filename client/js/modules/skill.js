@@ -171,9 +171,9 @@ game.skill = {
     }
     return this;
   },
-  opponentsInRange: function (range, cb, spot) {
-    if (!spot) spot = game.map.getPosition(this);
-    var side = this.side();
+  opponentsInRange: function (range, cb, source) {
+    var spot = game.map.getPosition(this);
+    var side = source ? source.side() : this.side();
     var opponent = game.opponent(side);
     game.map.inRange(spot, range, function (neighbor) {
       var card = neighbor.find('.card.'+opponent);

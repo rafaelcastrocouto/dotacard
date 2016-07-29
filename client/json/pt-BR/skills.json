@@ -42,7 +42,7 @@
       "type": "Ativa",
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "cast range": "Médio",
       "aoe": "Radial",
       "aoe range": "Perto",
@@ -92,7 +92,7 @@
       "type": "Ativa",
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "cast range": "Distante",
       "cards": 5,
       "description": "Congela uma unidade inimiga (disarma e bloqueia o movimento), causa dano por turno e interrompe canalização",
@@ -106,7 +106,7 @@
     "ult": {
       "name": "Campo Congelante",
       "type": "Canalização",
-      "Canalização": 3,
+      "channel": 3,
       "hand": "Direita",
       "deck": "Comprar",
       "targets": ["Próprio"],
@@ -120,6 +120,7 @@
       "buffs": {
         "ult": {
           "source": {
+            "duration": 3,
             "description": "Let it go! Let it go!"
           },
           "targets": {
@@ -136,7 +137,7 @@
     "illuminate": {
       "name": "Iluminar",
       "type": "Canalização",
-      "Canalização": 4,
+      "channel": 4,
       "hand": "Direita",
       "deck": "Comprar",
       "targets": ["Local"],
@@ -153,7 +154,7 @@
       "type": "Ativa",
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Longe",
       "duration": 4,
       "cards": 4,
@@ -327,7 +328,7 @@
       "type": "Ativa",
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "range": "Distante",
       "multiplier": 4,
       "damage type": "Mágico",
@@ -418,10 +419,10 @@
     "ult": {
       "name": "Desmembrar",
       "type": "Canalização",
-      "Canalização": 3,
+      "channel": 3,
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "cast range": "Perto",
       "dot": 10,
       "damage type": "Mágico",
@@ -448,7 +449,7 @@
       "type": "Ativa",
       "hand": "Direita",
       "deck": "Comprar",
-      "targets": ["Inimigo"],
+      "targets": ["Inimigos"],
       "cast range": "Médio",
       "damage": 10,
       "damage type": "Mágico",

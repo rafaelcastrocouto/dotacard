@@ -91,9 +91,11 @@
 
 .topbar .time {
   position: absolute;
-  top: 2px; left: 50%;
+  top: 2px;
+  left: 50%;
   transform: translateX(-50%);
   border-radius: 4px;
+  line-height: 18px;
 }
 
 .topbar .turns {
@@ -101,6 +103,7 @@
   top: 2px;
   right: 110px;
   border-radius: 4px;
+  line-height: 18px;
 }
 
 .topbar .opt {

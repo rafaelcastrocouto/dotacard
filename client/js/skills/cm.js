@@ -2,13 +2,11 @@ game.skills.cm = {
   slow: {
     cast: function (skill, source, target) {
       var spot = game.map.getPosition(target);
-      var side = source.side();
-      var opponent = game.opponent(side);
       var range = skill.data('aoe range');
       target.opponentsInRange(range, function (card) {
         source.damage(skill.data('damage'), card, skill.data('damage type'));
         source.addBuff(card, skill);
-      });
+      }, source);
     }
   },
   aura: {
@@ -54,6 +52,7 @@ game.skills.cm = {
     cast: function (skill, source) {
       var spot = game.map.getPosition(source);
       source.addClass('cm-ult');
+      skill.addClass('on');
       source.selfBuff(skill, 'ult-source');
       source.on('channel', this.channel);
       source.on('channelEnd', this.channelEnd);
@@ -69,6 +68,7 @@ game.skills.cm = {
     },
     channelEnd: function (event, eventdata) {
       var cm = eventdata.source;
+      eventdata.skill.removeClass('on');
       cm.data('cm-ult', null);
       cm.removeClass('cm-ult');
     }

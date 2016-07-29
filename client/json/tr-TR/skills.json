@@ -120,6 +120,7 @@
       "buffs": {
         "ult": {
           "source": {
+            "duration": 3,
             "description": "Let it go! Let it go!"
           },
           "targets": {
