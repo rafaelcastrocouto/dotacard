@@ -33,7 +33,6 @@ game.states.loading = {
   finished: function () {
     game.states.build(function () {
       game.states.el.addClass('finished');
-      game.chat.build();
       game.history.recover();
     });
   },

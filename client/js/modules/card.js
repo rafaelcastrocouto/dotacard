@@ -104,7 +104,7 @@ game.card = {
   side: function (side) {
     if (this.hasClass('player')) return 'player';
     if (this.hasClass('enemy')) return 'enemy';
-    else return 'neutral';
+    if (this.hasClass('neutral')) return 'neutral';
   },
   opponent: function (side) {
     if (this.hasClass('player')) return 'enemy';

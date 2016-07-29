@@ -7,6 +7,7 @@
   "send": "Send",
   "remember": "Remember my name",
   "welcome": "Welcome",
+  "alphaalert": "<br>This game is in <b>pre-alpha</b> and bugs may (will) happen<br>Thanks for testing and come back soon for more updates<br>Works best with Google Chrome<br><br><small class=\"version\">Version ",
   "joined": "joined",
   "reconnected": "reconnected",
   "logout": "Logout",
@@ -110,6 +111,8 @@
   "sure": "Are you sure?",
   "leave": "Sure you wanna leave?",  
   "error": "Internal error",
+  "warning": "Warning",
+  "ok": "Ok",
   "reload": "Connection to the server was lost. Reload?",
   "hp": "Hit points",
   "damage": "Damage",
@@ -158,5 +161,7 @@
   "global": "Global",
   "mana": "Mana",
   "summon": "Summon",
-  "summoner": "Summoner"
+  "summoner": "Summoner",
+  "today": "Today",
+  "yesterday": "Yesterday"
 }

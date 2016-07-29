@@ -49,6 +49,9 @@ http.createServer(function(request, response) {
             //console.log('Player' + waiting);
             send(response, JSON.stringify(waiting));
             waiting = query.data;
+            setTimeout(function () {
+              waiting = {id: 'none'};  
+            }, 12000);
           } else {
             //console.log('Online game started');
             send(response, waiting);
@@ -62,10 +65,11 @@ http.createServer(function(request, response) {
         case 'chat':
           var msg = {
             data: query.data.substring(0, 42), 
-            user: query.user.substring(0, 24)
+            user: query.user.substring(0, 24),
+            date: query.date
           };
           chat.unshift(msg);
-          chat = chat.slice(0, 6);
+          chat = chat.slice(0, 3);
           send(response, JSON.stringify({messages: chat}));
           return;
         default: //console.log('set', query.data)

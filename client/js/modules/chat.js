@@ -2,11 +2,11 @@ game.chat = {
   build: function () {
     if (!game.chat.builded) {
       game.chat.builded = true;
-      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').hover(game.chat.hover).appendTo(game.states.menu.el);
+      game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').appendTo(game.states.menu.el).hover(game.chat.hover);
+      $('<iframe src="https://discordapp.com/widget?id=208322860333268993&theme=dark&username='+game.player.name+'" width="350" height="400" allowtransparency="true" frameborder="0">').appendTo(game.chat.el);
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
       game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 42}).keydown(game.chat.keydown);
       game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
-      setInterval(game.chat.check, 2000);
     }
   },
   hover: function () {
@@ -24,7 +24,17 @@ game.chat = {
     if (received.messages && received.messages.length) {  
       game.chat.messages.empty();
       $.each(received.messages, function () {
-        $('<p>').text(this.user + ': ' + this.data).prependTo(game.chat.messages);
+        var now = new Date().valueOf();
+        var diff = now - Number(this.date);
+        var date = new Date(Number(this.date));
+        var day = game.data.ui.today + ' ' + date.toLocaleTimeString();
+        if (diff > 24 * 60 * 60 * 1000) day = game.data.ui.yesterday + ' ' + date.toLocaleTimeString();
+        if (diff > 48 * 60 * 60 * 1000) day = date.toLocaleString();
+        var msg = $('<p>');
+        msg.append($('<span>').addClass('user').text(this.user));
+        msg.append($('<span>').addClass('date').text(day));
+        msg.append($('<span>').addClass('data').text(this.data));
+        msg.prependTo(game.chat.messages);
       });
     }
   },
@@ -48,7 +58,8 @@ game.chat = {
     game.db({
       'set': 'chat',
       'user': game.player.name,
-      'data': msg
+      'data': msg,
+      'date': new Date().valueOf()
     }, function (chat) {
       game.chat.update(chat);
       if (cb) cb(chat);

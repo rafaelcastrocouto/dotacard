@@ -3,7 +3,7 @@ var game = {
   dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
-  message: $('<span>').addClass('message').html('<b>ALERT</b>: This game is in pre-alpha and bugs may (will) happen.'),
+  message: $('<span>').addClass('message').html('<b>WARNING</b>: This game is in pre-alpha and bugs may (will) happen.'),
   triesCounter: $('<small>').addClass('triescounter'),
   timeToPick: 40,
   timeToPlay: 60,
@@ -82,6 +82,15 @@ var game = {
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
     game.mode = false;
     localStorage.removeItem('mode');
+  },
+  alert: function (txt, cb) {
+    swal({
+      title: game.data.ui.warning,
+      text: txt,
+      type: 'warning',
+      buttonsStyling: false,
+      confirmButtonText: game.data.ui.ok,
+    }).then(cb);
   },
   confirm: function (cb, text) {
     swal({

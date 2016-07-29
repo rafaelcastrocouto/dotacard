@@ -5,11 +5,13 @@
   padding: 20px 0;
   vertical-align: top;
   width: 260px;
+  float: left;
 }
 
 .audioconfig h2,
 .screenresolution h2{
   text-align: left;
+  font-weight: bold;
 }
 
 .game-container.low {
@@ -63,11 +65,13 @@
 .options .back.button {
   display: block;
   width: 50px;
-  margin: 0 auto;
+  margin-right: 120px;
+  float: right;
 }
 
 .options .lang {
   text-align: left;
+  float: left;
 }
 
 .options .lang h2 {

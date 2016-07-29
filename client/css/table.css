@@ -169,8 +169,8 @@
   z-index: 15;
   position: absolute;
   width: 970px;
-  top: 230px;
-  left: -980px;
+  top: 220px;
+  left: 0;
   font-weight: bold;
   color: white;
   font-size: 80px;
@@ -179,8 +179,10 @@
   transform: translateZ(0);
   cursor: default;
   background: rgba(0,0,0,0.4);
+  line-height: 100px;
+  opacity: 0;
+  pointer-events: none;
 }
 .table .turntitle.show {
   opacity: 1;
-  left: 0;
 }
