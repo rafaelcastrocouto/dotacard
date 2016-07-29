@@ -64,7 +64,7 @@ http.createServer(function(request, response) {
           return;
         case 'chat':
           var msg = {
-            data: query.data.substring(0, 42), 
+            data: query.data.substring(0, 36), 
             user: query.user.substring(0, 24),
             date: query.date
           };

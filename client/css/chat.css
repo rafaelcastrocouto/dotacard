@@ -36,7 +36,8 @@
   display: block;
   color: white;
   font-size: 16px;
-  line-height: 18px;
+  line-height: 16px;
+  height: 20px;
 }
 .chat:hover h1, 
 .chat.hover h1 {
@@ -56,7 +57,7 @@
 
 .chat.hover .messages,
 .chat:hover .messages {
-  height: 166px;
+  height: 202px;
   width: 363px;
   overflow: hidden;
   margin: 8px 0 0px;

@@ -1,6 +1,5 @@
 [![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
 
-[![Gitter](https://badges.gitter.im/Join Chat.svg)][2]
 
 #[dotacard.ga][3]
 
@@ -28,7 +27,7 @@ More information on how to [setup your own server][10]
 
 [1]: http://dotacard.herokuapp.com
 
-[2]: https://gitter.im/rafaelcastrocouto/dotacard?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[2]: https://discordapp.com/invite/a4f2g?utm_source=Discord%20Widget&utm_medium=Connect
 
 [3]: http://dotacard.ga
 
