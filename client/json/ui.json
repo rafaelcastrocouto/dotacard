@@ -161,5 +161,7 @@
   "global": "Global",
   "mana": "Mana",
   "summon": "Summon",
-  "summoner": "Summoner"
+  "summoner": "Summoner",
+  "today": "Today",
+  "yesterday": "Yesterday"
 }

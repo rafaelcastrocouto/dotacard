@@ -24,7 +24,17 @@ game.chat = {
     if (received.messages && received.messages.length) {  
       game.chat.messages.empty();
       $.each(received.messages, function () {
-        $('<p>').text(this.user + ': ' + this.data).prependTo(game.chat.messages);
+        var now = new Date().valueOf();
+        var diff = now - Number(this.date);
+        var date = new Date(Number(this.date));
+        var day = game.data.ui.today + ' ' + date.toLocaleTimeString();
+        if (diff > 24 * 60 * 60 * 1000) day = game.data.ui.yesterday + ' ' + date.toLocaleTimeString();
+        if (diff > 48 * 60 * 60 * 1000) day = date.toLocaleString();
+        var msg = $('<p>');
+        msg.append($('<span>').addClass('user').text(this.user));
+        msg.append($('<span>').addClass('date').text(day));
+        msg.append($('<span>').addClass('data').text(this.data));
+        msg.prependTo(game.chat.messages);
       });
     }
   },
@@ -48,7 +58,8 @@ game.chat = {
     game.db({
       'set': 'chat',
       'user': game.player.name,
-      'data': msg
+      'data': msg,
+      'date': new Date().valueOf()
     }, function (chat) {
       game.chat.update(chat);
       if (cb) cb(chat);

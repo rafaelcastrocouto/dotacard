@@ -161,5 +161,7 @@
   "global": "Global",
   "mana": "Mana",
   "summon": "Invocação",
-  "summoner": "Invocador"
+  "summoner": "Invocador",
+  "today": "Hoje",
+  "yesterday": "Ontem"
 }
