@@ -1,5 +1,6 @@
 [![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
 
+[![Discord Chat Channel](http://rafaelcastrocouto.github.io/dotacard/client/img/discord.png)][2]
 
 #[dotacard.ga][3]
 
@@ -27,7 +28,7 @@ More information on how to [setup your own server][10]
 
 [1]: http://dotacard.herokuapp.com
 
-[2]: https://discordapp.com/invite/a4f2g?utm_source=Discord%20Widget&utm_medium=Connect
+[2]: https://discord.gg/FvTDss3
 
 [3]: http://dotacard.ga
 
