@@ -160,8 +160,8 @@ game.highlight = {
           if (targets.indexOf(game.data.ui.free) >= 0) game.highlight.freeSpots(source, skill);
           else {
             var aoe = skill.data('aoe');
-            if (aoe === 'Radial') game.highlight.radial(source, skill);
-            if (aoe === 'Linear') game.highlight.linear(source, skill);
+            if (aoe === game.data.ui.radial) game.highlight.radial(source, skill);
+            if (aoe === game.data.ui.linear) game.highlight.linear(source, skill);
           }
         }
       }
@@ -212,11 +212,11 @@ game.highlight = {
       if (skill.data('aoe')) {
         game.castpos = pos;
         game.skill.aoe = skill.data('aoe');
-        if (game.skill.aoe === 'Linear') {
+        if (game.skill.aoe === game.data.ui.linear) {
           game.skill.aoewidth = skill.data('aoe width');
           game.skill.aoerange = skill.data('aoe range');
           game.map.crossStroke(pos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
-        } else if (game.skill.aoe === 'Radial') {
+        } else if (game.skill.aoe === game.data.ui.radial) {
           game.skill.aoerange = game.map.getRange(range);
           game.skill.aoecastrange = game.map.getRange(skill.data('aoe range'));
         }
@@ -240,16 +240,16 @@ game.highlight = {
     }
   },
   strokeAtCursor: function (spot) {
-    if (game.skill.aoe === 'Linear') {
+    if (game.skill.aoe === game.data.ui.linear) {
       game.map.linearStroke(game.map.getPosition(spot), game.skill.aoerange, game.skill.aoewidth, 'skillcast');
-    } else if (game.skill.aoe === 'Radial') {
+    } else if (game.skill.aoe === game.data.ui.radial) {
       game.map.radialStroke(game.map.getPosition(spot), game.skill.aoecastrange, 'skillcast');
     }
   },
   strokeAtCaster: function () {
-    if (game.skill.aoe === 'Linear') {
+    if (game.skill.aoe === game.data.ui.linear) {
       game.map.crossStroke(game.castpos, game.skill.aoerange, game.skill.aoewidth, 'skillarea');
-    } else if (game.skill.aoe === 'Radial') {
+    } else if (game.skill.aoe === game.data.ui.radial) {
       game.map.radialStroke(game.castpos, game.skill.aoerange, 'skillarea');
     }
   },

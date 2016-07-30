@@ -86,7 +86,7 @@ game.card = {
     }
     //if (data.cards)      $('<p>').appendTo(desc).text(game.data.ui.cards+': ' + data.cards);
     if (data.description) {
-      $('<p>').appendTo(desc).addClass('description').text('“'+data.description+'”');
+      $('<p>').appendTo(desc).addClass('description').text(data.description);
       card.attr({ title: data.name + ': ' + data.description });
     }
     if (data.kd) {

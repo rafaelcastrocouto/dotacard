@@ -116,25 +116,24 @@
 
 .card h1 {
   cursor: inherit;
-  margin: 8px 0 0;
+  margin: 8px 0 4px;
   font-size: 12px;
   font-weight: bold;
   float: left;
   line-height: 12px;
 }
 
-.card.heroes h1 {
-  margin: 8px 0;
-}
 .card .current {
   position: absolute;
-  right: 5px;
-  margin: 0 2px;
+  right: 6px;
+  padding-top: 2px;
 }
 .card .current p {
   font-size: 12px;
   font-weight: bold;
   display: inline-block;
+  line-height: 22px;
+  vertical-align: text-bottom;
 }
 .card .current span {
   text-align: center;
@@ -152,6 +151,7 @@
 .card .desc .dot span {
   background: #ed8c8c;
   color: white;
+  font-weight: normal;
 }
 .card .desc {
   clear: left;
@@ -421,11 +421,12 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate3d(-50%, -50%, 1px);
+  transform: translate3d(-50%, -50%, 1px) scale(0.71);
   cursor: default;
+  zoom: 140%;
 }
 .table .selectedarea .selectedcard.flip .card:hover {
-  transform: translate(-87%, -13%) scale(1.75);
+  transform: translate(-64%, -36%) scale(1);
 }
 .table .selectedarea .selectedcard.flip .card:hover .img {
   /* image-rendering: pixelated; */

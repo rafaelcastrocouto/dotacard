@@ -159,6 +159,8 @@
   "instant": "Instantânea",
   "pure": "Puro",
   "global": "Global",
+  "radial": "Radial",
+  "linear": "Linear",
   "mana": "Mana",
   "summon": "Invocação",
   "summoner": "Invocador",

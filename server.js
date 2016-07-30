@@ -49,9 +49,6 @@ http.createServer(function(request, response) {
             //console.log('Player' + waiting);
             send(response, JSON.stringify(waiting));
             waiting = query.data;
-            setTimeout(function () {
-              waiting = {id: 'none'};  
-            }, 12000);
           } else {
             //console.log('Online game started');
             send(response, waiting);

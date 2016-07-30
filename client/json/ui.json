@@ -159,6 +159,8 @@
   "physical": "Physical",
   "pure": "Pure",
   "global": "Global",
+  "radial": "Radial",
+  "linear": "Linear",
   "mana": "Mana",
   "summon": "Summon",
   "summoner": "Summoner",

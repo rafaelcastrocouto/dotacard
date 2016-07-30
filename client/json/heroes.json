@@ -8,7 +8,8 @@
     "mana": 3,
     "damage": 9,
     "armor": 3,
-    "resistance": 3
+    "resistance": 3,
+    "description": "Nuker, Carry, Escape"
   },
 
   "cm":{
@@ -19,7 +20,8 @@
     "mana": 4,
     "damage": 8,
     "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Nuker, Support, Disabler"
   },
 
   "ld":{
@@ -30,7 +32,8 @@
     "mana": 2,
     "damage": 9,
     "armor": 3,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Pusher, Carry, Durable"
   },
 
   "pud":{
@@ -41,7 +44,8 @@
     "mana": 2,
     "damage": 10,
     "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Initiator, Nuker, Disabler, Durable"
   },
 
   "wk":{
@@ -52,7 +56,8 @@
     "mana": 3,
     "damage": 10,
     "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Initiator, Carry, Disabler, Durable"
   },
 
   "kotl":{
@@ -64,7 +69,8 @@
     "mana": 4,
     "damage": 9,
     "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Support, Nuker, Jungler, Disabler"
   },
 
   "nyx":{
@@ -76,7 +82,8 @@
     "mana": 3,
     "damage": 8,
     "armor": 3,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Initiator, Nuker, Disabler, Escape"
   }
 
 }
