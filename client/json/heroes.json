@@ -24,6 +24,19 @@
     "description": "Nuker, Support, Disabler"
   },
 
+  "kotl":{
+    "disable": true,
+    "name": "Keeper of the Light",
+    "attribute": "Intelligence",
+    "range": "Ranged",
+    "hp": 45,
+    "mana": 4,
+    "damage": 9,
+    "armor": 2,
+    "resistance": 2,
+    "description": "Support, Nuker, Jungler, Disabler"
+  },
+  
   "ld":{
     "name": "Lone Druid",
     "attribute": "Agility",
@@ -34,6 +47,19 @@
     "armor": 3,
     "resistance": 2,
     "description": "Pusher, Carry, Durable"
+  },
+
+  "nyx":{
+    "disable": true,
+    "name": "Nyx Assassin",
+    "attribute": "Agility",
+    "range": "Melee",
+    "hp": 51,
+    "mana": 3,
+    "damage": 8,
+    "armor": 3,
+    "resistance": 2,
+    "description": "Initiator, Nuker, Disabler, Escape"
   },
 
   "pud":{
@@ -58,32 +84,6 @@
     "armor": 2,
     "resistance": 2,
     "description": "Initiator, Carry, Disabler, Durable"
-  },
-
-  "kotl":{
-    "disable": true,
-    "name": "Keeper of the Light",
-    "attribute": "Intelligence",
-    "range": "Ranged",
-    "hp": 45,
-    "mana": 4,
-    "damage": 9,
-    "armor": 2,
-    "resistance": 2,
-    "description": "Support, Nuker, Jungler, Disabler"
-  },
-
-  "nyx":{
-    "disable": true,
-    "name": "Nyx Assassin",
-    "attribute": "Agility",
-    "range": "Melee",
-    "hp": 51,
-    "mana": 3,
-    "damage": 8,
-    "armor": 3,
-    "resistance": 2,
-    "description": "Initiator, Nuker, Disabler, Escape"
   }
 
 }

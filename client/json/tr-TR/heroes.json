@@ -7,7 +7,8 @@
     "mana": 3,
     "damage": 9,
     "armor": 3,
-    "resistance": 3
+    "resistance": 3,
+    "description": "Nuker, Carry, Escape"
   },
 
   "cm":{
@@ -18,40 +19,8 @@
     "mana": 4,
     "damage": 8,
     "armor": 2,
-    "resistance": 2
-  },
-
-  "ld":{
-    "name": "Lone Druid",
-    "attribute": "Çeviklik",
-    "range": "Kısa",
-    "hp": 51,
-    "mana": 2,
-    "damage": 9,
-    "armor": 3,
-    "resistance": 2
-  },
-
-  "pud":{
-    "name": "Pudge, the Butcher",
-    "attribute": "Kuvvet",
-    "range": "Meydan",
-    "hp": 74,
-    "mana": 2,
-    "damage": 10,
-    "armor": 2,
-    "resistance": 2
-  },
-
-  "wk":{
-    "name": "Wraith King",
-    "attribute": "Kuvvet",
-    "range": "Meydan",
-    "hp": 66,
-    "mana": 3,
-    "damage": 10,
-    "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Nuker, Support, Disabler"
   },
 
   "kotl":{
@@ -63,9 +32,22 @@
     "mana": 4,
     "damage": 9,
     "armor": 2,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Support, Nuker, Jungler, Disabler"
   },
 
+  "ld":{
+    "name": "Lone Druid",
+    "attribute": "Çeviklik",
+    "range": "Kısa",
+    "hp": 51,
+    "mana": 2,
+    "damage": 9,
+    "armor": 3,
+    "resistance": 2,
+    "description": "Pusher, Carry, Durable"
+  },
+  
   "nyx":{
     "disable": true,
     "name": "Nyx Assassin",
@@ -75,7 +57,32 @@
     "mana": 3,
     "damage": 8,
     "armor": 3,
-    "resistance": 2
+    "resistance": 2,
+    "description": "Initiator, Nuker, Disabler, Escape"
+  },
+
+  "pud":{
+    "name": "Pudge, the Butcher",
+    "attribute": "Kuvvet",
+    "range": "Meydan",
+    "hp": 74,
+    "mana": 2,
+    "damage": 10,
+    "armor": 2,
+    "resistance": 2,
+    "description": "Initiator, Nuker, Disabler, Durable"
+  },
+
+  "wk":{
+    "name": "Wraith King",
+    "attribute": "Kuvvet",
+    "range": "Meydan",
+    "hp": 66,
+    "mana": 3,
+    "damage": 10,
+    "armor": 2,
+    "resistance": 2,
+    "description": "Initiator, Carry, Disabler, Durable"
   }
 
 }

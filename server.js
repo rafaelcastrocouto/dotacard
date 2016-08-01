@@ -98,6 +98,7 @@ http.createServer(function(request, response) {
     }
   } else { //STATIC
     clientServer(request, response, function onNext(err) {
+      console.log(pathname);
       rootServer(request, response, function onNext(err) {
         response.statusCode = 404;
         response.setHeader('Content-Type', 'text/html; charset=UTF-8');
@@ -107,8 +108,4 @@ http.createServer(function(request, response) {
   }
 }).listen(port, host);
 
-var d = new Date();
-console.log(
-  d.toLocaleDateString() + ' ' + d.toLocaleTimeString() + ' ' +
-  'DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/')
-);
+console.log(new Date().toLocaleString() + ' DOTACARD server running at: http://'+(host || 'localhost')+(port === '80' ? '/' : ':'+port+'/') );

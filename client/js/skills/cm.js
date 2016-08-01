@@ -31,7 +31,6 @@ game.skills.cm = {
   freeze: {
     cast: function (skill, source, target) {
       var buff = source.addBuff(target, skill);
-      buff.data('source', source);
       target.addClass('rooted disarmed');
       target.on('turnend.cm-freeze', this.turnend);
       target.stopChanneling();
@@ -40,7 +39,7 @@ game.skills.cm = {
       var target = eventdata.target;
       var buff = target.getBuff('cm-freeze');
       var source = buff.data('source');
-      if(target.hasBuff('cm-freeze')) {
+      if (target.hasBuff('cm-freeze')) {
         source.damage(buff.data('dot'), target, buff.data('damage type'));
       } else {
         target.removeClass('rooted disarmed');
