@@ -3,13 +3,20 @@ game.chat = {
     if (!game.chat.builded) {
       game.chat.builded = true;
       game.chat.el = $('<div>').addClass('chat').appendTo(game.states.menu.el).html('<h1>Chat</h1>').appendTo(game.states.menu.el).hover(game.chat.hover);
-      $('<iframe src="https://discordapp.com/widget?id=208322860333268993&theme=dark&username='+game.player.name+'" width="350" height="400" allowtransparency="true" frameborder="0">').appendTo(game.chat.el);
+      game.chat.dis = $('<div>').appendTo(game.chat.el).addClass('dis').hide();
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
       game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 36}).keydown(game.chat.keydown);
       game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
     }
   },
   hover: function () {
+    if (!game.chat.discordBuilded) {
+      game.chat.discordBuilded = true;
+      $('<iframe src="https://discordapp.com/widget?id=208322860333268993&theme=dark&username='+game.player.name+'" width="350" height="400" allowtransparency="true" frameborder="0">').appendTo(game.chat.dis).on('load', function (event) {
+        // console.log(event);
+        game.chat.dis.show();
+      });
+    }
     game.db({ 'get': 'chat' }, function (chat) {
       game.chat.update(chat);
       game.chat.input.focus();

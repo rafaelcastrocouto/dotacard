@@ -9,9 +9,9 @@
       "damage": "?",
       "damage type": "Pure",
       "cards": 1,
-      "description": "Every attack has damage bonus equal to target's mana and makes the enemy discard a skill card of that hero",
+      "description": "Every attack has damage bonus equal to target's mana and makes the enemy discard a right hand skill card of that hero",
       "buff": {
-        "description": "Damage increased by the target's mana and makes the enemy discard a skill card of that hero"
+        "description": "Damage increased by the target's mana and makes the enemy discard a right hand skill card of that hero"
       }
     },
     "blink": {
@@ -46,11 +46,11 @@
       "cast range": "Short",
       "aoe": "Radial",
       "aoe range": "Melee",
-      "damage": "?",
+      "damage": 4,
       "damage type": "Magical",
       "cards": 1,
       "multiplier": 2,
-      "description": "Area damage on target for twice the number of skill cards the enemy could have in his right hand. Interrupts target channel"
+      "description": "Damage area over target with bonus damage equal twice the number of skill cards the enemy could have in his right hand. Interrupts target channel"
     }
   },
 
@@ -137,14 +137,16 @@
     "illuminate": {
       "name": "Illuminate",
       "type": "Channel",
-      "channel": 4,
+      "channel": 8,
       "hand": "Right",
       "deck": "Buy",
       "targets": ["Spot"],
       "aoe": "Linear",
+      "cast range": 1,
+      "cast width": 0,
       "aoe width": 1,
-      "aoe range": 5,
-      "damage": 5,
+      "aoe range": 4,
+      "damage": 4,
       "damage type": "Magical",
       "cards": 4,
       "description": "Channels light to damage enemies in a line"
@@ -155,20 +157,24 @@
       "hand": "Right",
       "deck": "Buy",
       "targets": ["Enemy"],
-      "range": "Long",
-      "duration": 4,
+      "cast range": "Long",
       "cards": 4,
-      "description": "Curse a target causing a skill card loss on every move, stuns if there are no more cards of that hero"
+      "description": "Forces a right hand target skill discard on every move. Stuns if target has no more right hand skill cards",
+      "stun": 2,
+      "buff": {
+        "duration": 4,
+        "description": "Loses a right hand skill card everytime this unit moves"
+      }
     },
     "mana": {
       "name": "Chakra Magic",
       "type": "Active",
       "hand": "Right",
       "deck": "Buy",
-      "targets": ["Ally", "Self"],
-      "range": "Ranged",
-      "cards": 4,
-      "description": "Gives the player two skill cards"
+      "targets": ["Self"],
+      "cards": 5,
+      "bonus cards": 3,
+      "description": "Gives the player 3 skill cards"
     },
     "ult": {
       "name": "Spirit Form",
@@ -177,7 +183,11 @@
       "deck": "Buy",
       "targets": ["Self"],
       "cards": 2,
-      "description": "Ezalor becomes one with the light!"
+      "description": "Ezalor becomes one with the light!",
+      "buff": {
+        "duration": 10,
+        "description": "Spirit Form is active"
+      }
     },
     "blind": {
       "name": "Blinding Light",
@@ -186,10 +196,16 @@
       "deck": "Temporary",
       "targets": ["Spot", "Self"],
       "aoe": "Radial",
-      "aoe range": "Ranged",
-      "range": "Ranged",
+      "aoe range": "Small",
+      "cast range": "Ranged",
+      "highlight": "out",
       "cards": 1,
-      "description": "Knock back and blind enemies, causing them to miss attacks"
+      "description": "Knock back and blind enemies, causing them to miss attacks",
+      "buff": {
+        "duration": 4,
+        "miss": 80,
+        "description": "Blinded"
+      }
     },
     "recall": {
       "name": "Recall",
@@ -197,10 +213,14 @@
       "hand": "Right",
       "deck": "Temporary",
       "targets": ["Ally"],
-      "range": "Global",
+      "cast range": "Global",
       "delay": 1,
       "cards": 1,
-      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor"
+      "description": "If unharmed after enemy turn, target is teleported to a free spot near Ezalor",
+      "buff": {
+        "duration": 2,
+        "description": "Recalling"
+      }
     }
   },
 
@@ -276,6 +296,8 @@
       "range": "Melee",
       "aoe": "Radial",
       "aoe range": "Melee",
+      "stroke range": "Melee",
+      "highlight": "top",
       "cards": 3,
       "description": "Roars causing enemies to flee in terror. Unit retreats one spot if the position is free. Interrupts targets channel"
     },
@@ -368,12 +390,15 @@
       "deck": "Buy",
       "targets": ["Spot"],
       "aoe": "Linear",
+      "cast range": 1,
+      "cast width": 0,
       "aoe width": 0,
       "aoe range": 3,
       "damage": 18,
+      "highlight": "in",
       "damage type": "Pure",
       "cards": 6,
-      "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy. Interrupts target channel"
+      "description": "Launches a bloody hook that will snag the first unit it encounters, dragging the unit to Pudge and dealing damage if enemy. Interrupts enemy channel"
     },
     "rot": {
       "name": "Rot",

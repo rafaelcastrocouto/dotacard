@@ -25,7 +25,6 @@
   },
 
   "kotl":{
-    "disable": true,
     "name": "Keeper of the Light",
     "attribute": "Intelligence",
     "range": "Ranged",
@@ -34,7 +33,7 @@
     "damage": 9,
     "armor": 2,
     "resistance": 2,
-    "description": "Support, Nuker, Jungler, Disabler"
+    "description": "Support, Nuker, Disabler"
   },
   
   "ld":{

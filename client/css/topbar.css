@@ -13,12 +13,12 @@
   text-shadow: 0 1px #888;
   overflow: hidden;
   z-index: 15;
+  transform: translateZ(0);
 }
 
 .topbar * {
   position: absolute;
-  top: 4px;
-  transform: translateZ(0);
+  top: 5px;
 }
 
 .loading .topbar, .choose .topbar, .table .topbar {
@@ -80,7 +80,7 @@
 
 .topbar .logout {
   position: absolute;
-  right: 65px;
+  right: 70px;
   cursor: pointer;
 }
 
@@ -101,7 +101,7 @@
 .topbar .turns {
   position: absolute;
   top: 2px;
-  right: 110px;
+  right: 130px;
   border-radius: 4px;
   line-height: 18px;
 }

@@ -1,6 +1,7 @@
 game.skills.nyx = {
   stun: {
     cast: function (skill, source, target) {
+      game.shake();
     }
   },
   burn: {

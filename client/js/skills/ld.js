@@ -56,6 +56,8 @@ game.skills.ld = {
       var ld = bear.data('summoner');
       killer.damage(ld, skill.data('death damage'), game.data.ui.pure);
       bear.data('return').discard();
+      ld.data('bear', null);
+      bear.remove();
     }
   },
   bearreturn: {
@@ -67,8 +69,12 @@ game.skills.ld = {
   rabid: {
     cast: function (skill, source) {
       source.selfBuff(skill);
+      source.shake();
       var bear = source.data('bear');
-      if (bear) source.addBuff(bear, skill);
+      if (bear) {
+        source.addBuff(bear, skill);
+        bear.shake();
+      }
     }
   },
   roar: {
@@ -96,6 +102,7 @@ game.skills.ld = {
         if (upSpot && upSpot.hasClass('free')) {
           target.stopChanneling();
           target.place(upSpot);
+          target.shake();
         }
       }
     }
@@ -103,7 +110,7 @@ game.skills.ld = {
   ult: {
     toggle: function (skill, source) {
       var side = source.side();
-      var cry = $('.table .'+side+' .skills.ld-cry');
+      var cry = $('.table .'+side+' .skills .ld-cry');
       if (!source.hasClass('transformed')) {
         source.addClass('transformed');
         skill.addClass('on');
@@ -122,8 +129,12 @@ game.skills.ld = {
   cry: {
     cast: function (skill, source) {
       source.selfBuff(skill);
+      source.shake();
       var bear = source.data('bear');
-      if (bear) source.addBuff(bear, skill);
+      if (bear) {
+        source.addBuff(bear, skill);
+        bear.shake();
+      }
       skill.discard();
     }
   }

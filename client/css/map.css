@@ -44,10 +44,10 @@
 }
 
 .map .spot.playerarea {
-  background: rgba(100,255,100,0.2);
+  background: rgba(200,255,100,0.2);
 }
 .map .spot.playerarea:hover {
-  background: rgba(100,255,100,0.3);
+  background: rgba(200,255,100,0.3);
 }
 
 .map .spot.enemyarea {
@@ -57,16 +57,16 @@
   background: rgba(255,100,100,0.3);
 }
 
-.map .spot.fountain.player {
+.map .spot.fountainplayer {
   background: rgba(180,255,180,0.3);
 }
-.map .spot.fountain.player:hover {
+.map .spot.fountainplayer:hover {
   background: rgba(180,255,180,0.35);
 }
-.map .spot.fountain.enemy {
+.map .spot.fountainenemy {
   background: rgba(255,150,150,0.3);
 }
-.map .spot.fountain.enemy:hover {
+.map .spot.fountainenemy:hover {
   background: rgba(255,150,150,0.35);
 }
 
@@ -87,10 +87,11 @@
 
 .map .spot.movearea {
   cursor: pointer;
+  background: rgba(100,255,100,0.3);
 }
 .map .spot.movearea.drop,
 .map .spot.movearea:hover {
-  background: rgba(100,255,100,0.3);
+  background: rgba(100,255,100,0.5);
 }
 
 
@@ -101,13 +102,14 @@
 }
 .slot.available:after,
 .slot.available:before,
-.movearea:after,
-.movearea:before {
+.map .movearea:after,
+.map .movearea:before {
   content: ""; display: block;
   position: absolute;
 }
 
-.slot.available:after, .movearea:after {
+.slot.available:after,
+.map .movearea:after {
   width: 120px; height: 12px;
   background: springgreen;
   left: 40px; bottom: 100px;
@@ -117,7 +119,8 @@
   left: 36px;
   bottom: 40px;
 }
-.slot.available:before, .movearea:before {
+.slot.available:before,
+.map .movearea:before {
   width: 50px; height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid springgreen;
@@ -131,7 +134,7 @@
   transform: rotate(45deg) scale(0.25);
   animation: chooseslide 1s infinite;
 }
-.movearea:hover:before {
+.map .movearea:hover:before {
   animation: moveslide 1s infinite;
 }
 @keyframes chooseslide {
@@ -142,15 +145,21 @@
   0%, 100% { top: 40px; }
   50% { top: 80px; }
 }
+.map .attacktarget {
+  background: tomato
+}
+.map .attacktarget fieldset {
+  opacity: 0.7;
+}
 
-.attacktarget:after,
-.attacktarget:before {
+.map .attacktarget:after,
+.map .attacktarget:before {
   z-index: 4;
   position: absolute;
   content:"";
   display: block;
 }
-.attacktarget:before {
+.map .attacktarget:before {
   width: 50px; height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid orangered;
@@ -159,14 +168,14 @@
   left: 60px; top: 50px;
   transform: rotate(45deg) scale(1);
 }
-.attacktarget:hover:before {
+.map .attacktarget:hover:before {
   animation: scaleattackbefore 1.5s infinite;
 }
 @keyframes scaleattackbefore {
   0%, 20%, 80%, 100% { transform: rotate(45deg) scale(1); }
   50% { transform: translateY(-25px) rotate(45deg) scale(1.5); }
 }
-.attacktarget:after {
+.map .attacktarget:after {
   width: 150px; height: 50px;
   border: 0px solid transparent;
   border-top: 12px solid orangered;
@@ -176,7 +185,7 @@
   transition: all 0.5s;
   border-radius: 6px;
 }
-.attacktarget:hover:after {
+.map .attacktarget:hover:after {
   animation: scaleattackafter 1.5s infinite;
 }
 @keyframes scaleattackafter {
@@ -199,23 +208,24 @@
     transform: translateY(25px) rotate(45deg) scale(1.5);
   }
 }
-.targetarea {
+.map .spot.targetarea {
   cursor: pointer;
+  background: rgba(100,100,255,0.2);
 }
 
 .map .spot.targetarea.drop,
 .map .spot.targetarea:hover {
-  background: rgba(100,100,255,0.3);
+  background: rgba(100,100,255,0.4);
 }
 
-.targetarea:after,
-.targetarea:before {
+.map .targetarea:after,
+.map .targetarea:before {
   z-index: 4;
   position: absolute;
   content:"";
   display: block;
 }
-.targetarea:before {
+.map .targetarea:before {
   width: 50px; height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid dodgerblue;
@@ -224,7 +234,7 @@
   left: 60px; top: 50px;
   transform: rotate(45deg) scale(1);
 }
-.targetarea:hover:before {
+.map .targetarea:hover:before {
   animation: scalespotbefore 1.5s infinite;
 }
 @keyframes scalespotbefore {
@@ -244,17 +254,20 @@
   }
   50% { transform: rotate(45deg) scale(1.2); }
 }
-.targetarea:after {
-  width: 150px; height: 50px;
+.map .targetarea:after {
+  width: 150px;
+  height: 50px;
   border: 0px solid transparent;
   border-top: 12px solid dodgerblue;
   background: transparent;
-  left: 30px; bottom: 30px;
+  left: 30px;
+  bottom: 30px;
+  top: auto;
   transform: rotate(0deg) scale(1);
   transition: all 0.5s;
   border-radius: 6px;
 }
-.targetarea:hover:after {
+.map .targetarea:hover:after {
   animation: scalespotafter 1.5s infinite;
 }
 @keyframes scalespotafter {
@@ -280,30 +293,38 @@
   }
 }
 
-.casttarget:after,
-.casttarget:before {
+.map .casttarget {
+  background: #a3cffc;
+}
+.map .casttarget fieldset{
+  opacity: 0.8;
+}
+.map .casttarget:after,
+.map .casttarget:before {
   z-index: 4;
   position: absolute;
   content:"";
   display: block;
 }
-.casttarget:before {
-  width: 50px; height: 50px;
+.map .casttarget:before {
+  width: 50px;
+  height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid dodgerblue;
   border-bottom: 12px solid dodgerblue;
   background: transparent;
-  left: 60px; top: 50px;
+  left: 60px;
+  top: 50px;
   transform: rotate(45deg) scale(1);
 }
-.casttarget:hover:before {
+.map .casttarget:hover:before {
   animation: scalecastbefore 1.5s infinite;
 }
 @keyframes scalecastbefore {
   0%, 20%, 80%, 100% { transform: rotate(45deg) scale(1); }
   50% { transform: translateY(-25px) rotate(45deg) scale(1.5); }
 }
-.casttarget:after {
+.map .casttarget:after {
   width: 150px; height: 50px;
   border: 0px solid transparent;
   border-top: 12px solid dodgerblue;
@@ -313,7 +334,7 @@
   transition: all 0.5s;
   border-radius: 6px;
 }
-.casttarget:hover:after {
+.map .casttarget:hover:after {
   animation: scalecastafter 1.5s infinite;
 }
 @keyframes scalecastafter {
@@ -404,4 +425,72 @@
 .unturn .map .card,
 .unturn .map .spot {
   cursor: default;
+}
+
+.map .toparrow:before,
+.map .bottomarrow:before,
+.map .leftarrow:before,
+.map .rightarrow:before {
+  display: none;
+  transition: all 0.4s;
+}
+
+.map .toparrow:after,
+.map .bottomarrow:after,
+.map .leftarrow:after,
+.map .rightarrow:after {
+  content: "";
+  transition: all 0.4s;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid springgreen;
+  border-bottom: 12px solid springgreen;
+  background: transparent;
+  left: 60px;
+  top: 50px;
+}
+
+.map .toparrow:after {
+  transform: rotate(-135deg) scale(0.5);
+}
+.map .bottomarrow:after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid springgreen;
+  border-bottom: 12px solid springgreen;
+  background: transparent;
+  left: 60px;
+  top: 50px;
+  transform: translateY(120px) rotate(45deg) scale(0.5);
+}
+.map .leftarrow:after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid springgreen;
+  border-bottom: 12px solid springgreen;
+  background: transparent;
+  left: 60px;
+  top: 50px;
+  transform: translate(-30px, 60px) rotate(135deg) scale(0.5);
+}
+.map .rightarrow:after {
+  content: "";
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border: 20px solid transparent;
+  border-right: 12px solid springgreen;
+  border-bottom: 12px solid springgreen;
+  background: transparent;
+  left: 60px;
+  top: 50px;
+  transform: translate(30px, 60px) rotate(-45deg) scale(0.5);
 }

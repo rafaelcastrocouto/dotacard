@@ -9,7 +9,7 @@ game.enemy = {
         $.each(deck.data('cards'), function (i, card) {
           var p = game.enemy.picks.indexOf(card.data('hero'));
           card.addClass('enemy').on('mousedown touchstart', game.card.select);
-          card.place(game.map.mirrorPosition(game.map.toId(x + p, y)));
+          card.place(game.map.mirrorPosition(game.map.toPosition(x + p, y)));
           if (game.mode == 'tutorial') card.on('select', game.tutorial.selected);
         });
       }
@@ -33,8 +33,14 @@ game.enemy = {
       card.appendTo(game.enemy.skills.sidehand);
     }
   },
+  buyCards: function (n) {
+    for (var i=0; i<n; i++) {
+      if (game.enemy.skills.hand.children().length < game.enemy.maxCards) {
+        game.enemy.buyCard();
+      }
+    }
+  },
   buyHand: function () {
-    if (game.enemy.cardsPerTurn === 0) game.skill.calcMana('enemy');
     for (var i = 0; i < game.enemy.cardsPerTurn; i += 1) {
       if (game.enemy.skills.hand.children().length < game.enemy.maxCards) {
         game.enemy.buyCard();

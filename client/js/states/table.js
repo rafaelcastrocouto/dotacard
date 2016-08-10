@@ -124,7 +124,7 @@ game.states.table = {
       this.resultsbox = null;
     }
     this.buttonbox.show().children().hide();
-    this.selectedCard.removeClass('flip');
+    game.card.clearSelection();
     this.el.addClass('unturn').removeClass('over');
     game.clearTimeouts();
   },

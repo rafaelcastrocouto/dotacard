@@ -24,10 +24,10 @@ game.card = {
     $.fn.setHp = game.card.setHp;
     $.fn.setCurrentHp = game.card.setCurrentHp;
     $.fn.setSpeed = game.card.setSpeed;
+    $.fn.shake = game.card.shake;
     $.fn.die = game.card.die;
     $.fn.reborn = game.card.reborn;
     $.fn.randomCard = game.card.randomCard;
-    $.fn.getDirection = game.card.getDirection;
   },
   build: function (data) {
     var card, legend, fieldset, portrait, current, desc;
@@ -57,6 +57,7 @@ game.card = {
     if (data.dot)                   $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.dot));
     if (data.buff && data.buff.dot) $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.buff.dot));
     if (data.hand)                  $('<p>').appendTo(desc).text(data.deck+' (' + data.hand + ')');
+    if (data.cards)                 $('<p>').appendTo(desc).text(game.data.ui.cards+': ' + data.cards);
     if (data['damage type'])        $('<p>').appendTo(desc).text(game.data.ui.damage+': ' + data['damage type']);
     if (data.aoe)                   $('<p>').appendTo(desc).text(game.data.ui.aoe+': ' + data.aoe + ' ('+data['aoe range']+')');
     if (data.range)                 $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
@@ -87,8 +88,9 @@ game.card = {
     //if (data.cards)      $('<p>').appendTo(desc).text(game.data.ui.cards+': ' + data.cards);
     if (data.description) {
       $('<p>').appendTo(desc).addClass('description').text(data.description);
-      card.attr({ title: data.name + ': ' + data.description });
+      //card.attr({ title: data.name + ': ' + data.description });
     }
+    card.attr({ title: data.name });
     if (data.kd) {
       $('<p>').addClass('kd').appendTo(desc).html(game.data.ui.kd + ': <span class="kills">0</span>/<span class="deaths">0</span>');
       data.kills = 0;
@@ -111,64 +113,57 @@ game.card = {
     if (this.hasClass('enemy')) return 'player';
   },
   place: function (target) {
-    if (!target.removeClass) target = $('#' + target);
+    if (!target.addClass) target = $('#' + target);
     this.closest('.spot').addClass('free');
     this.parent().find('.fx').each(function () {
       $(this).appendTo(target);
     });
     this.appendTo(target.removeClass('free'));
-    game.highlight.clearMap();
     game.highlight.map();
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
-  select: function () {//console.trace('card select');
+  select: function (event) { // console.trace('card select', event);
     var card = $(this).closest('.card'); 
-    if (card && 
-        !card.hasClasses('attacktarget casttarget targetarea dead') &&
-        (!event || !card.hasClass('selected'))) {
-      if (!game.selectedCard) game.card.setSelected(card);
-      else {
-        game.highlight.clearMap();
-        game.selectedCard.removeClass('selected draggable');
-        if (game.states.table.selectedClone) {
-          game.states.table.selectedClone.remove();
-          game.states.table.selectedClone = null;
-        }
-        game.card.setSelected(card);
-      }
-      if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
+    var forceSelection = !event;
+    if (card) {
+      if (forceSelection) game.card.setSelection(card);
+      else if (!card.hasClasses('selected attacktarget casttarget dead done')) 
+        game.card.setSelection(card, event);
     }
     return card;
   },
-  setSelected: function (card) {
+  clearSelection: function () {
+    if (game.selectedCard) {
+      game.highlight.clearMap();
+      game.selectedCard.removeClass('selected draggable');
+      game.states.table.discard.attr('disabled', true);
+      if (game.states.table.selectedClone) {
+        game.states.table.selectedClone.remove();
+        game.states.table.selectedClone = null;
+      }
+      game.selectedCard = null;
+    }
+  },
+  setSelection: function (card, event) {
+    game.card.clearSelection();
     game.selectedCard = card;
     card.addClass('selected');
-    game.highlight.map();
+    game.highlight.map(event);
     game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget').clearEvents();
     game.states.table.selectedCard.addClass('flip');
     card.trigger('select', { card: card });
+    if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
   },
   unselect: function () {
-    game.highlight.clearMap();
-    if (game.selectedCard) game.selectedCard.removeClass('selected');
-    game.selectedCard = null;
-    game.states.table.discard.attr('disabled', true);
     game.states.table.selectedCard.removeClass('flip');
-    if (game.states.table.selectedClone) { 
-      game.timeout(200, function () {
-        if (game.states.table.selectedClone) {
-          game.states.table.selectedClone.remove();
-          game.states.table.selectedClone = null;
-        }
-      });
-    }
+    game.timeout(200, game.card.clearSelection);
   },
   move: function (destiny) {
     if (typeof destiny === 'string') { destiny = $('#' + destiny); }
     var card = this, t, d,
-      from = game.map.getPosition(card),
-      to = game.map.getPosition(destiny);
+      from = card.getPosition(),
+      to = destiny.getPosition();
     if (destiny.hasClass('free') && from !== to) {
       card.removeClass('draggable').off('mousedown touchstart');
       game.highlight.clearMap();
@@ -189,7 +184,7 @@ game.card = {
     return card;
   },
   animateMove: function (destiny) {
-    var from = game.map.getPosition(this), to = game.map.getPosition(destiny),
+    var from = this.getPosition(), to = destiny.getPosition(),
       fx = game.map.getX(from), fy = game.map.getY(from),
       tx = game.map.getX(to), ty = game.map.getY(to),
       dx = (tx - fx) * 100, dy = (ty - fy) * 100;
@@ -201,21 +196,22 @@ game.card = {
   addBuff: function (target, skill, buffs) { //console.trace(target, skill, buffs)
     // get buff data
     var data = skill;
-    if (!data.name) {
-      if (buffs) { 
-        var buffsId = buffs.split('-');
-        data = skill.data('buffs')[buffsId[0]][buffsId[1]];
-      } else if (skill.data && skill.data('buff')) {
-        data = skill.data('buff');
-      }
-      data.name = skill.data('name');
+    if (buffs) {
+      var buffsId = buffs.split('-');
+      data = skill.data('buffs')[buffsId[0]][buffsId[1]];
+    } else if (skill.data && skill.data('buff')) {
+      data = skill.data('buff');
     }
-    if (data.duration) data.temp = true;
+    if (!data.buffId) data.buffId = buffs || skill.data('skillId');
+    if (!data.className) data.className = data.buffId;
+    if (!data.name) data.name = skill.data('name');
     if (!data.source) data.source = this;
     if (!data.skill) data.skill = skill;
     if (!data.target) data.target = target;
+    if (!data.description) data.description = skill.data('description');
+    if (data.duration) data.temp = true;
     // remove duplicated buff
-    if (data.name !== 'Stun') target.removeBuff(data.buffId);
+    target.removeBuff(data.buffId);
     // create new buff
     var buff = $('<div>').addClass('buff ' + data.className).data('buff', data).attr({ title: data.name + ': ' + data.description });
     $.each(data, function (item, value) { buff.data(item, value); });
@@ -303,9 +299,10 @@ game.card = {
   },
   stopChanneling: function () {
     if (this.hasClass('channeling')) {
-      this.trigger('channelEnd', this.data('channel event'));
+      this.trigger('channelend', this.data('channel event'));
+      $(this.data('channel skill')).removeClass('channel-on');
       this.data('channel', null).data('channeling', null).data('channel skill', null).data('channel event', null);
-      this.off('channel').off('channelEnd');
+      this.off('channel').off('channelend');
       this.removeClass('channeling');
     }
   },
@@ -346,11 +343,17 @@ game.card = {
     this.data('current speed', speed);
     return this;
   },
+  shake: function () {
+    this.addClass('shake');
+    game.timeout(250, function () {
+      this.removeClass('shake');
+    }.bind(this));
+  },
   attack: function (target) {
     if (typeof target === 'string') { target = $('#' + target + ' .card'); }
     var source = this, damage = source.data('current damage'), name,
-      from = game.map.getPosition(source),
-      to = game.map.getPosition(target);
+      from = source.getPosition(),
+      to = target.getPosition();
     if (damage && from !== to && target.data('current hp')) {
       source.stopChanneling();
       var evt = {
@@ -359,12 +362,25 @@ game.card = {
         target: target
       };
       source.trigger('attack', evt).trigger('action', evt);
-      if (!source.data('critical-attack')) source.damage(damage, target, game.data.ui.physical);
-      source.data('critical-attack', false);
-      if (source.hasClass('tower')) name = 'tower';
-      else if (source.hasClass('bear')) name = 'bear';
-      else  name = source.data('hero'); 
-      game.audio.play(name + '/attack');
+      if (!source.data('critical-attack') && !source.data('miss-attack')) {
+        source.damage(damage, target, game.data.ui.physical);
+      }
+      if (source.data('critical-attack')) source.data('critical-attack', false);
+      if (source.data('miss-attack')) {
+        source.data('miss-attack', false);
+        var missFx = target.find('.missed');
+        if (!missFx.length) {
+          missFx = $('<span>').text(game.data.ui.miss).addClass('missed').appendTo(target);
+        }
+        game.timeout(2000, function () {
+          this.remove();
+        }.bind(missFx));
+      } else {
+        if (source.hasClass('tower')) name = 'tower';
+        else if (source.hasClass('bear')) name = 'bear';
+        else name = source.data('hero');
+        game.audio.play(name + '/attack');
+      }
     }
     return this;
   },
@@ -383,7 +399,7 @@ game.card = {
       if (type === 'critical') source.data('critical-attack', true);
       if (damage < 1) damage = 1;
       if (typeof target === 'string') { target = $('#' + target + ' .card'); }
-      position = game.map.getPosition(target);
+      position = target.getPosition();
       x = game.map.getX(position);
       y = game.map.getY(position);
       spot = game.map.getSpot(x, y);
@@ -400,6 +416,7 @@ game.card = {
       hp = target.data('current hp') - damage;
       target.setCurrentHp(hp);
       target.trigger('damage', evt);
+      target.shake();
       if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
       if (type === 'critical') {
         source.data('critical-attack', true);
@@ -477,7 +494,7 @@ game.card = {
     this.data('killer', evt.source);
     this.addClass('dead').removeClass('target done');
     this.unselect();
-    var pos = game.map.getPosition(this), deaths,
+    var pos = this.getPosition(), deaths,
       spot = $('#' + pos);
     if (!spot.hasClass('cript')) { spot.addClass('free'); }
     if (this.hasClass('heroes')) {
@@ -504,18 +521,18 @@ game.card = {
       if (this.hasClass('player')) {
         x = 4;
         y = 4;
-        spot = game.map.toId(x, y);
+        spot = game.map.toPosition(x, y);
         while (!$('#' + spot).hasClass('free')) {
           x -= 1;
-          spot = game.map.toId(x, y);
+          spot = game.map.toPosition(x, y);
         }
       } else if (this.hasClass('enemy')) {
         x = 4;
         y = 1;
-        spot = game.map.toId(x, y);
+        spot = game.map.toPosition(x, y);
         while (!$('#' + spot).hasClass('free')) {
           x += 1;
-          spot = game.map.toId(x, y);
+          spot = game.map.toPosition(x, y);
         }
       }
     }
@@ -537,15 +554,5 @@ game.card = {
       if (noseed) { return $(this[parseInt(Math.random() * this.length, 10)]); }
       return $(this[parseInt(game.random() * this.length, 10)]);
     } else return this;
-  },
-  getDirection: function (target) {
-    var p1 =  { x: game.map.getX(this),   y: game.map.getY(this) },
-        p2 =  { x: game.map.getX(target), y: game.map.getY(target) },
-        dir = { x: 0, y: 0 };
-    if (p1.y - p2.y > 0) { dir.y = -1; }
-    if (p1.y - p2.y < 0) { dir.y =  1; }
-    if (p1.x - p2.x > 0) { dir.x = -1; }
-    if (p1.x - p2.x < 0) { dir.x =  1; }
-    return dir;
   }
 };

@@ -39,6 +39,8 @@ game.tutorial = {
   },
   chooseStart: function () {
     game.states.choose.selectFirst();
+    $('.pickbox .card').hide();
+    $('.am, .cm, .pud, .ld, .wk', '.pickbox').show();
   },
   pick: function () {
     var availableSlots = $('.slot.available').length;
@@ -103,9 +105,9 @@ game.tutorial = {
       game.enemy.tower.addClass('tutorialblink').on('select', game.tutorial.selected);
       game.timeout(400, function () {
         game.skill.build('player');
+        game.skill.calcMana('enemy');
         game.skill.build('enemy');
         game.tutorial.buyHand();
-        game.enemy.buyHand();
         game.timeout(400, game.tutorial.selectEnemyLesson);
       });
     }
@@ -200,6 +202,7 @@ game.tutorial = {
     });
   },
   wait: function () {
+    game.enemy.buyHand();
     game.message.removeClass('tutorialblink');
     game.turn.time.addClass('tutorialblink');
     game.tutorial.waited = true;
@@ -251,10 +254,9 @@ game.tutorial = {
     game.tutorial.lesson = 'Attack';
     $('.map .heroes').removeClass('done');
     $('.map .player.heroes').each(function (i, card) {
-      var hero = $(card);
-      var pos = game.map.getPosition(hero),
-          range = game.map.getRange(hero.data('range'));
-      game.map.around(pos, range, function (spot) {
+      var hero = $(card),
+          range = hero.data('range');
+      hero.around(range, function (spot) {
         if (spot.find('.card.enemy.heroes').length) {
           hero.addClass('tutorialblink');
         }

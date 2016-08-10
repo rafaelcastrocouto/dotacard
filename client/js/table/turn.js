@@ -79,7 +79,7 @@ game.turn = {
       $('.spot.fountain').find('.card').each(function () {
         $(this).heal(10);
       });
-      $('.card.heroes').each(function (i, card) {
+      $('.map .card.heroes').each(function (i, card) {
         var hero = $(card);
         if (hero.hasClass('channeling')) game.turn.channel(hero);
         game.turn.buffs(hero);
@@ -114,15 +114,17 @@ game.turn = {
         buff.data('duration', duration);
       } else if (data && data.temp && data.buffId) {
         hero.removeBuff(data.buffId);
+        buff.trigger('expire', {target: hero});
       }
     });
   },
   noAvailableMoves: function () {
-    return $('.map .player.card:not(.towers)').length == $('.map .player.card.done:not(.towers)').length;
+    return $('.map .player.card:not(.towers, .ghost)').length == $('.map .player.card.done:not(.towers, .ghost)').length;
   },
   tickTime: function () { 
     game.time += 0.5; // console.trace('t', game.time, game.turn.hours() );
-    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + parseInt(game.time) + ')');
+    game.totalTurns = Math.floor(game.player.turn + game.enemy.turn);
+    game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + game.totalTurns + ')');
     game.turn.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
   },
   hours: function () {

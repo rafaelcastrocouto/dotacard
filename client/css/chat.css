@@ -30,37 +30,44 @@
   transition: all 0.4s;
   height: 0;
   width: 0;
+  opacity: 0;
 }
-
+.chat:hover > *,
+.chat.hover > * {
+  opacity: 1;
+}
 .chat h1 {
   display: block;
   color: white;
   font-size: 16px;
-  line-height: 16px;
-  height: 20px;
+  line-height: 20px;
+  height: 14px;
+  opacity: 1;
 }
 .chat:hover h1, 
 .chat.hover h1 {
   display: none;
 }
-
-.chat.hover iframe,
-.chat:hover iframe {
+.chat.hover .dis,
+.chat:hover .dis {
+  margin-bottom: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+.chat.hover .dis,
+.chat:hover .dis,
+.chat.hover .dis iframe,
+.chat:hover .dis iframe {
   width: 363px;
-  height: 165px;
+  height: 250px;
   display: block;
 }
-.chat.hover iframe:hover,
-.chat:hover iframe:hover {
-  height: 300px;
-}
-
 .chat.hover .messages,
 .chat:hover .messages {
-  height: 202px;
+  height: 188px;
   width: 363px;
   overflow: hidden;
-  margin: 8px 0 0px;
+  margin: 0;
   position: relative;
   border-radius: 4px;
   overflow: hidden;
@@ -71,7 +78,7 @@
 }
 
 .chat .messages p {
-  padding: 5px 10px 4px;
+  padding: 2px 8px;
   border-bottom: 1px solid #ddd;
   margin: 0;
   cursor: text;

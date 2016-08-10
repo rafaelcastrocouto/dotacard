@@ -5,12 +5,9 @@ game.skill = {
     $.fn.toggle = game.skill.toggle;
     $.fn.discard = game.skill.discard;
     $.fn.summon = game.skill.summon;
-    $.fn.opponentsInRange = game.skill.opponentsInRange;
-    $.fn.alliesInRange = game.skill.alliesInRange;
-    $.fn.firstFreeSpotInLine = game.skill.firstFreeSpotInLine;
-    $.fn.firstCardInLine = game.skill.firstCardInLine;
   },
   build: function (side, single) {
+    game.skill.calcMana(side);
     game[side].maxCards = Math.round(game[side].mana / 2);
     game[side].cardsPerTurn = Math.round(game[side].mana / 5);
     game[side].skills = {};
@@ -38,7 +35,6 @@ game.skill = {
       game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
       $('.enemy .skills').attr({ title: '' }).off('mousedown touchstart');
     }
-    game.skill.calcMana(side);
   },
   calcMana: function (side) {
     game[side].mana = 0;
@@ -70,14 +66,16 @@ game.skill = {
         if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
           game.audio.play(hero + '/' + skillid);
         }
-        channelDuration = skill.data('channel');
-        if (channelDuration) {
+        if (skill.data('type') == game.data.ui.channel) {
+          channelDuration = skill.data('channel');
           evt.type = 'channel';
           source.data('channel event', evt);
           source.data('channeling', channelDuration);
           source.data('channel', channelDuration);
+          source.data('channel skill', skill);
           source.addClass('channeling');
           source.trigger('channel', evt);
+          skill.addClass('channel-on');
           source.on('channel', function (event, eventdata) {
             channeler = eventdata.source;
             duration = channeler.data('channeling');
@@ -88,8 +86,9 @@ game.skill = {
           });
         }
         game.timeout(300, function () { //console.trace('castend')
-          if (game.mode !== 'library') this.skill.discard();
-        }.bind({skill: skill}));
+          if (game.mode === 'library') this.source.select();
+          else this.skill.discard();
+        }.bind({source: source, skill: skill}));
       }
     }
     return this;
@@ -106,11 +105,11 @@ game.skill = {
       });
       game.skills[hero][skillid].passive(skill, target);
       game.audio.play('activate');
+      target.shake();
       game.timeout(300, function () {
         this.skill.detach();
         game.highlight.clearMap();
         if (this.target.side() === 'player') this.target.select();
-        else if (this.target.hasClass('selected')) this.target.select();
       }.bind({target: target, skill: skill}));
     }
     return this;
@@ -131,13 +130,13 @@ game.skill = {
       if (game.audio.sounds.indexOf(hero + '/' + skillid) >= 0) {
         game.audio.play(hero + '/' + skillid);
       }
+      target.shake();
       if (skill.hasClass('enemy')) {
         game.enemy.hand -= 1;
       }
       game.timeout(300, function () {
-        if (this.target.side() === 'player') this.target.select();
-        else if (this.target.hasClass('selected')) this.target.select();
-      }.bind({target: target, skill: skill}));
+        if (this.side() === 'player') this.select();
+      }.bind(target));
     }
     return this;
   },
@@ -158,11 +157,14 @@ game.skill = {
     unit.data('current resistance', unit.data('resistance'));
     unit.data('current speed', unit.data('speed'));
     unit.find('fieldset').append($('<div>').addClass('buffs'));
+    game.timeout(300, function () {
+      if (this.source.side() === 'player') this.unit.select();
+    }.bind({source: this, unit: unit}));
     return unit;
   },
   discard: function () {
     if (this.hasClass('skills')) {
-      game.card.unselect();
+      if (this.hasClass('selected')) game.card.unselect();
       this.trigger('discard', {target: this});
       var side = 'enemy';
       if (this.hasClass('player')) side = 'player';
@@ -170,47 +172,5 @@ game.skill = {
       else this.appendTo(game[side].skills.cemitery);
     }
     return this;
-  },
-  opponentsInRange: function (range, cb, source) {
-    var spot = game.map.getPosition(this);
-    var side = source ? source.side() : this.side();
-    var opponent = game.opponent(side);
-    game.map.inRange(spot, range, function (neighbor) {
-      var card = neighbor.find('.card.'+opponent);
-      if (card.length) cb(card);
-    });
-    return this;
-  },
-  alliesInRange: function (range, cb) {
-    var spot = game.map.getPosition(this);
-    var side = this.side();
-    game.map.inRange(spot, range, function (neighbor) {
-      var card = neighbor.find('.card.'+side);
-      if (card.length) cb(card);
-    });
-    return this;
-  },
-  firstFreeSpotInLine: function (target, range) {
-    var source = this,
-        direction = source.getDirection(target);
-    for (var i = 1; i <= range; i += 1) {
-      var x = game.map.getX(source) + (i * direction.x),
-          y = game.map.getY(source) + (i * direction.y);
-      var spot = game.map.getSpot(x, y);
-      if (spot && spot.hasClass('free')) return spot;
-    }
-  },
-  firstCardInLine: function (target, range) {
-    var source = this,
-        direction = source.getDirection(target);
-    for (var i = 1; i <= range; i += 1) {
-      var x = game.map.getX(source) + (i * direction.x),
-          y = game.map.getY(source) + (i * direction.y);
-      var spot = game.map.getSpot(x, y);
-      if (spot) {
-        var card = spot.find('.card');
-        if (card.length) return card;
-      }
-    }
-  },
+  }
 };

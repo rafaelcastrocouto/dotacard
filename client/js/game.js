@@ -70,6 +70,12 @@ var game = {
     game.seed += 1;
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
   },
+  shake: function () {
+    game.states[game.currentState].el.addClass('shake');
+    game.timeout(200, function () {
+      game.states[game.currentState].el.removeClass('shake');
+    });
+  },
   setMode: function (mode, recover) {
     if (mode) {
       game.mode = mode;

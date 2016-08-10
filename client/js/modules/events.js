@@ -6,6 +6,7 @@ game.events = {
     game.card.bindJquery();
     game.skill.bindJquery();
     game.highlight.bindJquery();
+    game.map.bindJquery();
     $(window).on('resize', game.screen.resize);
     game.container.on('mousedown touchstart', game.events.hit)
                   .on('mousemove', game.events.move)

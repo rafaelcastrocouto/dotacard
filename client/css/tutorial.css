@@ -77,13 +77,22 @@
 
 .tutorialblink,
 .table .player .tutorialblink {
-  box-shadow: 0 0 0 6px white;
+  box-shadow: 0 0 0 8px white;
   animation: tutorialblink 1s infinite;
 }
 
 @keyframes tutorialblink {
   0%, 100% {box-shadow: 0 0 0 6px rgba(0,0,0,0);}
   50% {box-shadow: 0 0 0 6px white;}
+}
+.table .card.tutorialblink {
+  box-shadow: 0 0 0 10px white;
+  animation: cardtutorialblink 1s infinite;
+}
+
+@keyframes cardtutorialblink {
+  0%, 100% {box-shadow: 0 0 0 10px rgba(0,0,0,0);}
+  50% {box-shadow: 0 0 0 10px white;}
 }
 
 .map .tutorialblink {

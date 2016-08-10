@@ -8,19 +8,47 @@ game.map = {
       game.map.spots[h] = [];
       tr = $('<div>').addClass('row ' + 'trow'+(h+1)).appendTo(map);
       for (w = 0; w < opt.width; w += 1) {
-        game.map.spots[h][w] = $('<div>').attr({id: game.map.toId(w, h)}).addClass('free spot ' + 'row'+(h+1) + ' col'+game.map.letters[w]).appendTo(tr).on('contextmenu', game.events.cancel);
+        game.map.spots[h][w] = $('<div>').attr({id: game.map.toPosition(w, h)}).addClass('free spot ' + 'row'+(h+1) + ' col'+game.map.letters[w]).appendTo(tr).on('contextmenu', game.events.cancel);
       }
     }
     game.map.builded = true;
     game.map.el = map;
     return map;
   },
-  toId: function (w, h) {
+  bindJquery: function () {
+    $.fn.getX = game.map.getX;
+    $.fn.getY = game.map.getY;
+    $.fn.getSpot = game.map.getSpot;
+    $.fn.getDirectionObj = game.map.getDirectionObj;
+    $.fn.getDirectionStr = game.map.getDirectionStr;
+    $.fn.getDirSpot = game.map.getDirSpot;
+    $.fn.atRange = game.map.atRange; // at range border
+    $.fn.around = game.map.around; // in range exclude self
+    $.fn.inRange = game.map.inRange; // in range include self
+    $.fn.inMovementRange = game.map.inMovementRange;
+    $.fn.inCross = game.map.inCross;
+    $.fn.opponentsInCross = game.map.opponentsInCross;
+    $.fn.alliesInCross = game.map.alliesInCross;
+    $.fn.inLine = game.map.inLine;
+    $.fn.alliesInLine = game.map.alliesInLine;
+    $.fn.opponentsInLine = game.map.opponentsInLine;
+    $.fn.firstFreeSpotInLine = game.map.firstFreeSpotInLine;
+    $.fn.firstCardInLine = game.map.firstCardInLine;
+    $.fn.getPosition = game.map.getPosition;
+    $.fn.cardsInRange = game.map.cardsInRange;
+    $.fn.opponentsInRange = game.map.opponentsInRange;
+    $.fn.alliesInRange = game.map.alliesInRange;
+    $.fn.radialStroke = game.map.radialStroke;
+    $.fn.crossStroke = game.map.crossStroke;
+    $.fn.linearStroke = game.map.linearStroke;
+  },
+  toPosition: function (w, h) {
     if (w >= 0 && h >= 0 && w < game.width && h < game.height) {
       return game.map.letters[w] + (h + 1);
     }
   },
   getX: function (id) {
+    if (!id) id = this;
     if (id && typeof id.attr == 'function') id = id.attr('id') || id.parent().attr('id');
     if (id) {
       var w = game.map.letters.indexOf(id[0]);
@@ -28,28 +56,65 @@ game.map = {
     }
   },
   getY: function (id) {
+    if (!id) id = this;
     if (id && typeof id.attr == 'function') id = id.attr('id') || id.parent().attr('id');
     if (id) {
       var h = parseInt(id[1], 10) - 1;
       if (h >= 0 && h < game.height) { return h; }
     }
   },
-  getSpot: function (w, h) {
-    if (game.map.spots[h] && game.map.spots[h][w]) { return game.map.spots[h][w]; }
+  getSpot: function (w, h) { // console.log(w, h, this);
+    if (w === undefined) return this.closest('.spot');
+    if (game.map.spots[h] && game.map.spots[h][w]) return game.map.spots[h][w];
   },
-  getPosition: function (el) {
-    if (el.hasClass('spot')) { return el.attr('id'); }
-    return el.closest('.spot').attr('id');
+  getDirectionObj: function (target) {
+    var p1 =  { x: game.map.getX(this),   y: game.map.getY(this) },
+        p2 =  { x: game.map.getX(target), y: game.map.getY(target) },
+        dir = { x: 0, y: 0 };
+    if (p1.y - p2.y > 0) { dir.y = -1; }
+    if (p1.y - p2.y < 0) { dir.y =  1; }
+    if (p1.x - p2.x > 0) { dir.x = -1; }
+    if (p1.x - p2.x < 0) { dir.x =  1; }
+    return dir;
+  },
+  getDirectionStr: function (target) {
+    var dir = this.getDirectionObj(target);
+    if (dir.x ==  1) return 'right';
+    if (dir.x == -1) return 'left';
+    if (dir.y ==  1) return 'bottom';
+    if (dir.y == -1) return 'top'; 
+  },
+  getDirSpot: function (dir) {
+    var sx = this.getX(), sy = this.getY();
+    var x = sx, y = sy;
+    var spot;
+    if (dir == 'right') x++;
+    if (dir == 'left') x--;
+    if (dir == 'bottom') y++;
+    if (dir == 'top') y--;
+    return game.map.getSpot(x, y);
+  },
+  getPosition: function () {
+    if (this.hasClass('spot')) { return this.attr('id'); }
+    return this.closest('.spot').attr('id');
   },
   mirrorPosition: function (pos) {
     var w = game.map.getX(pos), h = game.map.getY(pos),
       x = game.width - w - 1, y = game.height - h - 1;
-    return game.map.toId(x, y);
+    return game.map.toPosition(x, y);
+  },
+  invertDirection: function (str) {
+    if (str == 'left')   return 'right';
+    if (str == 'right')  return 'left';
+    if (str == 'top')    return 'bottom';
+    if (str == 'bottom') return 'top';
   },
   rangeArray: [ 0.5, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4 ],
-  atRange: function (spot, range, cb, filter) {
+  atRange: function (r, cb, filter) { // at range border
+    var range = game.map.getRangeInt(r);
+    var spot = $(this).closest('.spot');
     if (range >= 0 && range <= game.map.rangeArray.length) {
-      var radius, x, y, r, r2, l,
+      var radius, x, y, r2, l,
         fil = function (x, y) {
           var spot = game.map.getSpot(x, y);
           if (spot) {
@@ -95,32 +160,126 @@ game.map = {
       }
     }
   },
-  atCross: function (spot, range, width, cb, filter) {
+  around: function (range, cb) { // in range not self
+    var spot = this;
+    spot.atRange(range, cb);
+    if (!game.map.rangeStrArray) {
+      game.map.rangeStrArray = [];
+      for (var i=0; i < 6; i++) {
+        game.map.rangeStrArray.push(game.map.getRangeStr(i));
+      }
+    }
+    if (range === game.map.rangeStrArray[3]) { 
+      spot.atRange(game.map.getRangeStr(1), cb); 
+    }
+    if (range === game.map.rangeStrArray[4]) { 
+      spot.atRange(game.map.getRangeStr(2), cb); 
+    }
+    if (range === game.map.rangeStrArray[5]) {
+      spot.atRange(game.map.getRangeStr(1), cb);
+      spot.atRange(game.map.getRangeStr(3), cb);
+    }
+  },
+  inRange: function (range, cb) {// in range and self
+    this.atRange(game.map.getRangeStr(0), cb);
+    this.around(range, cb);
+  },
+  inCross: function (range, width, cb, offset) {
+    var spot = $(this).closest('.spot');
+    if (!offset) offset = 0;
     if (range >= 0) {
       var x, y, r,
-        fil = function (x, y) {
+        fil = function (x, y, cs) {
           var spot = game.map.getSpot(x, y);
-          if (spot && spot.hasClass) {
-            if (filter) {
-              if (!spot.hasClasses(filter)) { cb(spot); }
-            } else { cb(spot); }
-          }
+          if (spot) cb(spot, cs);
         },
         w = game.map.getX(spot),
         h = game.map.getY(spot);
       if (range === 0) {
         fil(w, h);
       } else {
-        for (r = 1; r <= range; r += 1) {
-          fil(w, h + r);
-          fil(w, h - r);
-          fil(w - r, h);
-          fil(w + r, h);
+        for (r = 1 + offset; r <= range; r += 1) {
+          if (width >= 0) {
+            fil(w, h + r, 'bottom');
+            fil(w, h - r, 'top');
+            fil(w - r, h, 'left');
+            fil(w + r, h, 'right');
+          }
+          if (width >= 1) {
+            fil(w - 1, h + r, 'bottom'); fil(w + 1, h + r, 'bottom');
+            fil(w - 1, h - r, 'top');    fil(w + 1, h - r, 'top');
+            fil(w - r, h - 1, 'left');   fil(w - r, h + 1, 'left');
+            fil(w + r, h - 1, 'right');  fil(w + r, h + 1, 'right');
+          }
         }
       }
     }
   },
-  atMovementRange: function (card, range, cb, filter) {
+  opponentsInCross: function (range, width, cb, offset) {
+    var side = this.side();
+    var opponent = game.opponent(side);
+    this.inCross(range, width, cb, function (spot, cs) {
+      var card = $('.card.'+opponent, spot);
+      if (card.length) cb(card, cs);
+    }, offset);
+  },
+  alliesInCross: function (range, width, cb, offset) {
+    var side = this.side();
+    source.inCross(range, width, cb, function (spot, cs) {
+      var card = $('.card.'+side, spot);
+      if (card.length) cb(card, cs);
+    }, offset);
+  },
+  inLine: function (target, range, width, cb, offset) {
+    var source = this;
+    var direction = source.getDirectionStr(target);
+    var x = target.getX(), y = target.getY();
+    var start = {}, end = {};
+    if (!offset) offset = 0;
+    if (direction == 'top') {
+      start.x = x - width;     end.x = x + width;
+      start.y = y - range + 1; end.y = y - offset;
+    }
+    if (direction == 'bottom') {
+      start.x = x - width;     end.x = x + width;
+      start.y = y + offset;    end.y = y + range - 1;
+    }
+    if (direction == 'left') {
+      start.x = x - range + 1; end.x = x - offset;
+      start.y = y - width;     end.y = y + width;
+    }
+    if (direction == 'right') {
+      start.x = x + offset;    end.x = x + range - 1;
+      start.y = y - width;     end.y = y + width;
+    }
+    for (var i=start.x; i<=end.x; i++) {
+      for (var j=start.y; j<=end.y; j++) {
+        var spot = game.map.getSpot(i,j);
+        if (spot) cb(spot);
+      }
+    }
+    return this;
+  },
+  opponentsInLine: function (target, range, width, cb, source) {
+    var side = source ? source.side() : this.side();
+    var opponent = game.opponent(side);
+    this.inLine(target, range, width, function (spot) {
+      var card = spot.find('.card.'+opponent);
+      if (card.length) cb(card);
+    });
+    return this;
+  },
+  alliesInLine: function (target, range, width, cb) {
+    var side = this.side();
+    this.inLine(target, range, width, function (spot) {
+      var card = spot.find('.card.'+side);
+      if (card.length) cb(card);
+    });
+    return this;
+  },
+  inMovementRange: function (speed, cb, filter) {
+    var card = this;
+    var range = speed;
     if (range >= 0 && range <= game.map.rangeArray.length) {
       var radius, x, y, r, r2, l, a, i, o, m, s, t, u,
         fil = function (x, y) {
@@ -131,7 +290,7 @@ game.map = {
             } else { cb(spot); }
           }
         },
-        pos = game.map.getPosition(card),
+        pos = card.getPosition(),
         w = game.map.getX(pos),
         h = game.map.getY(pos);
       radius = game.map.rangeArray[range];
@@ -183,21 +342,10 @@ game.map = {
       }
     }
   },
-  inRange: function (spot, range, cb) {
-    game.map.atRange(spot, 0, cb);
-    game.map.around(spot, game.map.getRange(range), cb);
-  },
-  around: function (spot, r, cb) {
-    game.map.atRange(spot, r, cb);
-    if (r === 3) { game.map.atRange(spot, 1, cb); }
-    if (r === 4) { game.map.atRange(spot, 2, cb); }
-    if (r === 5) {
-      game.map.atRange(spot, 1, cb);
-      game.map.atRange(spot, 3, cb);
-    }
-  },
-  radialStroke: function (spot, range, cl) {
-    var radius, x, y, r, r2, l,
+  radialStroke: function (r, cl) { //console.log(r,cl)
+    var spot = this;
+    var range = game.map.getRangeInt(r);
+    var radius, x, y, r2, l,
       fil = function (x, y, border) {
         var spot = game.map.getSpot(x, y);
         if (spot) { spot.addClass(cl + ' stroke ' + border); }
@@ -264,7 +412,8 @@ game.map = {
       fil(w + 2, h - 3, 'right');
     }
   },
-  crossStroke: function (spot, range, width, cl) {
+  crossStroke: function (range, width, cl) {
+    var spot = this;
     var radius, x, y, r,
       fil = function (x, y, border) {
         var spot = game.map.getSpot(x, y);
@@ -279,25 +428,33 @@ game.map = {
     fil(w - range, h, 'left');
     fil(w + range, h, 'right');
 
-    for (r = 1; r <= range; r += 1) {
+    if (width == 1) {
+      fil(w + width, h + range, 'bottom'); fil(w - width, h + range, 'bottom'); 
+      fil(w + width, h - range, 'top');    fil(w - width, h - range, 'top');
+      fil(w - range, h + width, 'left');   fil(w - range, h - width, 'left');
+      fil(w + range, h + width, 'right');  fil(w + range, h - width, 'right');
+    }
+
+    for (r = 1 + width; r <= range; r += 1) {
       fil(w - width, h + r, 'left');
       fil(w + width, h + r, 'right');
     }
-    for (r = 1; r <= range; r += 1) {
+    for (r = 1 + width; r <= range; r += 1) {
       fil(w - width, h - r, 'left');
       fil(w + width, h - r, 'right');
     }
-    for (r = 1; r <= range; r += 1) {
+    for (r = 1 + width; r <= range; r += 1) {
       fil(w + r, h - width, 'top');
       fil(w + r, h + width, 'bottom');
     }
-    for (r = 1; r <= range; r += 1) {
+    for (r = 1 + width; r <= range; r += 1) {
       fil(w - r, h - width, 'top');
-      fil(w - r, h - width, 'bottom');
+      fil(w - r, h + width, 'bottom');
     }
 
   },
-  linearStroke: function (spot, range, width, cl) {
+  linearStroke: function (range, width, cl) {
+    var spot = this;
     var radius, x, y, r,
       fil = function (x, y, border) {
         var spot = game.map.getSpot(x, y);
@@ -305,49 +462,128 @@ game.map = {
       },
       cw = game.map.getX(spot),
       ch = game.map.getY(spot),
-      w = game.map.getX(game.castpos),
-      h = game.map.getY(game.castpos);
+      w = game.map.getX(game.skill.castsource),
+      h = game.map.getY(game.skill.castsource);
     if (ch - h > 0) {
       fil(w, h + range, 'bottom');
+      if (width == 1) {
+        fil(w + 1, h + 1, 'top');
+        fil(w - 1, h + 1, 'top');
+        fil(w + 1, h + range, 'bottom');
+        fil(w - 1, h + range, 'bottom');
+      }
       for (r = 1; r <= range; r += 1) {
         fil(w - width, h + r, 'left');
         fil(w + width, h + r, 'right');
       }
     }
-    if (ch - h < 0) {
+    else if (ch - h < 0) {
       fil(w, h - range, 'top');
+      if (width == 1) {
+        fil(w + 1, h - 1, 'bottom');
+        fil(w - 1, h - 1, 'bottom');
+        fil(w + 1, h - range, 'top');
+        fil(w - 1, h - range, 'top');
+      }
       for (r = 1; r <= range; r += 1) {
         fil(w - width, h - r, 'left');
         fil(w + width, h - r, 'right');
       }
     }
-    if (cw - w > 0) {
+    else if (cw - w > 0) {
       fil(w + range, h, 'right');
+      if (width == 1) {
+        fil(w + 1, h - 1, 'left');
+        fil(w + 1, h + 1, 'left');
+        fil(w + range, h - 1, 'right');
+        fil(w + range, h + 1, 'right');
+      }
       for (r = 1; r <= range; r += 1) {
         fil(w + r, h - width, 'top');
         fil(w + r, h + width, 'bottom');
       }
     }
-    if (cw - w < 0) {
+    else if (cw - w < 0) {
       fil(w - range, h, 'left');
+      if (width == 1) {
+        fil(w - 1, h - 1, 'right');
+        fil(w - 1, h + 1, 'right');
+        fil(w - range, h - 1, 'left');
+        fil(w - range, h + 1, 'left');
+      }
       for (r = 1; r <= range; r += 1) {
         fil(w - r, h - width, 'top');
-        fil(w - r, h - width, 'bottom');
+        fil(w - r, h + width, 'bottom');
       }
     }
   },
-  getRange: function (att) {
-    var range = att;
-    if (att === game.data.ui.ortho)  { range = 1; }
-    if (att === game.data.ui.melee)  { range = 2; }
-    if (att === game.data.ui.short)  { range = 3; }
-    if (att === game.data.ui.ranged) { range = 4; }
-    if (att === game.data.ui.long)   { range = 5; }
+  getRangeInt: function (range) {
+    var r = 0;
+    if (range === game.data.ui.small)  { r = 1; }
+    if (range === game.data.ui.melee)  { r = 2; }
+    if (range === game.data.ui.short)  { r = 3; }
+    if (range === game.data.ui.ranged) { r = 4; }
+    if (range === game.data.ui.long)   { r = 5; }
+    return r;
+  },
+  getRangeStr: function (r) {
+    var range = '';
+    if (r === 1) { range = game.data.ui.small; }
+    if (r === 2) { range = game.data.ui.melee; }
+    if (r === 3) { range = game.data.ui.short; }
+    if (r === 4) { range = game.data.ui.ranged; }
+    if (r === 5) { range = game.data.ui.long; }
     return range;
   },
   clear: function () {
     game.highlight.clearMap();
     game.map.el.removeClass('night');
     $('.map .spot').removeClass('block playerarea enemyarea fountain jungle cript').addClass('free');
+  },
+  cardsInRange: function (range, cb) {
+    this.inRange(range, function (spot) {
+      var card = spot.find('.card');
+      if (card.length) cb(card);
+    });
+  },
+  opponentsInRange: function (range, cb, source) {
+    var side = source ? source.side() : this.side();
+    var opponent = game.opponent(side);
+    this.inRange(range, function (spot) {
+      var card = spot.find('.card.'+opponent);
+      if (card.length) cb(card);
+    });
+    return this;
+  },
+  alliesInRange: function (range, cb) {
+    var side = this.side();
+    this.inRange(range, function (spot) {
+      var card = spot.find('.card.'+side);
+      if (card.length) cb(card);
+    });
+    return this;
+  },
+  firstFreeSpotInLine: function (target, range) {
+    var source = this,
+        dir = source.getDirectionObj(target);
+    for (var i = 1; i <= range; i += 1) {
+      var x = game.map.getX(source) + (i * dir.x),
+          y = game.map.getY(source) + (i * dir.y);
+      var spot = game.map.getSpot(x, y);
+      if (spot && spot.hasClass('free')) return spot;
+    }
+  },
+  firstCardInLine: function (target, range) {
+    var source = this,
+        dir = source.getDirectionObj(target);
+    for (var i = 1; i <= range; i += 1) {
+      var x = game.map.getX(source) + (i * dir.x),
+          y = game.map.getY(source) + (i * dir.y);
+      var spot = game.map.getSpot(x, y);
+      if (spot) {
+        var card = spot.find('.card');
+        if (card.length) return card;
+      }
+    }
   }
 };

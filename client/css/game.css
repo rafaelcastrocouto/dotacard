@@ -15,7 +15,7 @@ body, p, noscript {
   src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(../fonts/Julius-Sans-One.woff2) format('woff2'), url(../fonts/Julius-Sans-One.woff) format('woff');
 }
 h1, h2, .button,
-.options span, .options span {
+.options span, .topbar * {
   font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
 @font-face {
@@ -393,3 +393,19 @@ label span {
    background-image: url("../img/skills/ethereal.jpg")
 }
 
+.shake {
+  position: relative;
+  animation: shake 0.1s infinite linear;
+}
+@keyframes shake {
+  0% {transform: translateX(3px);}
+  50% {transform: translateX(-3px);}
+}
+
+.card.shake {
+  animation: cardshake 0.1s infinite linear;
+}
+@keyframes cardshake {
+  0% {left: calc(50% + 10px);}
+  50% {left: calc(50% - 10px);}
+}

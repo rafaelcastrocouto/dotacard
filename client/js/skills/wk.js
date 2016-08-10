@@ -102,6 +102,7 @@ game.skills.wk = {
       wk.data('wk-ult-spot', null);
       if (game.mode == 'library') skill.appendTo(game[side].skills.sidehand);
       else skill.appendTo(game[side].skills.sidehand);
+      game.shake();
     }
   }
 };

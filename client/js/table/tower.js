@@ -14,7 +14,7 @@ game.tower = {
     });
     tower.on('mousedown touchstart', game.card.select);
     tower.place(pos);
-    game.map.around(pos, game.map.getRange(game.data.ui.ranged), function (spot) {
+    tower.around(tower.data('range'), function (spot) {
       spot.addClass(side + 'area');
     });
     return tower;
@@ -24,8 +24,8 @@ game.tower = {
     game.player.tower = game.tower.build('player', p);
     game.enemy.tower = game.tower.build('enemy', game.map.mirrorPosition(p));
     p = 'A6';
-    $('#' + p).addClass('fountain player').attr({title: 'Player Fountain'});
-    $('#' + game.map.mirrorPosition(p)).addClass('fountain enemy').attr({title: 'Enemy Fountain'});
+    $('#' + p).addClass('fountain fountainplayer').attr({title: 'Player Fountain'});
+    $('#' + game.map.mirrorPosition(p)).addClass('fountain fountainenemy').attr({title: 'Enemy Fountain'});
   },
   attack: function (side) {
     var from, to,
@@ -43,8 +43,8 @@ game.tower = {
     if (!lowestHp.notfound) {
       game[attacker].tower.attack(lowestHp);
       if (game.mode === 'online') {
-        from = game.map.getPosition(game[attacker].tower);
-        to = game.map.getPosition(lowestHp);
+        from = game[attacker].tower.getPosition();
+        to = lowestHp.getPosition();
         game.currentMoves.push('A:' + from + ':' + to);
       }
     }

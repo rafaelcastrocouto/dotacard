@@ -4,11 +4,12 @@ game.skills.pud = {
       var side = source.side(),
         range = skill.data('aoe range'),
         hooked = source.firstCardInLine(target, range);
-      if (hooked && hooked.hasClasses('heroes units')) {
-        source.damage(skill.data('damage'), hooked, skill.data('damage type'));
-        var destination = source.firstFreeSpotInLine(target, range);
-        hooked.stopChanneling();
-        hooked.move(destination);
+      if (hooked && hooked.hasClasses('heroes units') && !hooked.hasClasses('ghost towers')) {
+        if (hooked.side() !== side) {
+          source.damage(skill.data('damage'), hooked, skill.data('damage type'));
+          hooked.stopChanneling();
+        }
+        hooked.move(target);
       }
     }
   },
@@ -66,7 +67,7 @@ game.skills.pud = {
       target.addClass('disabled');
       target.stopChanneling();
       source.on('channel', this.channel);
-      source.on('channelEnd', this.channelEnd);
+      source.on('channelend', this.channelend);
     },
     channel: function (event, eventData) {
       var source = eventData.source;
@@ -75,7 +76,7 @@ game.skills.pud = {
       source.damage(skill.data('dot'), target, skill.data('damage type'));
       game.audio.play('pud/ult-channel');
     },
-    channelEnd: function (event, eventData) {
+    channelend: function (event, eventData) {
       var source = eventData.source;
       var target = eventData.target;
       source.removeClass('pud-ult');

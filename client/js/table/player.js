@@ -8,14 +8,14 @@ game.player = {
         if (game.mode == 'library') {
           var card = deck.data('cards')[0];
           game.library.hero = card.addClass('player').on('mousedown touchstart', game.card.select);
-          card.place(game.map.toId(4, 4));
+          card.place(game.map.toPosition(4, 4));
           card.on('action', game.library.action).on('death', game.library.action);
         } else {
           var x = 1, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
             card.addClass('player').on('mousedown touchstart', game.card.select);
-            card.place(game.map.toId(x + p, y));
+            card.place(game.map.toPosition(x + p, y));
             if (game.mode == 'online') card.on('action', game.online.action);
             if (game.mode == 'tutorial') card.on('select', game.tutorial.selected);
           });
@@ -41,8 +41,14 @@ game.player = {
       card.appendTo(game.player.skills.sidehand);
     }
   },
+  buyCards: function (n) {
+    for (var i=0; i<n; i++) {
+      if (game.player.skills.hand.children().length < game.player.maxCards) {
+        game.player.buyCard();
+      }
+    }
+  },
   buyHand: function () {
-    if (game.player.cardsPerTurn === 0) game.skill.calcMana('player');
     for (var i = 0; i < game.player.cardsPerTurn; i += 1) {
       if (game.player.skills.hand.children().length < game.player.maxCards) {
         game.player.buyCard();
@@ -51,30 +57,30 @@ game.player = {
   },
   move: function () {
     var spot = $(this),
-      card = game.selectedCard, 
-      from = game.map.getPosition(card),
-      to = game.map.getPosition(spot);
-    if (!game.states.table.el.hasClass('unturn') && 
-        spot.hasClass('free') && 
-        from !== to && 
+      card = game.selectedCard,
+      from = card.getPosition(),
+      to = spot.getPosition();
+    if (game.isPlayerTurn() &&
+        spot.hasClass('free') &&
+        from !== to &&
         !card.hasClass('done')) {
       card.move(to);
-      if (card.hasClass('player')) card.addClass('done').removeClass('draggable');
+      card.removeClass('draggable').addClass('done');
       if (game.mode == 'online') game.currentMoves.push('M:' + from + ':' + to);
     }
   },
   attack: function () {
     var target = $(this),
       source = game.selectedCard,
-      from = game.map.getPosition(source),
-      to = game.map.getPosition(target);
-    if (!game.states.table.el.hasClass('unturn') && 
+      from = source.getPosition(),
+      to = target.getPosition();
+    if (game.isPlayerTurn() &&
         source.data('damage') && 
         from !== to && 
         !source.hasClass('done') && 
         target.data('current hp')) {
       source.attack(target);
-      if (source.hasClass('player')) source.addClass('done').removeClass('draggable');
+      source.addClass('done').removeClass('draggable');
       if (game.mode == 'online') game.currentMoves.push('A:' + from + ':' + to);
     }
   },
@@ -83,9 +89,8 @@ game.player = {
       skill = game.selectedCard,
       hero = skill.data('hero'),
       skillid = skill.data('skill'),
-      to = game.map.getPosition(target);
-    if (hero && skillid && 
-       !game.states.table.el.hasClass('unturn')) {
+      to = target.getPosition();
+    if (game.isPlayerTurn() && hero && skillid) {
       skill.passive(target);
       game.currentMoves.push('P:' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, target);
@@ -96,9 +101,8 @@ game.player = {
       skill = game.selectedCard,
       hero = skill.data('hero'),
       skillid = skill.data('skill'),
-      to = game.map.getPosition(target);
-    if (hero && skillid && 
-        !game.states.table.el.hasClass('unturn')) {
+      to = target.getPosition();
+    if (game.isPlayerTurn() && hero && skillid) {
       skill.toggle(target);
       game.currentMoves.push('T:' + to + ':' + skillid + ':' + hero);
       game.states.table.animateCast(skill, target);
@@ -108,16 +112,15 @@ game.player = {
     var target = $(this),
       skill = game.selectedCard,
       source = $('.map .source'),
-      from = game.map.getPosition(source),
-      to = game.map.getPosition(target),
+      from = source.getPosition(),
+      to = target.getPosition(),
       hero = skill.data('hero'),
       skillid = skill.data('skill');
-    if (hero && skillid && from && to && 
-       !game.states.table.el.hasClass('unturn') && 
-       !source.hasClass('done')) {
+    if (game.isPlayerTurn() &&
+        hero && skillid && from && to &&
+        !source.hasClass('done')) {
       source.cast(skill, to);
-      if (source.hasClass('player') &&
-          skill.data('type') !== game.data.ui.instant) {
+      if (skill.data('type') !== game.data.ui.instant) {
         source.addClass('done').removeClass('draggable');
       }
       game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);

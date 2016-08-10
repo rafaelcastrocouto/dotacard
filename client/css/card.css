@@ -116,7 +116,7 @@
 
 .card h1 {
   cursor: inherit;
-  margin: 8px 0 4px;
+  margin: 6px 0 2px;
   font-size: 12px;
   font-weight: bold;
   float: left;
@@ -126,7 +126,6 @@
 .card .current {
   position: absolute;
   right: 6px;
-  padding-top: 2px;
 }
 .card .current p {
   font-size: 12px;
@@ -176,14 +175,18 @@
   line-height: 13px;
   display: block;
 }
-
+.card.heroes .description {
+  font-size: 12px;
+  margin-top: 5px;
+}
 .card .description {
   font-style: italic;
   font-size: 10px;
   letter-spacing: -1px;
   word-spacing: 1px;
-  margin-top: 2px;
+  margin-top: 1px;
   margin-right: 2px;
+  line-height: 12px;
 }
 
 .card.player {
@@ -241,7 +244,8 @@
 .map .card.enemy.heroes.done.selected {
   box-shadow: 0 0 0 10px gold;
 }
-.card .damaged {
+.card .damaged,
+.card .missed {
   z-index: 16;
   color: gold;
   position: absolute;
@@ -260,9 +264,24 @@
      10px -10px white,
     -10px -10px white;
 }
-.card .damaged.critical {
+.card .damaged.critical,
+.card .missed {
   color: orangered;
-  animation: slideupcrit 2s linear;
+  animation: slideup 4s linear;
+}
+.card .missed {
+  animation: slideup 2s linear;
+  font-size: 80px;
+  text-shadow:
+     4px   0   white,
+    -4px   0   white,
+      0    4px white,
+      0   -4px white,
+     4px   4px white,
+    -4px   4px white,
+     4px  -4px white,
+    -4px  -4px white;
+
 }
 @keyframes slideupcrit {
   0% {top: -180px;opacity: 1;}
@@ -303,7 +322,7 @@
 }
 .card .buffs {
   position: absolute;
-  bottom: 4px;
+  bottom: 6px;
   left: 9px;
 }
 .card .buffs .buff {
@@ -332,7 +351,8 @@
   transform: translate(-50%, -50%) scale(0.5);
 }
 
-.table .deck .card.on {
+.table .deck .card.on,
+.table .deck .card.channel-on {
   transform: translate(-50%, -53.5%) scale(0.4);
 }
 .table .deck .card.selected {

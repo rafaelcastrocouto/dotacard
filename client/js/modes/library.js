@@ -1,5 +1,23 @@
 game.library = {
   build: function () {
+    game.library.buildSkills();
+    game.states.choose.pickedbox.show();
+    game.states.choose.librarytest.show();
+    game.states.choose.randombt.hide();
+    game.states.choose.mydeck.hide();
+    game.states.choose.counter.show();
+    game.loader.removeClass('loading');
+    $('.slot').removeClass('available');
+    game.message.text(game.data.ui.library);
+    game.states.choose.counter.text(game.data.ui.skills);
+    game.seed = new Date().valueOf();
+    game.id = btoa(game.seed);
+    game.enemy.name = 'axe';
+    game.enemy.type = 'challenger';
+    game.player.type = 'challenged';
+    $('.choose .buffs').hide();
+  },
+  buildSkills: function () {
     if (!game.library.skills) {
       game.library.skills = game.deck.build({
         name: 'skills',
@@ -12,23 +30,6 @@ game.library = {
         }
       });
     }
-    game.states.choose.pickedbox.show();
-    game.states.choose.librarytest.show();
-    game.states.choose.randombt.hide();
-    game.states.choose.mydeck.hide();
-    game.states.choose.counter.show();
-    game.loader.removeClass('loading');
-    $('.slot').removeClass('available');
-    game.library.start();
-  },
-  start: function () {
-    game.message.text(game.data.ui.library);
-    game.states.choose.counter.text(game.data.ui.skills);
-    game.seed = new Date().valueOf();
-    game.id = btoa(game.seed);
-    game.enemy.name = 'axe';
-    game.enemy.type = 'challenger';
-    game.player.type = 'challenged';
   },
   chooseStart: function (hero) {
     if (hero) game.states.choose.selectHero(hero, 'force');
@@ -51,6 +52,7 @@ game.library = {
       });
       game.states.choose.pickedbox.hide().fadeIn('slow');
       $('.slot:empty').hide();
+      game.states.choose.librarytest.attr('disabled', !!card.data('disable'));
     }
   },
   setTable: function () {
@@ -135,5 +137,6 @@ game.library = {
     game.seed = 0;
     game.id = null;
     game.moves = [];
+    $('.choose .buffs').show();
   }
 };

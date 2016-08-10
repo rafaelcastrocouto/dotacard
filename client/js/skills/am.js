@@ -9,7 +9,7 @@ game.skills.am = {
       var source = eventdata.source;
       var target = eventdata.target;
       var hero = target.data('hero');
-      var opponent = target.opponent();
+      var opponent = target.side();
       var mana = target.data('mana');
       game.audio.play('am/burn');
       if (mana) source.damage(target.data('mana'), target, game.data.ui.pure);
@@ -34,12 +34,14 @@ game.skills.am = {
       var maxCards = game[opponent].maxSkillCards();
       var cardsInHand = game[opponent].cardsInHand();
       var multiplier = skill.data('multiplier');
+      var damage = skill.data('damage');
       var mana = target.data('mana');
       var damageBonus = (maxCards - cardsInHand) * multiplier;
       target.alliesInRange(range, function (targets) {
-        source.damage(damage, targets, skill.data('damage type'));
+        source.damage(damage + damageBonus, targets, skill.data('damage type'));
       });
       target.stopChanneling();
+      game.shake();
     }
   }
 };
