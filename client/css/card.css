@@ -586,7 +586,12 @@
 .card.enemy.towers .img {
   background-image: url("../img/towers/tower-enemy.jpg");
 }
-
+.map .card.enemy.towers .img {
+  background-position: 70% 50%
+}
+.map .card.player.towers .img {
+  background-position: 40% 50%
+}
 /*UNITS*/
 
 .card.trees {
