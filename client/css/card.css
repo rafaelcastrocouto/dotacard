@@ -68,7 +68,7 @@
 }
 
 .card:hover {
-  z-index: 2;
+  z-index: 10;
 }
 
 .card legend {
@@ -210,16 +210,16 @@
 .card.player.heroes.selected,
 .card.player.towers.selected {
   box-shadow: 0 0 0 10px springgreen;
-  z-index: 5;
+  z-index: 2;
 }
 .card.enemy.heroes.selected,
 .card.enemy.towers.selected {
   box-shadow: 0 0 0 10px orangered;
-  z-index: 5;
+  z-index: 2;
 }
 .card.skills.selected {
   box-shadow: 0 0 0 6px skyblue;
-  z-index: 6;
+  z-index: 2;
 }
 .card.tree.selected {
   box-shadow: 0 0 0 10px palegreen;
@@ -246,7 +246,7 @@
 }
 .card .damaged,
 .card .missed {
-  z-index: 16;
+  z-index: 20;
   color: gold;
   position: absolute;
   opacity: 0;
@@ -289,7 +289,7 @@
   100% {top: -300px;opacity: 0;}
 }
 .card .heal {
-  z-index: 17;
+  z-index: 21;
   color: springgreen;
   position: absolute;
   opacity: 0;
@@ -341,10 +341,9 @@
 
 .table .deck .card {
   top: 50%;
-  left: 50%;
+  left: 40px;
   transform: translate3d(-50%, -50%, 0) scale(0.4);
   margin-right: -140px;
-  left: 40px;
 }
 .table .deck .card:hover,
 .table .deck .card.on:hover {
@@ -359,10 +358,44 @@
   transform: translate(-50%, -50%) scale(0.5);
 }
 
-.table .enemy .card.flipped {
+.table .enemy .skills .card {
+  animation: enemybuyslide 2s;
+}
+@keyframes enemybuyslide {
+  0% {left: -1000px; top: 150%;}
+  30% {left: 40px; top: 150%;}
+  100% {left: 40px; top: 50%;}
+}
+
+.table .enemy .skills .card.showMoves {
+  left: -1000px; top: 150%;
+  animation: enemyshowslide 2s;
+}
+@keyframes enemyshowslide {
+  0% {left: 40px; top: 50%;}
+  70% {left: 40px; top: 150%;}
+  100% {left: -1000px; top: 150%;}
+}
+.states .table .card.flipped {
+  pointer-events: none;
+  transform: translate3d(-50%,-50%,0) scale(0.4) rotateY(180deg);
+  backface-visibility: hidden;
+}
+
+.states .table .card.flipped:after {
+  content:"";
+  display: block;
+  background: white;
+  width: 200px;
+  height: 300px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  transform: rotateY(180deg);
+  border-radius: 8px;
   background-image: url(../img/cardback.jpg);
   background-size: cover;
-  pointer-events: auto;
+  z-index: 29;
 }
 .table .enemy .hand .card {
   margin-right: -158px;
@@ -370,55 +403,23 @@
 .table .enemy .sidehand .card {
   margin-right: -150px;
 }
-.table .showMoves .card {
-  margin-right: -100px;
-  background: #8768a6;
-  transform: translate3d(-50%, -50%, 0) scale(0.7);
+
+.table .player .skills .card {
+  animation: playerbuyslide 2s;
 }
-.table .enemy .card.flipped > * {
-  display: none;
+@keyframes playerbuyslide {
+  0% {left: -1000px; top: -50%;}
+  30% {left: 40px; top: -50%;}
+  100% {left: 40px; top: 50%;}
 }
 
-
-/*
-.table .player.skills.hand .card:nth-child(1) {
-  transform: scale(0.4) rotate(-18deg);
-}
-.table .player.skills.hand .card:nth-child(2) {
-  transform: scale(0.4) rotate(-14deg);
-}
-.table .player.skills.hand .card:nth-child(3) {
-  transform: scale(0.4) rotate(-10deg);
-}
-.table .player.skills.hand .card:nth-child(4) {
-  transform: scale(0.4) rotate(-6deg);
-}
-.table .player.skills.hand .card:nth-child(5) {
-  transform: scale(0.4) rotate(-2deg);
-}
-.table .player.skills.hand .card:nth-child(6) {
-  transform: scale(0.4) rotate(2deg);
-}
-.table .player.skills.hand .card:nth-child(7) {
-  transform: scale(0.4) rotate(6deg);
-}
-.table .player.skills.hand .card:nth-child(8) {
-  transform: translate(-50%, -46%) scale(0.4) rotate(10deg);
-}
-.table .player.skills.hand .card:nth-child(9) {
-  transform: translate(-50%, -42%) scale(0.4) rotate(14deg);
-}
-.table .player.skills.hand .card:nth-child(10) {
-  transform: translate(-50%, -36%) scale(0.4) rotate(18deg);
-}
-*/
 .table .player.skills.sidehand.deck .card.on {
   transform: translate(-50%, -50%) scale(0.45);
 }
 .table .player.skills.sidehand.deck .card.on:hover,
 .table .deck.player.skills.hand .card:hover {
   transform: translate(-50%, -50%) scale(0.5);
-  z-index: 8;
+  z-index: 11;
 }
 
 .selectedarea .selectedcard {
@@ -468,7 +469,7 @@
   display: none;
 }
 .table .deck.skills.enemy .card {
-  z-index: 6;
+  z-index: 3;
   margin-right: -100px;
 }
 
@@ -509,7 +510,7 @@
 .card.dragTargetClone {
   transition: transform 0.2s;
   position: absolute;
-  z-index: 25;
+  z-index: 30;
   transform-origin: 0 0;
   pointer-events: none;
 }

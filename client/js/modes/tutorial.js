@@ -57,6 +57,7 @@ game.tutorial = {
     if (availableSlots) {
       game.states.choose.counter.text(availableSlots + ' ' + game.data.ui.togo);
     } else {
+      game.states.choose.back.attr('disabled', true);
       game.loader.addClass('loading');
       game.message.text(game.data.ui.loadingdeck);
       game.states.choose.counter.text(game.data.ui.getready);
@@ -179,7 +180,7 @@ game.tutorial = {
     game.tutorial.axe.addClass('left');
     game.tutorial.message.html(game.data.ui.axeendturn);
   },
-  enemyTime: 6000,
+  enemyTime: 5000,
   skip: function () {
     game.states.table.skip.removeClass('tutorialblink');
     $('.map .heroes.player').removeClass('tutorialblink');
@@ -203,6 +204,7 @@ game.tutorial = {
   },
   wait: function () {
     game.enemy.buyHand();
+    $('.enemy .am-blink').first().appendTo(game.enemy.skills.hand);
     game.message.removeClass('tutorialblink');
     game.turn.time.addClass('tutorialblink');
     game.tutorial.waited = true;
@@ -229,9 +231,10 @@ game.tutorial = {
     game.message.html(game.data.ui.enemymove);
     game.audio.play('tutorial/axewait');
     game.currentData.moves = [
-      'M:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('C3'),
-      'M:'+game.map.mirrorPosition('F2')+':'+game.map.mirrorPosition('F3'),
-      'M:'+game.map.mirrorPosition('H2')+':'+game.map.mirrorPosition('G3')
+      'C:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('G3')+':blink:am',
+      'M:'+game.map.mirrorPosition('E2')+':'+game.map.mirrorPosition('D3'),
+      'M:'+game.map.mirrorPosition('F2')+':'+game.map.mirrorPosition('E3'),
+      'M:'+game.map.mirrorPosition('H2')+':'+game.map.mirrorPosition('H3')
     ].join('|');
     game.enemy.move();
   },
@@ -346,6 +349,7 @@ game.tutorial = {
     game.tutorial.lesson = '';
     game.tutorial.started = false;
     game.tutorial.waited = false;
+    game.states.choose.back.attr('disabled', false);
     localStorage.removeItem('mode');
     if (game.tutorial.axe) {
       game.tutorial.axe.appendTo(game.states.choose.el);

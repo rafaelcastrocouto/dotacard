@@ -1,5 +1,5 @@
 .map {
-  z-index: 1;
+  z-index: 0;
   background-repeat: no-repeat;
   background-position: 40% 25%;
   background-size: 140%;
@@ -20,11 +20,11 @@
   filter: brightness(0.85);
   -webkit-filter: brightness(0.85);
 }
-
+/*
 .unturn .map {
-/*   opacity: 0.85; */
+  opacity: 0.85; 
 }
-
+*/
 .map .row {
   width: 2544px; height: 312px;
 }
@@ -77,12 +77,24 @@
   background: rgba(255,255,100,0.25);
 }
 
+.map .spot .debug {
+  display: none;
+}
+.debug .map .spot .debug {
+  opacity: 0.3;
+  display: block;
+  font-size: 64px;
+  transform: translate3d(10px, 30px, 10px);
+  pointer-events: none;
+}
+
+/*
 .map canvas.fx {
   pointer-events: none;
   position: absolute;
   top: -1000px; left: -1000px;
 }
-
+*/
 /*TARGETS*/
 
 .map .spot.movearea {
@@ -154,7 +166,7 @@
 
 .map .attacktarget:after,
 .map .attacktarget:before {
-  z-index: 4;
+  z-index: 11;
   position: absolute;
   content:"";
   display: block;
@@ -220,7 +232,7 @@
 
 .map .targetarea:after,
 .map .targetarea:before {
-  z-index: 4;
+  z-index: 11;
   position: absolute;
   content:"";
   display: block;
@@ -301,7 +313,7 @@
 }
 .map .casttarget:after,
 .map .casttarget:before {
-  z-index: 4;
+  z-index: 11;
   position: absolute;
   content:"";
   display: block;
@@ -384,28 +396,28 @@
 .map .spot.stroke.enemyattack.right {
   border-right: 6px solid orangered;
 }
-.map .spot.stroke.skillcast.top {
+.map .spot.stroke.skillhoverstroke.top {
   border-top: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.bottom {
+.map .spot.stroke.skillhoverstroke.bottom {
   border-bottom: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.left {
+.map .spot.stroke.skillhoverstroke.left {
   border-left: 6px solid springgreen;
 }
-.map .spot.stroke.skillcast.right {
+.map .spot.stroke.skillhoverstroke.right {
   border-right: 6px solid springgreen;
 }
-.map .spot.stroke.skillarea.top {
+.map .spot.stroke.skillstroke.top {
   border-top: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.bottom {
+.map .spot.stroke.skillstroke.bottom {
   border-bottom: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.left {
+.map .spot.stroke.skillstroke.left {
   border-left: 6px solid dodgerblue;
 }
-.map .spot.stroke.skillarea.right {
+.map .spot.stroke.skillstroke.right {
   border-right: 6px solid dodgerblue;
 }
 

@@ -119,7 +119,6 @@ noscript {
   top: 50%;
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
-  z-index: 2;
   color: #fff;
   background: url("../img/banner.jpg");
   background-size: 111%;
@@ -276,7 +275,7 @@ button:hover,
 input[type=button]:hover, 
 input[type=submit]:hover {
   background: #aab2a3;
-  z-index: 11;
+  z-index: 20;
 }
 .button:active, 
 button:active,
@@ -300,7 +299,7 @@ input[type=button][disabled]:hover,
 input[type=submit][disabled]:hover {
   cursor: default;
   background: darkgray;
-  z-index: 1;
+  z-index: 0;
 }
 .button[disabled]:active,
 button[disabled]:active,

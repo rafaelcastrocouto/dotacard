@@ -14,7 +14,7 @@ game.highlight = {
     if (game.selectedCard) {
       if (game.selectedCard.hasClasses('heroes units')) {
         game.selectedCard.strokeAttack();
-        if (!game.states.table.el.hasClass('unturn')) {
+        if (game.isPlayerTurn()) {
           if (game.mode == 'tutorial') {
             if (game.tutorial.lesson == 'Move') {
               game.selectedCard.highlightMove();
@@ -28,7 +28,8 @@ game.highlight = {
         }
       } else if (game.selectedCard.hasClass('skills')) {
         if (game.selectedCard.closest('.hand').length &&
-            game.mode == 'online') {
+            game.mode == 'online' &&
+            game.isPlayerTurn()) {
           game.states.table.discard.attr('disabled', false);
         }
         game.selectedCard.highlightSource();
@@ -36,12 +37,12 @@ game.highlight = {
           game.selectedCard.strokeSkill();
           game.selectedCard.highlightArrows();
         }
-        if (!game.states.table.el.hasClass('unturn')) {
+        if (game.isPlayerTurn()) {
           if (game.mode == 'tutorial') {
             if (game.tutorial.lesson == 'Skill' && game.selectedCard.hasClass('am-shield') ||
                 game.tutorial.lesson == 'Toggle' && game.selectedCard.hasClass('pud-rot') ||
                 game.tutorial.lesson == 'Cast' && game.selectedCard.hasClass('cm-slow')) {
-              game.selectedCard.highlightTargets();
+              game.selectedCard.highlightTargets(event);
             }
           } else game.selectedCard.highlightTargets(event);
         }
@@ -237,12 +238,12 @@ game.highlight = {
         $('.map .spot').on('mouseover.highlight mouseleave.highlight', game.highlight.hover);
       }
       if (game.skill.aoe === game.data.ui.linear) {
-        source.crossStroke(game.skill.aoerange, game.skill.aoewidth, 'skillarea');
+        source.crossStroke(game.skill.aoerange, game.skill.aoewidth, 'skillstroke');
         if (game.skill.castrange && !skill.hasClass('channel-on')) {
-          source.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillarea');
+          source.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillstroke');
         }
-      } else {
-        source.radialStroke(game.skill.castrange, 'skillarea');
+      } else if (game.skill.castrange){
+        source.radialStroke(game.skill.castrange, 'skillstroke');
       }
     }
     return skill;
@@ -250,10 +251,9 @@ game.highlight = {
   hover: function (event) {
     var spot = $(this);
     if (game.map.el.hasClass('aoe')) {
-      $('.map .spot').removeClass('skillarea skillcast stroke top right left bottom toparrow bottomarrow leftarrow rightarrow');
+      $('.map .spot').removeClass('skillstroke skillhoverstroke stroke top right left bottom toparrow bottomarrow leftarrow rightarrow');
       $('.map .card').removeClass('toparrow bottomarrow leftarrow rightarrow');
       if (spot.hasClass('targetarea') || spot.find('.casttarget').length) {
-        
         game.highlight.strokeAtCursor(spot);
       } else game.highlight.strokeAtCaster();
     }
@@ -261,19 +261,19 @@ game.highlight = {
   strokeAtCursor: function (spot) {
     game.selectedCard.highlightArrows(spot);
     if (game.skill.aoe === game.data.ui.linear) {
-      spot.linearStroke(game.skill.aoerange, game.skill.aoewidth, 'skillcast');
-      game.skill.castsource.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillarea');
+      spot.linearStroke(game.skill.aoerange, game.skill.aoewidth, 'skillhoverstroke');
+      game.skill.castsource.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillstroke');
     } else if (game.skill.aoe === game.data.ui.radial) {
-      spot.radialStroke(game.skill.aoerange, 'skillcast');
+      spot.radialStroke(game.skill.aoerange, 'skillhoverstroke');
     }
   },
   strokeAtCaster: function () {
     game.selectedCard.highlightArrows();
     if (game.skill.aoe === game.data.ui.linear) {
-      game.skill.castsource.crossStroke(game.skill.aoerange, game.skill.aoewidth, 'skillarea');
-      game.skill.castsource.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillarea');
+      game.skill.castsource.crossStroke(game.skill.aoerange, game.skill.aoewidth, 'skillstroke');
+      game.skill.castsource.crossStroke(game.skill.castrange, game.skill.castwidth, 'skillstroke');
     } else if (game.skill.aoe === game.data.ui.radial) {
-      game.skill.castsource.radialStroke(game.skill.castrange, 'skillarea');
+      game.skill.castsource.radialStroke(game.skill.castrange, 'skillstroke');
     }
   },
   highlightArrows: function (spot) {
@@ -322,6 +322,6 @@ game.highlight = {
     game.skill.castwidth = null;
     game.skill.castsource = null;
     game.map.el.removeClass('aoe');
-    $('.map .card, .map .spot').clearEvents('highlight').removeClass('source stroke attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillcast skillarea top bottom left right toparrow bottomarrow leftarrow rightarrow');
+    $('.map .card, .map .spot').clearEvents('highlight').removeClass('source stroke attacktarget casttarget movearea targetarea stroke playerattack enemyattack skillhoverstroke skillstroke top bottom left right toparrow bottomarrow leftarrow rightarrow');
   }
 };

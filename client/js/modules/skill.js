@@ -32,7 +32,7 @@ game.skill = {
       }.bind(side)
     });
     if (side === 'enemy') {
-      game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
+      game.enemy.skills.showMoves = $('<div>').insertAfter(game.states.table.enemy).addClass('deck skills showMoves');
       $('.enemy .skills .card').attr({ title: '' }).off('mousedown touchstart').addClass('flipped');
     }
   },
@@ -141,7 +141,7 @@ game.skill = {
     return this;
   },
   summon: function (skill) {
-    var unit = skill.clone().addClass('units summoned').removeClass('skills selected').on('mousedown touchstart', game.card.select);
+    var unit = skill.clone().addClass('units summoned').removeClass('skills selected flipped').on('mousedown touchstart', game.card.select);
     unit.find('.description').remove();
     unit.data('summon', skill);
     unit.data('summoner', this);

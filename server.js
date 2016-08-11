@@ -96,7 +96,7 @@ http.createServer(function(request, response) {
           return;
       }
     } else {
-      send(response, 'Db works!');
+      send(response, '{"msg": "DotaCard DB working!"}');
       return;
     }
   } else { //STATIC

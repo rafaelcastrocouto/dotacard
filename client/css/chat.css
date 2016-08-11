@@ -1,4 +1,5 @@
 .chat {
+  z-index: 19;
   background: rgba(0,0,0,0.6);
   position: absolute;
   transform: translate3d(0%,0%, 0);
@@ -9,7 +10,6 @@
   padding-left: 16px;
   color: #4d4843;
   transition: width 0.4s;
-  z-index: 10;
   box-sizing: border-box;
   width: 70px;
   height: 36px;
@@ -20,7 +20,6 @@
   bottom: 4px;
   left: -4px;
   height: auto;
-  z-index: 12;
   width: 380px;
   padding-left: 10px;
   padding-bottom: 0px;

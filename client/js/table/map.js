@@ -9,8 +9,10 @@ game.map = {
       tr = $('<div>').addClass('row ' + 'trow'+(h+1)).appendTo(map);
       for (w = 0; w < opt.width; w += 1) {
         game.map.spots[h][w] = $('<div>').attr({id: game.map.toPosition(w, h)}).addClass('free spot ' + 'row'+(h+1) + ' col'+game.map.letters[w]).appendTo(tr).on('contextmenu', game.events.cancel);
+        if (game.debug) game.map.spots[h][w].append($('<span>').addClass('debug').text(game.map.toPosition(w, h)));
       }
     }
+    if (game.debug) map.addClass('debug');
     game.map.builded = true;
     game.map.el = map;
     return map;

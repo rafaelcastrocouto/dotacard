@@ -27,8 +27,9 @@ var game = {
         window.localStorage &&
         window.btoa && window.atob &&
         window.XMLHttpRequest) {
-      game.debug = (localStorage.getItem('debug') || location.hostname == 'localhost');
-      if (game.debug) {
+      if (!game.debug) game.debug = localStorage.getItem('debug');
+      if (game.debug || location.hostname == 'localhost') {
+        game.container.addClass('debug');
         game.staticHost = '';
         game.dynamicHost = '';
       }

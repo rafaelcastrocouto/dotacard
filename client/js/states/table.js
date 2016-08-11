@@ -61,6 +61,7 @@ game.states.table = {
       game.states.table.camera.hide();
       game.states.table.buttonbox.hide();
       $('.table .deck').hide();
+      game.turn.el.removeClass('show');
       game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
       $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
       $('<h1>').appendTo(this.resultsbox).text(game.data.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));

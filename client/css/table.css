@@ -3,7 +3,6 @@
   height: 94px;
   width: 100%;
   bottom: 0;
-  z-index: 6;
   transform: translateZ(0);
 }
 
@@ -12,14 +11,13 @@
   height: 214px;
   width: 100%;
   top: 24px;
-  z-index: 6;
   transform: translateZ(0);
-  /* overflow: hidden; */
   pointer-events: none;
 }
 
 .table .enemydecks .deck {
   top: -98px;
+  perspective: 600px;
 }
 
 .table .deck {
@@ -28,26 +26,26 @@
   border-radius: 4px;
 }
 
-.table .player .skills.sidehand {
-  margin-right: 30px;
-  right: 630px;
-  width: auto;
-}
 .table .enemy .skills.sidehand {
   margin-right: 38px;
   right: 668px;
   width: auto;
 }
+.table .enemy .skills.hand {
+  right: 244px;
+  width: 424px;
+}
 
+
+.table .player .skills.sidehand {
+  margin-right: 30px;
+  right: 630px;
+  width: auto;
+}
 .table .player .skills.hand {
   left: 340px;
   width: auto;
   padding-right: 20px;
-}
-
-.table .enemy .skills.hand {
-  right: 244px;
-  width: 424px;
 }
 
 .table .selectedarea {
@@ -58,10 +56,13 @@
   right: 5px;
   border-radius: 10px;
   perspective: 600px;
-  z-index: 9;
+  z-index: 5;
   transform: translateZ(0);
 }
-
+.table .selectedarea.enemymoving {
+  opacity: 0.5;
+  pointer-events: none;
+}
 .table .buttonbox {
   position: absolute;
   right: 0;
@@ -83,18 +84,6 @@
 .table .surrender:active, .table .back:active {
   bottom: 177px;
 }
-
-.table .enemy .showMoves {
-  z-index: 6;
-  transition: all 1s;
-  left: -900px;
-  top: 50px;
-}
-
-.table .enemy .showMoves.slide {
-  left: 90px;
-}
-
 .table .camera {
   position: absolute;
   top: 50px;
@@ -107,16 +96,18 @@
   transform: translateZ(0);
 }
 
-/*.table  .camera:after {
+.table  .camera:after {
   content: "";
   display: block;
   position: absolute;
-  top: 0; left: 0;
-  width: 740px; height: 450px;
-  box-shadow: inset 0 0 20px 5px black;
+  top: 0;
+  left: 0;
+  width: 760px;
+  height: 450px;
+  box-shadow: inset 0 12px 22px rgba(0,0,0,0.6);
   pointer-events: none;
 }
-*/
+
 /*RESULTS*/
 
 .table .resultsbox {
@@ -165,7 +156,7 @@
 }
 
 .table .turntitle {
-  z-index: 15;
+  z-index: 30;
   position: absolute;
   width: 970px;
   top: 220px;
