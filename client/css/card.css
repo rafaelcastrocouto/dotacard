@@ -359,8 +359,7 @@
   transform: translate(-50%, -50%) scale(0.5);
 }
 
-.table .enemy .hand .card,
-.table .enemy .sidehand .card {
+.table .enemy .card.flipped {
   background-image: url(../img/cardback.jpg);
   background-size: cover;
   pointer-events: auto;
@@ -371,13 +370,12 @@
 .table .enemy .sidehand .card {
   margin-right: -150px;
 }
-.table .enemy .showMoves .card {
+.table .showMoves .card {
   margin-right: -100px;
   background: #8768a6;
   transform: translate3d(-50%, -50%, 0) scale(0.7);
 }
-.table .enemy .hand .card > *,
-.table .enemy .sidehand .card > * {
+.table .enemy .card.flipped > * {
   display: none;
 }
 

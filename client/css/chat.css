@@ -8,7 +8,7 @@
   padding: 8px;
   padding-left: 16px;
   color: #4d4843;
-  transition: all 0.4s;
+  transition: width 0.4s;
   z-index: 10;
   box-sizing: border-box;
   width: 70px;
@@ -25,16 +25,8 @@
   padding-left: 10px;
   padding-bottom: 0px;
 }
-
 .chat > * {
-  transition: all 0.4s;
-  height: 0;
-  width: 0;
-  opacity: 0;
-}
-.chat:hover > *,
-.chat.hover > * {
-  opacity: 1;
+  display: none;
 }
 .chat h1 {
   display: block;
@@ -48,11 +40,16 @@
 .chat.hover h1 {
   display: none;
 }
-.chat.hover .dis,
-.chat:hover .dis {
+.chat:hover .dis,
+.chat.hover .dis {
+  display: block;
+}
+
+.chat .dis {
   margin-bottom: 8px;
   border-radius: 4px;
   overflow: hidden;
+  background: #222629;
 }
 .chat.hover .dis,
 .chat:hover .dis,
@@ -60,7 +57,6 @@
 .chat:hover .dis iframe {
   width: 363px;
   height: 250px;
-  display: block;
 }
 .chat.hover .messages,
 .chat:hover .messages {
@@ -108,11 +104,14 @@
   width: 252px;
   margin: 10px 5px 8px 0;
   padding: 5px;
+  display: inline;
+  position: absolute;
+  bottom: 0;
 }
 
 .chat .button {
   top: auto;
-  bottom: 7px;
+  bottom: 9px;
   float: right;
   margin: 14px 0px 0px;
   display: none;
@@ -120,7 +119,7 @@
 }
 .chat .button:active {
   top: auto;
-  bottom: 4px;
+  bottom: 6px;
 }
 .chat.hover .button,
 .chat:hover .button {

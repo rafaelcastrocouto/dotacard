@@ -31,7 +31,9 @@ game.states = {
         newstate = game.states[state];
         if (newstate.el) {
           localStorage.setItem('state', state);
-          if (newstate.chat && game.backState !== 'log') game.chat.el.appendTo(newstate.el);
+          if (newstate.chat && game.backState !== 'log' && game.chat.el) {
+            game.chat.el.appendTo(newstate.el);
+          }
           newstate.el.append(game.topbar);
           newstate.el.show();
         }

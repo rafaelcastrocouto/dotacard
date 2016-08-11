@@ -119,10 +119,8 @@ game.states.table = {
     game.map.clear();
     $('.table .card').remove();
     $('.table .deck').remove();
-    if (this.resultsbox) {
-      this.resultsbox.remove();
-      this.resultsbox = null;
-    }
+    $('.table .resultsbox').remove();
+    this.resultsbox = null;
     this.buttonbox.show().children().hide();
     game.card.clearSelection();
     this.el.addClass('unturn').removeClass('over');

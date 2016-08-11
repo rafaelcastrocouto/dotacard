@@ -10,7 +10,7 @@
   height: 24px;
   font-size: 16px;
   line-height: 16px;
-  text-shadow: 0 1px #888;
+  text-shadow: 0 1px #666, 1px 0 #666;
   overflow: hidden;
   z-index: 15;
   transform: translateZ(0);
@@ -21,10 +21,18 @@
   top: 5px;
 }
 
-.loading .topbar, .choose .topbar, .table .topbar {
+.loading .topbar, 
+.choose .topbar, 
+.table .topbar {
   background: rgba(0,0,0,0.6);
-  text-shadow: 0 1px #222;
+  text-shadow: none;
 }
+.loading .topbar small, 
+.choose .topbar small, 
+.table .topbar small {
+  font-weight: normal;
+}
+
 .loader {
   width: 12px;
   height: 12px;
@@ -82,6 +90,7 @@
   position: absolute;
   right: 70px;
   cursor: pointer;
+  font-weight: bold;
 }
 
 .topbar .logout:hover,
@@ -110,4 +119,5 @@
   cursor: pointer;
   position: absolute;
   right: 10px;
+  font-weight: bold;
 }

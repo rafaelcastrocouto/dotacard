@@ -450,6 +450,7 @@ game.card = {
         hp = currenthp + healhp;
       if (hp > maxhp) {
         healhp = maxhp - currenthp;
+        if (healhp === 0) return;
         this.setCurrentHp(maxhp);
       } else {
         this.setCurrentHp(hp);

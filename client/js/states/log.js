@@ -18,7 +18,10 @@ game.states.log = {
   },
   start: function () {
     game.message.html('');
-    game.alert(game.data.ui.alphaalert + game.version + '</small>');
+    if (!game.states.log.alert) {
+      game.states.log.alert = true;
+      game.alert(game.data.ui.alphaalert + game.version + '</small>');
+    }
     game.states.log.out.hide();
     game.states.options.opt.show();
     game.loader.removeClass('loading');

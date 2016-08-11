@@ -33,7 +33,7 @@ game.skill = {
     });
     if (side === 'enemy') {
       game.enemy.skills.showMoves = $('<div>').appendTo(game.states.table.enemy).addClass('deck skills showMoves');
-      $('.enemy .skills').attr({ title: '' }).off('mousedown touchstart');
+      $('.enemy .skills .card').attr({ title: '' }).off('mousedown touchstart').addClass('flipped');
     }
   },
   calcMana: function (side) {

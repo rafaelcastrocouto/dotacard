@@ -86,6 +86,9 @@ http.createServer(function(request, response) {
         case 'lang':
           send(response, JSON.stringify({lang: request.headers['accept-language'] || ''})); 
           return;
+        case 'waiting':
+          send(response, JSON.stringify(waiting));
+          return;
         default:
           db.get(query.get, function(data) {
             send(response, data); //console.log('get', data) 

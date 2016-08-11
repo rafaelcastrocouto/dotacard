@@ -20,7 +20,11 @@ game.skills.kotl = {
         ghost.on('turnend.kotl-illuminate', this.turnend);
         var side = source.side();
         $('.table .'+side+' .skills .kotl-illuminate').addClass('done');
-        skill.appendTo(game[side].skills.sidehand).removeClass('done');
+        game.timeout(400, function () {
+          var side = this.side;
+          var skill = this.skill;
+          skill.appendTo(game[side].skills.sidehand).removeClass('done');
+        }.bind({side: side, skill: skill}));
       }
     },
     channelend: function (event, eventdata) {

@@ -22,13 +22,15 @@ game.online = {
     });
   },
   newId: function () {
-    game.seed = new Date().valueOf() + parseInt(Math.random() * 1000);
-    game.id = btoa(game.seed);
+    game.seed = Math.floor(Math.random() * 1E16);
+    game.id = btoa(game.seed) + '|' + btoa(new Date().valueOf());
     localStorage.setItem('seed', game.seed);
   },
   setId: function (id) {
     game.id = id;
-    game.seed = parseInt(atob(id), 10);
+    var n = id.split('|');
+    game.seed = parseInt(atob(n[0]), 10);
+    game.online.date = new Date(n[1]);
     localStorage.setItem('seed', game.seed);
   },
   recover: function () {
@@ -60,7 +62,7 @@ game.online = {
     }, function () {
       game.message.text(game.data.ui.waiting);
       game.tries = 0;
-      game.online.searching();
+      setTimeout(game.online.searching, 1000);
     });
   },
   searching: function () {
@@ -68,7 +70,7 @@ game.online = {
       game.db({ 'get': game.id }, function (found) {
         // asking challenger name
         var name = found.challenger;
-        if (name) game.online.newChallenger(name);
+        if (name) game.online.newChallengerFound(name);
         else {
           game.triesCounter.text(game.tries += 1);
           if (game.tries > game.waitLimit) {
@@ -79,10 +81,10 @@ game.online = {
       });
     }
   },
-  newChallenger: function (name) {
-      game.triesCounter.text('');
-      game.online.setData('challenger', name);
-      game.online.battle('challenger', name);
+  newChallengerFound: function (name) {
+    game.triesCounter.text('');
+    game.online.setData('challenger', name);
+    game.online.battle('challenger', name);
   },
   found: function (waiting) {
     game.message.text(game.data.ui.gamefound);
@@ -265,6 +267,7 @@ game.online = {
     game.highlight.clearMap();
     game.tower.attack('enemy');
     game.states.table.el.addClass('unturn');
+    game.turn.el.text(game.data.ui.enemyturn).addClass('show');
     game.turn.counter = -1;
     game.online.endTurn('turn');
   },

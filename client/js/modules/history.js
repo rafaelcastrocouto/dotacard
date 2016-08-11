@@ -18,7 +18,9 @@ game.history = {
         valid = game.history.validState(state),
         log = localStorage.getItem('log'),
         logged = (localStorage.getItem('logged') === 'true'),
-        recovering = (logged && log && valid);
+        last = localStorage.getItem('last-activity');
+    var recent = (new Date().valueOf() - last) < (1000 * 60 * 60 * 4); // 4 hours
+    var recovering = logged && log && valid && recent;
     if (recovering) {
       game.states.log.out.show();
       game.states.options.opt.show();
@@ -32,6 +34,7 @@ game.history = {
     }
   },
   jumpTo: function (state, recover) {
+    localStorage.setItem('last-activity', new Date().valueOf());
     if (!recover) game.clear();
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {

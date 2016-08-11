@@ -71,7 +71,7 @@ game.enemy = {
         target = $('#' + to);
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.clone().appendTo(game.enemy.skills.showMoves);
+        skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         targets = skill.data('targets');
         if (targets) {
           if (targets.indexOf(game.data.ui.enemy) >= 0 ||
@@ -89,7 +89,7 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.clone().appendTo(game.enemy.skills.showMoves);
+        skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         if (game.skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
           skill.passive(skill, target);
         }
@@ -101,7 +101,7 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.clone().appendTo(game.enemy.skills.showMoves);
+        skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
           skill.toggle(skill, target);
         }
