@@ -21,6 +21,12 @@ Please report any [sugestions or issues][8] here at github.
 
 More information on how to [setup your own server][10]
 
+The game is avaiable free to play at the following URLs:
+
+ - http://dotacard.ga
+ - http://dotacard.herokuapp.com
+ - http://rafaelcastrocouto.github.io/dotacard/client
+
 *Powered by*
 
 [![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/poweredby-banner.jpg)][1]
