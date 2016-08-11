@@ -25,16 +25,14 @@ game.skill = {
         deck.addClass('available').hide().appendTo(game.states.table[side]);
         $.each(deck.data('cards'), function (i, skill) {
           var side = this.toString();
-          skill.addClass(side).on('mousedown touchstart', game.card.select);
+          skill.addClass(side);
+          if (side == 'player') skill.on('mousedown touchstart', game.card.select);
+          else skill.attr({ title: '' }).addClass('flipped');
           if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game[side].skills.temp);
           if (skill.data('skill') === 'ult') skill.appendTo(game[side].skills.ult);
         }.bind(side));
       }.bind(side)
     });
-    if (side === 'enemy') {
-      game.enemy.skills.showMoves = $('<div>').insertAfter(game.states.table.enemy).addClass('deck skills showMoves');
-      $('.enemy .skills .card').attr({ title: '' }).off('mousedown touchstart').addClass('flipped');
-    }
   },
   calcMana: function (side) {
     game[side].mana = 0;
@@ -136,6 +134,7 @@ game.skill = {
       }
       game.timeout(300, function () {
         if (this.side() === 'player') this.select();
+        else this.addClass('flipped');
       }.bind(target));
     }
     return this;
@@ -166,10 +165,10 @@ game.skill = {
     if (this.hasClass('skills')) {
       if (this.hasClass('selected')) game.card.unselect();
       this.trigger('discard', {target: this});
-      var side = 'enemy';
-      if (this.hasClass('player')) side = 'player';
+      var side = this.side();
       if (this.data('deck') === game.data.ui.temp) this.appendTo(game[side].skills.temp);
       else this.appendTo(game[side].skills.cemitery);
+      if (side == 'enemy') this.addClass('flipped');
     }
     return this;
   }

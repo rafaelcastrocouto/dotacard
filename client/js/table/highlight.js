@@ -33,7 +33,7 @@ game.highlight = {
           game.states.table.discard.attr('disabled', false);
         }
         game.selectedCard.highlightSource();
-        if (!game.selectedCard.hasClasses('channel-on on')) {
+        if (!game.selectedCard.hasClasses('channel-on on') && game.isPlayerTurn()) {
           game.selectedCard.strokeSkill();
           game.selectedCard.highlightArrows();
         }
