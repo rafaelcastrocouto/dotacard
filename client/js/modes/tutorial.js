@@ -108,16 +108,12 @@ game.tutorial = {
         game.skill.build('player');
         game.skill.calcMana('enemy');
         game.skill.build('enemy');
-        game.tutorial.buyHand();
+        $('.player .available.skills .ld-rabid').first().appendTo(game.player.skills.hand);
+        $('.player .available.skills .am-shield').first().appendTo(game.player.skills.sidehand);
+        $('.player .available.skills .pud-rot').first().appendTo(game.player.skills.sidehand);
         game.timeout(400, game.tutorial.selectEnemyLesson);
       });
     }
-  },
-  buyHand: function () {
-    $('.player .available.skills .ld-rabid').first().appendTo(game.player.skills.hand);
-    $('.player .available.skills .cm-slow').first().appendTo(game.player.skills.hand);
-    $('.player .available.skills .am-shield').first().appendTo(game.player.skills.sidehand);
-    $('.player .available.skills .pud-rot').first().appendTo(game.player.skills.sidehand);
   },
   selectEnemyLesson: function () {
     game.turn.time.text(game.data.ui.time + ': 1:00 ' + game.data.ui.day);
@@ -127,7 +123,7 @@ game.tutorial = {
   },
   selected: function (event, data) {
     var card = data.card;
-    if (card.find('.tutorialblink')) {
+    if (card.hasClass('tutorialblink')) {
       if (game.tutorial.lesson === 'Enemy')  game.tutorial.unselectLesson();
       if (game.tutorial.lesson === 'Move')   game.tutorial.selectedPlayer();
       if (game.tutorial.lesson === 'Skill')  game.tutorial.passiveLesson();
@@ -203,8 +199,9 @@ game.tutorial = {
     });
   },
   wait: function () {
-    game.enemy.buyHand();
     $('.enemy .am-blink').first().appendTo(game.enemy.skills.hand);
+    $('.enemy .kotl-leak').first().appendTo(game.enemy.skills.hand);
+    $('.enemy .kotl-mana').first().appendTo(game.enemy.skills.hand);
     game.message.removeClass('tutorialblink');
     game.turn.time.addClass('tutorialblink');
     game.tutorial.waited = true;
@@ -234,6 +231,7 @@ game.tutorial = {
       'C:'+game.map.mirrorPosition('D2')+':'+game.map.mirrorPosition('G3')+':blink:am',
       'M:'+game.map.mirrorPosition('E2')+':'+game.map.mirrorPosition('D3'),
       'M:'+game.map.mirrorPosition('F2')+':'+game.map.mirrorPosition('E3'),
+      'C:'+game.map.mirrorPosition('G2')+':'+game.map.mirrorPosition('G2')+':mana:kotl',
       'M:'+game.map.mirrorPosition('H2')+':'+game.map.mirrorPosition('H3')
     ].join('|');
     game.enemy.move();
@@ -251,6 +249,9 @@ game.tutorial = {
     game.turn.msg.text(game.data.ui.turns + ': 2/1 (3)');
     game.card.unselect();
     game.turn.el.removeClass('show');
+    $('.player .available.skills .cm-slow').first().appendTo(game.player.skills.hand);
+    $('.player .available.skills .ld-summon').first().appendTo(game.player.skills.hand);
+    $('.player .available.skills .wk-crit').first().appendTo(game.player.skills.hand);
     game.tutorial.axe.removeClass('left');
     game.enemy.skills.deck.removeClass('slide');
     $('.enemy.skills .card').fadeOut(400);
@@ -315,9 +316,7 @@ game.tutorial = {
       game.tutorial.lesson = 'Cast';
       $('.player .sidehand .pud-rot').removeClass('tutorialblink');
       $('.map .player.pud').removeClass('tutorialblink');
-      $('.player .hand').addClass('tutorialblink');
-      $('.player .hand .cm-slow').on('select', game.tutorial.selected);
-      $('.map .player.heroes.ld').addClass('done');
+      $('.player .hand .cm-slow').addClass('tutorialblink').on('select', game.tutorial.selected);
       game.tutorial.axebaloon.hide().fadeIn('slow');
       game.message.text(game.data.ui.yourturncount + ' ' + --game.tutorial.moveCountValue);
       game.tutorial.message.html(game.data.ui.axecast);

@@ -207,21 +207,24 @@
 .card.temp.left-hand.skills {
   background: #977ce6;
 }
-.card.player.heroes.selected,
-.card.player.towers.selected {
+.states .map .card.player.heroes.selected,
+.states .map .card.player.towers.selected {
+  animation: none;
   box-shadow: 0 0 0 10px springgreen;
   z-index: 2;
 }
-.card.enemy.heroes.selected,
-.card.enemy.towers.selected {
+.states .map .card.enemy.heroes.selected,
+.states .map .card.enemy.towers.selected {
+  animation: none;
   box-shadow: 0 0 0 10px orangered;
   z-index: 2;
 }
-.card.skills.selected {
+.states .map .card.skills.selected {
+  animation: none;
   box-shadow: 0 0 0 6px skyblue;
   z-index: 2;
 }
-.card.tree.selected {
+.states .map .card.trees.selected {
   box-shadow: 0 0 0 10px palegreen;
 }
 .card.enemy.attacktarget {
@@ -230,19 +233,18 @@
 .card.source {
   box-shadow: 0 0 0 10px skyblue;
 }
+.card.enemyMoveHighlight {
+  box-shadow: 0 0 0 10px orange;
+}
+.card.enemyMoveHighlightTarget {
+  box-shadow: 0 0 0 10px yellow;
+}
 .card.targetarea,
 .card.casttarget{
   box-shadow: 0 0 0 10px dodgerblue;
 }
 .card.player.done {
   background: silver;
-}
-.map .card.player.done.selected {
-  box-shadow: 0 0 0 10px gray;
-}
-.map .card.enemy.heroes.done,
-.map .card.enemy.heroes.done.selected {
-  box-shadow: 0 0 0 10px gold;
 }
 .card .damaged,
 .card .missed {
@@ -333,11 +335,10 @@
 }
 .card .buffs .buff .img ,
 .card .buffs .buff .overlay {
-  /*box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;*/
+  box-shadow: 0 0 8px rgba(0,0,0,0.5) inset;
   width: 34px;
   height: 34px;
 }
-
 
 .table .deck .card {
   top: 50%;
@@ -362,19 +363,19 @@
   animation: enemybuyslide 2s;
 }
 @keyframes enemybuyslide {
-  0% {left: -1000px; top: 150%;}
-  30% {left: 40px; top: 150%;}
+  0% {left: -1000px; top: 150%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
+  30% {left: 40px; top: 150%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
   100% {left: 40px; top: 50%;}
 }
 
 .table .enemy .skills .card.showMoves {
   left: -1000px; top: 150%;
-  animation: enemyshowslide 2s;
+  animation: enemyshowslide 2.1s;
 }
 @keyframes enemyshowslide {
   0% {left: 40px; top: 50%;}
-  70% {left: 40px; top: 150%;}
-  100% {left: -1000px; top: 150%;}
+  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.6);}
+  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.6);}
 }
 .states .table .card.flipped {
   pointer-events: none;
@@ -408,8 +409,8 @@
   animation: playerbuyslide 2s;
 }
 @keyframes playerbuyslide {
-  0% {left: -1000px; top: -50%;}
-  30% {left: 40px; top: -50%;}
+  0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6);}
+  30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6);}
   100% {left: 40px; top: 50%;}
 }
 

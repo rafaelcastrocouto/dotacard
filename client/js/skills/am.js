@@ -24,7 +24,6 @@ game.skills.am = {
   blink: {
     cast: function (skill, source, target) {
       source.place(target);
-      source.select();
     }
   },
   ult: {

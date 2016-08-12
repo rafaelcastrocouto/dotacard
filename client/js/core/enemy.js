@@ -52,19 +52,26 @@ game.enemy = {
   autoMove: function () {
     var from, to, m, source, target, targets, hero, skillid, skill, s,
         move = game.currentMoves[game.enemy.autoMoveCount].split(':');
+    $('.enemyMoveHighlight').removeClass('enemyMoveHighlight');
+    $('.enemyMoveHighlightTarget').removeClass('enemyMoveHighlightTarget');
+    $('.source').removeClass('source');
     if (move[1] && move[2]) {
       from = game.map.mirrorPosition(move[1]);
       to = game.map.mirrorPosition(move[2]);
       if (move[0] === 'M') {
         target = $('#' + from + ' .card');
         if (to && !target.hasClass('done') && target.hasClass('enemy') && target.move) {
+          target.addClass('enemyMoveHighlight');
           target.move(to);
         }
       }
       if (move[0] === 'A') {
         source = $('#' + from + ' .card');
         if (to && !source.hasClass('done') && source.hasClass('enemy') && source.attack) {
+          source.addClass('enemyMoveHighlight');
           source.attack(to);
+          target = $('#' + to + ' .card');
+          target.addClass('enemyMoveHighlightTarget');
         }
       }
       if (move[0] === 'C') {
@@ -82,10 +89,10 @@ game.enemy = {
               target = $('#' + to + ' .card'); 
           }
         }
-        //skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         skill.addClass('showMoves').removeClass('flipped');
+        source.addClass('enemyMoveHighlight');
+        if (target.hasClass('.card')) target.addClass('enemyMoveHighlightTarget');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) {
-          skill.removeClass('showMoves');
           if (game.skills[hero][skillid].cast && skill && !source.hasClass('done') && source.hasClass('enemy') && source.cast) {
             source.cast(skill, target);
           }
@@ -98,8 +105,8 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        //skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         skill.addClass('showMoves').removeClass('flipped');
+        target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
           skill.removeClass('showMoves'); 
           if (game.skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
@@ -114,8 +121,8 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        //skill.clone().removeClass('flipped').appendTo(game.enemy.skills.showMoves);
         skill.addClass('showMoves').removeClass('flipped');
+        target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
           skill.removeClass('showMoves'); 
           if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
@@ -128,7 +135,6 @@ game.enemy = {
         hero = move[2];
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s).first();
-        //skill.clone().appendTo(game.enemy.skills.showMoves);
         skill.addClass('showMoves');
         game.timeout(game.enemy.moveAnimation, function (skill) {
           skill.removeClass('showMoves'); 
@@ -143,17 +149,15 @@ game.enemy = {
   },
   move: function () {
     game.message.text(game.data.ui.enemymove);
-    //game.enemy.skills.showMoves.addClass('slide');
-    //game.states.table.selectedArea.addClass('enemymoving');
     game.currentMoves = game.currentData.moves.split('|');
     game.enemy.autoMoveCount = 0;
     game.enemy.autoMove();
   },
   movesEnd: function () {
-    //game.enemy.skills.showMoves.removeClass('slide');
-    //game.states.table.selectedArea.removeClass('enemymoving');
+    $('.enemyMoveHighlight').removeClass('enemyMoveHighlight');
+    $('.enemyMoveHighlightTarget').removeClass('enemyMoveHighlightTarget');
+    $('.source').removeClass('source');
     game.timeout(400, function () {
-      //game.enemy.skills.showMoves.empty();
       if (game.mode == 'tutorial') game.tutorial.playerTurn();
       if (game.mode == 'online') game.online.endTurn('unturn');
     });

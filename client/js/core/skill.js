@@ -36,8 +36,8 @@ game.skill = {
   },
   calcMana: function (side) {
     game[side].mana = 0;
-    $('.map .'+side+'.heroes').each(function (i, card) {
-      game[side].mana += $(card).data('mana');
+    $(game[side].picks).each(function (i, name) {
+      game[side].mana += game.data.heroes[name].mana;
     });
   },
   cast: function (skill, target) { //console.trace('cast')
@@ -168,7 +168,9 @@ game.skill = {
       var side = this.side();
       if (this.data('deck') === game.data.ui.temp) this.appendTo(game[side].skills.temp);
       else this.appendTo(game[side].skills.cemitery);
-      if (side == 'enemy') this.addClass('flipped');
+      if (side == 'enemy') {
+        this.addClass('flipped').removeClass('showMoves');
+      }
     }
     return this;
   }
