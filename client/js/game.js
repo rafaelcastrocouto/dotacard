@@ -85,6 +85,7 @@ var game = {
     }
   },
   clear: function () {
+    game.message.html('');
     if (game.mode && game[game.mode].clear) game[game.mode].clear();
     if (game.states[game.currentState].clear) game.states[game.currentState].clear();
     game.mode = false;

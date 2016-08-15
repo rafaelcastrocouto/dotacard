@@ -17,17 +17,17 @@ game.states.log = {
     this.el.append(this.box);
   },
   start: function () {
-    game.message.html('');
-    if (!game.states.log.alert) {
-      game.states.log.alert = true;
-      game.alert(game.data.ui.alphaalert + game.version + '</small>');
-    }
     game.states.log.out.hide();
     game.states.options.opt.show();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.clear();
-    game.timeout(200, function () { game.states.log.input.focus(); });
+    if (!game.states.log.alert) {
+      game.states.log.alert = true;
+      game.alert(game.data.ui.alphaalert + game.version + '</small>', function () {
+        game.states.log.input.focus();
+      });
+    }
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),

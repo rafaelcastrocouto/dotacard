@@ -363,28 +363,43 @@
   animation: enemybuyslide 2s;
 }
 @keyframes enemybuyslide {
-  0% {left: -1000px; top: 150%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
-  30% {left: 40px; top: 150%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
+  0% {left: -1000px; top: 150%; transform: translate(-50%, -50%) rotateY(180deg);}
+  30% {left: 40px; top: 150%; transform: translate(-50%, -50%) rotateY(180deg);}
   100% {left: 40px; top: 50%;}
 }
 
 .table .enemy .skills .card.showMoves {
   left: -1000px; top: 150%;
+  pointer-events: none;
   animation: enemyshowslide 2.1s;
 }
 @keyframes enemyshowslide {
   0% {left: 40px; top: 50%;}
-  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.6);}
-  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.6);}
+  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.45);}
+  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.45);}
+}
+.table .enemy .skills .card.discardMove {
+  left: -1000px; top: 150%;
+  pointer-events: none;
+  animation: enemydiscardslide 2.1s;
+}
+@keyframes enemydiscardslide {
+  0% {left: 40px; top: 50%;}
+  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.45) rotateY(180deg);}
+  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.45) rotateY(180deg)}
 }
 .states .table .card.flipped {
   pointer-events: none;
   transform: translate3d(-50%,-50%,0) scale(0.4) rotateY(180deg);
+}
+
+.skills.card {
+  transform-style: preserve-3d;
   backface-visibility: hidden;
 }
 
-.states .table .card.flipped:after {
-  content:"";
+.skills.card:after {
+  content: "";
   display: block;
   background: white;
   width: 200px;
@@ -392,11 +407,12 @@
   position: absolute;
   top: 0;
   left: 0;
-  transform: rotateY(180deg);
+  transform: translate3d(0,0,-1px) rotateY(180deg);
   border-radius: 8px;
   background-image: url(../img/cardback.jpg);
   background-size: cover;
   z-index: 29;
+  backface-visibility: hidden;
 }
 .table .enemy .hand .card {
   margin-right: -158px;
@@ -408,9 +424,10 @@
 .table .player .skills .card {
   animation: playerbuyslide 2s;
 }
+
 @keyframes playerbuyslide {
-  0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6);}
-  30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6);}
+  0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
+  30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
   100% {left: 40px; top: 50%;}
 }
 

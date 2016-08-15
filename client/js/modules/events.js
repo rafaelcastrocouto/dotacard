@@ -8,15 +8,12 @@ game.events = {
     game.highlight.bindJquery();
     game.map.bindJquery();
     $(window).on('resize', game.screen.resize);
-    game.container.on('mousedown touchstart', game.events.hit)
-                  .on('mousemove', game.events.move)
-                  .on('touchmove', function(event) {
-                    game.events.move.call(this, event);
-                    if (event.preventDefault) event.preventDefault(); //prevent touch scroll
-                  })
-                  .on('mouseup touchend', game.events.end)
-                  .on('contextmenu', game.events.cancel)
-                  .on('beforeunload ', game.events.leave);
+    $(window).on('beforeunload ', game.events.leave);
+    game.container.on('mousedown touchstart', game.events.hit);
+    game.container.on('mousemove', game.events.move);
+    game.container.on('touchmove', game.events.touchmove);
+    game.container.on('mouseup touchend', game.events.end);
+    game.container.on('contextmenu', game.events.cancel);
   },
   getCoordinates: function(event) {
     var position = {
@@ -47,6 +44,11 @@ game.events = {
       };
     }
   },
+  touchmove:  function(event) {
+    game.events.move.call(this, event);
+    if (event.preventDefault) event.preventDefault(); //prevent touch scroll
+    return false;
+  },
   move: function(event) {
     var position = game.events.getCoordinates(event);
     if (game.events.dragging && 
@@ -73,6 +75,8 @@ game.events = {
       var position = game.events.getCoordinates(event), 
           target = $(document.elementFromPoint(position.left, position.top));
       target.mouseup();
+      if (event.preventDefault) event.preventDefault();
+      return false;
     } else if (game.events.dragging) {
       game.events.dragClone.remove();
       game.events.dragging.removeClass('dragTarget');

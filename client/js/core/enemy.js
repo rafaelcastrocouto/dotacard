@@ -48,9 +48,9 @@ game.enemy = {
       }
     }
   },
-  moveAnimation: 2000,
+  moveAnimation: 1600,
   autoMove: function () {
-    var from, to, m, source, target, targets, hero, skillid, skill, s,
+    var from, to, m, source, target, targets, hero, skillid, skill, s, e = 0,
         move = game.currentMoves[game.enemy.autoMoveCount].split(':');
     $('.enemyMoveHighlight').removeClass('enemyMoveHighlight');
     $('.enemyMoveHighlightTarget').removeClass('enemyMoveHighlightTarget');
@@ -89,7 +89,7 @@ game.enemy = {
               target = $('#' + to + ' .card'); 
           }
         }
-        skill.addClass('showMoves').removeClass('flipped');
+        skill.addClass('showMoves');
         source.addClass('enemyMoveHighlight');
         if (target.hasClass('.card')) target.addClass('enemyMoveHighlightTarget');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) {
@@ -97,6 +97,7 @@ game.enemy = {
             source.cast(skill, target);
           }
         }.bind(this, skill, target, hero, skillid));
+        e = 800;
       }
       if (move[0] === 'P') {
         to = game.map.mirrorPosition(move[1]);
@@ -105,7 +106,7 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.addClass('showMoves').removeClass('flipped');
+        skill.addClass('showMoves');
         target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
           skill.removeClass('showMoves'); 
@@ -113,6 +114,7 @@ game.enemy = {
             skill.passive(skill, target);
           }
         }.bind(this, skill, target, hero, skillid));
+        e = 400;
       }
       if (move[0] === 'T') {
         to = game.map.mirrorPosition(move[1]);
@@ -121,10 +123,10 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.addClass('showMoves').removeClass('flipped');
+        skill.addClass('discardMove');
         target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
-          skill.removeClass('showMoves'); 
+          skill.removeClass('discardMove'); 
           if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
             skill.toggle(skill, target);
           }
@@ -140,11 +142,12 @@ game.enemy = {
           skill.removeClass('showMoves'); 
           if (skill.discard) skill.discard();
         }.bind(this, skill));
+        e = 400;
       }
     }
     game.enemy.autoMoveCount++;
     if (game.enemy.autoMoveCount < game.currentMoves.length) {
-      game.timeout(game.enemy.moveAnimation, game.enemy.autoMove);
+      game.timeout(game.enemy.moveAnimation + e, game.enemy.autoMove);
     } else game.timeout(1000, game.enemy.movesEnd);
   },
   move: function () {
