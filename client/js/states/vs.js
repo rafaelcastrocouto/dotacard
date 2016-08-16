@@ -43,12 +43,14 @@ game.states.vs = {
     localStorage.setItem('enemydeck', game.enemy.picks);
     var t = 3000;
     if (game.mode == 'library') t = 1200;
+    game.states.options.opt.addClass('disabled');
     game.timeout(t, this.toTable);
   },
   toTable: function () {
     game.states.changeTo('table');
   },
   end: function () {
+    game.states.options.opt.removeClass('disabled');
     $('.card', game.states.vs.el).remove();
   }
 };

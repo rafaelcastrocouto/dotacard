@@ -22,13 +22,16 @@ game.states.options = {
     this.langSelect = game.language.select().appendTo(this.lang);
     
     this.back = $('<div>').addClass('button back').text(game.data.ui.back).appendTo(this.menu).attr({title: game.data.ui.back}).on('mouseup touchend', game.states.backState);
-    this.opt = $('<small>').addClass('opt').hide().text(game.data.ui.options).appendTo(game.topbar).on('mouseup touchend', function () {game.states.changeTo('options');});
+    this.opt = $('<small>').addClass('opt').hide().text(game.data.ui.options).appendTo(game.topbar).on('mouseup touchend', this.optClick);
     this.el.append(this.menu);
     game.screen.rememberResolution();
     game.audio.rememberVolume();
   },
   start: function () {
     game.states.options.opt.addClass('disabled');
+  },
+  optClick: function () {
+    if (!$(this).hasClass('disabled')) game.states.changeTo('options');
   },
   end: function () {
     game.states.options.opt.removeClass('disabled');

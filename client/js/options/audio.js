@@ -1,4 +1,5 @@
 game.audio = {
+  defaultVolume: 0.25,
   build: function () {
     game.audio.context = new AudioContext();
     game.audio.volumeNode = game.audio.context.createGain();
@@ -7,7 +8,7 @@ game.audio = {
     game.audio.soundsNode.connect(game.audio.volumeNode);
     game.audio.musicNode = game.audio.context.createGain();
     game.audio.musicNode.connect(game.audio.volumeNode);
-    game.audio.volumeNode.gain.value = 0.4;
+    game.audio.volumeNode.gain.value = game.audio.defaultVolume;
     game.audio.loadMusic();
     game.audio.loadSounds();
   },
@@ -70,7 +71,7 @@ game.audio = {
     });
   },
   loadMusic: function () {
-    game.audio.song = 'doomhammer';
+    game.audio.song = 'SneakyAdventure';
     game.audio.load(game.audio.song, function () {
       game.audio.play(game.audio.song);
       setInterval(function () {
@@ -95,27 +96,29 @@ game.audio = {
     }
   },
   mute: function () {
-    var vol = game.audio.unmutedvolume || game.audio.volumeNode.gain.value || 0.6;
+    var vol = game.audio.unmutedvolume || game.audio.volumeNode.gain.value || game.audio.defaultVolume;
     if (this.checked) { vol = 0; }
     game.audio.setVolume('volume', vol);
   },
   setVolume: function (target , v) {
-    if (v !== undefined && v !== null) {
-      var vol = parseFloat(v);
-      if (vol <= 0) {
-        vol = 0;
-        if (target === 'volume') game.states.options.muteinput.prop('checked', true);
-      } else {
-        if (target === 'volume') {
-          game.audio.unmutedvolume = vol;
-          game.states.options.muteinput.prop('checked', false);
-        }
-      }
-      if (vol > 1) { vol = 1; }
-      game.audio[target + 'Node'].gain.value = vol;
-      localStorage.setItem(target, vol);
-      game.states.options[target + 'control'].css('transform', 'scale(' + vol + ')');
+    if (v == undefined || v == null) {
+      v = '0.25';
+      if (target == 'music') v = '0.5';
     }
+    var vol = parseFloat(v);
+    if (vol <= 0) {
+      vol = 0;
+      if (target === 'volume') game.states.options.muteinput.prop('checked', true);
+    } else {
+      if (target === 'volume') {
+        game.audio.unmutedvolume = vol;
+        game.states.options.muteinput.prop('checked', false);
+      }
+    }
+    if (vol > 1) { vol = 1; }
+    game.audio[target + 'Node'].gain.value = vol;
+    localStorage.setItem(target, vol);
+    game.states.options[target + 'control'].css('transform', 'scale(' + vol + ')');
   },
   rememberVolume: function () {
     game.audio.setVolume('volume', localStorage.getItem('volume'));
@@ -137,7 +140,8 @@ game.audio = {
   },
   volumeMouseMove: function (event) {
     var x = event.clientX - game.states.options.volumecontrol.offset().left,
-        v = parseInt(x / 4.8, 10) / 10;
+        v = parseInt(x / 0.48, 10) / 100;
+    //console.log(x, v)
     game.audio.setVolume(game.audio.volumetarget, v);
   },
   volumeControl: function (name) {
