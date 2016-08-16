@@ -127,6 +127,9 @@
   width: 502px;
   right: -15px;
 }
+.choose .tutorial.axe.up {
+  bottom: -45px;
+}
 .choose .tutorial.axe .img {
   background-repeat: no-repeat;
   background-position: 170px 30px;  

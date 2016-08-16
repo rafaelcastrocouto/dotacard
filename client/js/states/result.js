@@ -26,7 +26,7 @@ game.states.result = {
     if (recover) {
       this.close();
     } else {
-      if (game.mode == 'tutorial') game.tutorial.axe.addClass('show');
+      if (game.mode == 'tutorial') game.tutorial.axe.addClass('show').appendTo(this.el);
       if (!game.winner)  game.winner = game.player.name;
       if (game.winner == game.player.name) game.message.text(game.data.ui.win);
       else game.message.text(game.data.ui.lose);

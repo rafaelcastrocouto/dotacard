@@ -28,9 +28,9 @@ game.states.options = {
     game.audio.rememberVolume();
   },
   start: function () {
-    game.states.options.opt.hide();
+    game.states.options.opt.addClass('disabled');
   },
   end: function () {
-    game.states.options.opt.show();
+    game.states.options.opt.removeClass('disabled');
   }
 };

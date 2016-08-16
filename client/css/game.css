@@ -312,7 +312,10 @@ input[type=button][disabled]:active,
 input[type=submit][disabled]:active {
   top: -3px;
 }
-
+.buttonbox .button {
+  display: block;
+  margin-bottom: 12px;
+}
 .sweet-confirm {
   background: tomato;
   box-shadow: 0 4px 0 #df4327;

@@ -59,11 +59,9 @@
 .choose .buttonbox {
   position: absolute;
   right: 100px;
-  bottom: 15px;
+  top: 390px;
   width: 220px;
 }
-
-.buttonbox .button {
-  display: block;
-  margin-bottom: 12px;
+.choose .buttonbox .button{
+  margin-bottom: 20px;
 }
