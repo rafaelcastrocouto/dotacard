@@ -37,6 +37,8 @@
 .vs .vsenemy > h1 {
   font-size: 36px;
   padding: 10px 40px;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .vs .card {
   margin-right: -164px;

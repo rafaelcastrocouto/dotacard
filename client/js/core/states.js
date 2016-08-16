@@ -17,17 +17,16 @@ game.states = {
     }
   },
   changeTo: function (state, recover) {
-    game.timeout(100, function (state, recover) {
+    var oldstate = game.states[game.currentState];
+    if (oldstate) {
+      if (oldstate.end) oldstate.end();
+      if (oldstate.el) oldstate.el.hide();
+    }    
+    game.timeout(10, function (state, recover) {
       if (state !== game.currentState) {
         game.clearTimeouts();
         game.states.buildState(state);
-        var newstate,
-          pre = game.currentState,
-          oldstate = game.states[pre];
-        if (oldstate) {
-          if (oldstate.end) oldstate.end();
-          if (oldstate.el) oldstate.el.hide();
-        }
+        var newstate, old = game.currentState;
         newstate = game.states[state];
         if (newstate.el) {
           localStorage.setItem('state', state);
@@ -35,12 +34,12 @@ game.states = {
             game.chat.el.appendTo(newstate.el);
           }
           newstate.el.append(game.topbar);
-          newstate.el.show();
+          newstate.el.fadeIn(400);
         }
         game.currentState = state;
-        if (pre != 'loading' && pre != 'noscript') {
-          localStorage.setItem('backstate', pre);
-          game.backState = pre;
+        if (old != 'loading' && old != 'noscript') {
+          localStorage.setItem('backstate', old);
+          game.backState = old;
         }
         if (newstate.start) newstate.start(recover);
       }

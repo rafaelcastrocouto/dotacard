@@ -155,7 +155,7 @@ game.states.choose = {
   testHeroClick: function () {
     //library only
     if (!game.states.choose.librarytest.attr('disabled')) {
-      game.states.choose.clear(); 
+      game.states.choose.clear();
       game.states.changeTo('vs');
     } else game.alert('Sorry but this hero is still under development!');
   },

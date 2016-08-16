@@ -14,10 +14,9 @@ game.states.vs = {
     if (recover) game.states.changeTo('menu');
     if (game.mode == 'tutorial') game.tutorial.axe.addClass('show');
     this.playername.text(game.player.name);
-    this.enemyname.text(game.enemy.name);
-    if (!game.player.picks || !game.player.picks.length) {
-      if (game.mode == 'library') game.player.picks = [localStorage.getItem('choose')];
-      if (game.mode == 'online' || game.mode == 'tutorial') game.player.picks = localStorage.getItem('mydeck').split(',');
+    if (game.mode == 'library') game.player.picks = [localStorage.getItem('choose')];
+    if (game.mode == 'online' || game.mode == 'tutorial') {
+      game.player.picks = localStorage.getItem('mydeck').split(',');
     }
     game.deck.build({
       name: 'heroes',
@@ -27,11 +26,13 @@ game.states.vs = {
       }
     });
     if (game.mode !== 'online') {
-      game.enemy.name = 'axe';
       game.enemy.type = 'challenger';
       game.player.type = 'challenged';
       game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
     }
+    if (game.mode == 'tutorial') game.enemy.name = 'Tutorial';
+    if (game.mode == 'library') game.enemy.name = 'Library';
+    this.enemyname.text(game.enemy.name);
     game.deck.build({
       name: 'heroes',
       filter: game.enemy.picks,
