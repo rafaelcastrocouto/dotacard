@@ -101,7 +101,7 @@ game.audio = {
     game.audio.setVolume('volume', vol);
   },
   setVolume: function (target , v) {
-    if (v == undefined || v == null) {
+    if (v === undefined || v === null) {
       v = '0.25';
       if (target == 'music') v = '0.5';
     }
