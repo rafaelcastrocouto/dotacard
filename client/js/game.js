@@ -77,17 +77,22 @@ var game = {
       game.states[game.currentState].el.removeClass('shake');
     });
   },
+  validModes: ['tutorial', 'online', 'library'],
   setMode: function (mode, recover) {
-    if (mode) {
+    if (mode && game[mode] && game[mode].build && game.validModes.indexOf(mode) >= 0) {
       game.mode = mode;
       localStorage.setItem('mode', mode);
+      game.states.el.removeClass(game.validModes.join(' '));
+      game.states.el.addClass(mode);
       game[mode].build(recover);
     }
   },
   clear: function () {
     game.message.html('');
-    if (game.mode && game[game.mode].clear) game[game.mode].clear();
-    if (game.states[game.currentState].clear) game.states[game.currentState].clear();
+    if (game.mode && game[game.mode] && game[game.mode].clear) 
+      game[game.mode].clear();
+    game.states.choose.clear();
+    game.states.table.clear();
     game.mode = false;
     localStorage.removeItem('mode');
   },

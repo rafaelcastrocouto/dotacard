@@ -4,7 +4,6 @@ game.utils = function () {
   if (!Number.prototype.round) { Number.prototype.round = function (a) { return Math.round(this); }; }
   if (!Number.prototype.floor) { Number.prototype.floor = function () { return Math.floor(this); }; }
   if (!Number.prototype.ceil) { Number.prototype.ceil = function () { return Math.ceil(this); }; }
-  if (!Number.prototype.toInt) { Number.prototype.toInt = function () { return Number.parseInt(this); }; }
   if (!Number.prototype.toRad) { Number.prototype.toRad = function () { return this / 180 * Math.PI; }; }
   if (!Number.prototype.toDeg) { Number.prototype.toDeg = function () { return 180 * this / Math.PI; }; }
   if (!Array.prototype.random) { Array.prototype.random = function () { return this[Math.floor(Math.random() * this.length)]; }; }

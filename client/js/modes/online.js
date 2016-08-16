@@ -40,9 +40,10 @@ game.online = {
       game.online.setData('id', game.id);
       if (game.currentData.status === 'waiting') {
         game.online.wait();
-      } else game.reset();
+      } else {
+        // todo recover vs and table states
+      }
     }
-    // todo
   },
   setData: function (item, data) {
     game.currentData[item] = data;
@@ -184,9 +185,8 @@ game.online = {
     game.online.setData(typeDeck, found[typeDeck]);
     game.enemy.picks = found[typeDeck].split('|');
     game.states.choose.clear();
-    game.states.changeTo('table');
+    game.states.changeTo('vs');
   },
-
 
   setTable: function () {
     if (!game.online.started) {
@@ -352,10 +352,9 @@ game.online = {
   win: function () {
     game.winner = game.player.name;
     game.states.table.el.addClass('unturn');
-    game.message.text(game.data.ui.win);
     game.online.sendTurnData('over');
-    game.states.table.el.addClass('over win');
-    game.states.table.showResults();
+    game.states.result.updateOnce = true;
+    game.states.changeTo('result');
   },
   surrender: function () {
     game.turn.counter = -1;
@@ -369,10 +368,9 @@ game.online = {
   lose: function () {
     game.winner = game.enemy.name;
     game.states.table.el.addClass('unturn');
-    game.message.text(game.data.ui.lose);
     game.loader.removeClass('loading');
-    game.states.table.el.addClass('over lose');
-    game.states.table.showResults();
+    game.states.result.updateOnce = true;
+    game.states.changeTo('result');
   },
   clear: function () {
     game.online.builded = false;

@@ -19,7 +19,7 @@ game.states.loading = {
     game.states.loading.progress();
   },
   progress: function () {
-    var loading = Number.parseInt(game.states.loading.updating / game.states.loading.totalUpdate * 100);
+    var loading = parseInt(game.states.loading.updating / game.states.loading.totalUpdate * 100);
     $('.progress').text(loading + '%');
     if (game.states.loading.updating < game.states.loading.totalUpdate) {
       game.timeout(800, game.states.loading.progress);

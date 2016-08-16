@@ -30,6 +30,9 @@
 .cm.heroes .img {
   background-image: url("../img/heroes/cm.jpg");
 }
+.map .cm.heroes .img {
+  background-position: 20%;
+}
 .cm-slow .img,
 .buffs .buff.cm-slow .img {
   background-image: url("../img/skills/cm/crystal_maiden_crystal_nova.jpg");

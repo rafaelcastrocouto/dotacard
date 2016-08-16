@@ -13,9 +13,6 @@ game.tutorial = {
     game.message.text(game.data.ui.waiting);
     game.tutorial.message.html(game.data.ui.axepick);
     game.states.choose.counter.show().text(game.data.ui.clickpick);
-    game.enemy.name = 'axe';
-    game.enemy.type = 'challenger';
-    game.player.type = 'challenged';
     game.states.choose.librarytest.hide();
     game.states.choose.randombt.hide();
     game.states.choose.mydeck.hide();
@@ -63,20 +60,22 @@ game.tutorial = {
       game.states.choose.counter.text(game.data.ui.getready);
       game.audio.play('tutorial/axebattle');
       game.tutorial.message.html(game.data.ui.axebattle);
-      game.timeout(2000, game.tutorial.heroesdeck);
+      game.player.picks = [];
+      setTimeout(game.tutorial.heroesdeck, 1600);
     }
   },
   heroesdeck: function () {
-    game.player.picks = [];
-    $('.slot').each(function () {
-      var slot = $(this), card = slot.find('.card');
-      game.player.picks[slot.data('slot')] = card.data('hero');
-      if (game.player.picks.length === 5) {
-        localStorage.setItem('mydeck', game.player.picks);
-        game.states.choose.clear();
-        game.states.changeTo('table');
-      }
-    });
+    if (!game.player.picks.length) {
+      $('.slot').each(function () {
+        var slot = $(this), card = slot.find('.card');
+        game.player.picks[slot.data('slot')] = card.data('hero');
+        if (game.player.picks.length === 5) {
+          localStorage.setItem('mydeck', game.player.picks);
+          game.states.choose.clear();
+          game.states.changeTo('vs');
+        }
+      });
+    }
   },
   setTable: function () {
     if (!game.tutorial.started) {
@@ -88,7 +87,6 @@ game.tutorial = {
       if (!game.player.picks.length) {
         game.player.picks = localStorage.getItem('mydeck').split(',');
       }
-      game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
       game.player.placeHeroes();
       game.enemy.placeHeroes();
       game.states.table.surrender.show();
@@ -104,7 +102,7 @@ game.tutorial = {
       game.tutorial.axe.addClass('up left');
       game.states.table.el.removeClass('unturn');
       game.enemy.tower.addClass('tutorialblink').on('select', game.tutorial.selected);
-      game.timeout(400, function () {
+      setTimeout(function () {
         game.skill.build('player');
         game.skill.calcMana('enemy');
         game.skill.build('enemy');
@@ -112,7 +110,7 @@ game.tutorial = {
         $('.player .available.skills .am-shield').first().appendTo(game.player.skills.sidehand);
         $('.player .available.skills .pud-rot').first().appendTo(game.player.skills.sidehand);
         game.timeout(400, game.tutorial.selectEnemyLesson);
-      });
+      }, 400);
     }
   },
   selectEnemyLesson: function () {
@@ -338,11 +336,9 @@ game.tutorial = {
     game.tutorial.axebaloon.hide().fadeIn('slow');
     game.tutorial.message.html(game.data.ui.axeend);
     game.audio.play('tutorial/axeah');
-    game.message.text(game.data.ui.win);
     game.winner = game.player.name;
-    game.states.table.showResults();
-    game.states.table.el.addClass('over');
-    game.chat.set(game.data.ui.completedtutorial);
+    game.states.result.updateOnce = true;
+    game.states.changeTo('result');
   },
   clear: function () {
     game.tutorial.lesson = '';

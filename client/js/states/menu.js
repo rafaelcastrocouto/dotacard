@@ -22,10 +22,10 @@ game.states.menu = {
     this.credits = $('<a>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.choosecredits, href: 'https://github.com/rafaelcastrocouto/dotacard/graphs/contributors', target: '_blank'}).text(game.data.ui.credits);
   },
   start: function () {
+    game.clear();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');    
     game.states.log.out.show();
-    game.clear();
   }
 };

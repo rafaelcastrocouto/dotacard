@@ -1,0 +1,70 @@
+.resultsbox {
+  width: 800px;
+  animation: slideresult 1s;
+}
+@keyframes slideresult {
+  0% {top: -1000px;}
+  100% {top: 50%;}
+}
+.result .resultTitle {
+  text-transform: uppercase;
+  font-size: 25px;
+}
+.result .results {
+  display: inline-block;
+  width: 320px;
+}
+.result .results.enemy {
+  color: tomato;
+}
+.result .results p {
+  box-shadow: inset 0 0 0 50px rgba(0,0,0,0.7);
+  border: 0;
+  padding: 5px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  margin: 6px;
+}
+.result .results span {
+  line-height: 30px;
+  margin-left: 70px;
+}
+.result .results .portrait {
+  position: absolute; top: 5px; left: 5px;
+  width: 60px; height: 30px;
+}
+.result .results .img {
+  width: 60px; height: 30px;
+  background-size: cover;
+  background-position: 50%;
+}
+
+.result .resultsbox .close {
+  width: 60px;
+  display: block;
+  margin: 20px auto 0;
+  position: static;
+}
+
+.result .turntitle {
+  z-index: 30;
+  position: absolute;
+  width: 970px;
+  top: 220px;
+  left: 0;
+  font-weight: bold;
+  color: white;
+  font-size: 80px;
+  text-align: center;
+  transition: all 0.3s;
+  transform: translateZ(0);
+  cursor: default;
+  background: rgba(0,0,0,0.4);
+  line-height: 100px;
+  opacity: 0;
+  pointer-events: none;
+}
+.result .turntitle.show {
+  opacity: 1;
+}

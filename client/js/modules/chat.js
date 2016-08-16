@@ -7,7 +7,7 @@ game.chat = {
       game.chat.messages = $('<div>').addClass('messages').appendTo(game.chat.el);
       game.chat.input = $('<input>').appendTo(game.chat.el).attr({type: 'text', maxlength: 36}).keydown(game.chat.keydown);
       game.chat.button = $('<div>').addClass('button').appendTo(game.chat.el).on('mouseup touchend', game.chat.send).text(game.data.ui.send);
-      setInterval(game.chat.check, 1000);
+      setInterval(game.chat.interval, 1000);
     }
   },
   hover: function (event) {
@@ -24,13 +24,15 @@ game.chat = {
       game.chat.input.focus();
     });
   },
-  check: function () { 
-    game.db({ 'get': 'chat' }, function (chat) {
-      game.chat.update(chat);
-    });
+  interval: function () {
+    if (game.chat.updating) {
+      game.db({ 'get': 'chat' }, function (chat) {
+        game.chat.update(chat);
+      });
+    }
   },
   update: function (received) {
-    if (game.chat.updating && received.messages && received.messages.length) {
+    if (received.messages && received.messages.length) {
       game.chat.messages.empty();
       $.each(received.messages, function () {
         var now = new Date().valueOf();

@@ -4,6 +4,7 @@ game.history = {
     game.history.mode  = localStorage.getItem('mode');
     game.history.data  = localStorage.getItem('data');
     game.history.seed  = localStorage.getItem('seed');
+    game.history.last  = localStorage.getItem('last-activity');
   },
   validState: function (state) {
     return (
@@ -17,9 +18,9 @@ game.history = {
         state = game.history.state,
         valid = game.history.validState(state),
         log = localStorage.getItem('log'),
-        logged = (localStorage.getItem('logged') === 'true'),
-        last = localStorage.getItem('last-activity');
-    var recent = (new Date().valueOf() - last) < (1000 * 60 * 60 * 4); // 4 hours
+        logged = (localStorage.getItem('logged') === 'true');
+    var delay = 1000 * 60 * 60 * 4;
+    var recent = (new Date().valueOf() - game.history.last) < delay; // 4 hours
     var recovering = logged && log && valid && recent;
     if (recovering) {
       game.states.log.out.show();
@@ -28,6 +29,7 @@ game.history = {
       game.chat.build();
       game.chat.set(game.data.ui.reconnected);
       if (mode) game.setMode(mode, recovering);
+      if (state == 'table') state = 'vs';
       game.history.jumpTo(state, recovering);
     } else {
       game.history.jumpTo('log');

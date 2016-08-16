@@ -91,7 +91,6 @@ game.states.choose = {
       }
       pick.appendTo(slot).clearEvents('choose');
       game.states.choose.sort();
-      console.log(card);
       game.states.choose.select.call(card);
       game.player.picks[slot.data('slot')] = pick.data('hero');
       if (game[game.mode].pick) game[game.mode].pick();
@@ -157,7 +156,7 @@ game.states.choose = {
     //library only
     if (!game.states.choose.librarytest.attr('disabled')) {
       game.states.choose.clear(); 
-      game.states.changeTo('table');
+      game.states.changeTo('vs');
     } else game.alert('Sorry but this hero is still under development!');
   },
   backClick: function () {
@@ -173,17 +172,19 @@ game.states.choose = {
     } else cb();
   },
   clear: function () {
-    $('.slot .card.heroes').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);
-    if (game.library.skills) $('.slot .card.skills').appendTo(game.library.skills);
-    $('.pickbox .card').show();
-    $('.slot').addClass('available').show();
-    this.mydeck.attr('disabled', false);
-    this.randombt.attr('disabled', false);
-    this.counter.hide();
-    this.pickedbox.hide();
-    this.librarytest.hide();
-    this.randombt.hide();
-    this.mydeck.hide();
-    this.sort();
+    setTimeout(function () {
+      $('.slot .card.skills').appendTo(game.library.skills);
+      $('.pickbox .card').show();
+      $('.slot').addClass('available').show();
+      this.mydeck.attr('disabled', false);
+      this.randombt.attr('disabled', false);
+      this.counter.hide();
+      this.pickedbox.hide();
+      this.librarytest.hide();
+      this.randombt.hide();
+      this.mydeck.hide();
+      this.sort();
+      $('.slot .card.heroes').prependTo(this.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);
+    }.bind(this), 100);
   }
 };

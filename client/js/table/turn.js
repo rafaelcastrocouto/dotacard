@@ -15,7 +15,7 @@ game.turn = {
     game.turn.tickTime();
   },
   beginPlayer: function (cb) {
-    if (!game.states.table.el.hasClass('over')) {
+    if (game.currentState == 'table') {
       game.player.turn += 1;
       game.message.text(game.data.ui.yourturn);
       game.loader.removeClass('loading');
@@ -25,7 +25,7 @@ game.turn = {
     }
   },
   beginEnemy: function (cb) {
-    if (!game.states.table.el.hasClass('over')) {
+    if (game.currentState == 'table') {
       game.enemy.turn += 1;
       game.message.text(game.data.ui.enemyturn);
       game.turn.start('unturn', cb);
@@ -72,7 +72,7 @@ game.turn = {
     }
   },
   end: function (unturn, cb) {
-    if (!game.states.table.el.hasClass('over')) {
+    if (game.currentState == 'table') {
       game.turn.tickTime();
       game.states.table.skip.attr('disabled', true);
       game.message.text(game.data.ui.turnend);

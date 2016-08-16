@@ -1,6 +1,5 @@
 game.enemy = {
   placeHeroes: function () {
-    if (!game.enemy.picks) return;
     game.enemy.heroesDeck = game.deck.build({
       name: 'heroes',
       filter: game.enemy.picks,
@@ -97,7 +96,7 @@ game.enemy = {
             source.cast(skill, target);
           }
         }.bind(this, skill, target, hero, skillid));
-        e = 800;
+        e = 2000;
       }
       if (move[0] === 'P') {
         to = game.map.mirrorPosition(move[1]);
@@ -114,7 +113,6 @@ game.enemy = {
             skill.passive(skill, target);
           }
         }.bind(this, skill, target, hero, skillid));
-        e = 400;
       }
       if (move[0] === 'T') {
         to = game.map.mirrorPosition(move[1]);
@@ -123,10 +121,10 @@ game.enemy = {
         target = $('#' + to + ' .card');
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s+', .enemydecks .sidehand .skills.'+s).first();
-        skill.addClass('discardMove');
+        skill.addClass('showMoves');
         target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
-          skill.removeClass('discardMove'); 
+          skill.removeClass('showMoves'); 
           if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
             skill.toggle(skill, target);
           }
@@ -137,12 +135,11 @@ game.enemy = {
         hero = move[2];
         s = hero + '-' + skillid;
         skill = $('.enemydecks .hand .skills.'+s).first();
-        skill.addClass('showMoves');
+        skill.addClass('discardMove');
         game.timeout(game.enemy.moveAnimation, function (skill) {
-          skill.removeClass('showMoves'); 
+          skill.removeClass('discardMove');
           if (skill.discard) skill.discard();
         }.bind(this, skill));
-        e = 400;
       }
     }
     game.enemy.autoMoveCount++;

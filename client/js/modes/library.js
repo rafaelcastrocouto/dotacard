@@ -12,9 +12,6 @@ game.library = {
     game.states.choose.counter.text(game.data.ui.skills);
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
-    game.enemy.name = 'axe';
-    game.enemy.type = 'challenger';
-    game.player.type = 'challenged';
     $('.choose .buffs').hide();
   },
   buildSkills: function () {
@@ -60,7 +57,6 @@ game.library = {
     var hero = game.library.hero.data('hero');
     if (!hero) hero = localStorage.getItem('choose');
     game.player.picks = [hero];
-    game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
     game.player.placeHeroes();
     game.enemy.placeHeroes();
     game.states.table.back.show();

@@ -55,37 +55,6 @@ game.states.table = {
       });
     }.bind({ skill: skill }));
   },
-  showResults: function () {
-    if (!game.states.table.resultsbox) {
-      game.states.table.selectedArea.hide();
-      game.states.table.camera.hide();
-      game.states.table.buttonbox.hide();
-      $('.table .deck').hide();
-      game.turn.el.removeClass('show');
-      game.states.table.resultsbox = $('<div>').appendTo(game.states.table.el).addClass('resultsbox box');
-      $('<h1>').appendTo(this.resultsbox).addClass('result').text(game.winner + ' ' + game.data.ui.victory);
-      $('<h1>').appendTo(this.resultsbox).text(game.data.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));
-      $('<h1>').appendTo(this.resultsbox).text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
-      game.states.table.playerResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results');
-      game.states.table.enemyResults = $('<div>').appendTo(game.states.table.resultsbox).addClass('results enemy');
-      $('.map .player.heroes.card').each(function () {
-        var hero = $(this), heroid = $(this).data('hero'),
-          img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
-          text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
-        $('<p>').appendTo(game.states.table.playerResults).addClass(heroid+' heroes').append(img, text);
-      });
-      $('.map .enemy.heroes.card').each(function () {
-        var hero = $(this), heroid = $(this).data('hero'),
-          img = $('<div>').addClass('portrait').append($('<div>').addClass('img')),
-          text = $('<span>').text(hero.data('name') + ': ' + hero.data('kills') + ' / ' + hero.data('deaths'));
-        $('<p>').appendTo(game.states.table.enemyResults).addClass(heroid+' heroes').append(img, text);
-      });
-      $('<div>').addClass('button close').appendTo(game.states.table.resultsbox).text(game.data.ui.close).on('mouseup touchend', function () {
-        game.clear();
-        game.states.changeTo('menu');
-      });
-    }
-  },
   skipClick: function () {
     if (!game.states.table.skip.attr('disabled')) {
       game.states.table.skip.attr('disabled', true);
@@ -103,7 +72,7 @@ game.states.table = {
   },
   backClick: function () {
     //library only
-    game.clear();
+    game.states.table.clear();
     game.setMode('library');
     game.states.changeTo('choose');
   },
@@ -118,17 +87,16 @@ game.states.table = {
   },
   clear: function () {
     game.map.clear();
+    game.card.clearSelection();
     $('.table .card').remove();
     $('.table .deck').remove();
-    $('.table .resultsbox').remove();
-    this.resultsbox = null;
     this.buttonbox.show().children().hide();
-    game.card.clearSelection();
-    this.el.addClass('unturn').removeClass('over');
+    this.el.addClass('unturn');
     game.clearTimeouts();
   },
   end: function () {
     if (game.turn.el) {
+      game.turn.el.removeClass('show');
       game.turn.msg.hide();
       game.turn.time.hide();
     }

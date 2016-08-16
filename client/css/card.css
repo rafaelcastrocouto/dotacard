@@ -46,10 +46,6 @@
 .pickedbox .card.heroes .portrait .img,
 .pickedbox .card.heroes .portrait .overlay {
   height: 265px;
-  background-size: 225%;
-}
-.pickedbox .card.heroes:hover .portrait .img {
-  background-size: 260%;
 }
 .card {
   position: relative;
@@ -363,8 +359,8 @@
   animation: enemybuyslide 2s;
 }
 @keyframes enemybuyslide {
-  0% {left: -1000px; top: 150%; transform: translate(-50%, -50%) rotateY(180deg);}
-  30% {left: 40px; top: 150%; transform: translate(-50%, -50%) rotateY(180deg);}
+  0% {left: -1000px; top: 150%; transform: translate(-50%, -50%) rotateY(-180deg) scale(0.5);}
+  30% {left: 40px; top: 150%; transform: translate(-50%, -50%) rotateY(-180deg) scale(0.5);}
   100% {left: 40px; top: 50%;}
 }
 
@@ -375,8 +371,8 @@
 }
 @keyframes enemyshowslide {
   0% {left: 40px; top: 50%;}
-  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.45);}
-  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.45);}
+  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.5);}
+  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.5);}
 }
 .table .enemy .skills .card.discardMove {
   left: -1000px; top: 150%;
@@ -385,12 +381,12 @@
 }
 @keyframes enemydiscardslide {
   0% {left: 40px; top: 50%;}
-  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.45) rotateY(180deg);}
-  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.45) rotateY(180deg)}
+  70% {left: 40px; top: 185%; transform: translate(-50%, -50%) scale(0.5) rotateY(-180deg);}
+  100% {left: -1000px; top: 185%; transform: translate(-50%, -50%) scale(0.5) rotateY(-180deg);}
 }
 .states .table .card.flipped {
   pointer-events: none;
-  transform: translate3d(-50%,-50%,0) scale(0.4) rotateY(180deg);
+  transform: translate3d(-50%,-50%,0) scale(0.4) rotateY(-180deg);
 }
 
 .skills.card {
@@ -426,8 +422,8 @@
 }
 
 @keyframes playerbuyslide {
-  0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
-  30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(180deg);}
+  0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(179deg);}
+  30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(179deg);}
   100% {left: 40px; top: 50%;}
 }
 
@@ -510,6 +506,13 @@
 .map .card.enemy .current .hp span {
   background: #ed8c8c;
   color: white;
+}
+
+.enemy .portrait .img {
+  transform: scaleX(-1);
+}
+.enemy.towers .portrait .img {
+  transform: scaleX(1);
 }
 
 /*DRAG*/

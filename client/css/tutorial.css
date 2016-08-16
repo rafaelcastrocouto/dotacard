@@ -125,6 +125,7 @@
 
 .choose .tutorial.axe {
   width: 502px;
+  right: -15px;
 }
 .choose .tutorial.axe .img {
   background-repeat: no-repeat;

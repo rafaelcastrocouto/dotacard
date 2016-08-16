@@ -1,6 +1,5 @@
 game.player = {
   placeHeroes: function () {
-    if (!game.player.picks) return;
     game.player.heroesDeck = game.deck.build({
       name: 'heroes',
       filter: game.player.picks,

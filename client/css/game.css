@@ -15,7 +15,9 @@ body, p, noscript {
   src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(../fonts/Julius-Sans-One.woff2) format('woff2'), url(../fonts/Julius-Sans-One.woff) format('woff');
 }
 h1, h2, .button,
-.options span, .topbar * {
+.options span, 
+.topbar *,
+.choose .counter {
   font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
 }
 @font-face {
@@ -24,7 +26,8 @@ h1, h2, .button,
   font-weight: 400;
   src: local('Sansita One'), local('SansitaOne'), url('../fonts/Sansita-One.woff2') format('woff2'), url('../fonts/Sansita-One.woff') format('woff');
 }
-.tutorial .battle {
+.tutorial .battle,
+.versus {
   font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
 } 
 
@@ -215,6 +218,7 @@ noscript {
   position: relative;
   overflow: hidden;
   transform: translateZ(0);
+  perspective: 600px;
 }
 
 .state p {
@@ -223,7 +227,8 @@ noscript {
 }
 
 .state.table,
-.state.choose {
+.state.choose,
+.state.vs {
   background-image: url("../img/bkg/polygon-dark.jpg");
 }
 

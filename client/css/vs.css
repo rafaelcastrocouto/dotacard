@@ -1,0 +1,79 @@
+.versus {
+  position: absolute;
+  top: -10px;
+  left: 420px;
+  z-index: 10;
+  font-size: 40px;
+
+}
+.vsplayer, .vsenemy {
+  width: 345px;
+  height: 460px;
+  position: absolute;
+  top: 50px;
+  padding: 30px 20px;
+  background: rgba(0,0,0,0.6);
+}
+.vsplayer {
+  left: 100px;
+  transform: rotateY(10deg);
+  animation: slideplayer 0.8s;
+}
+@keyframes slideplayer {
+  0% {left: -1000px;}
+  100% {left: 100px;}
+}
+.vsenemy {
+  right: 100px;
+  transform: rotateY(-10deg);
+  text-align: right;
+  animation: slideenemy 0.8s;
+}
+@keyframes slideenemy {
+  0% {right: -1000px;}
+  100% {right: 100px;}
+}
+.vs .vsplayer > h1,
+.vs .vsenemy > h1 {
+  font-size: 36px;
+  padding: 10px 40px;
+}
+.vs .card {
+  margin-right: -164px;
+}
+.vs .card:hover {
+  z-index: 1;
+}
+.vs .vsplayer .card:nth-child(2) {
+  margin-top: 30px;
+}
+.vs .vsplayer .card:nth-child(3) {
+  margin-top: 60px;
+}
+.vs .vsplayer .card:nth-child(4) {
+  margin-top: 90px;
+}
+.vs .vsplayer .card:nth-child(5) {
+  margin-top: 120px;
+}
+.vs .vsdeckenemy {margin-right: 162px;}
+.vs .vsenemy .card{
+  float: right;
+}
+.vs .vsenemy .card:nth-child(5) {
+  margin-top: 120px;
+}
+.vs .vsenemy .card:nth-child(4) {
+  margin-top: 90px;
+}
+.vs .vsenemy .card:nth-child(3) {
+  margin-top: 60px;
+}
+.vs .vsenemy .card:nth-child(2) {
+  margin-top: 30px;
+}
+
+.library .vs .vsplayerdeck .card {
+  margin-left: 50px;
+  margin-top: 50px;
+}
