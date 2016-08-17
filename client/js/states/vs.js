@@ -47,10 +47,13 @@ game.states.vs = {
     game.timeout(t, this.toTable);
   },
   toTable: function () {
+    game.states.vs.clear();
     game.states.changeTo('table');
+  },
+  clear: function () {
+    $('.card', game.states.vs.el).remove();
   },
   end: function () {
     game.states.options.opt.removeClass('disabled');
-    $('.card', game.states.vs.el).remove();
   }
 };

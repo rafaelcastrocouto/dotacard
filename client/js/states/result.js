@@ -25,19 +25,17 @@ game.states.result = {
   start: function (recover) {
     if (recover) {
       this.close();
-    } else {
-      if (game.mode == 'tutorial') game.tutorial.axe.addClass('show').appendTo(this.el);
-      if (!game.winner)  game.winner = game.player.name;
-      if (game.winner == game.player.name) game.message.text(game.data.ui.win);
-      else game.message.text(game.data.ui.lose);
-      if (this.updateOnce) {
-        this.updateOnce = false;
-        this.update();
-      }
+    } else if (this.updateOnce) {
+      this.updateOnce = false;
+      this.update();
     }
   },
   update: function () {
-    $('.result .results .heroes').remove();
+    this.clear();
+    if (game.mode == 'tutorial') game.tutorial.axe.addClass('show').appendTo(this.el);
+    if (!game.winner)  game.winner = game.player.name;
+    if (game.winner == game.player.name) game.message.text(game.data.ui.win);
+    else game.message.text(game.data.ui.lose);
     $('.map .player.heroes.card').each(this.playerHeroResult);
     $('.map .enemy.heroes.card').each(this.enemyHeroResult);
     this.title.text(game.winner + ' ' + game.data.ui.victory);
@@ -49,6 +47,10 @@ game.states.result = {
     if (game.mode == 'tutorial') game.chat.set(game.data.ui.completedtutorial);
     game.states.changeTo('menu');
   },
-  end: function () {
+  clear: function () {
+    $('.result .results .heroes').remove();
+    this.title.text('');
+    this.towers.text('');
+    this.kd.text('');
   }
 };

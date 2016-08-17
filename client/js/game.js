@@ -72,10 +72,11 @@ var game = {
     return parseFloat('0.' + Math.sin(game.seed).toString().substr(6));
   },
   shake: function () {
-    game.states[game.currentState].el.addClass('shake');
-    game.timeout(200, function () {
-      game.states[game.currentState].el.removeClass('shake');
-    });
+    var state = game.states[game.currentState].el;
+    state.addClass('shake');
+    setTimeout(function () {
+      this.removeClass('shake');
+    }.bind(state), 220);
   },
   validModes: ['tutorial', 'online', 'library'],
   setMode: function (mode, recover) {
@@ -92,7 +93,9 @@ var game = {
     if (game.mode && game[game.mode] && game[game.mode].clear) 
       game[game.mode].clear();
     game.states.choose.clear();
+    game.states.vs.clear();
     game.states.table.clear();
+    game.states.result.clear();
     game.mode = false;
     localStorage.removeItem('mode');
   },

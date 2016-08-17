@@ -386,7 +386,7 @@ label span {
 
 /*BUFFS*/
 
-.stun .img {
+.buffs .buff.stun .img {
    background-image: url("../img/skills/stun.jpg");
 }
 

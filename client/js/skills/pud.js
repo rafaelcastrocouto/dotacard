@@ -44,19 +44,23 @@ game.skills.pud = {
     passive: function (skill, source) {
       var buff = source.selfBuff(skill);
       var kills = source.data('kills');
-      var damage = source.data('current damage') + (buff.data('damage per kill') * kills);
-      source.setDamage(damage);
-      var hp = source.data('hp') + (skill.data('hp per kill') * kills);
-      source.setHp(hp);
+      var damage = source.data('current damage');
+      var bonusDamage = buff.data('damage per kill') * kills;
+      source.setDamage(damage + bonusDamage);
+      var hp = source.data('hp');
+      var bonusHp = buff.data('hp per kill') * kills;
+      source.setHp(hp + bonusHp);
       source.on('kill', this.kill);
     },
     kill: function (event, eventdata) {
       var source = eventdata.source;
       var buff = source.getBuff('pud-passive');
-      var damage = source.data('current damage') + buff.data('damage per kill');
-      source.setDamage(damage);
-      var hp = source.data('hp') + skill.data('hp per kill');
-      source.setHp(hp);
+      var damage = source.data('current damage');
+      var bonusDamage = buff.data('damage per kill');
+      source.setDamage(bonusDamage + damage);
+      var hp = source.data('hp');
+      var bonusHp = buff.data('hp per kill');
+      source.setHp(hp + bonusHp);
     }
   },
   ult: {

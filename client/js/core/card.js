@@ -150,7 +150,7 @@ game.card = {
     game.selectedCard = card;
     card.addClass('selected');
     game.highlight.map(event);
-    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget').clearEvents();
+    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget shake').clearEvents();
     game.states.table.selectedCard.addClass('flip');
     card.trigger('select', { card: card });
     if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
@@ -190,10 +190,10 @@ game.card = {
       dx = (tx - fx) * 100, dy = (ty - fy) * 100;
     this.css({ transform: 'translate3d(' + (dx - 50) + '%, ' + (dy - 40) + '%, 100px) rotateX(-30deg)' });
   },
-  selfBuff: function (skill, buffs) { //console.trace(this, skill, buffs)
-    return this.addBuff(this, skill, buffs);
+  selfBuff: function (skill, buffs, fxOff) { //console.trace(this, skill, buffs)
+    return this.addBuff(this, skill, buffs, fxOff);
   },
-  addBuff: function (target, skill, buffs) { //console.trace(target, skill, buffs)
+  addBuff: function (target, skill, buffs, fxOff) { //console.trace(target, skill, buffs)
     // get buff data
     var data = skill;
     if (buffs) {
@@ -218,15 +218,17 @@ game.card = {
     $('<div>').appendTo(buff).addClass('img');
     $('<div>').appendTo(buff).addClass('overlay');
     // apply buff effects
-    if (data['hp bonus']) {
-      target.setHp(target.data('hp') + data['hp bonus']);
-      target.setCurrentHp(target.data('current hp') + data['hp bonus']);
+    if (!fxOff) {
+      if (data['hp bonus']) {
+        target.setHp(target.data('hp') + data['hp bonus']);
+        target.setCurrentHp(target.data('current hp') + data['hp bonus']);
+      }
+      if (data['damage bonus']) target.setDamage(target.data('current damage') + data['damage bonus']);
+      if (data['armor bonus']) target.setArmor(target.data('current armor') + data['armor bonus']);
+      if (data['resistance bonus']) target.setResistance(target.data('current resistance') + data['resistance bonus']);
+      if (data['speed bonus']) target.setSpeed(target.data('current speed') + data['speed bonus']);
+      if (data['speed slow']) target.setSpeed(target.data('current speed') - data['speed slow']);
     }
-    if (data['damage bonus']) target.setDamage(target.data('current damage') + data['damage bonus']);
-    if (data['armor bonus']) target.setArmor(target.data('current armor') + data['armor bonus']);
-    if (data['resistance bonus']) target.setResistance(target.data('current resistance') + data['resistance bonus']);
-    if (data['speed bonus']) target.setSpeed(target.data('current speed') + data['speed bonus']);
-    if (data['speed slow']) target.setSpeed(target.data('current speed') - data['speed slow']);
     // append buff
     target.find('.buffs').append(buff);
     if (target.hasClass('selected')) { target.select(); }
@@ -277,6 +279,7 @@ game.card = {
         className: 'stun',
         source: this,
         skill: skill,
+        duration: stun,
         description: 'Unit is stunned and cannot move, attack or cast'
       });
       target.addClass('stunned').data('stun', stun);
@@ -345,9 +348,9 @@ game.card = {
   },
   shake: function () {
     this.addClass('shake');
-    game.timeout(250, function () {
+    setTimeout(function () {
       this.removeClass('shake');
-    }.bind(this));
+    }.bind(this), 260);
   },
   attack: function (target) {
     if (typeof target === 'string') { target = $('#' + target + ' .card'); }

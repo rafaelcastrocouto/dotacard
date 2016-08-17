@@ -32,7 +32,7 @@ game.states.choose = {
           $('.library.skills .card.'+hero).each(function (i, el) {
             var skill = $(el);
             if (skill.data('deck') == game.data.ui.buy) {
-              card.selfBuff(skill); 
+              card.selfBuff(skill, null, 'fxOff'); 
             }
           });
         });

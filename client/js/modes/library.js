@@ -12,7 +12,6 @@ game.library = {
     game.states.choose.counter.text(game.data.ui.skills);
     game.seed = new Date().valueOf();
     game.id = btoa(game.seed);
-    $('.choose .buffs').hide();
   },
   buildSkills: function () {
     if (!game.library.skills) {
@@ -133,6 +132,5 @@ game.library = {
     game.seed = 0;
     game.id = null;
     game.moves = [];
-    $('.choose .buffs').show();
   }
 };
