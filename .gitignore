@@ -1,18 +1,28 @@
-
-# Virtualenv
+Icon
+Thumbs.db
+.DS_Store
+.monitor
+.sass-cache/
+.project
 .Python
+public/tmp/
+private/
+output_static/
+output_static/*
+output_static/*/*
+output_static/*/*/*
+output_static/*/*/*/*
+dist/
+dist/*
+dist/*/*
+dist/*/*/*
+dist/*/*/*/*
 bin
 lib
 include
-
-# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
-
-# C extensions
 *.so
-
-# Distribution / packaging
 env/
 build/
 develop-eggs/
@@ -26,29 +36,18 @@ var/
 *.egg-info/
 .installed.cfg
 *.egg
-
-# Installer logs
 pip-log.txt
 pip-delete-this-directory.txt
-
-# Unit test / coverage reports
 htmlcov/
 .tox/
 .coverage
 .cache
 nosetests.xml
 coverage.xml
-
-# Translations
 *.mo
 *.pot
-
-#IntelliJ / PyCharm
 .idea/*
 *.iml
-
-# Mac OS X custom attribute files
 .DS_Store
-
 *.torrent
 node_modules
