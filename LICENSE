@@ -35,10 +35,14 @@ Attribution is maintained in the source control history of the product.
 DOTACARD versions may include or require the following libraries, 
 which may have other licenses of their own.
 
-"jQuery", John Resig, http://jquery.com
-"Prefix-free", Lea Verou, http://leaverou.github.io/prefixfree
-"Google-analytics", Google, http://www.google.com/analytics
-"Nodejs", Joyent, http://nodejs.org
+"jQuery", John Resig, https://github.com/jquery/jquery
+"Prefix-free", Lea Verou, https://github.com/LeaVerou/prefixfree
+"Google-analytics", Google, https://www.google.com/analytics
+"Inspectlet", Inspectlet, https://www.inspectlet.com
+"Nodejs", Joyent, https://github.com/nodejs/node
+"Serve-static", Douglas Wilson, https://github.com/expressjs/serve-static
+"Grunt", Ben Alman, https://github.com/gruntjs/grunt
+"Promise-polyfill", Taylor Hakes, https://github.com/taylorhakes/promise-polyfill
 
 ----------------------------------------------------------
 
