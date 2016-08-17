@@ -47,22 +47,5 @@
     <script>$(game.start);</script>
     <script src="analytics/google.analytics.min.js"></script>
     <script src="analytics/inspectlet.min.js" id="inspectletjs"></script>
-    <script>
-      window.fbAsyncInit = function() {
-        FB.init({
-          appId      : '542075612642836',
-          xfbml      : true,
-          version    : 'v2.7'
-        });
-      };
-      (function(d, s, id){
-         var js, fjs = d.getElementsByTagName(s)[0];
-         if (d.getElementById(id)) {return;}
-         js = d.createElement(s); js.id = id;
-         js.src = "//connect.facebook.net/en_US/sdk.js";
-         fjs.parentNode.insertBefore(js, fjs);
-       }(document, 'script', 'facebook-jssdk'));
-    </script>
-    <div class="fb-like hidden" data-share="true" data-width="450" data-show-faces="true"></div>
   </body>
 </html>
