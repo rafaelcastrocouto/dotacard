@@ -7,6 +7,7 @@
 
 }
 .vsplayer, .vsenemy {
+  transition: all 0.4s;
   width: 345px;
   height: 460px;
   position: absolute;
@@ -17,21 +18,17 @@
 .vsplayer {
   left: 100px;
   transform: rotateY(10deg);
-  animation: slideplayer 0.8s;
 }
-@keyframes slideplayer {
-  0% {left: -1000px;}
-  100% {left: 100px;}
+.vsplayer.slide {
+  left: -1000px;
 }
 .vsenemy {
   right: 100px;
   transform: rotateY(-10deg);
   text-align: right;
-  animation: slideenemy 0.8s;
 }
-@keyframes slideenemy {
-  0% {right: -1000px;}
-  100% {right: 100px;}
+.vsenemy.slide {
+  right: -1000px;
 }
 .vs .vsplayer > h1,
 .vs .vsenemy > h1 {

@@ -159,17 +159,19 @@ game.states.choose = {
       game.states.changeTo('vs');
     } else game.alert('Sorry but this hero is still under development!');
   },
-  backClick: function () {
-    var cb = function () {
-      game.clear();
-      game.states.changeTo('menu');
-    };
-    if (game.mode == 'online') {
-      game.db({
-        'set': 'back',
-        'data': game.id
-      }, cb);
-    } else cb();
+  backClick: function () { console.log(!$(this).attr('disabled'));
+    if (!$(this).attr('disabled')) {
+      if (game.mode == 'online') {
+        game.db({
+          'set': 'back',
+          'data': game.id
+        }, game.states.choose.toMenu);
+      } else game.states.choose.toMenu();
+    }
+  },
+  toMenu: function () {
+    game.clear();
+    game.states.changeTo('menu');
   },
   clear: function () {
     setTimeout(function () {
