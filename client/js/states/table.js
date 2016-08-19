@@ -17,16 +17,16 @@ game.states.table = {
     this.el.addClass('unturn').append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
-    game.tower.place();
-    game.tree.place();
     if (game.turn.el) {
       game.turn.time.show();
       game.turn.msg.show();
     }
-    this.camera.show();
-    this.selectedArea.show();
-    this.selectedCard.removeClass('flip');
-    if (game.mode) game[game.mode].setTable();
+    if (game.mode && !game.states.table.setup) {
+      game.states.table.setup = true;
+      game.tower.place();
+      game.tree.place();
+      game[game.mode].setTable();
+    }
   },
   enableUnselect: function () {
     game.states.table.el.on('mousedown touchstart', function () { 
@@ -37,16 +37,13 @@ game.states.table = {
       }
     });
   },
-  animateCast: function (skill, target) {
+  animateCast: function (skill, target, event) {
+    game.highlight.clearMap();
     if (typeof target === 'string') { target = $('#' + target); }
-    var s = skill.offset(), t = target.offset();
-    var x = t.left - s.left, y = t.top - s.top;
-    //todo: remove 'top/left', use only 'transform' to improve performance
-    skill.css({
-      top: y + 30,
-      left: x + 20, 
-      transform: 'translate(-50%, -50%) scale(0.3)'
-    });
+    var s = skill.offset();
+    var x = event.clientX - s.left, y = event.clientY - s.top;
+    var fx = x * 1 - 150; var fy = y * 1 - 220;
+    skill.css({transform: 'translate('+fx+'px, '+fy+'px) scale(0.3)'});
     game.timeout(400, function () {
       $(this.skill).css({
         top: '',
@@ -86,6 +83,8 @@ game.states.table = {
     }
   },
   clear: function () {
+    this.selectedCard.removeClass('flip');
+    game.states.table.setup = false;
     game.map.clear();
     game.card.clearSelection();
     $('.table .card').remove();

@@ -55,7 +55,7 @@ game.player = {
       }
     }
   },
-  move: function () {
+  move: function (event) {
     var spot = $(this),
       card = game.selectedCard,
       from = card.getPosition(),
@@ -69,7 +69,7 @@ game.player = {
       if (game.mode == 'online') game.currentMoves.push('M:' + from + ':' + to);
     }
   },
-  attack: function () {
+  attack: function (event) {
     var target = $(this),
       source = game.selectedCard,
       from = source.getPosition(),
@@ -82,9 +82,10 @@ game.player = {
       source.attack(target);
       source.addClass('done').removeClass('draggable');
       if (game.mode == 'online') game.currentMoves.push('A:' + from + ':' + to);
+      game.highlight.clearMap();
     }
   },
-  passive: function () {
+  passive: function (event) {
     var target = $(this),
       skill = game.selectedCard,
       hero = skill.data('hero'),
@@ -93,10 +94,10 @@ game.player = {
     if (game.isPlayerTurn() && hero && skillid) {
       skill.passive(target);
       game.currentMoves.push('P:' + to + ':' + skillid + ':' + hero);
-      game.states.table.animateCast(skill, target);
+      game.states.table.animateCast(skill, target, event);
     }
   },
-  toggle: function () {
+  toggle: function (event) {
     var target = $(this),
       skill = game.selectedCard,
       hero = skill.data('hero'),
@@ -105,10 +106,10 @@ game.player = {
     if (game.isPlayerTurn() && hero && skillid) {
       skill.toggle(target);
       game.currentMoves.push('T:' + to + ':' + skillid + ':' + hero);
-      game.states.table.animateCast(skill, target);
+      game.states.table.animateCast(skill, target, event);
     }
   },
-  cast: function () {
+  cast: function (event) {
     var target = $(this),
       skill = game.selectedCard,
       source = $('.map .source'),
@@ -124,7 +125,7 @@ game.player = {
         source.addClass('done').removeClass('draggable');
       }
       game.currentMoves.push('C:' + from + ':' + to + ':' + skillid + ':' + hero);
-      game.states.table.animateCast(skill, to);
+      game.states.table.animateCast(skill, to, event);
     }
   },
   discard: function (skill) {

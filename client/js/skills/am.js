@@ -32,10 +32,9 @@ game.skills.am = {
       var opponent = source.opponent();
       var maxCards = game[opponent].maxSkillCards();
       var cardsInHand = game[opponent].cardsInHand();
-      var multiplier = skill.data('multiplier');
       var damage = skill.data('damage');
       var mana = target.data('mana');
-      var damageBonus = (maxCards - cardsInHand) * multiplier;
+      var damageBonus = (maxCards - cardsInHand);
       target.alliesInRange(range, function (targets) {
         source.damage(damage + damageBonus, targets, skill.data('damage type'));
       });

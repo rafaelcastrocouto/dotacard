@@ -152,14 +152,14 @@
   clear: left;
 }
 .card .desc .dot span {
-  width: 14px; height: 14px;
+  width: 14px;
+  height: 14px;
   line-height: 14px;
   position: absolute;
   display: inline-block;
   border-radius: 50%;
   box-shadow: 0 0 0 3px #ed8c8c;
   margin: 0 5px;
-  font-weight: bold;
   text-align: center;
 }
 .card div p {
@@ -451,7 +451,7 @@
   transform: rotateY(0);
 }
 .selectedarea .selectedcard.flip:hover {
-  z-index: 11;
+  /* z-index: 11; */
 }
 .table .selectedarea .card {
   position: absolute;
@@ -462,9 +462,9 @@
   cursor: default;
   transition: all 0s;
 }
-.table .selectedarea .selectedcard.flip .card:hover {
-  transform: translate(-146px, -80px) scale(1);
-  zoom: 188%;
+/*.table .selectedarea .selectedcard.flip .card:hover {
+   transform: translate(-146px, -80px) scale(1); 
+   zoom: 188%; 
 }
 .table .selectedarea .selectedcard.flip .card:hover .buffs {
   bottom: 2px;
@@ -474,8 +474,8 @@
   margin-top: 1px;
 }
 .table .selectedarea .selectedcard.flip .card:hover .img {
-  /* image-rendering: pixelated; */
-}
+ image-rendering: pixelated;
+}*/
 .table .selectedarea .cardback {
   background: #111;
   background-image: url(../img/cardback.jpg);
@@ -499,6 +499,7 @@
   margin-right: -100px;
 }
 
+
 .map .card {
   position: absolute;
   z-index: 3;
@@ -506,6 +507,12 @@
   transform: translate3d(-50%, -50%, 2px);
 }
 
+.map .card.invisible {
+  opacity: 0.7;
+}
+.map .card.enemy.invisible {
+  display: none;
+}
 .map .card:hover,
 .map .card.selected,
 .map .card.source {

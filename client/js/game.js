@@ -96,6 +96,7 @@ var game = {
     game.states.vs.clear();
     game.states.table.clear();
     game.states.result.clear();
+    game.states.options.opt.removeClass('disabled');
     game.mode = false;
     localStorage.removeItem('mode');
   },

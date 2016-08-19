@@ -165,7 +165,7 @@ game.skills.kotl = {
   recall: {
     cast: function (skill, source, target) {
       var buff = source.addBuff(target, skill);
-      buff.on('expire.kotl-recall', this.end);
+      buff.on('expire.kotl-recall', this.expire);
       target.on('damage.kotl-recall', this.damage);
       target.data('recall-source', source);
       target.data('recall-skill', skill);
@@ -174,18 +174,20 @@ game.skills.kotl = {
       var target = eventdata.target;
       target.removeBuff('kotl-recall');
     },
-    end: function (event, eventdata) {
+    expire: function (event, eventdata) {
       var target = eventdata.target;
       var source = target.data('recall-source');
+      var destiny;
       source.around(game.data.ui.melee, function (spot) {
-        if (spot.hasClass('free') && target.data('recall-skill')) {
-          target.stopChanneling();
-          target.place(spot);
-          target.data('recall-source', null);
-          target.data('recall-skill', null);
-          target.off('damage.kotl-recall');
-        }
+        if (spot.hasClass('free') && target.data('recall-skill')) destiny = spot;
       });
+      if (destiny) {
+        target.stopChanneling();
+        target.place(destiny);
+        target.data('recall-source', null);
+        target.data('recall-skill', null);
+        target.off('damage.kotl-recall');
+      }
     }
   }
 };

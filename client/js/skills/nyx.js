@@ -8,20 +8,57 @@ game.skills.nyx = {
       game.shake();
       source.opponentsInLine(target, range, width, function (card) {
         source.damage(damage, card, dmgType);
-        source.addBuff(card, skill);
+        source.addStun(card, skill);
       });
     }
   },
   burn: {
-    cast: function (skill, source, target) {},
-    damage: function () {}
+    cast: function (skill, source, target) {
+      var hero = target.data('hero');
+      var opponent = target.side();
+      $('.'+opponent+' .hand .'+hero).randomCard().discard();
+      var damage = target.data('mana') * skill.data('multiplier');
+      var dmgType = skill.data('damage type');
+      source.damage(damage, target, dmgType);
+    }
   },
   spike: {
-    cast: function (skill, source) {},
-    damage: function () {}
+    cast: function (skill, source) {
+      var buff = source.selfBuff(skill);
+      source.on('damage.nyx-spike', this.damage);
+      source.data('nyx-spike', skill);
+      buff.on('expire', this.expire);
+    },
+    damage: function (event, eventdata) {
+      var nyx = eventdata.target;
+      var skill = nyx.data('nyx-spike');
+      var dmgType = skill.data('damage type');
+      var attacker = eventdata.source;
+      if (!attacker.hasClass('towers')) {
+        nyx.damage(eventdata.originalDamage, attacker, dmgType);
+        nyx.addStun(attacker, skill);
+      }
+    },
+    expire: function (event, eventdata) {
+      var source = eventdata.source;
+      source.data('nyx-spike', null);
+      source.off('damage.nyx-spike');
+    }
   },
   ult: {
-    cast: function (skill, source) {},
-    damage: function () {}
+    cast: function (skill, source) {
+      var buff = source.selfBuff(skill);
+      buff.on('expire', this.expire);
+      source.on('invisibilityLoss', this.end);
+      source.addInvisibility();
+    },
+    end: function (event, eventdata) {
+      var source = eventdata.source;
+      source.removeBuff('nyx-ult');
+    },
+    expire: function (event, eventdata) {
+      var source = eventdata.source;
+      source.removeInvisibility();
+    }
   }
 };

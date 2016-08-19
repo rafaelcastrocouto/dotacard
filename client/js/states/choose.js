@@ -159,7 +159,7 @@ game.states.choose = {
       game.states.changeTo('vs');
     } else game.alert('Sorry but this hero is still under development!');
   },
-  backClick: function () { console.log(!$(this).attr('disabled'));
+  backClick: function () {
     if (!$(this).attr('disabled')) {
       if (game.mode == 'online') {
         game.db({

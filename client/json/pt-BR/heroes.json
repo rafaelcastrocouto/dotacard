@@ -42,14 +42,13 @@
     "range": "Médio",
     "hp": 50,
     "mana": 2,
-    "damage": 16,
+    "damage": 15,
     "armor": 3,
     "resistance": 2,
     "description": "Pusher, Carry, Durable"
   },
 
   "nyx":{
-    "disable": true,
     "name": "Nyx Assassin",
     "attribute": "Agilidade",
     "range": "Perto",

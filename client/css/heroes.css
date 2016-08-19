@@ -194,10 +194,10 @@
   background-image: url("../img/skills/nyx/nyx_assassin_spiked_carapace.jpg");
 }
 .nyx-ult .img,
-.buffs .buff.nyx-ult .img {
+.buffs .buff.nyx-ult .img,
+.map .nyx.invisible .img {
   background-image: url("../img/skills/nyx/nyx_assassin_vendetta.jpg");
 }
-
 
 .pud {
   background: #b43;

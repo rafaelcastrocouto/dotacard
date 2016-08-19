@@ -4,6 +4,8 @@ game.skill = {
     $.fn.passive = game.skill.passive;
     $.fn.toggle = game.skill.toggle;
     $.fn.discard = game.skill.discard;
+    $.fn.addInvisibility = game.skill.addInvisibility;
+    $.fn.removeInvisibility = game.skill.removeInvisibility;
     $.fn.summon = game.skill.summon;
   },
   build: function (side, single) {
@@ -83,9 +85,12 @@ game.skill = {
             }
           });
         }
-        game.timeout(300, function () { //console.trace('castend')
-          if (game.mode === 'library') this.source.select();
-          else this.skill.discard();
+        if (game.mode === 'library') game.timeout(800, function () {
+
+          //$('.map .player').not('.done').select();
+        }); 
+        else game.timeout(300, function () { //console.trace('castend')
+          this.skill.discard();
         }.bind({source: source, skill: skill}));
       }
     }
@@ -161,9 +166,22 @@ game.skill = {
     }.bind({source: this, unit: unit}));
     return unit;
   },
+  addInvisibility: function () {
+    this.addClass('invisible');
+    this.on('action.invisible', function (event, eventdata) {
+      if (eventdata.type !== 'move') {
+        $(this).removeInvisibility();
+      }
+    });
+  },
+  removeInvisibility: function () {
+    this.removeClass('invisible').off('action.invisible');
+    this.trigger('invisibilityLoss', {source: this});
+  },
   discard: function () {
     if (this.hasClass('skills')) {
       if (this.hasClass('selected')) game.card.unselect();
+      game.highlight.clearMap();
       this.trigger('discard', {target: this});
       var side = this.side();
       if (this.data('deck') === game.data.ui.temp) this.appendTo(game[side].skills.temp);

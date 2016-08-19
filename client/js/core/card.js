@@ -41,7 +41,7 @@ game.card = {
     $('<div>').appendTo(portrait).addClass('overlay');
     if (data.attribute) {
       $('<h1>').appendTo(fieldset).text(data.attribute);
-    } else if (game.data.heroes[data.hero]) {
+    } else if (data.type) {
       $('<h1>').appendTo(fieldset).text(data.type);
     }
     current = $('<div>').addClass('current').appendTo(fieldset);
@@ -55,13 +55,18 @@ game.card = {
     }
     desc = $('<div>').addClass('desc').appendTo(fieldset);
     if (data.dot)                   $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.dot));
-    if (data.buff && data.buff.dot) $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.buff.dot));
+    if (data.buff) {
+      if (data.buff['damage bonus']) $('<p>').appendTo(desc).text(game.data.ui.damage + ' ' +  game.data.ui.bonus + ': ').addClass('dot').append($('<span>').text(data.buff['damage bonus']));
+      if (data.buff.dot)             $('<p>').appendTo(desc).text(game.data.ui.dot + ': ').addClass('dot').append($('<span>').text(data.buff.dot));
+    }
     if (data.hand)                  $('<p>').appendTo(desc).text(data.deck+' (' + data.hand + ')');
     if (data.cards)                 $('<p>').appendTo(desc).text(game.data.ui.cards+': ' + data.cards);
     if (data['damage type'])        $('<p>').appendTo(desc).text(game.data.ui.damage+': ' + data['damage type']);
     if (data.aoe)                   $('<p>').appendTo(desc).text(game.data.ui.aoe+': ' + data.aoe + ' ('+data['aoe range']+')');
     if (data.range)                 $('<p>').appendTo(desc).text(game.data.ui.range + ': ' + data.range);
-    if (data['cast range'])         $('<p>').appendTo(desc).text(game.data.ui['cast range'] + ': ' + data['cast range']);
+    if (data['cast range']) {
+      if (typeof(data['cast range']) == 'string' || data['cast range'] > 1) $('<p>').appendTo(desc).text(game.data.ui['cast range'] + ': ' + data['cast range']);
+    }
     if (data.armor) {
       $('<p>').appendTo(desc).text(game.data.ui.armor + ': ' + data.armor).addClass('armor');
       data['current armor'] = data.armor;
@@ -75,13 +80,13 @@ game.card = {
       data['current speed'] = data.speed;
       //$('<p>').appendTo(desc).text(game.data.ui.speed + ': ' + data.speed);
     }
+    if (data.type == game.data.ui.channel) $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.channel);
     if (data.buff) {
       if (data.buff.chance)              $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.buff.chance + '%');
       if (data.buff.percentage)          $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.buff.percentage + '%');
-      if (data.buff.duration)            $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.buff.duration + ' ' + game.data.ui.turns);
+      if (data.buff.duration)            $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.buff.duration + ' ' + game.data.ui.turns);       
       if (data.buff.multiplier)          $('<p>').appendTo(desc).text(game.data.ui.multiplier + ': ' + data.buff.multiplier + 'X');
       if (data.buff['hp bonus'])         $('<p>').appendTo(desc).text('HP '+game.data.ui.bonus+': ' + data.buff['hp bonus']);
-      if (data.buff['damage bonus'])     $('<p>').appendTo(desc).text(game.data.ui.damage+' '+game.data.ui.bonus+': ' + data.buff['damage bonus']);
       if (data.buff['armor bonus'])      $('<p>').appendTo(desc).text(game.data.ui.armor+' '+game.data.ui.bonus+': ' + data.buff['armor bonus']);
       if (data.buff['resistance bonus']) $('<p>').appendTo(desc).text(game.data.ui.resistance+' '+game.data.ui.bonus+': ' + data.buff['resistance bonus']);
     }
@@ -115,11 +120,11 @@ game.card = {
   place: function (target) {
     if (!target.addClass) target = $('#' + target);
     this.closest('.spot').addClass('free');
-    this.parent().find('.fx').each(function () {
-      $(this).appendTo(target);
-    });
     this.appendTo(target.removeClass('free'));
     game.highlight.map();
+    //this.parent().find('.fx').each(function () {
+    //  $(this).appendTo(target);
+    //});
     //if (this.data('fx') && this.data('fx').canvas) { this.data('fx').canvas.appendTo(target); }
     return this;
   },
@@ -219,15 +224,15 @@ game.card = {
     $('<div>').appendTo(buff).addClass('overlay');
     // apply buff effects
     if (!fxOff) {
-      if (data['hp bonus']) {
+      if (data['hp bonus'] && typeof(data['hp bonus']) == 'number') {
         target.setHp(target.data('hp') + data['hp bonus']);
         target.setCurrentHp(target.data('current hp') + data['hp bonus']);
       }
-      if (data['damage bonus']) target.setDamage(target.data('current damage') + data['damage bonus']);
-      if (data['armor bonus']) target.setArmor(target.data('current armor') + data['armor bonus']);
-      if (data['resistance bonus']) target.setResistance(target.data('current resistance') + data['resistance bonus']);
-      if (data['speed bonus']) target.setSpeed(target.data('current speed') + data['speed bonus']);
-      if (data['speed slow']) target.setSpeed(target.data('current speed') - data['speed slow']);
+      if (data['damage bonus'] && typeof(data['damage bonus']) == 'number') target.setDamage(target.data('current damage') + data['damage bonus']);
+      if (data['armor bonus'] && typeof(data['armor bonus']) == 'number') target.setArmor(target.data('current armor') + data['armor bonus']);
+      if (data['resistance bonus'] && typeof(data['resistance bonus']) == 'number') target.setResistance(target.data('current resistance') + data['resistance bonus']);
+      if (data['speed bonus'] && typeof(data['speed bonus']) == 'number') target.setSpeed(target.data('current speed') + data['speed bonus']);
+      if (data['speed slow'] && typeof(data['speed slow']) == 'number') target.setSpeed(target.data('current speed') - data['speed slow']);
     }
     // append buff
     target.find('.buffs').append(buff);
@@ -248,17 +253,17 @@ game.card = {
       if (buff) {
         var data = buff.data('buff');
         if (data) {
-          if (data['hp bonus']) {
+          if (data['hp bonus'] && typeof(data['hp bonus']) == 'number') {
             target.setHp(target.data('hp') - data['hp bonus']);
             var hp = target.data('current hp') - data['hp bonus'];
             if (hp < 1) hp = 1;
             target.setCurrentHp(hp);
           }
-          if (data['damage bonus']) target.setDamage(target.data('current damage') - data['damage bonus']);
-          if (data['armor bonus']) target.setArmor(target.data('current armor') - data['armor bonus']);
-          if (data['resistance bonus']) target.setResistance(target.data('current resistance') - data['resistance bonus']);
-          if (data['speed bonus']) target.setSpeed(target.data('current speed') - data['speed bonus']);
-          if (data['speed slow']) target.setSpeed(target.data('current speed') + data['speed slow']);
+          if (data['damage bonus'] && typeof(data['damage bonus']) == 'number') target.setDamage(target.data('current damage') - data['damage bonus']);
+          if (data['armor bonus'] && typeof(data['armor bonus']) == 'number') target.setArmor(target.data('current armor') - data['armor bonus']);
+          if (data['resistance bonus'] && typeof(data['resistance bonus']) == 'number') target.setResistance(target.data('current resistance') - data['resistance bonus']);
+          if (data['speed bonus'] && typeof(data['speed bonus']) == 'number') target.setSpeed(target.data('current speed') - data['speed bonus']);
+          if (data['speed slow'] && typeof(data['speed slow']) == 'number') target.setSpeed(target.data('current speed') + data['speed slow']);
         }
         buff.remove();
       }
@@ -388,18 +393,19 @@ game.card = {
     return this;
   },
   damage: function (damage, target, type) {
-    var source = this, evt, x, y, position, spot, resistance, armor, hp, currentDamage;
+    var source = this, evt, x, y, position, spot, resistance, armor, hp, finalDamage = damage;
     if (damage > 0) {
       if (!type) { type = game.data.ui.physical; }
       if (type === game.data.ui.magical) {
         resistance = target.data('current resistance');
-        if (resistance) damage = damage - resistance;
+        if (resistance) finalDamage = damage - resistance;
       }
       if (type === game.data.ui.physical || type === 'critical') { 
         armor = target.data('current armor');
-        if (armor) damage = damage - armor; 
+        if (armor) finalDamage = damage - armor; 
       }
       if (type === 'critical') source.data('critical-attack', true);
+      if (finalDamage < 1) finalDamage = 1;
       if (damage < 1) damage = 1;
       if (typeof target === 'string') { target = $('#' + target + ' .card'); }
       position = target.getPosition();
@@ -413,13 +419,16 @@ game.card = {
         x: x,
         y: y,
         position: position,
-        damage: damage,
+        damage: finalDamage,
+        originalDamage: damage,
         type: type
       };
-      hp = target.data('current hp') - damage;
-      target.setCurrentHp(hp);
       target.trigger('damage', evt);
-      target.shake();
+      if (!target.hasClass('immune')) {
+        hp = target.data('current hp') - finalDamage;
+        target.setCurrentHp(hp);
+        target.shake();
+      }
       if (hp < 1) game.timeout(400, game.card.kill.bind(game, evt));
       if (type === 'critical') {
         source.data('critical-attack', true);
@@ -428,17 +437,17 @@ game.card = {
         if (!damageFx.length) {
           damageFx = $('<span>').addClass('damaged critical').appendTo(target);
         } else {
-          damage += parseInt(damageFx.text(), 10);
+          finalDamage += parseInt(damageFx.text(), 10);
         }
       } else {
         damageFx = target.find('.damaged').not('.critical');
         if (!damageFx.length) {
           damageFx = $('<span>').addClass('damaged').appendTo(target);
         } else {
-          damage += parseInt(damageFx.text(), 10);
+          finalDamage += parseInt(damageFx.text(), 10);
         }
       }
-      damageFx.text(damage);
+      damageFx.text(finalDamage);
       game.timeout(2000, function () {
         this.remove();
       }.bind(damageFx));
