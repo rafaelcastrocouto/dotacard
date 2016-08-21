@@ -24,10 +24,23 @@ game.states.log = {
     game.clear();
     if (!game.states.log.alert) {
       game.states.log.alert = true;
-      game.alert(game.data.ui.alphaalert + game.version + '</small>', function () {
-        game.states.log.input.focus();
-      });
+      game.states.log.alertBox();
+      if (!localStorage.getItem('voted')) game.poll.addButton();
     }
+  },
+  alertBox: function () {
+    swal({
+      title: game.data.ui.warning,
+      text: game.data.ui.alphaalert + game.version + '</small>',
+      type: 'warning',
+      buttonsStyling: false,
+      allowOutsideClick: false,
+      allowEscapeKey: false,
+      confirmButtonText: game.data.ui.close,
+    }).then(function () {
+      game.poll.clear();
+      game.states.log.input.focus();
+    });
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),
@@ -58,11 +71,11 @@ game.states.log = {
       }
     });
   },
-  end: function () {
-    this.button.attr('disabled', false);
-  },
   remember: function () {
     game.states.log.remembername = !game.states.log.remembername;
     if (!game.states.log.remembername) { localStorage.getItem('name'); }
+  },
+  end: function () {
+    this.button.attr('disabled', false);
   }
 };

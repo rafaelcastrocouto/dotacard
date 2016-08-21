@@ -133,7 +133,7 @@ game.card = {
     var forceSelection = !event;
     if (card) {
       if (forceSelection) game.card.setSelection(card);
-      else if (!card.hasClasses('selected attacktarget casttarget dead done')) 
+      else if (!card.hasClasses('selected attacktarget casttarget dead')) 
         game.card.setSelection(card, event);
     }
     return card;
@@ -155,7 +155,7 @@ game.card = {
     game.selectedCard = card;
     card.addClass('selected');
     game.highlight.map(event);
-    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget shake').clearEvents();
+    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget shake enemyMoveHighlight enemyMoveHighlightTarget').clearEvents();
     game.states.table.selectedCard.addClass('flip');
     card.trigger('select', { card: card });
     if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
@@ -183,7 +183,8 @@ game.card = {
 //           $(this).appendTo(this.destiny);
 //         });
         this.destiny.removeClass('free');
-        this.card.css({ transform: '' }).prependTo(this.destiny).addClass('draggable').on('mousedown touchstart', game.card.select);
+        this.card.css({ transform: '' }).prependTo(this.destiny).on('mousedown touchstart', game.card.select);
+        if (this.card.hasClass('selected')) this.card.unselect();
       }.bind({ card: card, destiny: destiny }));
     }
     return card;
@@ -355,7 +356,7 @@ game.card = {
     this.addClass('shake');
     setTimeout(function () {
       this.removeClass('shake');
-    }.bind(this), 260);
+    }.bind(this), 340);
   },
   attack: function (target) {
     if (typeof target === 'string') { target = $('#' + target + ' .card'); }

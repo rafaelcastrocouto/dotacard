@@ -15,6 +15,7 @@ body, p, noscript {
   src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(../fonts/Julius-Sans-One.woff2) format('woff2'), url(../fonts/Julius-Sans-One.woff) format('woff');
 }
 h1, h2, .button,
+.sweet-alert button,
 .options span, 
 .topbar *,
 .choose .counter {
@@ -316,18 +317,6 @@ input[type=submit][disabled]:active {
   display: block;
   margin-bottom: 12px;
 }
-.sweet-confirm {
-  background: tomato;
-  box-shadow: 0 4px 0 #df4327;
-}
-.sweet-confirm:hover {
-  background: #ff7357;
-}
-
-.sweet-container p {
-  color: #484848;
-}
-
 input[type="checkbox"],
 input[type="radio"] {
   cursor: pointer;
@@ -405,14 +394,14 @@ label span {
   animation: shake 0.1s infinite linear;
 }
 @keyframes shake {
-  0% {transform: translateX(3px);}
-  50% {transform: translateX(-3px);}
+  0% {transform: translateX(2px);}
+  50% {transform: translateX(-2px);}
 }
 
 .card.shake {
   animation: cardshake 0.1s infinite linear;
 }
 @keyframes cardshake {
-  0% {left: calc(50% + 10px);}
-  50% {left: calc(50% - 10px);}
+  0% {left: calc(50% + 8px);}
+  50% {left: calc(50% - 8px);}
 }

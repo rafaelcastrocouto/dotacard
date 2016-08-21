@@ -245,6 +245,10 @@
 .card.player.done {
   background: silver;
 }
+.card.player.done .img {
+  filter: saturate(0.7);
+  -webkit-filter: saturate(0.7);
+}
 .card .damaged,
 .card .missed {
   z-index: 20;
@@ -423,7 +427,9 @@
 .table .player .skills .card {
   animation: playerbuyslide 2s;
 }
-
+.table .player .skills .card.tutorialblink {
+ animation: playerbuyslide 2s, cardtutorialblink 1s infinite;
+}
 @keyframes playerbuyslide {
   0% {left: -1000px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(179deg);}
   30% {left: 40px; top: -50%; transform: translate(-50%, -50%) scale(0.6) rotateY(179deg);}
@@ -518,9 +524,6 @@
 .map .card.source {
   transform: translate3d(-50%, -50%, 30px) rotateX(-10deg);
 }
-.map .card.done.selected {
-  transform: translate3d(-50%, -50%, 0) rotateX(0);
-}
 
 .map .card.enemy .current .hp span {
   background: #ed8c8c;
@@ -612,7 +615,7 @@
 }
 .map .card .current .hp span,
 .card.dragTargetClone.fromMap .current .hp span {
-  transform: scale(4.5);
+  transform: translate(5px, -15px) scale(4.5);
   padding-right: 1px;
   width: 21px;
 }

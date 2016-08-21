@@ -26,7 +26,7 @@ game.highlight = {
             game.selectedCard.highlightAttack();
           }
         }
-      } else if (game.selectedCard.hasClass('skills')) {
+      } else if (game.selectedCard.hasClass('skills') && !game.selectedCard.hasClass('done')) {
         if (game.selectedCard.closest('.hand').length &&
             game.mode == 'online' &&
             game.isPlayerTurn()) {
@@ -37,15 +37,7 @@ game.highlight = {
           game.selectedCard.strokeSkill();
           game.selectedCard.highlightArrows();
         }
-        if (game.isPlayerTurn()) {
-          if (game.mode == 'tutorial') {
-            if (game.tutorial.lesson == 'Skill' && game.selectedCard.hasClass('am-shield') ||
-                game.tutorial.lesson == 'Toggle' && game.selectedCard.hasClass('pud-rot') ||
-                game.tutorial.lesson == 'Cast' && game.selectedCard.hasClass('cm-slow')) {
-              game.selectedCard.highlightTargets(event);
-            }
-          } else game.selectedCard.highlightTargets(event);
-        }
+        if (game.isPlayerTurn()) game.selectedCard.highlightTargets(event);
       } else if (game.selectedCard.hasClass('towers')) {
         game.selectedCard.strokeAttack();
       }
@@ -97,7 +89,7 @@ game.highlight = {
     }
   },
   toggle: function (skill, source) {
-    if (!skill.hasClass('done') && !source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
+    if (!source.hasClasses('dead stunned silenced hexed disabled sleeping cycloned taunted')) {
       source.addClass('casttarget').on('mouseup.highlight touchend.highlight', game.player.toggle);
     }
   },
@@ -167,7 +159,7 @@ game.highlight = {
       } else neighbor.addClass('targetarea').on('mouseup.highlight touchend.highlight', game.player.cast);
     });
   },
-  active: function (event, source, skill) { 
+  active: function (event, source, skill) {
     var targets = skill.data('targets');
     if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
       if (!(source.hasClass('rooted') && skill.hasClass('am-blink'))) {

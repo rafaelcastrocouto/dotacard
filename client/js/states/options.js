@@ -25,7 +25,7 @@ game.states.options = {
     this.opt = $('<small>').addClass('opt').hide().text(game.data.ui.options).appendTo(game.topbar).on('mouseup touchend', this.optClick);
     this.el.append(this.menu);
     game.screen.rememberResolution();
-    game.audio.rememberVolume();
+    if (window.AudioContext) game.audio.rememberVolume();
   },
   start: function () {
     game.states.options.opt.addClass('disabled');

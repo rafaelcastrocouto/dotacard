@@ -12,14 +12,13 @@ game.states.vs = {
   },
   start: function (recover) {
     this.clear();
-    if (recover) game.states.changeTo('menu');
-    else {
-      if (game.mode == 'tutorial') game.tutorial.axe.addClass('show');
+    if (recover && game.mode == 'online') {
+      game.states.changeTo('log');
+    } else {
       this.playername.text(game.player.name);
+      if (!game.player.type) game.player.type = 'challenged';
       if (game.mode == 'library') game.player.picks = [localStorage.getItem('choose')];
-      if (game.mode == 'online' || game.mode == 'tutorial') {
-        game.player.picks = localStorage.getItem('mydeck').split(',');
-      }
+      else game.player.picks = localStorage.getItem('mydeck').split(',');
       game.deck.build({
         name: 'heroes',
         filter: game.player.picks,
@@ -27,14 +26,11 @@ game.states.vs = {
           deck.addClass('vsplayerdeck').appendTo(game.states.vs.playerdeck);
         }
       });
-      if (game.mode !== 'online') {
-        game.enemy.type = 'challenger';
-        game.player.type = 'challenged';
-        game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
-      }
-      if (game.mode == 'tutorial') game.enemy.name = 'Tutorial';
-      if (game.mode == 'library') game.enemy.name = 'Library';
+      if (game.mode == 'tutorial') game.enemy.name = game.data.ui.tutorial;
+      if (game.mode == 'library') game.enemy.name = game.data.ui.library;
       this.enemyname.text(game.enemy.name);
+      if (!game.enemy.type) game.enemy.type = 'challenger';
+      game.enemy.picks = [ 'nyx', 'kotl', 'pud', 'ld', 'am' ];
       game.deck.build({
         name: 'heroes',
         filter: game.enemy.picks,
@@ -42,7 +38,7 @@ game.states.vs = {
           deck.addClass('vsenemyrdeck').appendTo(game.states.vs.enemydeck);
         }
       });
-      localStorage.setItem('enemydeck', game.enemy.picks);
+      //localStorage.setItem('enemydeck', game.enemy.picks);
       var t = 3600;
       if (game.mode == 'library') t = 2000;
       game.states.options.opt.addClass('disabled');

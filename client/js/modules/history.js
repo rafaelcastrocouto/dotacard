@@ -19,8 +19,8 @@ game.history = {
         valid = game.history.validState(state),
         log = localStorage.getItem('log'),
         logged = (localStorage.getItem('logged') === 'true');
-    var delay = 1000 * 60 * 60 * 4;
-    var recent = (new Date().valueOf() - game.history.last) < delay; // 4 hours
+    var delay = 1000 * 60 * 60 * 2; // 2 hours
+    var recent = (new Date().valueOf() - game.history.last) < delay; 
     var recovering = logged && log && valid && recent;
     if (recovering) {
       game.states.log.out.show();
@@ -30,6 +30,13 @@ game.history = {
       game.chat.set(game.data.ui.reconnected);
       if (mode) game.setMode(mode, recovering);
       if (state == 'table') state = 'vs';
+      if (state == 'menu' || 
+          state == 'options' || 
+          state == 'result') state = 'log';
+      if (mode == 'online') {
+        game.currentData = JSON.parse(game.history.data);
+        game.online.setId(game.currentData.id);
+      }
       game.history.jumpTo(state, recovering);
     } else {
       game.history.jumpTo('log');
@@ -37,7 +44,7 @@ game.history = {
   },
   jumpTo: function (state, recover) {
     localStorage.setItem('last-activity', new Date().valueOf());
-    if (!recover) game.clear();
+    if (!recover && game.history.state !== 'choose') game.clear();
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {
         game.states.changeTo(state, recover);

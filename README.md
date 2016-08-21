@@ -27,7 +27,7 @@ The game is avaiable free to play at the following URLs:
  - http://dotacard.herokuapp.com
  - http://rafaelcastrocouto.github.io/dotacard/client
 
-Special thanks to [Dopatwo](https://www.youtube.com/user/dopatwo) for the artwork and [Kevin MacLeod](https://www.youtube.com/channel/UCBqb0wSlWVFBnSuTI3Tcxig/videos) for the soundtrack!
+Special thanks to [Dopatwo](https://www.youtube.com/user/dopatwo) for the artwork and [Kevin MacLeod](https://www.youtube.com/channel/UCBqb0wSlWVFBnSuTI3Tcxig) for the soundtrack!
 
 *Powered by*
 

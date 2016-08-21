@@ -1,7 +1,7 @@
 game.states = {
   el: $('.states').first(),
   valid: ['log', 'menu', 'options', 'choose', 'result', 'table', 'vs'],
-  build: function (cb) {
+  build: function (cb) { 
     for (var i=0; i<game.states.valid.length; i++) {
       game.states.buildState(game.states.valid[i]);
     }

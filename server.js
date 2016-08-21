@@ -5,13 +5,21 @@ var http = require('http'),
   host = process.env.HOST,
   port = process.env.PORT || 5000,
   waiting = {id: 'none'},
-  currentData = {},
+  waitTimeout,
   chat = [],
-  debug = false;
+  debug = false,
+  waitLimit = 10,
+  permDataFile = 'client/json/data.json',
+  permData;
+
+fs.readFile(permDataFile, 'utf8', function (err, data) {
+  permData = JSON.parse(data);
+});
 
 var db = {
-  get: function(name, cb){cb(currentData[name]||'');},
-  set: function(name, val, cb){currentData[name] = val; cb(true);}
+  data: {},
+  get: function(name, cb){cb(db.data[name] || '');},
+  set: function(name, val, cb){cb(db.data[name] = val);}
 };
 var send = function(response, data){
   response.statusCode = 200;
@@ -27,21 +35,28 @@ var clientServer = serveStatic('client', {
 var rootServer = serveStatic(__dirname, {
   'setHeaders': setHeaders
 });
-
+var clearWait = function () {
+  clearTimeout(waitTimeout);
+  waiting = {id: 'none'};
+};
+var writeData = function () {
+  var writeStream = fs.createWriteStream(permDataFile);
+  writeStream.write(JSON.stringify(permData));
+  writeStream.end();
+};
 http.createServer(function(request, response) {
   setHeaders(response);
   var urlObj = url.parse(request.url, true);
-  var pathname = urlObj.pathname;
+  var pathname = urlObj.pathname; // console.log('pathname: '+pathname);
   if (request.headers['x-forwarded-proto'] === 'https'){
     response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'});
     response.end();
     return;
   }
-  //console.log('request: '+pathname);
   if (pathname[0] === '/') { pathname = pathname.slice(1); }
   if (pathname === 'db') {
     response.setHeader('Content-Type', 'application/json');
-    var query = urlObj.query;
+    var query = urlObj.query; // console.log('query: '+ (query.set || query.get));
     if (query.set){ //console.log('set: '+ query.set);
       switch (query.set) {
         case 'waiting':
@@ -49,14 +64,18 @@ http.createServer(function(request, response) {
             //console.log('Player' + waiting);
             send(response, JSON.stringify(waiting));
             waiting = query.data;
+            waitTimeout = setTimeout(clearWait, waitLimit * 1000);
           } else {
             //console.log('Online game started');
             send(response, waiting);
-            waiting = {id: 'none'};
+            clearWait();
           }
           return;
         case 'back': //console.log('Choose back click')
-          waiting = {id: 'none'};
+          //console.log(query.data.id, waiting.id)
+          if (query.data.id == waiting.id) {
+            clearWait();
+          }
           send(response, JSON.stringify(waiting));
           return;
         case 'chat':
@@ -68,6 +87,11 @@ http.createServer(function(request, response) {
           chat.unshift(msg);
           chat = chat.slice(0, 3);
           send(response, JSON.stringify({messages: chat}));
+          return;
+        case 'poll':
+          if (typeof(permData.poll[query.data]) == 'number') permData.poll[query.data]++;
+          send(response, JSON.stringify(permData.poll));
+          writeData();
           return;
         default: //console.log('set', query.data)
           db.set(query.set, query.data, function(data){
@@ -101,7 +125,6 @@ http.createServer(function(request, response) {
     }
   } else { //STATIC
     clientServer(request, response, function onNext(err) {
-      console.log(pathname);
       rootServer(request, response, function onNext(err) {
         response.statusCode = 404;
         response.setHeader('Content-Type', 'text/html; charset=UTF-8');

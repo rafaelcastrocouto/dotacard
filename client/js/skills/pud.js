@@ -21,23 +21,34 @@ game.skills.pud = {
         source.data('pud-rot', null);
         source.removeClass('pud-rot');
         source.removeBuff('pud-rot');
+        $('.pud-rot-target').removeClass('pud-rot-target');
       } else { //turn on
         skill.addClass('on');
         source.on('turnend.rot', game.skills.pud.rot.turnend);
         source.data('pud-rot', skill);
         source.addClass('pud-rot');
         source.selfBuff(skill, 'rot-source');
+        var range = skill.data('aoe range');
+        source.opponentsInRange(range, function (target) {
+          target.addClass('pud-rot-target');
+        });
       }
     },
     turnend: function (event, eventdata) {
       var source = eventdata.target;
       var skill = source.data('pud-rot');
       var range = skill.data('aoe range');
-      source.damage(skill.data('damage'), source, skill.data('damage type'));
+      var damage = skill.data('damage');
+      source.damage(damage, source, skill.data('damage type'));
       source.opponentsInRange(range, function (target) {
-        source.damage(skill.data('damage'), target, skill.data('damage type'));
-        source.addBuff(target, skill, 'rot-targets');
+        target.addClass('pud-rot-target');
       });
+      $('.pud-rot-target').each(function (i, card) {
+        target = $(card);
+        source.damage(damage, target, skill.data('damage type'));
+        source.addBuff(target, skill, 'rot-targets');
+        target.removeClass('pud-rot-target');
+    });
     }
   },
   passive: {

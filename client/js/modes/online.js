@@ -5,15 +5,24 @@ game.online = {
     game.states.choose.randombt.show().attr({disabled: true});
     game.states.choose.mydeck.show().attr({disabled: true});
     game.states.choose.pickedbox.hide();
-    if (recover) game.online.recover();
-    else if (!game.online.builded) game.online.start();
+    if (!game.online.builded && !recover) game.online.start();
+    if (recover) {
+      if (game.currentData.challenger) {
+        if (game.player.name == game.currentData.challenger) game.online.battle('challenged', game.currentData.challenged);
+        else game.online.battle('challenger', game.currentData.challenger);
+      }
+      else game.online.wait();
+    }
   },
   start: function () {
     game.online.builded = true;
     game.currentData = {};
     game.online.newId();
     game.online.setData('id', game.id);
-    game.db({ // tell player wants to play
+    game.online.ask();
+  },
+  ask: function () {
+    game.db({
       'set': 'waiting',
       'data': game.currentData
     }, function (waiting) {
@@ -22,28 +31,22 @@ game.online = {
     });
   },
   newId: function () {
-    game.seed = Math.floor(Math.random() * 1E16);
+    game.online.newSeed();
     game.id = btoa(game.seed) + '|' + btoa(new Date().valueOf());
-    localStorage.setItem('seed', game.seed);
   },
   setId: function (id) {
     game.id = id;
-    var n = id.split('|');
-    game.seed = parseInt(atob(n[0]), 10);
-    game.online.date = new Date(n[1]);
+    game.online.setSeed(id);
+  },
+  newSeed: function () {
+    game.seed = Math.floor(Math.random() * 1E16);
     localStorage.setItem('seed', game.seed);
   },
-  recover: function () {
-    game.id = btoa(game.history.seed);
-    if (game.history.data) {
-      game.currentData = JSON.parse(game.history.data);
-      game.online.setData('id', game.id);
-      if (game.currentData.status === 'waiting') {
-        game.online.wait();
-      } else {
-        // todo recover vs and table states
-      }
-    }
+  setSeed: function (id) {
+    var n = id.split('|');
+    game.seed = parseInt(atob(n[0]), 10);
+    localStorage.setItem('seed', game.seed);
+    game.online.date = new Date(n[1]);
   },
   setData: function (item, data) {
     game.currentData[item] = data;
@@ -54,29 +57,28 @@ game.online = {
   },
   wait: function () {
     game.loader.addClass('loading');
-    game.player.type = /* will be */ 'challenged';
+    game.player.type = 'challenged';
     game.online.setData('challenged', game.player.name);
-    game.online.setData('status', 'waiting');
-    game.db({ // tell challenged name
+    game.db({
       'set': game.id,
       'data': game.currentData
     }, function () {
       game.message.text(game.data.ui.waiting);
       game.tries = 0;
+      game.online.waiting = true;
       setTimeout(game.online.searching, 1000);
     });
   },
   searching: function () {
-    if (game.id && game.currentData.status == 'waiting') {
+    if (game.id && game.online.waiting) {
       game.db({ 'get': game.id }, function (found) {
-        // asking challenger name
-        var name = found.challenger;
-        if (name) game.online.newChallengerFound(name);
-        else {
+        if (found.challenger) {
+          game.online.waiting = false;
+          game.online.newChallengerFound(found.challenger);
+        } else {
           game.triesCounter.text(game.tries += 1);
-          if (game.tries > game.waitLimit) {
-            game.message.text(game.data.ui.noenemy);
-            game.timeout(2000, game.states.changeTo ,'menu');
+          if (game.tries >= game.waitLimit) {
+            game.online.ask();
           } else { game.timeout(1000, game.online.searching); }
         }
       });
@@ -84,6 +86,7 @@ game.online = {
   },
   newChallengerFound: function (name) {
     game.triesCounter.text('');
+    game.states.choose.back.attr({disabled: true});
     game.online.setData('challenger', name);
     game.online.battle('challenger', name);
   },
@@ -91,21 +94,28 @@ game.online = {
     game.message.text(game.data.ui.gamefound);
     game.player.type = 'challenger';
     game.online.setId(waiting.id);
+    game.triesCounter.text('');
+    game.states.choose.back.attr({disabled: true});
     // ask challenged name
     game.db({ 'get': waiting.id }, function (found) {
-      var name = found.challenged;
-      game.online.setData('challenged', name);
-      game.online.setData('challenger', game.player.name);
-      // tell challenger name
-      game.db({
-        'set': game.id,
-        'data': game.currentData
-      }, function () {
-        game.online.battle('challenged', name);
-      });
+      if (found.challenged) {
+        game.online.setData('challenged', found.challenged);
+        game.online.setData('challenger', game.player.name);
+        // tell challenger name
+        game.db({
+          'set': game.id,
+          'data': game.currentData
+        }, function () {
+          game.online.battle('challenged', found.challenged);
+        });
+      }
     });
   },
-  battle: function (type, name, recover) { //console.trace('battle')
+  battle: function (type, name) { //console.trace('battle')
+    if (name == game.player.name) {
+      game.reset();
+      return;
+    }
     game.loader.removeClass('loading');
     game.tries = 0;
     game.online.picked = false;
@@ -113,13 +123,18 @@ game.online = {
     game.enemy.type = type;
     game.message.html(game.data.ui.battlefound + ' <b>' + game.player.name + '</b> vs <b class="enemy">' + game.enemy.name + '</b>');
     game.states.choose.counter.show();
+    game.audio.play('battle');
+    if (game.currentData[game.player.type+'Deck'] &&
+        game.currentData[game.player.type+'Deck'].split('|').length == 5) {
+      game.player.picks = game.currentData[game.player.type+'Deck'].split('|');
+      game.online.chooseEnd();
+    } else game.online.enablePick();
+  },
+  enablePick: function () {
     game.states.choose.randombt.attr({disabled: false});
     if (localStorage.getItem('mydeck')) game.states.choose.mydeck.attr({disabled: false});
     game.states.choose.enablePick();
-    game.online.setData('status', 'battle');
-    game.audio.play('battle');
     game.states.choose.count = game.timeToPick;
-    game.online.setData('expire', new Date().valueOf() + (game.timeToPick*1000) );
     game.timeout(1000, game.online.pickCount);
   },
   pickCount: function () {
@@ -173,6 +188,7 @@ game.online = {
         game.online.foundDeck(type, found);
       } else {
         game.triesCounter.text(game.tries += 1);
+        if (game.tries >= 10) game.states.choose.back.attr({disabled: false});
         if (game.tries > game.connectionLimit) {
           game.reset();
         } else { game.timeout(1000, game.online.loadDeck.bind(this, type)); }
@@ -375,6 +391,7 @@ game.online = {
   clear: function () {
     game.online.builded = false;
     game.online.started = false;
+    game.currentData = {};
     game.seed = 0;
     game.id = null;
     game.moves = [];

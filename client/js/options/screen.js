@@ -5,11 +5,13 @@ game.screen = {
   rememberResolution: function () {
     var res, rememberedres = localStorage.getItem('resolution');
     if (rememberedres && game.states.options[rememberedres]) res = rememberedres;
-    else if (window.innerWidth < 970) {
+    else if (window.innerWidth < 970 || window.innerHeight < 600) {
       res = 'low';
     }
-    this.setResotution(res);
-    if (res) game.screen.changeResolution(res);
+    if (res) {
+      game.screen.setResotution(res);
+      game.screen.changeResolution(res);
+    }
   },
   setResotution: function (res) {
     $('input[name=resolution][value='+res+']').attr('checked', true);
