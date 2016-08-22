@@ -166,11 +166,11 @@ noscript {
   top: 50%;
   left: 50%;
   animation: logoslideup 0.8s 1;
-  transform: translate(-50%, -120%);
+  transform: translate(-50%, -105%);
 }
 @keyframes logoslideup {
-  0% {top: 60% }
-  100% {top: 50%}
+  0% {transform: translate(-50%, -80%); }
+  100% {transform: translate(-50%, -105%);}
 }
 .log .h2 {
   z-index: 10;
@@ -178,15 +178,15 @@ noscript {
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -30%);
+  transform: translate(-50%, 0);
 }
 .log .h2 {
   animation: slideright 5s infinite;
 }
 @keyframes slideright {
-  0% {left: -1000%}
-  5%, 95% {left: 50%}
-  100% {left: 1000%}
+  0% {transform: translate(-150%, 0);}
+  5%, 95% {transform: translate(-50%, 0);}
+  100% {transform: translate(250%, 0);}
 }
 
 .loading .box {
@@ -348,7 +348,8 @@ label span {
 }
 
 .log .box {
-  padding: 350px 180px 30px;
+  padding: 360px 110px 30px;
+  width: 590px;
 }
 
 .log form {
