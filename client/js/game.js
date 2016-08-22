@@ -36,7 +36,7 @@ var game = {
       game.utils();
       game.events.build();
       game.history.build();
-      game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter);
+      game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter).appendTo(game.container);
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },

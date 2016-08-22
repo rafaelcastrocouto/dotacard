@@ -7,7 +7,7 @@ game.poll = {
   build: function () {
     var sweet = $('.sweet-alert');
     game.poll.voteBox = sweet.clone().addClass('vote').html('');
-    $('<h2>').text(game.data.ui.votenexthero).appendTo(game.poll.voteBox);
+    game.poll.title = $('<h2>').text(game.data.ui.votenexthero).appendTo(game.poll.voteBox);
     var p = $('<p>').appendTo(game.poll.voteBox);
     game.poll.lina = $('<label>').appendTo(p).append($('<img>').attr({src:'img/poll/lina.jpg'})).append($('<p>').append($('<input>').attr({type: 'radio', name: 'nexthero', value: 'lina'})).append($('<span>').text('Lina'))).on('mouseup touchend', game.poll.enableVote);
     game.poll.mirana = $('<label>').appendTo(p).append($('<img>').attr({src:'img/poll/mirana.jpg'})).append($('<p>').append($('<input>').attr({type: 'radio', name: 'nexthero', value: 'mirana'})).append($('<span>').text('Mirana'))).on('mouseup touchend', game.poll.enableVote);
@@ -41,6 +41,7 @@ game.poll = {
   voted: function (poll) {
     localStorage.setItem('voted', game.poll.votedHero);
     game.poll[game.poll.votedHero].addClass('voted');
+    game.poll.title.text(game.data.ui.thanksvote);
     $('span', game.poll.lina).after($('<span>').addClass('votes').text(poll.lina));
     $('span', game.poll.mirana).after($('<span>').addClass('votes').text(poll.mirana));
     $('span', game.poll.wind).after($('<span>').addClass('votes').text(poll.wind));

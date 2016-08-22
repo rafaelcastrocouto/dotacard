@@ -33,7 +33,6 @@ game.states = {
           if (newstate.chat && game.backState !== 'log' && game.chat.el) {
             game.chat.el.appendTo(newstate.el);
           }
-          newstate.el.append(game.topbar);
           newstate.el.fadeIn(400);
         }
         game.currentState = state;

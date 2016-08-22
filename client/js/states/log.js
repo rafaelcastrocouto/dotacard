@@ -26,7 +26,7 @@ game.states.log = {
       game.states.log.alert = true;
       game.states.log.alertBox();
       if (!localStorage.getItem('voted')) game.poll.addButton();
-    } else game.states.log.input.focus();
+    }
   },
   createBkgDeck: function () {
     var div = $('<div>').addClass('bkgdeck');
@@ -36,22 +36,25 @@ game.states.log = {
     $('.pickbox .card.kotl').clone().appendTo(div);
     $('.pickbox .card.pud').clone().appendTo(div);
     $('.pickbox .card.ld').clone().appendTo(div);
-    game.states.el.prepend(div);
+    game.states.el.prepend(div).addClass('iddle');
     game.bkgDeck = div;
     $(window).on('mousemove', game.states.log.move);
   },
-  scale: 0.014,
+  scale: 0.01,
   move: function (event) {
+    clearTimeout(game.iddleTimeout);
     if (game.currentState == 'log' ||
         game.currentState == 'menu' ||
-        game.currentState == 'options') {
+        game.currentState == 'options' ||
+        game.currentState == 'vs') {
       var s = game.states.log.scale;
       var p = { x: event.clientX, y: event.clientY };
       var w = { x: window.innerWidth, y: window.innerHeight };
       var offmiddle = { x: p.x - (w.x/2), y: p.y - (w.y/2) };
       var v = { x: 50 + (offmiddle.x * s), y: 50 + (offmiddle.y * s) };
       var str = ''+ v.x + '% ' + v.y + '%';
-      game.states.el.css('perspective-origin', str);
+      game.states.el.removeClass('iddle').css('perspective-origin', str);
+      game.iddleTimeout = setTimeout(function () { game.states.el.addClass('iddle'); }, 4000);
     }
   },
   alertBox: function () {
@@ -66,7 +69,7 @@ game.states.log = {
     }).then(function () {
       game.poll.clear();
       game.states.log.title.appendTo(game.states.log.logo);
-      game.states.log.input.focus();
+      if (!game.states.log.input.val()) game.states.log.input.focus();
     });
   },
   login: function () {
@@ -100,7 +103,6 @@ game.states.log = {
   },
   remember: function () {
     game.states.log.remembername = !game.states.log.remembername;
-    if (!game.states.log.remembername) { localStorage.getItem('name'); }
   },
   end: function () {
     this.button.attr('disabled', false);

@@ -131,6 +131,16 @@ noscript {
   overflow: hidden;
 }
 
+.states.iddle {
+  animation: persp 30s infinite;
+}
+@keyframes persp {
+  0%, 100% { perspective-origin: 50% 55%; }
+  25% { perspective-origin: 55% 50%; }
+  50% { perspective-origin: 50% 45%; }
+  75% { perspective-origin: 45% 50%; }  
+}
+
 .hidden {
   display: none;
 }
