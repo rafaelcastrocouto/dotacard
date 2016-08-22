@@ -47,6 +47,7 @@ game.history = {
     if (!recover && game.history.state !== 'choose') game.clear();
     game.db({ 'get': 'server' }, function (server) {
       if (server.status === 'online') {
+        game.states.log.createBkgDeck();
         game.states.changeTo(state, recover);
       } else { game.reset(); }
     });

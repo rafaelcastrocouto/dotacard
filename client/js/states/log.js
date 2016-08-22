@@ -2,10 +2,10 @@ game.states.log = {
   remembername: true,
   build: function () {
     this.box = $('<div>').addClass('box');
-    this.logo = $('<div>').appendTo(this.box).addClass('logo slide');
-    this.title = $('<img>').appendTo(this.logo).attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
+    this.logo = $('<div>').appendTo(this.el).addClass('logo slide');
+    this.title = $('<img>').attr({alt: 'DOTA', src: 'img/title.png'}).addClass('h1');
     this.subtitle = $('<img>').appendTo(this.logo).attr({alt: 'CARD', src: 'img/subtitle.png'}).addClass('h2');
-    this.title = $('<h1>').appendTo(this.box).text(game.data.ui.choosename);
+    this.boxtitle = $('<h1>').appendTo(this.box).text(game.data.ui.choosename);
     this.form = $('<form>').appendTo(this.box).on('submit', function (event) { event.preventDefault(); return false; });
     this.input = $('<input>').appendTo(this.form).attr({placeholder: game.data.ui.logtype, type: 'text', required: 'required', minlength: 3, maxlength: 24, tabindex: 1}).keydown(function (event) { if (event.which === 13) { game.states.log.login(); } });
     this.button = $('<input>').addClass('button').appendTo(this.form).val(game.data.ui.log).attr({title: game.data.ui.choosename, type: 'submit'}).on('mouseup touchend', this.login);
@@ -26,6 +26,32 @@ game.states.log = {
       game.states.log.alert = true;
       game.states.log.alertBox();
       if (!localStorage.getItem('voted')) game.poll.addButton();
+    } else game.states.log.input.focus();
+  },
+  createBkgDeck: function () {
+    var div = $('<div>').addClass('bkgdeck');
+    $('.pickbox .card.wk').clone().appendTo(div);
+    $('.pickbox .card.cm').clone().appendTo(div);
+    $('.pickbox .card.am').clone().appendTo(div);
+    $('.pickbox .card.kotl').clone().appendTo(div);
+    $('.pickbox .card.pud').clone().appendTo(div);
+    $('.pickbox .card.ld').clone().appendTo(div);
+    game.states.el.prepend(div);
+    game.bkgDeck = div;
+    $(window).on('mousemove', game.states.log.move);
+  },
+  scale: 0.014,
+  move: function (event) {
+    if (game.currentState == 'log' ||
+        game.currentState == 'menu' ||
+        game.currentState == 'options') {
+      var s = game.states.log.scale;
+      var p = { x: event.clientX, y: event.clientY };
+      var w = { x: window.innerWidth, y: window.innerHeight };
+      var offmiddle = { x: p.x - (w.x/2), y: p.y - (w.y/2) };
+      var v = { x: 50 + (offmiddle.x * s), y: 50 + (offmiddle.y * s) };
+      var str = ''+ v.x + '% ' + v.y + '%';
+      game.states.el.css('perspective-origin', str);
     }
   },
   alertBox: function () {
@@ -39,6 +65,7 @@ game.states.log = {
       confirmButtonText: game.data.ui.close,
     }).then(function () {
       game.poll.clear();
+      game.states.log.title.appendTo(game.states.log.logo);
       game.states.log.input.focus();
     });
   },

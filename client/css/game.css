@@ -91,12 +91,13 @@ noscript {
 
 .greenlight-button {
   position: absolute;
-  top: 24px;
-  left: -4px;
+  top: 50%;
+  left: 50%;
   width: 56px;
   height: 75px;
   overflow: hidden;
   transition: width 0.3s;
+  transform: translate(-490px, -272px);
 }
 .greenlight-button:hover {
   width: 442px;
@@ -127,6 +128,7 @@ noscript {
   background: url("../img/banner.jpg");
   background-size: 111%;
   background-position: 50%;
+  overflow: hidden;
 }
 
 .hidden {
@@ -138,7 +140,7 @@ noscript {
   box-sizing: border-box;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -48%);
   padding: 40px 80px;
   text-align: center;
   border-radius: 5px;
@@ -148,31 +150,33 @@ noscript {
 .box div p {
   display: block;
 }
-
-.logo .h1 {
-  position: relative;
-  top: 0px;
-  transform: translateZ(0);
-}
-.logo.slide .h1 {
-  animation: logoslideup 1s 1 linear;
+.log .h1 {
+  z-index: 10;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  animation: logoslideup 0.8s 1;
+  transform: translate(-50%, -120%);
 }
 @keyframes logoslideup {
-  0% {top: 60px}
-  100% {top: 0px}
+  0% {top: 60% }
+  100% {top: 50%}
 }
-.logo .h2 {
+.log .h2 {
+  z-index: 10;
   margin: 16px;
-  position: relative;
-  transform: translateZ(0);
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -30%);
 }
-.logo .h2 {
-  animation: slideright 6s infinite;
+.log .h2 {
+  animation: slideright 5s infinite;
 }
 @keyframes slideright {
-  0% {right: -3000px}
-  5%, 95% {right: 0}
-  100% {right: 3000px}
+  0% {left: -1000%}
+  5%, 95% {left: 50%}
+  100% {left: 1000%}
 }
 
 .loading .box {
@@ -206,31 +210,27 @@ noscript {
 
 .states.finished {
   background-image: url("../img/bkg/polygon-light.jpg");
+  perspective: 600px;
+}
+
+.states.library,
+.states.online,
+.states.tutorial {
+  background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
 .states, .state {
   background-size: cover;
   width: 970px;
   height: 600px;
-}
-
-.state {
-  margin: 0 auto;
-  position: relative;
-  overflow: hidden;
-  transform: translateZ(0);
-  perspective: 600px;
+  position: absolute;
+  top: 0;
+  left: 0;
 }
 
 .state p {
   display: block;
   margin: 1em;
-}
-
-.state.table,
-.state.choose,
-.state.vs {
-  background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
 input {
@@ -338,7 +338,7 @@ label span {
 }
 
 .log .box {
-  padding: 50px 140px;
+  padding: 350px 180px 30px;
 }
 
 .log form {
@@ -356,7 +356,45 @@ label span {
 .log .remembername {
   cursor: pointer;
 }
-
+.bkgdeck {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 970px;
+  height: 600px;
+  pointer-events: none;
+}
+.tutorial .bkgdeck,
+.online .bkgdeck,
+.library .bkgdeck {
+  display: none;
+}
+.bkgdeck .card {
+  position: absolute;
+  cursor: default;
+  z-index: 0;
+}
+.bkgdeck .card:hover {
+  z-index: 1;
+}
+.bkgdeck .ld {
+  transform: translate3d(800px, -45px, -50px) rotateY(-60deg) rotateZ(32deg) rotateX(-15deg);
+}
+.bkgdeck .wk {
+  transform: translate3d(740px, -130px, -260px) rotateY(-50deg) rotateZ(30deg) rotateX(-15deg);
+}
+.bkgdeck .cm {
+  transform: translate3d(960px, 130px, -160px) rotateY(-90deg) rotateZ(35deg) rotateX(-5deg);
+}
+.bkgdeck .pud {
+  transform: translate(-120px, -60px) translateZ(-140px) rotateY(50deg) rotateZ(-36deg) rotateX(-2deg);
+}
+.bkgdeck .am {
+  transform: translate(-310px, 130px) translateZ(-290px) rotateY(70deg) rotateZ(-35deg) rotateX(5deg);
+}
+.bkgdeck .kotl {
+  transform: translate(-66px, -130px) translateZ(-323px) rotateY(40deg) rotateZ(-39deg) rotateX(-18deg);
+}
 .menu h1 {
   margin-bottom: 6px;
 }

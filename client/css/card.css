@@ -62,7 +62,6 @@
   transform: translateZ(0);
   background: #898;
 }
-
 .card:hover {
   z-index: 10;
 }

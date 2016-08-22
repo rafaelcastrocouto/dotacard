@@ -46,7 +46,7 @@ game.poll = {
     $('span', game.poll.wind).after($('<span>').addClass('votes').text(poll.wind));
   },
   clear: function () {
-    game.poll.showBt.remove();
+    if (game.poll.showBt) game.poll.showBt.remove();
     if (game.poll.voteBox) game.poll.voteBox.remove();
   },
   close: function () {

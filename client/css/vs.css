@@ -1,10 +1,19 @@
+.vs {
+  transform: translateZ(0);
+  transform-style: preserve-3d;
+}
+
 .versus {
   position: absolute;
   top: -10px;
-  left: 420px;
+  left: 425px;
   z-index: 10;
   font-size: 40px;
-
+  animation: slidevs 1s 1;
+}
+@keyframes slidevs {
+  0% {top: -100px;}
+  100% {top: -10px;}
 }
 .vsplayer, .vsenemy {
   transition: all 0.4s;
@@ -16,19 +25,17 @@
   background: rgba(0,0,0,0.6);
 }
 .vsplayer {
-  left: 100px;
-  transform: rotateY(10deg);
+  transform: translateX(100px) rotateY(10deg);
 }
 .vsplayer.slide {
-  left: -1000px;
+  transform: translateX(-1100px) rotateY(10deg);
 }
 .vsenemy {
-  right: 100px;
-  transform: rotateY(-10deg);
+  transform: translateX(500px) rotateY(-10deg);
   text-align: right;
 }
 .vsenemy.slide {
-  right: -1000px;
+  transform: translateX(1500px) rotateY(-10deg);
 }
 .vs .vsplayer > h1,
 .vs .vsenemy > h1 {
