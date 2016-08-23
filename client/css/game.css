@@ -38,9 +38,10 @@ input[type="text"] {
 
 html, body {
   user-select: none;
-  -webkit-user-select: none;
+  /* -webkit-user-select: none; */
   margin: 0;
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
 }
 body {
   background-attachment: fixed;
@@ -128,6 +129,9 @@ noscript {
   background: url("../img/banner.jpg");
   background-size: 111%;
   background-position: 50%;
+}
+
+.states {
   overflow: hidden;
 }
 
