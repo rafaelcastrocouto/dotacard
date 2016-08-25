@@ -1,6 +1,6 @@
-[![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
+[![DotaCard Banner](http://dotacard.herokuapp.com/client/img/banner.jpg)][1]
 
-[![Discord Chat Channel](http://rafaelcastrocouto.github.io/dotacard/client/img/discord.png)][2]
+[![Discord Chat Channel](http://dotacard.herokuapp.com/client/img/discord.png)][2]
 
 #[dotacard.ga][3]
 
@@ -12,7 +12,7 @@ In our Wiki page you can ckeck out the [game rules][7] and much more.
 
 Please report any [sugestions or issues][8] here at github.
 
-[![Steam Greenlight Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/greenlight-banner.png)][9]
+[![Steam Greenlight Banner](http://dotacard.herokuapp.com/client/img/greenlight-banner.png)][9]
 
 **Local server setup**
 
@@ -31,7 +31,7 @@ Special thanks to [Dopatwo](https://www.youtube.com/user/dopatwo) for the artwor
 
 *Powered by*
 
-[![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/poweredby-banner.jpg)][1]
+[![Powered by Github, Heroku, Grunt and Jquery](http://dotacard.herokuapp.com/client/img/poweredby-banner.jpg)][1]
 
 
 [1]: http://dotacard.herokuapp.com
