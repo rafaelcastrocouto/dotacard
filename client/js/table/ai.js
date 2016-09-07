@@ -62,10 +62,14 @@ game.ai = {
     can-advance
     can-retreat
     */
-    var cardData = {
-      'strats': [], 
-      'attack-targets': []
-    };
+    
+    var cardData = card.data('ai');
+    if (!cardData) {
+      cardData = {
+        'strats': [], 
+        'attack-targets': []
+      };
+    }
     var range = card.data('range');
     if (range) {
       card.opponentsInRange(range, function (opponentCard) {
@@ -73,6 +77,10 @@ game.ai = {
         cardData['can-make-action'] = true;
         cardData['attack-targets'].push(opponentCard);
         opponentData = opponentCard.data('ai');
+        if (!opponentData) opponentData = {
+          'strats': [], 
+          'attack-targets': []
+        };
         opponentData['in-attack-range'] = true;
         if ( opponentCard.hasClass('towers') ) cardData['can-attack-tower'] = true;
         var hp = opponentCard.data('current hp');
