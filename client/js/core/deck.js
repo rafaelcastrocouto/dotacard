@@ -1,4 +1,10 @@
 game.deck = {
+  extendjQuery: function () {
+    $.fn.extend({
+      randomCard: game.deck.randomCard,
+      shuffleDeck: game.deck.shuffleDeck
+    });
+  },
   build: function (op) {
     var name = op.name,
       filter = op.filter,
@@ -87,5 +93,21 @@ game.deck = {
     });
     deck.data('cards', cards);
     if (cb) { cb(deck); }
+  },
+  randomCard: function (noseed) {
+    if (this.length) {
+      if (noseed) { return $(this[parseInt(Math.random() * this.length, 10)]); }
+      return $(this[parseInt(game.random() * this.length, 10)]);
+    } else return this;
+  },
+  shuffleDeck: function () {
+    var deck = this;
+    var array = $('.card', deck);
+    if (array.length) {
+      var sharray = array.shuffle();
+      $(sharray).each(function (i, el) {
+        deck.append(el);
+      });
+    }
   }
 };

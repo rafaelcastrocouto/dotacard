@@ -32,7 +32,7 @@ game.states.loading = {
   },
   finished: function () {
     game.states.build(function () {
-      game.states.el.addClass('finished');
+      game.container.addClass('finished');
       game.history.recover();
     });
   },

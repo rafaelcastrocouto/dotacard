@@ -1,5 +1,4 @@
 game.states.options = {
-  chat: true,
   build: function () {
     this.menu = $('<div>').addClass('box');
     this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.options);

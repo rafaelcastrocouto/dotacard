@@ -1,12 +1,14 @@
 game.skill = {
-  bindJquery: function () {
-    $.fn.cast = game.skill.cast;
-    $.fn.passive = game.skill.passive;
-    $.fn.toggle = game.skill.toggle;
-    $.fn.discard = game.skill.discard;
-    $.fn.addInvisibility = game.skill.addInvisibility;
-    $.fn.removeInvisibility = game.skill.removeInvisibility;
-    $.fn.summon = game.skill.summon;
+  extendjQuery: function () {
+    $.fn.extend({
+      cast: game.skill.cast,
+      passive: game.skill.passive,
+      toggle: game.skill.toggle,
+      discard: game.skill.discard,
+      addInvisibility: game.skill.addInvisibility,
+      removeInvisibility: game.skill.removeInvisibility,
+      summon: game.skill.summon
+    });
   },
   build: function (side, single) {
     game.skill.calcMana(side);
@@ -33,12 +35,13 @@ game.skill = {
           if (skill.data('deck') === game.data.ui.temp) skill.appendTo(game[side].skills.temp);
           if (skill.data('skill') === 'ult') skill.appendTo(game[side].skills.ult);
         }.bind(side));
+        //deck.shuffleDeck();
       }.bind(side)
     });
   },
   calcMana: function (side) {
     game[side].mana = 0;
-    $(game[side].picks).each(function (i, name) {
+    $(game[side].picks).each(function (i, name) { 
       game[side].mana += game.data.heroes[name].mana;
     });
   },
@@ -100,7 +103,7 @@ game.skill = {
     var skill = this,
       hero = skill.data('hero'),
       skillid = skill.data('skill');
-    if (typeof target === 'string') target = $('#' + target + ' .card');
+    if (typeof(target) === 'string') target = $('#' + target + ' .card');
     if (skillid && hero && target.data('hero') === hero) {
       target.trigger('passive', {
         skill: skill,

@@ -32,14 +32,15 @@
   bottom: 240px;
   right: 200px;
 }
-.tutorial.axe .baloon:before,
-.tutorial.axe .baloon:after {
+
+.tutorial.axe .baloon:before, .tutorial.axe .baloon:after {
   content: "";
   position: absolute;
   display: block;
   bottom: -23px;
   height: 20px;
 }
+
 .tutorial.axe .baloon:before {
   width: 40px;
   border-style: solid;
@@ -50,6 +51,7 @@
   box-shadow: inset 20px 0 0 #fff;
   left: calc(50% - 18px);
 }
+
 .tutorial.axe .baloon:after {
   width: 15px;
   border-style: solid;
@@ -71,43 +73,64 @@
   font-size: 175%;
 }
 
-.tutorialblink,
-.table .player .tutorialblink {
+.blink, .table .player .blink {
   box-shadow: 0 0 0 8px white;
-  animation: tutorialblink 1s infinite;
+  animation: blink 1s infinite;
 }
 
-@keyframes tutorialblink {
-  0%, 100% {box-shadow: 0 0 0 6px rgba(0,0,0,0);}
-  50% {box-shadow: 0 0 0 6px white;}
+@keyframes blink {
+  0%, 100% {
+    box-shadow: 0 0 0 6px rgba(0,0,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 6px white;
+  }
 }
-.table .card.tutorialblink {
+
+.table .card.blink {
   box-shadow: 0 0 0 10px white;
-  animation: cardtutorialblink 1s infinite;
+  animation: cardblink 1s infinite;
 }
 
-@keyframes cardtutorialblink {
-  0%, 100% {box-shadow: 0 0 0 10px rgba(0,0,0,0);}
-  50% {box-shadow: 0 0 0 10px white;}
+@keyframes cardblink {
+  0%, 100% {
+    box-shadow: 0 0 0 10px rgba(0,0,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px white;
+  }
 }
 
-.map .tutorialblink {
+.map .blink {
   box-shadow: 0 0 0 16px white;
-  animation: maptutorialblink 1s infinite;
+  animation: mapblink 1s infinite;
 }
 
-@keyframes maptutorialblink {
-  0%, 100% {box-shadow: 0 0 0 16px rgba(0,0,0,0);}
-  50% {box-shadow: 0 0 0 16px white;}
+@keyframes mapblink {
+  0%, 100% {
+    box-shadow: 0 0 0 16px rgba(0,0,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 16px white;
+  }
 }
 
-.skills.tutorialblink {
+.skills.blink {
   box-shadow: 0 0 0 10px white;
-  animation: skillstutorialblink 1s infinite;
+  animation: skillsblink 1s infinite;
 }
-@keyframes skillstutorialblink {
-  0%, 100% {box-shadow: 0 0 0 10px rgba(0,0,0,0);}
-  50% {box-shadow: 0 0 0 10px white;}
+
+@keyframes skillsblink {
+  0%, 100% {
+    box-shadow: 0 0 0 10px rgba(0,0,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 10px white;
+  }
 }
 
 .tutorial.axe.left {
@@ -115,9 +138,11 @@
   left: -140px;
   transform: scaleX(-1);
 }
-.tutorial.axe.left .txt  {
+
+.tutorial.axe.left .txt {
   transform: scaleX(-1);
 }
+
 .tutorial.axe.left .baloon {
   right: 160px;
   bottom: 260px;
@@ -127,17 +152,21 @@
   width: 502px;
   right: -15px;
 }
+
 .choose .tutorial.axe.up {
   bottom: -45px;
 }
+
 .choose .tutorial.axe .img {
   background-repeat: no-repeat;
-  background-position: 170px 30px;  
+  background-position: 170px 30px;
 }
+
 .choose .tutorial.axe .baloon {
   transform: scaleX(-1);
   right: -12px;
 }
+
 .choose .tutorial.axe .txt {
   transform: scaleX(-1);
 }

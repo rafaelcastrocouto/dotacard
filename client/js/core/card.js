@@ -1,33 +1,34 @@
 game.card = {
-  bindJquery: function () {
-    $.fn.side = game.card.side;
-    $.fn.opponent = game.card.opponent;
-    $.fn.place = game.card.place;
-    $.fn.select = game.card.select;
-    $.fn.unselect = game.card.unselect;
-    $.fn.move = game.card.move;
-    $.fn.animateMove = game.card.animateMove;
-    $.fn.selfBuff = game.card.selfBuff;
-    $.fn.addBuff = game.card.addBuff;
-    $.fn.hasBuff = game.card.hasBuff;
-    $.fn.getBuff = game.card.getBuff;
-    $.fn.removeBuff = game.card.removeBuff;
-    $.fn.stopChanneling = game.card.stopChanneling;
-    $.fn.addStun = game.card.addStun;
-    $.fn.reduceStun = game.card.reduceStun;
-    $.fn.attack = game.card.attack;
-    $.fn.damage = game.card.damage;
-    $.fn.heal = game.card.heal;
-    $.fn.setDamage = game.card.setDamage;
-    $.fn.setArmor = game.card.setArmor;
-    $.fn.setResistance = game.card.setResistance;
-    $.fn.setHp = game.card.setHp;
-    $.fn.setCurrentHp = game.card.setCurrentHp;
-    $.fn.setSpeed = game.card.setSpeed;
-    $.fn.shake = game.card.shake;
-    $.fn.die = game.card.die;
-    $.fn.reborn = game.card.reborn;
-    $.fn.randomCard = game.card.randomCard;
+  extendjQuery: function () {
+    $.fn.extend({
+      side: game.card.side,
+      opponent: game.card.opponent,
+      place: game.card.place,
+      select: game.card.select,
+      unselect: game.card.unselect,
+      move: game.card.move,
+      animateMove: game.card.animateMove,
+      selfBuff: game.card.selfBuff,
+      addBuff: game.card.addBuff,
+      hasBuff: game.card.hasBuff,
+      getBuff: game.card.getBuff,
+      removeBuff: game.card.removeBuff,
+      stopChanneling: game.card.stopChanneling,
+      addStun: game.card.addStun,
+      reduceStun: game.card.reduceStun,
+      attack: game.card.attack,
+      damage: game.card.damage,
+      heal: game.card.heal,
+      setDamage: game.card.setDamage,
+      setArmor: game.card.setArmor,
+      setResistance: game.card.setResistance,
+      setHp: game.card.setHp,
+      setCurrentHp: game.card.setCurrentHp,
+      setSpeed: game.card.setSpeed,
+      shake: game.card.shake,
+      die: game.card.die,
+      reborn: game.card.reborn
+    });
   },
   build: function (data) {
     var card, legend, fieldset, portrait, current, desc;
@@ -119,7 +120,7 @@ game.card = {
   },
   place: function (target) {
     if (!target.addClass) target = $('#' + target);
-    this.closest('.spot').addClass('free');
+    this.getSpot().addClass('free');
     this.appendTo(target.removeClass('free'));
     game.highlight.map();
     //this.parent().find('.fx').each(function () {
@@ -155,7 +156,7 @@ game.card = {
     game.selectedCard = card;
     card.addClass('selected');
     game.highlight.map(event);
-    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected tutorialblink done dead draggable dragTarget shake enemyMoveHighlight enemyMoveHighlightTarget').clearEvents();
+    game.states.table.selectedClone = card.clone().css({'transform': ''}).appendTo(game.states.table.selectedCard).removeClass('selected blink done dead draggable dragTarget shake enemyMoveHighlight enemyMoveHighlightTarget').clearEvents();
     game.states.table.selectedCard.addClass('flip');
     card.trigger('select', { card: card });
     if (!card.hasClasses('done enemy trees towers')) card.addClass('draggable');
@@ -173,9 +174,7 @@ game.card = {
       card.removeClass('draggable').off('mousedown touchstart');
       game.highlight.clearMap();
       card.stopChanneling();
-      card.closest('.spot').addClass('free');
       card.animateMove(destiny);
-      if (card.data('movement bonus')) card.data('movement bonus', false);
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
       game.timeout(300, function () {
@@ -183,6 +182,7 @@ game.card = {
 //           $(this).appendTo(this.destiny);
 //         });
         this.destiny.removeClass('free');
+        this.card.getSpot().addClass('free');
         this.card.css({ transform: '' }).prependTo(this.destiny).on('mousedown touchstart', game.card.select);
         if (this.card.hasClass('selected')) this.card.unselect();
       }.bind({ card: card, destiny: destiny }));
@@ -372,10 +372,34 @@ game.card = {
       };
       source.trigger('attack', evt).trigger('action', evt);
       if (!source.data('critical-attack') && !source.data('miss-attack')) {
+        // DAMAGE
         source.damage(damage, target, game.data.ui.physical);
+      }
+      if (source.data('range') == game.data.ui.melee) {
+        source.addClass('melee-attack');
+        setTimeout(function () {
+          this.removeClass('melee-attack');
+        }.bind(source), 240);
+      }
+      if (source.data('range') == game.data.ui.ranged ||
+          source.data('range') == game.data.ui.short) {
+        // launch projectile
+        var cl = source.data('hero');
+        if (source.hasClass('towers')) {
+          cl = 'towers '+source.side();
+        }
+        game.projectile = $('<div>').addClass('projectile '+cl);
+        var p = source.offset();
+        game.card.projectile.apply(source);
+        game.projectile.appendTo(game.camera);
+        setTimeout(game.card.projectile.bind(target), 10);
+        setTimeout(function () {
+          game.projectile.remove();
+        }, 260);
       }
       if (source.data('critical-attack')) source.data('critical-attack', false);
       if (source.data('miss-attack')) {
+        // TEXT FX
         source.data('miss-attack', false);
         var missFx = target.find('.missed');
         if (!missFx.length) {
@@ -392,6 +416,10 @@ game.card = {
       }
     }
     return this;
+  },
+  projectile: function () {
+    var p = this.offset();
+    game.projectile.css({'top': p.top - 80, 'left': p.left - 30});
   },
   damage: function (damage, target, type) {
     var source = this, evt, x, y, position, spot, resistance, armor, hp, finalDamage = damage;
@@ -554,7 +582,7 @@ game.card = {
       var side = this.side();
       var tower = game[side].tower;
       var unit = this.data('killer');
-      if (!nopenalty) unit.damage(1, tower);
+      if (!nopenalty) unit.damage(game.deadDamage, tower, game.data.ui.pure);
       this.data('reborn', null);
       this.setCurrentHp(hp);
       this.removeClass('dead');
@@ -562,11 +590,5 @@ game.card = {
       this.trigger('reborn');
       return this;
     }
-  },
-  randomCard: function (noseed) {
-    if (this.length) {
-      if (noseed) { return $(this[parseInt(Math.random() * this.length, 10)]); }
-      return $(this[parseInt(game.random() * this.length, 10)]);
-    } else return this;
   }
 };

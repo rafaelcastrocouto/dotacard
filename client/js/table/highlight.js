@@ -1,13 +1,15 @@
 game.highlight = {
-  bindJquery: function () {
-    $.fn.highlightSource = game.highlight.source;
-    $.fn.highlightAlly = game.highlight.ally;
-    $.fn.highlightTargets = game.highlight.targets;
-    $.fn.highlightAttack = game.highlight.attack;
-    $.fn.highlightMove = game.highlight.move;
-    $.fn.strokeSkill = game.highlight.strokeSkill;
-    $.fn.strokeAttack = game.highlight.strokeAttack;
-    $.fn.highlightArrows = game.highlight.highlightArrows;
+  extendjQuery: function () {
+    $.fn.extend({
+      highlightSource: game.highlight.source,
+      highlightAlly: game.highlight.ally,
+      highlightTargets: game.highlight.targets,
+      highlightAttack: game.highlight.attack,
+      highlightMove: game.highlight.move,
+      strokeSkill: game.highlight.strokeSkill,
+      strokeAttack: game.highlight.strokeAttack,
+      highlightArrows: game.highlight.highlightArrows
+    });
   },
   map: function (event) {
     game.highlight.clearMap();

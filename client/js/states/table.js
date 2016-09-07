@@ -1,8 +1,7 @@
 game.states.table = {
-  chat: true,
   build: function () {
-    this.camera = $('<div>').addClass('camera');
-    this.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(this.camera);
+    game.camera = $('<div>').addClass('camera');
+    this.map = game.map.build({'width': game.width, 'height': game.height}).appendTo(game.camera);
     this.selectedArea = $('<div>').addClass('selectedarea');
     this.selectedCard = $('<div>').addClass('selectedcard').appendTo(this.selectedArea);
     this.cardBack = $('<div>').addClass('cardback').appendTo(this.selectedCard);
@@ -11,10 +10,10 @@ game.states.table = {
     this.enemy = $('<div>').addClass('enemydecks enemy');
     this.buttonbox = $('<div>').addClass('buttonbox');
     this.surrender = $('<div>').hide().appendTo(this.buttonbox).addClass('surrender button').text(game.data.ui.surrender).on('mouseup touchend', this.surrenderClick);
-    this.skip = $('<div>').hide().appendTo(this.buttonbox).addClass('skip button').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
     this.back = $('<div>').hide().appendTo(this.buttonbox).addClass('back button').text(game.data.ui.back).on('mouseup touchend', this.backClick);
+    this.skip = $('<div>').hide().appendTo(this.buttonbox).addClass('skip button highlight').attr({disabled: true}).text(game.data.ui.skip).on('mouseup touchend', this.skipClick);
     this.discard = $('<div>').hide().appendTo(this.buttonbox).addClass('discard button').attr({disabled: true}).text(game.data.ui.discard).on('mouseup touchend', this.discardClick);
-    this.el.addClass('unturn').append(this.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
+    this.el.append(game.camera).append(this.selectedArea).append(this.buttonbox).append(this.player).append(this.enemy);
   },
   start: function (recover) {
     if (game.turn.el) {
@@ -29,7 +28,7 @@ game.states.table = {
     }
   },
   enableUnselect: function () {
-    game.states.table.el.on('mousedown touchstart', function () { 
+    game.states.table.el.on('mousedown touchstart', function (event) { 
       var target = $(event.target); 
       if (!target.closest('.button, .card, .movearea, .targetarea').length) {
         game.card.unselect();
@@ -90,7 +89,8 @@ game.states.table = {
     $('.table .card').remove();
     $('.table .deck').remove();
     this.buttonbox.show().children().hide();
-    this.el.addClass('unturn');
+    this.el.removeClass('turn');
+    if (game.turn.el) game.turn.el.removeClass('show');
     game.clearTimeouts();
   },
   end: function () {

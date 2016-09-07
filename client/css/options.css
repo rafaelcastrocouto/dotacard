@@ -1,5 +1,4 @@
-.audioconfig,
-.screenresolution {
+.audioconfig, .screenresolution {
   display: inline-block;
   padding: 20px 0;
   vertical-align: top;
@@ -7,8 +6,7 @@
   float: left;
 }
 
-.audioconfig h2,
-.screenresolution h2{
+.audioconfig h2, .screenresolution h2 {
   text-align: left;
   font-weight: bold;
 }
@@ -16,9 +14,11 @@
 .game-container.low {
   transform: translate3d(-50%, -50%, 0) scale(0.75);
 }
+
 .game-container.high {
   transform: translate3d(-50%, -50%, 0) scale(1.5);
 }
+
 .game-container.medium {
   transform: translate3d(-50%, -50%, 0) scale(1.2);
 }
@@ -30,7 +30,9 @@
 .options label {
   position: relative;
 }
-
+.options label > * {
+  vertical-align: middle;
+}
 .options input + span {
   cursor: pointer;
 }
@@ -52,8 +54,10 @@
 
 .volumecontrol {
   position: absolute;
-  top: -20px; left: 0;
-  width: 0; height: 0;
+  top: -20px;
+  left: 0;
+  width: 0;
+  height: 0;
   border: 0 solid transparent;
   border-top: 20px solid transparent;
   border-right: 50px solid rgba(255,255,255,0.8);
@@ -78,6 +82,7 @@
   display: inline;
   margin-right: 20px;
 }
+
 .options .lang select {
   border: 0;
   font-size: 14px;

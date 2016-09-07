@@ -52,7 +52,7 @@
   cursor: pointer;
 }
 
-.choose .slot:hover, .choose .slot.drop  {
+.choose .slot:hover, .choose .slot.drop {
   background: rgba(255,255,255,0.1);
 }
 
@@ -63,9 +63,8 @@
 .choose .buttonbox {
   position: absolute;
   right: 100px;
-  top: 390px;
+  top: 400px;
   width: 220px;
 }
-.choose .buttonbox .button{
-  margin-bottom: 20px;
-}
+
+.choose .buttonbox .button {margin-bottom: 16px;}

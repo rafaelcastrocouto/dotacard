@@ -1,0 +1,205 @@
+.campain-map {
+  position: relative;
+  width: 600px;
+  height: 550px;
+  background: url("../img/bkg/campain.jpg");
+  background-size: cover;
+  top: 310px;
+  left: 370px;
+  transform: translate(-50%, -50%);
+}
+
+.campain-box.box {
+  right: 20px;
+  transform: none;
+  padding: 8px 16px;
+  width: 270px;
+  left: auto;
+  top: 40px;
+  height: 420px;
+}
+
+.campain-img {
+  height: 132px;
+  background-size: cover;
+  border-radius: 4px;
+  margin-bottom: 16px;
+  background-position: 50% 50%;
+}
+
+.campain-img.tower {
+  background-image: url("../img/towers/tower-player.jpg");
+}
+
+.campain-img.tree {
+  background-image: url("../img/trees/tree_rad.jpg");
+}
+
+.state .campain-box p {
+  margin: 10px 0;
+  font-size: 14px;
+}
+
+.campain-box p.achieve {
+  text-align: left;
+  font-size: 13px;
+  margin: 0;
+  line-height: 24px;
+}
+.campain-box p.achieve:before {
+  content: "•";
+  margin: 0 10px;
+}
+.campain-heroes {
+  text-align: center;
+  margin-top: 20px;
+}
+.campain-box .campain-heroes .heroes {
+  width: 45px;
+  height: 45px;
+  display: inline-block;
+  border-radius: 50%;
+  margin: 0px 1px;
+}
+
+.campain-box .campain-heroes .heroes .img {
+  margin: 5%;
+  width: 90%;
+  height: 90%;
+  border-radius: 50%;
+  background-size: cover;
+}
+
+.stages {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  opacity: 0.5;
+  border: 1px solid white;
+}
+
+.stages.blink {
+  animation: stagesblink 0.8s infinite;
+}
+
+@keyframes stagesblink {
+  0%, 100% {
+    box-shadow: 0 0 0 3px rgba(0,0,0,0);
+  }
+
+  50% {
+    box-shadow: 0 0 0 3px white;
+  }
+}
+
+.stages.enabled {
+  opacity: 1;
+  cursor: pointer;
+}
+
+.stages.enabled:hover {
+  box-shadow: 0 0 0 4px white;
+  animation: none;
+}
+
+.stages.start {
+  bottom: 50px;
+  left: 60px;
+  background: mediumseagreen;
+  width: 32px;
+  height: 32px;
+}
+
+.stages.easy {
+  background: green;
+}
+
+.stages.easy.top {
+  top: 300px;
+  left: 55px;
+}
+
+.stages.easy.mid {
+  top: 380px;
+  left: 170px;
+}
+
+.stages.easy.bot {
+  bottom: 50px;
+  left: 245px;
+}
+
+.stages.rune {
+  background: mediumpurple;
+  top: 330px;
+  left: 355px;
+}
+
+.stages.roshan {
+  background: tomato;
+  top: 338px;
+  left: 450px;
+  width: 32px;
+  height: 32px;
+}
+
+.stages.shop {
+  background: lightblue;
+  top: 245px;
+  left: 405px;
+}
+
+.stages.normal.mid {
+  background: yellow;
+  top: 250px;
+  left: 300px;
+}
+
+.stages.hard {
+  background: orange;
+}
+
+.stages.hard.top {
+  top: 50px;
+  left: 420px;
+}
+
+.stages.hard.mid {
+  top: 135px;
+  left: 445px;
+}
+
+.stages.hard.bot {
+  bottom: 365px;
+  left: 530px;
+}
+
+.stages.final {
+  background: red;
+  top: 60px;
+  left: 520px;
+  width: 32px;
+  height: 32px;
+  border-width: 2px;
+}
+
+.campain-path {
+  background: white;
+  width: 8px;
+  height: 8px;
+  position: absolute;
+  border-radius: 50%;
+  opacity: 0.3;
+}
+
+.campain-path.enabled {
+  opacity: 1.
+}
+
+.campain .buttonbox {
+  position: absolute;
+  right: 40px;
+  top: 470px;
+  width: 240px;
+}

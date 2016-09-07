@@ -1,5 +1,4 @@
 game.states.menu = {
-  chat: true,
   build: function () {
     this.menu = $('<div>').appendTo(this.el).addClass('box');
     this.title = $('<h1>').appendTo(this.menu).text(game.data.ui.menu);
@@ -7,7 +6,10 @@ game.states.menu = {
       game.setMode('tutorial');
       game.states.changeTo('choose');
     });
-    this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.choosecampain, disabled: true}).text(game.data.ui.campain);
+    this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.choosecampain}).text(game.data.ui.campain).on('mouseup touchend', function () {
+      game.setMode('single');
+      game.states.changeTo('campain');
+    });
     this.online = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.chooseonline}).text(game.data.ui.online).on('mouseup touchend', function () {
       game.setMode('online');
       game.states.changeTo('choose');
@@ -25,7 +27,7 @@ game.states.menu = {
     game.clear();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
-    game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');    
+    game.message.text(game.data.ui.welcome + ' ' + game.player.name + '!');
     game.states.log.out.show();
   }
 };

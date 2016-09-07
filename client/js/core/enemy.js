@@ -47,13 +47,22 @@ game.enemy = {
       }
     }
   },
-  moveAnimation: 1600,
+  move: function (cb) {
+    game.message.text(game.data.ui.enemymove);
+    if (typeof(game.currentData.moves) == 'string') game.currentMoves = game.currentData.moves.split('|');
+    else game.currentMoves = game.currentData.moves;
+    game.enemy.autoMoveCount = 0;
+    game.enemy.moveEndCallback = cb;
+    if (game.currentMoves.length) game.enemy.autoMove();
+    else game.timeout(1000, game.enemy.movesEnd);
+  },
   autoMove: function () {
     var from, to, m, source, target, targets, hero, skillid, skill, s, e = 0,
         move = game.currentMoves[game.enemy.autoMoveCount].split(':');
     $('.enemyMoveHighlight').removeClass('enemyMoveHighlight');
     $('.enemyMoveHighlightTarget').removeClass('enemyMoveHighlightTarget');
     $('.source').removeClass('source');
+    game.enemy.moveAnimation = 1600;
     if (move[1] && move[2]) {
       from = game.map.mirrorPosition(move[1]);
       to = game.map.mirrorPosition(move[2]);
@@ -83,9 +92,9 @@ game.enemy = {
         targets = skill.data('targets');
         if (targets) {
           if (targets.indexOf(game.data.ui.enemy) >= 0 ||
-            targets.indexOf(game.data.ui.ally)  >= 0 ||
-            targets.indexOf(game.data.ui.self)  >= 0) { 
-              target = $('#' + to + ' .card'); 
+              targets.indexOf(game.data.ui.ally)  >= 0 ||
+              targets.indexOf(game.data.ui.self)  >= 0) { 
+            target = $('#' + to + ' .card'); 
           }
         }
         skill.addClass('showMoves');
@@ -108,9 +117,9 @@ game.enemy = {
         skill.addClass('showMoves');
         target.addClass('enemyMoveHighlight');
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
-          skill.removeClass('showMoves'); 
+          skill.removeClass('showMoves');
           if (game.skills[hero][skillid].passive && skill && target.hasClass('enemy') && skill.passive) {
-            skill.passive(skill, target);
+            skill.passive(target);
           }
         }.bind(this, skill, target, hero, skillid));
       }
@@ -126,7 +135,7 @@ game.enemy = {
         game.timeout(game.enemy.moveAnimation, function (skill, target, hero, skillid) { 
           skill.removeClass('showMoves'); 
           if (game.skills[hero][skillid].toggle && skill && target.hasClass('enemy') && skill.toggle) {
-            skill.toggle(skill, target);
+            skill.toggle(target);
           }
         }.bind(this, skill, target, hero, skillid));
       }
@@ -144,23 +153,18 @@ game.enemy = {
     }
     game.enemy.autoMoveCount++;
     if (game.enemy.autoMoveCount < game.currentMoves.length) {
-      game.timeout(game.enemy.moveAnimation + e, game.enemy.autoMove);
+      game.enemy.moveAnimation += e;
+      // if (game.mode == single) game.ai.nextMove();
+      // else 
+
+      game.timeout(game.enemy.moveAnimation, game.enemy.autoMove);
     } else game.timeout(1000, game.enemy.movesEnd);
-  },
-  move: function () {
-    game.message.text(game.data.ui.enemymove);
-    game.currentMoves = game.currentData.moves.split('|');
-    game.enemy.autoMoveCount = 0;
-    game.enemy.autoMove();
   },
   movesEnd: function () {
     $('.enemyMoveHighlight').removeClass('enemyMoveHighlight');
     $('.enemyMoveHighlightTarget').removeClass('enemyMoveHighlightTarget');
     $('.source').removeClass('source');
-    game.timeout(400, function () {
-      if (game.mode == 'tutorial') game.tutorial.playerTurn();
-      if (game.mode == 'online') game.online.endTurn('unturn');
-    });
+    game.timeout(400, game.enemy.moveEndCallback);
   },
   cardsInHand: function () {
     return game.enemy.skills.hand.children().length;

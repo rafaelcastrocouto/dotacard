@@ -2,9 +2,11 @@
   background: tomato;
   box-shadow: 0 4px 0 #df4327;
 }
+
 .sweet-confirm:hover {
   background: #ff7357;
 }
+
 .sweet-container p {
   color: #484848;
 }
@@ -13,13 +15,16 @@
   text-decoration: underline;
   font-size: 84%;
 }
+
 .sweet-confirm.vote {
   background-color: #66bb8c;
   box-shadow: 0 4px 0 #4b8864;
 }
+
 .sweet-alert.vote {
   overflow: hidden;
 }
+
 .sweet-alert.vote label {
   height: 165px;
   width: 128px;
@@ -29,27 +34,33 @@
   padding: 5px;
   border-radius: 6px;
 }
+
 .sweet-alert.vote label[disabled] {
   opacity: 0.8;
   cursor: default;
 }
-.sweet-alert.vote label:not([disabled]):hover,
-.sweet-alert.vote label.vote {
+
+.sweet-alert.vote label:not([disabled]):hover, .sweet-alert.vote label.vote {
   background: #dfeff6;
   opacity: 1;
 }
+
 .sweet-alert.vote .votes {
   margin-left: 7px;
 }
+
 .sweet-alert.vote label.voted p span {
   font-weight: bold;
 }
+
 .sweet-container p {
   color: #484848;
 }
+
 .sweet-alert.vote img {
   border-radius: 50%;
 }
+
 .sweet-alert.vote .button.voteBt:not([disabled]) {
   background-color: #66bb8c;
   box-shadow: 0 4px 0 #4b8864;

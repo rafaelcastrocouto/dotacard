@@ -54,7 +54,7 @@ game.states.log = {
       var v = { x: 50 + (offmiddle.x * s), y: 50 + (offmiddle.y * s) };
       var str = ''+ v.x + '% ' + v.y + '%';
       game.states.el.removeClass('iddle').css('perspective-origin', str);
-      game.iddleTimeout = setTimeout(function () { game.states.el.addClass('iddle'); }, 4000);
+      game.iddleTimeout = setTimeout(function () { game.states.el.addClass('iddle'); }, 3000);
     }
   },
   alertBox: function () {
@@ -97,7 +97,8 @@ game.states.log = {
       if (confirmed) {
         localStorage.setItem('logged', 'false');
         game.clear();
-        location.reload();
+        game.chat.el.hide();
+        game.states.changeTo('log');
       }
     });
   },

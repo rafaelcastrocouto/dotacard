@@ -1,5 +1,4 @@
 game.states.result = {
-  chat: true,
   build: function () {
     this.resultsbox = $('<div>').addClass('resultsbox box');
     this.title = $('<h1>').appendTo(this.resultsbox).addClass('resultTitle');
@@ -43,9 +42,18 @@ game.states.result = {
     this.kd.text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);
   },
   close: function () {
-    game.clear();
+    if (game.mode == 'single') {
+      game.single.started = false;
+      game.states.table.clear();
+      game.states.vs.clear();
+      game.states.choose.clear();
+      game.states.changeTo('campain');
+    }
+    else {
+      game.clear();
+      game.states.changeTo('menu');
+    }
     if (game.mode == 'tutorial') game.chat.set(game.data.ui.completedtutorial);
-    game.states.changeTo('menu');
   },
   clear: function () {
     $('.result .results .heroes').remove();

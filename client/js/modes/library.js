@@ -36,7 +36,6 @@ game.library = {
         heroSkills,
         disabled;
     if (force || hero !== $('.choose .card.selected').data('hero')) {
-      game.library.hero = card;
       disabled = card.hasClass('dead');
       game.states.choose.counter.text(card.data('name') + ' ' + game.data.ui.skills);
       $('.slot .card.skills').appendTo(game.library.skills);
@@ -48,14 +47,18 @@ game.library = {
       });
       game.states.choose.pickedbox.hide().fadeIn('slow');
       $('.slot:empty').hide();
+      if (!card.data('disable')) {
+        game.library.hero = card;
+        localStorage.setItem('choose', card);
+      }
       game.states.choose.librarytest.attr('disabled', !!card.data('disable'));
     }
   },
+  chooseEnd: function () {
+    game.states.choose.clear();
+    game.states.changeTo('vs');
+  },
   setTable: function () {
-    game.library.hero = $('.pickbox .selected');
-    var hero = game.library.hero.data('hero');
-    if (!hero) hero = localStorage.getItem('choose');
-    game.player.picks = [hero];
     game.player.placeHeroes();
     game.enemy.placeHeroes();
     game.states.table.back.show();
@@ -64,45 +67,37 @@ game.library = {
     game.states.table.enableUnselect();
     game.player.kills = 0;
     game.enemy.kills = 0;
-    game.library.firstSelect = false;
     game.turn.build(6);
-    game.message.text(game.data.ui.library +' '+ game.library.hero.data('name'));    
-    game.timeout(100, function () {
+    var heroName = game.data.heroes[game.library.hero].name;
+    game.message.text(game.data.ui.library +' '+ heroName);    
+    game.timeout(400, function () {
       game.skill.build('player', 'single');
       game.skill.build('enemy');
-      game.turn.beginPlayer(function () {
-        game.library.startTurn('turn');
-      });
+      $('.map .player.card.'+game.library.hero).select();
+      game.library.buildHand();
+      game.library.startPlayerTurn();
     });
   },
-  startTurn: function (unturn) {
-    if (unturn === 'turn') {
-      if (!game.library.firstSelect) {
-        game.library.firstSelect = true;
-        $('.card', game.player.skills.ult).appendTo(game.player.skills.deck);
-        $('.card', game.player.skills.deck).each(function () {
-          var card = $(this);
-          if (card.data('hand') === game.data.ui.right) {
-            card.appendTo(game.player.skills.hand);
-          } else {
-            card.appendTo(game.player.skills.sidehand);
-          }
-          game.library.hero.select();
-        });
-      }
+  startPlayerTurn: function () {
+    game.turn.beginPlayer(function () {
       game.tower.attack('enemy');
-    } else {
-      game.enemy.buyHand();
-      game.tower.attack('player');
-      game.turn.end('unturn', function () {
-        game.library.endTurn('unturn');
-      });
-    }
+    });
+  },
+  buildHand: function () {
+    $('.card', game.player.skills.ult).appendTo(game.player.skills.deck);
+    $('.card', game.player.skills.deck).each(function () {
+      var card = $(this);
+      if (card.data('hand') === game.data.ui.right) {
+        card.appendTo(game.player.skills.hand);
+      } else {
+        card.appendTo(game.player.skills.sidehand);
+      }
+    });
   },
   action: function () {
     game.timeout(400, function () {
-      if (game.turn.noAvailableMoves()) {
-         game.library.endPlayerTurn();
+      if ( game.turn.noAvailableMoves() ) {
+        game.library.endPlayerTurn();
       }
     });
   },
@@ -112,21 +107,18 @@ game.library = {
     }
   },
   endPlayerTurn: function () {
-    game.states.table.el.addClass('unturn');
-    game.turn.end('turn', function () {
-      game.library.endTurn('turn');
+    game.states.table.el.removeClass('turn');
+    game.turn.end('player-turn', game.library.startEnemyTurn);
+  },
+  startEnemyTurn: function () {
+    game.turn.beginEnemy(function () {
+      game.enemy.buyHand();
+      game.tower.attack('player');
+      game.library.endEnemyTurn();
     });
   },
-  endTurn: function (unturn) {
-    if (unturn === 'unturn') {
-      game.turn.beginPlayer(function () {
-        game.library.startTurn('turn');
-      });
-    } else {
-      game.turn.beginEnemy(function () {
-        game.library.startTurn('unturn');
-      });
-    }
+  endEnemyTurn: function () {
+    game.turn.end('enemy-turn', game.library.startPlayerTurn);
   },
   clear: function () {
     game.seed = 0;

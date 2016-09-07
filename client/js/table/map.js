@@ -1,4 +1,33 @@
 game.map = {
+  extendjQuery: function () {
+    $.fn.extend({
+      getX: game.map.getX,
+      getY: game.map.getY,
+      getSpot: game.map.getSpot,
+      getDirectionObj: game.map.getDirectionObj,
+      getDirectionStr: game.map.getDirectionStr,
+      getDirSpot: game.map.getDirSpot,
+      atRange: game.map.atRange, // at range border
+      around: game.map.around, // in range exclude self
+      inRange: game.map.inRange, // in range include self
+      opponentsInRange: game.map.opponentsInRange,
+      alliesInRange: game.map.alliesInRange,
+      inMovementRange: game.map.inMovementRange,
+      inCross: game.map.inCross,
+      opponentsInCross: game.map.opponentsInCross,
+      alliesInCross: game.map.alliesInCross,
+      inLine: game.map.inLine,
+      alliesInLine: game.map.alliesInLine,
+      opponentsInLine: game.map.opponentsInLine,
+      firstFreeSpotInLine: game.map.firstFreeSpotInLine,
+      firstCardInLine: game.map.firstCardInLine,
+      getPosition: game.map.getPosition,
+      cardsInRange: game.map.cardsInRange,
+      radialStroke: game.map.radialStroke,
+      crossStroke: game.map.crossStroke,
+      linearStroke: game.map.linearStroke
+    });
+  },
   lettersStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
   build: function (opt) {
     game.map.letters = game.map.lettersStr.split('');
@@ -16,33 +45,6 @@ game.map = {
     game.map.builded = true;
     game.map.el = map;
     return map;
-  },
-  bindJquery: function () {
-    $.fn.getX = game.map.getX;
-    $.fn.getY = game.map.getY;
-    $.fn.getSpot = game.map.getSpot;
-    $.fn.getDirectionObj = game.map.getDirectionObj;
-    $.fn.getDirectionStr = game.map.getDirectionStr;
-    $.fn.getDirSpot = game.map.getDirSpot;
-    $.fn.atRange = game.map.atRange; // at range border
-    $.fn.around = game.map.around; // in range exclude self
-    $.fn.inRange = game.map.inRange; // in range include self
-    $.fn.inMovementRange = game.map.inMovementRange;
-    $.fn.inCross = game.map.inCross;
-    $.fn.opponentsInCross = game.map.opponentsInCross;
-    $.fn.alliesInCross = game.map.alliesInCross;
-    $.fn.inLine = game.map.inLine;
-    $.fn.alliesInLine = game.map.alliesInLine;
-    $.fn.opponentsInLine = game.map.opponentsInLine;
-    $.fn.firstFreeSpotInLine = game.map.firstFreeSpotInLine;
-    $.fn.firstCardInLine = game.map.firstCardInLine;
-    $.fn.getPosition = game.map.getPosition;
-    $.fn.cardsInRange = game.map.cardsInRange;
-    $.fn.opponentsInRange = game.map.opponentsInRange;
-    $.fn.alliesInRange = game.map.alliesInRange;
-    $.fn.radialStroke = game.map.radialStroke;
-    $.fn.crossStroke = game.map.crossStroke;
-    $.fn.linearStroke = game.map.linearStroke;
   },
   toPosition: function (w, h) {
     if (w >= 0 && h >= 0 && w < game.width && h < game.height) {
@@ -66,7 +68,7 @@ game.map = {
     }
   },
   getSpot: function (w, h) { // console.log(w, h, this);
-    if (w === undefined) return this.closest('.spot');
+    if (w === undefined && this.closest) return this.closest('.spot');
     if (game.map.spots[h] && game.map.spots[h][w]) return game.map.spots[h][w];
   },
   getDirectionObj: function (target) {
@@ -281,7 +283,7 @@ game.map = {
   },
   inMovementRange: function (speed, cb, filter) {
     var card = this;
-    var range = speed;
+    var range = speed || 2;
     if (range >= 0 && range <= game.map.rangeArray.length) {
       var radius, x, y, r, r2, l, a, i, o, m, s, t, u,
         fil = function (x, y) {

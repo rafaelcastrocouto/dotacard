@@ -21,17 +21,17 @@ game.turn = {
       game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
       $('.map .card').removeClass('done');
-      game.turn.start('turn', cb);
+      game.turn.start('player-turn', cb);
     }
   },
   beginEnemy: function (cb) {
     if (game.currentState == 'table') {
       game.enemy.turn += 1;
       game.message.text(game.data.ui.enemyturn);
-      game.turn.start('unturn', cb);
+      game.turn.start('enemy-turn', cb);
     }
   },
-  start: function (unturn, cb) {
+  start: function (turn, cb) {
     game.currentMoves = [];
     $('.table .card.dead').each(function () {
       var dead = $(this);
@@ -43,65 +43,74 @@ game.turn = {
     $('.card').each(function () {
       var card = $(this);
       card.trigger('turnstart', { target: card });
-      if (unturn == 'turn') card.trigger('playerturnstart', { target: card });
-      else card.trigger('enemyturnstart', { target: card });
+      if (turn == 'player-turn') card.trigger('playerturnstart', { target: card });
+      if (turn == 'enemy-turn') card.trigger('enemyturnstart', { target: card });
       card.reduceStun();
     });
     game.timeout(400, game.turn.tickTime);
     game.timeout(800, function () {
       game.turn.el.removeClass('show');
-      if (unturn === 'turn') {
-        game.states.table.el.removeClass('unturn');
-        game.highlight.map();
+      if (turn == 'player-turn') {
+        game.states.table.el.addClass('turn');
         game.states.table.skip.attr('disabled', false);
+        game.highlight.map();
       }
       if (cb) cb();
     });
   },
-  count: function (unturn, cb1, cb2) {
+  count: function (turn, endCallback, countCallback) {
     if (game.turn.counter >= 0) {
-      var turncount = game.data.ui.yourturncount;
-      if (unturn === 'unturn') turncount = game.data.ui.enemyturncount;
+      var turncount;
+      if (turn === 'player-turn') turncount = game.data.ui.yourturncount;
+      if (turn === 'enemy-turn') turncount = game.data.ui.enemyturncount;
       game.message.text(turncount + ' ' + game.turn.counter + ' ' + game.data.ui.seconds);
-      if (game.turn.counter === 0) cb2(unturn);
-      else if (game.turn.counter > 0) {
-        if (cb1) cb1(unturn);
-        game.timeout(1000, game.turn.count.bind(this, unturn, cb1, cb2));
+      if (game.turn.counter > 0) {
+        if (countCallback) countCallback(turn);
         game.turn.counter -= 1;
+        game.turn.timeout = game.timeout(1000, game.turn.count.bind(this, turn, endCallback, countCallback));
       }
+      if (game.turn.counter === 0 && endCallback) endCallback(turn);
     }
   },
-  end: function (unturn, cb) {
+  stopCount: function () {
+    clearTimeout(game.turn.timeout);
+    game.turn.counter = -1;
+  },
+  end: function (turn, cb) {
     if (game.currentState == 'table') {
       game.turn.tickTime();
-      game.states.table.skip.attr('disabled', true);
       game.message.text(game.data.ui.turnend);
+      game.moves.push(game.currentMoves.join('|'));
       $('.spot.fountain').find('.card').each(function () {
         $(this).heal(10);
       });
       $('.map .card.heroes').each(function (i, card) {
         var hero = $(card);
-        if (hero.hasClass('channeling')) game.turn.channel(hero);
+        game.turn.channel(hero);
         game.turn.buffs(hero);
         hero.trigger('turnend', { target: hero });
       });
-      if (unturn === 'unturn' &&
-          game.mode !== 'library') {
+      if (turn == 'player-turn') {
+        game.states.table.el.removeClass('turn');
+        game.states.table.skip.attr('disabled', true);
+      }
+      if (turn == 'enemy-turn' && game.mode !== 'library') {
         game.turn.el.text(game.data.ui.enemyturn).addClass('show');
         game.timeout(800, function () { game.turn.el.removeClass('show'); });
       }
-      game.moves.push(game.currentMoves.join('|'));
-      if (cb) cb(unturn);
+      if (cb) cb(turn);
     }
   },
   channel: function (hero) {
-    var duration = hero.data('channeling');
-    if (duration) {
-      var channel = hero.data('channel');
-      if (duration < channel) hero.trigger('channel', hero.data('channel event')); 
-      duration -= 1;
-      hero.data('channeling', duration);
-    } else hero.stopChanneling();
+    if (hero.hasClass('channeling')) {
+      var duration = hero.data('channeling');
+      if (duration) {
+        var channel = hero.data('channel');
+        if (duration < channel) hero.trigger('channel', hero.data('channel event')); 
+        duration -= 1;
+        hero.data('channeling', duration);
+      } else hero.stopChanneling();
+    }
   },
   buffs: function (hero) {
     var buffs = hero.find('.buffs > .buff');

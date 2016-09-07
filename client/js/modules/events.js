@@ -1,12 +1,15 @@
 game.events = {
   build: function() {
     game.offset = game.container.offset();
-    $.fn.clearEvents = game.events.clearEvents;
-    $.fn.getScale = game.events.getScale;
-    game.card.bindJquery();
-    game.skill.bindJquery();
-    game.highlight.bindJquery();
-    game.map.bindJquery();
+    $.fn.extend({
+      clearEvents: game.events.clearEvents,
+      getScale: game.events.getScale
+    });
+    game.deck.extendjQuery();
+    game.card.extendjQuery();
+    game.skill.extendjQuery();
+    game.highlight.extendjQuery();
+    game.map.extendjQuery();
     $(window).on('resize', game.screen.resize);
     $(window).on('beforeunload ', game.events.leave);
     game.container.on('mousedown touchstart', game.events.hit);

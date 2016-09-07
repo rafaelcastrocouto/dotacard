@@ -1,6 +1,5 @@
 game.states.choose = {
   size: 100,
-  chat: true,
   build: function () {
     this.pickbox = $('<div>').addClass('pickbox').attr('title', game.data.ui.chooseheroes).appendTo(this.el);
     this.pickedbox = $('<div>').addClass('pickedbox').hide();
@@ -8,10 +7,10 @@ game.states.choose = {
     this.counter = $('<p>').addClass('counter').hide().appendTo(this.pickedbox);
     this.pickDeck = this.buildDeck();
     this.buttonbox = $('<div>').addClass('buttonbox');
-    this.randombt = $('<div>').addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', game.states.choose.randomClick).appendTo(this.buttonbox);
-    this.librarytest = $('<div>').addClass('librarytest button').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHeroClick).appendTo(this.buttonbox);
-    this.mydeck = $('<div>').addClass('mydeck button').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck).appendTo(this.buttonbox);
     this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
+    this.randombt = $('<div>').addClass('random button').text(game.data.ui.random).attr({title: game.data.ui.randomtitle}).on('mouseup touchend', game.states.choose.randomClick).appendTo(this.buttonbox);
+    this.mydeck = $('<div>').addClass('mydeck button highlight').text(game.data.ui.mydeck).attr({title: game.data.ui.mydecktitle}).on('mouseup touchend', this.savedDeck).appendTo(this.buttonbox);
+    this.librarytest = $('<div>').addClass('librarytest button highlight').text(game.data.ui.librarytest).attr({title: game.data.ui.librarytesttitle}).on('mouseup touchend', this.testHeroClick).appendTo(this.buttonbox);
     this.el.append(this.pickedbox).append(this.buttonbox);
   },
   start: function () {
@@ -41,6 +40,7 @@ game.states.choose = {
           card.dataset.index += pickDeck.data('cards').length;
           game.states.choose.pickDeck.append(card);
         });
+        game.states.log.createBkgDeck();
       }
     });
   },
@@ -66,7 +66,6 @@ game.states.choose = {
   enablePick: function () {
     game.states.choose.pickEnabled = true;
     game.states.choose.pickedbox.show();
-    game.player.picks = [];
   },
   disablePick: function () {
     game.states.choose.pickEnabled = false;
@@ -92,7 +91,6 @@ game.states.choose = {
       pick.appendTo(slot).clearEvents('choose');
       game.states.choose.sort();
       game.states.choose.select.call(card);
-      game.player.picks[slot.data('slot')] = pick.data('hero');
       if (game[game.mode].pick) game[game.mode].pick();
     }
   },
@@ -115,6 +113,9 @@ game.states.choose = {
       var deck = localStorage.getItem('mydeck').split(',');
       if (deck && deck.length == 5) {
         game.states.choose.remember(deck);
+        if (game[game.mode].chooseEnd) {
+          game.timeout(400, game[game.mode].chooseEnd);
+        }
       }
     }
   },
@@ -125,38 +126,43 @@ game.states.choose = {
           card = $('.pickbox .card.'+hero);
       if (card && slot.hasClass('available')) {
         slot.append(card).removeClass('available selected');
-        game.player.picks[slot.data('slot')] = card.data('hero');
       }
       if ($('.choose .card.selected').length === 0) { game.states.choose.selectFirst(); }
-      if (game.player.picks.length === 5) {
-        if (game.mode === 'online') game.online.chooseEnd();
-      }
     });
   },
   randomClick: function () {
-    //online only
     if (!$(this).attr('disabled')) {
       $(this).attr('disabled', true);
-      game.states.choose.randomFill(game.online.chooseEnd); 
+      game.states.choose.randomFill();
+      if (game[game.mode].chooseEnd) {
+        game.timeout(400, game[game.mode].chooseEnd);
+      }
     }
   },
-  randomFill: function (cb) {
+  randomFill: function () {
     $('.slot').each(function () {
       var slot = $(this), card;
       if (slot.hasClass('available')) {
         card = $('.pickbox .card').not('.dead').randomCard('noseed');
         slot.append(card).removeClass('available selected');
-        game.player.picks[slot.data('slot')] = card.data('hero');
       }
       if ($('.choose .card.selected').length === 0) { game.states.choose.selectFirst(); }
-      if (game.player.picks.length === 5 && cb) cb();
+    });
+  },
+  playerpicks: function () {
+    game.player.picks = [];
+    $('.slot').each(function () {
+      var slot = $(this), card = slot.find('.card');
+      game.player.picks[slot.data('slot')] = card.data('hero');
+      if (game.player.picks.length === 5) {
+        localStorage.setItem('mydeck', game.player.picks);
+      }
     });
   },
   testHeroClick: function () {
     //library only
     if (!game.states.choose.librarytest.attr('disabled')) {
-      game.states.choose.clear();
-      game.states.changeTo('vs');
+      game.library.chooseEnd();
     } else game.alert('Sorry but this hero is still under development!');
   },
   backClick: function () {
@@ -166,6 +172,8 @@ game.states.choose = {
           'set': 'back',
           'data': game.id
         }, game.states.choose.toMenu);
+      } if (game.mode == 'single') {
+        game.states.changeTo('campain');
       } else game.states.choose.toMenu();
     }
   },
@@ -180,6 +188,7 @@ game.states.choose = {
       $('.slot').addClass('available').show();
       this.mydeck.attr('disabled', false);
       this.randombt.attr('disabled', false);
+      this.back.attr({disabled: false});
       this.counter.hide();
       this.pickedbox.hide();
       this.librarytest.hide();

@@ -1,48 +1,11 @@
-@font-face {
-  font-family: 'Open Sans';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Open Sans'), local('OpenSans'), url(../fonts/Open-Sans.woff2) format('woff2'), url(../fonts/Open-Sans.woff) format('woff');
-}
-body, p, noscript {
-  line-height: 28px;
-  font-family: "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
-}
-@font-face {
-  font-family: 'Julius Sans One';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Julius Sans One'), local('JuliusSansOne-Regular'), url(../fonts/Julius-Sans-One.woff2) format('woff2'), url(../fonts/Julius-Sans-One.woff) format('woff');
-}
-h1, h2, .button,
-.sweet-alert button,
-.options span, 
-.topbar *,
-.choose .counter {
-  font-family: "Julius Sans One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", 'Segoe UI', Tahoma, Verdana, Arial, Helvetica, sans-serif;
-}
-@font-face {
-  font-family: 'Sansita One';
-  font-style: normal;
-  font-weight: 400;
-  src: local('Sansita One'), local('SansitaOne'), url('../fonts/Sansita-One.woff2') format('woff2'), url('../fonts/Sansita-One.woff') format('woff');
-}
-.tutorial .battle,
-.versus {
-  font-family: "Sansita One", "Open Sans", "open sans",  "Droid Sans", "Lucida Sans Unicode", "Lucida Grande", Verdana, Arial, Helvetica, sans-serif;
-} 
-
-input[type="text"] {
-  font-family: monospace;
-}
-
 html, body {
   user-select: none;
-  /* -webkit-user-select: none; */
+  -webkit-user-select: none;
   margin: 0;
   width: 100%;
   height: 100%;
 }
+
 body {
   background-attachment: fixed;
   background-color: #22272c;
@@ -71,21 +34,26 @@ h1, h2 {
   margin: 0;
   font-weight: normal;
 }
+
 h1 {
   font-size: 22px;
   cursor: default;
 }
+
 h2 {
   font-size: 19px;
   cursor: default;
   margin: 10px 0;
 }
+
 img {
   border: 0;
 }
+
 small {
   font-size: 70%;
 }
+
 noscript {
   display: block;
 }
@@ -98,22 +66,27 @@ noscript {
   height: 75px;
   overflow: hidden;
   transition: width 0.3s;
-  transform: translate(-490px, -272px);
+  transform: translate(-490px, -270px);
+  z-index: 30;
 }
+
 .greenlight-button:hover {
   width: 442px;
 }
+
 .greenlight-button img {
   position: absolute;
   top: 17px;
 }
+
 .greenlight-button .greenlight-banner {
   top: 0;
 }
-.greenlight-banner,
-.greenlight-button:hover img {
+
+.greenlight-banner, .greenlight-button:hover img {
   opacity: 0;
 }
+
 .greenlight-button:hover .greenlight-banner {
   opacity: 1;
 }
@@ -126,23 +99,48 @@ noscript {
   left: 50%;
   transform: translate3d(-50%, -50%, 0);
   color: #fff;
+  background-color: #859890;
   background: url("../img/banner.jpg");
   background-size: 111%;
   background-position: 50%;
 }
 
+.game-container.finished {
+  background-color: #3f8c80;
+  background-image: url("../img/bkg/polygon-light.jpg");
+}
+
+.game-container.library, .game-container.online, .game-container.tutorial, .game-container.single {
+  background-color: #126766;
+  background-image: url("../img/bkg/polygon-dark.jpg");
+}
+
 .states {
   overflow: hidden;
+  transform: translate3d(0,0,1px);
+  perspective: 600px;
 }
 
 .states.iddle {
-  animation: persp 30s infinite;
+  animation: persp 20s infinite;
 }
+
 @keyframes persp {
-  0%, 100% { perspective-origin: 50% 55%; }
-  25% { perspective-origin: 55% 50%; }
-  50% { perspective-origin: 50% 45%; }
-  75% { perspective-origin: 45% 50%; }  
+  0%, 100% {
+    perspective-origin: 50% 55%;
+  }
+
+  25% {
+    perspective-origin: 55% 50%;
+  }
+
+  50% {
+    perspective-origin: 50% 45%;
+  }
+
+  75% {
+    perspective-origin: 45% 50%;
+  }
 }
 
 .hidden {
@@ -158,12 +156,13 @@ noscript {
   padding: 40px 80px;
   text-align: center;
   border-radius: 5px;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.6);
 }
 
 .box div p {
   display: block;
 }
+
 .log .h1 {
   z-index: 10;
   position: absolute;
@@ -172,10 +171,17 @@ noscript {
   animation: logoslideup 0.8s 1;
   transform: translate(-50%, -105%);
 }
+
 @keyframes logoslideup {
-  0% {transform: translate(-50%, -80%); }
-  100% {transform: translate(-50%, -105%);}
+  0% {
+    transform: translate(-50%, -80%);
+  }
+
+  100% {
+    transform: translate(-50%, -105%);
+  }
 }
+
 .log .h2 {
   z-index: 10;
   margin: 16px;
@@ -184,13 +190,23 @@ noscript {
   left: 50%;
   transform: translate(-50%, 0);
 }
+
 .log .h2 {
   animation: slideright 5s infinite;
 }
+
 @keyframes slideright {
-  0% {transform: translate(-150%, 0);}
-  5%, 95% {transform: translate(-50%, 0);}
-  100% {transform: translate(250%, 0);}
+  0% {
+    transform: translate(-150%, 0);
+  }
+
+  5%, 95% {
+    transform: translate(-55%, 0);
+  }
+
+  100% {
+    transform: translate(250%, 0);
+  }
 }
 
 .loading .box {
@@ -217,20 +233,8 @@ noscript {
   margin-left: 8px;
 }
 
-.loadtext .message,
-.loadtext .progress {
+.loadtext .message, .loadtext .progress {
   line-height: 22px;
-}
-
-.states.finished {
-  background-image: url("../img/bkg/polygon-light.jpg");
-  perspective: 600px;
-}
-
-.states.library,
-.states.online,
-.states.tutorial {
-  background-image: url("../img/bkg/polygon-dark.jpg");
 }
 
 .states, .state {
@@ -260,16 +264,22 @@ input {
   height: 22px;
   transform: translateZ(0);
 }
+
+input[type=text] {
+  background: white;
+}
+
 input:focus {
   animation: shade 0.5s;
 }
+
 @keyframes shade {
-  50% {opacity: 0.5;}
+  50% {
+    opacity: 0.5;
+  }
 }
-.button, 
-button, 
-input[type=button], 
-input[type=submit] {
+
+.button, button, input[type=button], input[type=submit] {
   display: inline-block;
   text-align: center;
   font-size: 16px;
@@ -290,50 +300,62 @@ input[type=submit] {
   transform: translateZ(0);
   min-width: 75px;
 }
-.button:hover, 
-button:hover,
-input[type=button]:hover, 
-input[type=submit]:hover {
+
+.button:hover, button:hover, input[type=button]:hover, input[type=submit]:hover {
   background: #aab2a3;
   z-index: 20;
 }
-.button:active, 
-button:active,
-input[type=button]:active, 
-input[type=submit]:active {
+
+.button:active, button:active, input[type=button]:active, input[type=submit]:active {
   top: 0;
   box-shadow: 0 1px 0 #9b9c89;
 }
-.button[disabled], 
-button[disabled],
-input[type=button][disabled], 
-input[type=submit][disabled] {
+
+.button[disabled], button[disabled], input[type=button][disabled], input[type=submit][disabled] {
   background: darkgray;
   color: gray;
   text-shadow: none;
   box-shadow: 0 4px 0 gray;
 }
-.button[disabled]:hover,
-button[disabled]:hover,
-input[type=button][disabled]:hover, 
-input[type=submit][disabled]:hover {
+
+.button[disabled]:hover, button[disabled]:hover, input[type=button][disabled]:hover, input[type=submit][disabled]:hover {
   cursor: default;
   background: darkgray;
   z-index: 0;
 }
-.button[disabled]:active,
-button[disabled]:active,
-input[type=button][disabled]:active, 
-input[type=submit][disabled]:active {
+
+.button[disabled]:active, button[disabled]:active, input[type=button][disabled]:active, input[type=submit][disabled]:active {
   top: -3px;
 }
+
 .buttonbox .button {
   display: block;
   margin-bottom: 12px;
 }
-input[type="checkbox"],
-input[type="radio"] {
+
+.button.highlight {
+  background-color: #66bb8c;
+  box-shadow: 0 4px 0 #4b8864;
+}
+.button.highlight[disabled],
+.button.highlight[disabled]:hover {
+  background: #8da7a2;
+  box-shadow: 0 4px 0 #6f7d76;
+}
+.button.highlight:hover {
+  background: #82c19f;
+}
+input[type="checkbox"], input[type="radio"] {
   cursor: pointer;
+}
+
+.button.surrender, 
+.button.surrender[disabled]:hover {
+  background: #da7664;
+  box-shadow: 0 4px 0 #ca5c48;
+}
+.button.surrender:hover {
+  background: #d27870;
 }
 
 label {
@@ -343,12 +365,12 @@ label {
   text-align: left;
   height: 28px;
 }
+
 label input {
   margin: 0 5px;
 }
 
 label span {
-  vertical-align: super;
 }
 
 .log .box {
@@ -371,45 +393,55 @@ label span {
 .log .remembername {
   cursor: pointer;
 }
+
+.log .remembername * {
+  vertical-align: bottom;
+}
+
 .bkgdeck {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 970px;
-  height: 600px;
-  pointer-events: none;
+  transform-style: preserve-3d;
 }
-.tutorial .bkgdeck,
-.online .bkgdeck,
-.library .bkgdeck {
+
+.tutorial .bkgdeck, .online .bkgdeck, .library .bkgdeck, .single .bkgdeck {
   display: none;
 }
+
 .bkgdeck .card {
   position: absolute;
   cursor: default;
   z-index: 0;
+  pointer-events: none;
 }
+
 .bkgdeck .card:hover {
   z-index: 1;
 }
+
 .bkgdeck .ld {
   transform: translate3d(800px, -45px, -50px) rotateY(-60deg) rotateZ(32deg) rotateX(-15deg);
 }
+
 .bkgdeck .wk {
   transform: translate3d(740px, -130px, -260px) rotateY(-50deg) rotateZ(30deg) rotateX(-15deg);
 }
+
 .bkgdeck .cm {
   transform: translate3d(960px, 130px, -160px) rotateY(-90deg) rotateZ(35deg) rotateX(-5deg);
 }
+
 .bkgdeck .pud {
   transform: translate(-120px, -60px) translateZ(-140px) rotateY(50deg) rotateZ(-36deg) rotateX(-2deg);
 }
+
 .bkgdeck .am {
   transform: translate(-310px, 130px) translateZ(-290px) rotateY(70deg) rotateZ(-35deg) rotateX(5deg);
 }
+
 .bkgdeck .kotl {
   transform: translate(-66px, -130px) translateZ(-323px) rotateY(40deg) rotateZ(-39deg) rotateX(-18deg);
 }
+
 .menu h1 {
   margin-bottom: 6px;
 }
@@ -418,6 +450,7 @@ label span {
   width: 450px;
   height: 450px;
 }
+
 .menu .box .button {
   width: 216px;
 }
@@ -427,34 +460,47 @@ label span {
 }
 
 /*BUFFS*/
-
 .buffs .buff.stun .img {
-   background-image: url("../img/skills/stun.jpg");
+  background-image: url("../img/skills/stun.jpg");
 }
 
 .silence .img {
-   background-image: url("../img/skills/silence.jpg");
+  background-image: url("../img/skills/silence.jpg");
 }
+
 .magicimmune .img {
-   background-image: url("../img/skills/magicimmune.jpg");
+  background-image: url("../img/skills/magicimmune.jpg");
 }
+
 .ethereal .img {
-   background-image: url("../img/skills/ethereal.jpg")
+  background-image: url("../img/skills/ethereal.jpg")
 }
 
 .shake {
   position: relative;
   animation: shake 0.1s infinite linear;
 }
+
 @keyframes shake {
-  0% {transform: translateX(2px);}
-  50% {transform: translateX(-2px);}
+  0% {
+    transform: translateX(2px);
+  }
+
+  50% {
+    transform: translateX(-2px);
+  }
 }
 
 .card.shake {
   animation: cardshake 0.1s infinite linear;
 }
+
 @keyframes cardshake {
-  0% {left: calc(50% + 8px);}
-  50% {left: calc(50% - 8px);}
+  0% {
+    left: calc(50% + 8px);
+  }
+
+  50% {
+    left: calc(50% - 8px);
+  }
 }

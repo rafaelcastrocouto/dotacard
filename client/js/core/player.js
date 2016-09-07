@@ -7,7 +7,7 @@ game.player = {
         deck.addClass('player').appendTo(game.states.table.player).hide();
         if (game.mode == 'library') {
           var card = deck.data('cards')[0];
-          game.library.hero = card.addClass('player').on('mousedown touchstart', game.card.select);
+          card.addClass('player').on('mousedown touchstart', game.card.select);
           card.place(game.map.toPosition(4, 4));
           card.on('action', game.library.action).on('death', game.library.action);
         } else {

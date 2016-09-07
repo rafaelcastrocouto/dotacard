@@ -12,7 +12,7 @@
   overflow: hidden;
   z-index: 15;
   /* transform: translateZ(0); */
-  background: rgba(0,0,0,0.32);
+  background: rgba(0,0,0,0.5);
 }
 
 .topbar * {
@@ -32,19 +32,28 @@
   visibility: hidden;
   vertical-align: text-bottom;
 }
+
 .loader.loading {
   visibility: visible;
   animation: rotate 1s linear infinite;
 }
+
 @keyframes rotate {
-  0% { transform: rotate(0);}
-  100% { transform: rotate(360deg);}
+  0% {
+    transform: rotate(0);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
+
 .topbar .loader {
   position: absolute;
   left: 2px;
   top: 2px;
 }
+
 .topbar .triescounter {
   font-size: 8px;
   left: 7px;
@@ -65,16 +74,12 @@
   border-radius: 4px;
   cursor: default;
 }
+
 .topbar .message * {
   position: static;
 }
 
-.unturn .topbar .message {
-  color: white;
-}
-
-.topbar .time,
-.topbar .turns {
+.topbar .time, .topbar .turns {
   position: absolute;
   top: 2px;
   line-height: 18px;
@@ -94,25 +99,26 @@
   cursor: pointer;
   right: 10px;
 }
+
 .topbar .opt.disabled {
   color: #bbb;
   cursor: default;
 }
+
 .topbar .opt.disabled:hover {
   text-decoration: none;
 }
+
 .topbar .logout {
   position: absolute;
   right: 80px;
   cursor: pointer;
 }
 
-.topbar .logout,
-.topbar .opt {
+.topbar .logout, .topbar .opt {
   font-size: 13px;
 }
 
-.topbar .logout:hover,
-.topbar .opt:hover {
+.topbar .logout:hover, .topbar .opt:hover {
   text-decoration: underline;
 }

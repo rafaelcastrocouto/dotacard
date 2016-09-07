@@ -15,8 +15,8 @@
   height: 36px;
   overflow: hidden;
 }
-.chat:hover, 
-.chat.hover {
+
+.chat:hover, .chat.hover {
   bottom: 4px;
   left: -4px;
   height: auto;
@@ -24,9 +24,11 @@
   padding-left: 10px;
   padding-bottom: 0px;
 }
+
 .chat > * {
   display: none;
 }
+
 .chat h1 {
   display: block;
   color: white;
@@ -35,12 +37,12 @@
   height: 14px;
   opacity: 1;
 }
-.chat:hover h1, 
-.chat.hover h1 {
+
+.chat:hover h1, .chat.hover h1 {
   display: none;
 }
-.chat:hover .dis,
-.chat.hover .dis {
+
+.chat:hover .dis, .chat.hover .dis {
   display: block;
 }
 
@@ -50,15 +52,13 @@
   overflow: hidden;
   background: #222629;
 }
-.chat.hover .dis,
-.chat:hover .dis,
-.chat.hover .dis iframe,
-.chat:hover .dis iframe {
+
+.chat.hover .dis, .chat:hover .dis, .chat.hover .dis iframe, .chat:hover .dis iframe {
   width: 363px;
   height: 250px;
 }
-.chat.hover .messages,
-.chat:hover .messages {
+
+.chat.hover .messages, .chat:hover .messages {
   height: 188px;
   width: 363px;
   overflow: hidden;
@@ -81,24 +81,28 @@
   user-select: text;
   -webkit-user-select: text;
 }
+
 .chat .messages p .user {
   font-weight: bold;
 }
+
 .chat .messages p .date {
   font-size: 70%;
   margin: 0 5px;
   color: #666;
 }
+
 .chat .messages p .data {
   display: block;
 }
+
 .chat input {
   background: white;
   padding: 0;
   margin: 0;
 }
-.chat:hover input,
-.chat.hover input {
+
+.chat:hover input, .chat.hover input {
   height: 26px;
   width: 252px;
   margin: 10px 5px 8px 0;
@@ -116,12 +120,13 @@
   display: none;
   padding: 10px 16px;
 }
+
 .chat .button:active {
   top: auto;
   bottom: 6px;
 }
-.chat.hover .button,
-.chat:hover .button {
+
+.chat.hover .button, .chat:hover .button {
   width: 50px;
   height: 18px;
   display: inline-block;

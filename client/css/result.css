@@ -2,21 +2,31 @@
   width: 800px;
   animation: slideresult 1s;
 }
+
 @keyframes slideresult {
-  0% {top: -1000px;}
-  100% {top: 50%;}
+  0% {
+    top: -1000px;
+  }
+
+  100% {
+    top: 50%;
+  }
 }
+
 .result .resultTitle {
   text-transform: uppercase;
   font-size: 25px;
 }
+
 .result .results {
   display: inline-block;
   width: 320px;
 }
+
 .result .results.enemy {
   color: tomato;
 }
+
 .result .results p {
   box-shadow: inset 0 0 0 50px rgba(0,0,0,0.7);
   border: 0;
@@ -26,16 +36,23 @@
   white-space: nowrap;
   margin: 6px;
 }
+
 .result .results span {
   line-height: 30px;
   margin-left: 70px;
 }
+
 .result .results .portrait {
-  position: absolute; top: 5px; left: 5px;
-  width: 60px; height: 30px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 60px;
+  height: 30px;
 }
+
 .result .results .img {
-  width: 60px; height: 30px;
+  width: 60px;
+  height: 30px;
   background-size: cover;
   background-position: 50%;
 }
@@ -65,6 +82,7 @@
   opacity: 0;
   pointer-events: none;
 }
+
 .result .turntitle.show {
   opacity: 1;
 }

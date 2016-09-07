@@ -1,6 +1,6 @@
 .table .playerdecks {
   position: absolute;
-  height: 94px;
+  height: 100px;
   width: 100%;
   bottom: 0;
   perspective: 600px;
@@ -21,7 +21,7 @@
 }
 
 .table .enemydecks .deck {
-  top: -98px;
+  top: -104px;
   perspective: 600px;
   transform-style: preserve-3d;
 }
@@ -37,17 +37,18 @@
   right: 668px;
   width: auto;
 }
+
 .table .enemy .skills.hand {
   right: 244px;
   width: 424px;
 }
-
 
 .table .player .skills.sidehand {
   margin-right: 30px;
   right: 630px;
   width: auto;
 }
+
 .table .player .skills.hand {
   left: 340px;
   width: auto;
@@ -65,10 +66,12 @@
   z-index: 5;
   transform: translateZ(0);
 }
+
 .table .selectedarea.enemymoving {
   opacity: 0.5;
   pointer-events: none;
 }
+
 .table .buttonbox {
   position: absolute;
   right: 0;
@@ -76,23 +79,9 @@
   width: 210px;
 }
 
-.table .buttonbox .surrender {
-  background: #b99;
-}
-.table .buttonbox .surrender:hover {
-  background: #d99;
-}
-
-.table .surrender, .table .surrender[disabled]:active, 
-.table .back, .table .back[disabled]:active {
-  bottom: 180px;
-}
-.table .surrender:active, .table .back:active {
-  bottom: 177px;
-}
 .table .camera {
   position: absolute;
-  top: 50px;
+  top: 44px;
   left: 0;
   width: 760px;
   height: 450px;
@@ -102,7 +91,7 @@
   transform: translateZ(0);
 }
 
-.table  .camera:after {
+.table .camera:after {
   content: "";
   display: block;
   position: absolute;
@@ -115,7 +104,6 @@
 }
 
 /*RESULTS*/
-
 .table .resultsbox {
   width: 800px;
 }
@@ -124,13 +112,16 @@
   text-transform: uppercase;
   font-size: 25px;
 }
+
 .table .results {
   display: inline-block;
   width: 320px;
 }
+
 .table .results.enemy {
   color: tomato;
 }
+
 .table .results p {
   box-shadow: inset 0 0 0 50px rgba(0,0,0,0.7);
   border: 0;
@@ -140,16 +131,23 @@
   white-space: nowrap;
   margin: 6px;
 }
+
 .table .results span {
   line-height: 30px;
   margin-left: 70px;
 }
+
 .table .results .portrait {
-  position: absolute; top: 5px; left: 5px;
-  width: 60px; height: 30px;
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  width: 60px;
+  height: 30px;
 }
+
 .table .results .img {
-  width: 60px; height: 30px;
+  width: 60px;
+  height: 30px;
   background-size: cover;
   background-position: 50%;
 }
@@ -179,6 +177,7 @@
   opacity: 0;
   pointer-events: none;
 }
+
 .table .turntitle.show {
   opacity: 1;
 }

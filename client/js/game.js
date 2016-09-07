@@ -11,6 +11,7 @@ var game = {
   connectionLimit: 60,
   dayLength: 12,
   deadLength: 8,
+  deadDamage: 8,
   width: 9,
   height: 6,
   tries: 0,
@@ -40,8 +41,29 @@ var game = {
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
+  newId: function () {
+    game.newSeed();
+    game.id = btoa(game.seed) + '|' + btoa(new Date().valueOf());
+  },
+  setId: function (id) {
+    game.id = id;
+    game.setSeed(id);
+  },
+  newSeed: function () {
+    game.seed = Math.floor(Math.random() * 1E16);
+    localStorage.setItem('seed', game.seed);
+  },
+  setSeed: function (id) {
+    var n = id.split('|');
+    game.seed = parseInt(atob(n[0]), 10);
+    localStorage.setItem('seed', game.seed);
+  },
+  setData: function (item, data) {
+    game.currentData[item] = data;
+    localStorage.setItem('data', JSON.stringify(game.currentData));
+  },
   isPlayerTurn: function () {
-    return !game.states.table.el.hasClass('unturn');
+    return game.states.table.el.hasClass('turn');
   },
   opponent: function (side) {
     return (side == 'player') ? 'enemy' : 'player';
@@ -78,13 +100,13 @@ var game = {
       this.removeClass('shake');
     }.bind(state), 220);
   },
-  validModes: ['tutorial', 'online', 'library'],
+  validModes: ['tutorial', 'online', 'library', 'single'],
   setMode: function (mode, recover) {
     if (mode && game[mode] && game[mode].build && game.validModes.indexOf(mode) >= 0) {
       game.mode = mode;
       localStorage.setItem('mode', mode);
-      game.states.el.removeClass(game.validModes.join(' '));
-      game.states.el.addClass(mode);
+      game.container.removeClass(game.validModes.join(' '));
+      game.container.addClass(mode);
       game[mode].build(recover);
     }
   },
@@ -96,7 +118,7 @@ var game = {
     game.states.vs.clear();
     game.states.table.clear();
     game.states.result.clear();
-    game.states.el.removeClass(game.validModes.join(' '));
+    game.container.removeClass(game.validModes.join(' '));
     game.states.options.opt.removeClass('disabled');
     game.mode = false;
     localStorage.removeItem('mode');
