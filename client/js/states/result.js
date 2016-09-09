@@ -35,8 +35,9 @@ game.states.result = {
     if (!game.winner)  game.winner = game.player.name;
     if (game.winner == game.player.name) game.message.text(game.data.ui.win);
     else game.message.text(game.data.ui.lose);
-    $('.map .player.heroes.card').each(this.playerHeroResult);
-    $('.map .enemy.heroes.card').each(this.enemyHeroResult);
+    
+    $(game.player.heroesDeck.data('cards')).each(this.playerHeroResult);
+    $(game.enemy.heroesDeck.data('cards')).each(this.enemyHeroResult);
     this.title.text(game.winner + ' ' + game.data.ui.victory);
     this.towers.text(game.data.ui.towers + ' HP: ' + game.player.tower.data('current hp') + ' / ' + game.enemy.tower.data('current hp'));
     this.kd.text(game.data.ui.heroes + ' ' + game.data.ui.kd + ': ' + game.player.kills + ' / ' + game.enemy.kills);

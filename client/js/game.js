@@ -3,7 +3,7 @@ var game = {
   dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
   loader: $('<span>').addClass('loader'),
-  message: $('<span>').addClass('message').html('<b>WARNING</b>: This game is in pre-alpha and bugs may (will) happen.'),
+  message: $('<span>').addClass('message').html('<b>WARNING</b>: This game is in alpha and bugs may (will) happen.'),
   triesCounter: $('<small>').addClass('triescounter'),
   timeToPick: 40,
   timeToPlay: 60,
@@ -37,7 +37,9 @@ var game = {
       game.utils();
       game.events.build();
       game.history.build();
-      game.topbar = $('<div>').addClass('topbar').append(game.loader, game.message, game.triesCounter).appendTo(game.container);
+      game.topbar = $('<div>').addClass('topbar');
+      game.topbar.append(game.loader, game.message, game.triesCounter);
+      game.container.append(game.topbar);
       game.states.changeTo('loading');
     } else game.states.changeTo('unsupported');
   },
@@ -102,7 +104,10 @@ var game = {
   },
   validModes: ['tutorial', 'online', 'library', 'single'],
   setMode: function (mode, recover) {
-    if (mode && game[mode] && game[mode].build && game.validModes.indexOf(mode) >= 0) {
+    if (mode && 
+        game[mode] && 
+        game[mode].build && 
+        game.validModes.indexOf(mode) >= 0) {
       game.mode = mode;
       localStorage.setItem('mode', mode);
       game.container.removeClass(game.validModes.join(' '));
@@ -112,8 +117,11 @@ var game = {
   },
   clear: function () {
     game.message.html('');
-    if (game.mode && game[game.mode] && game[game.mode].clear) 
+    if (game.mode && 
+        game[game.mode] && 
+        game[game.mode].clear) {
       game[game.mode].clear();
+    }
     game.states.choose.clear();
     game.states.vs.clear();
     game.states.table.clear();

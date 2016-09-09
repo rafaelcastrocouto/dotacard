@@ -42,9 +42,11 @@ game.poll = {
     localStorage.setItem('voted', game.poll.votedHero);
     game.poll[game.poll.votedHero].addClass('voted');
     game.poll.title.text(game.data.ui.thanksvote);
-    $('span', game.poll.lina).after($('<span>').addClass('votes').text(poll.lina));
-    $('span', game.poll.mirana).after($('<span>').addClass('votes').text(poll.mirana));
-    $('span', game.poll.wind).after($('<span>').addClass('votes').text(poll.wind));
+    if (poll.lina) {
+      $('span', game.poll.lina).after($('<span>').addClass('votes').text(poll.lina));
+      $('span', game.poll.mirana).after($('<span>').addClass('votes').text(poll.mirana));
+      $('span', game.poll.wind).after($('<span>').addClass('votes').text(poll.wind));
+    }
   },
   clear: function () {
     if (game.poll.showBt) game.poll.showBt.remove();

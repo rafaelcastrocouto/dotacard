@@ -197,7 +197,7 @@ game.tutorial = {
       'C:'+game.map.mirrorPosition('G2')+':'+game.map.mirrorPosition('G2')+':mana:kotl',
       'M:'+game.map.mirrorPosition('H2')+':'+game.map.mirrorPosition('H3')
     ].join('|');
-    game.enemy.move();
+    game.enemy.startMoving(game.tutorial.endTurn);
   },
   endTurn: function () {
     game.map.el.removeClass('night');

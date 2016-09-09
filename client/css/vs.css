@@ -5,7 +5,7 @@
 
 .versus {
   position: absolute;
-  top: -10px;
+  top: 0px;
   left: 425px;
   z-index: 10;
   font-size: 40px;
@@ -14,16 +14,16 @@
 
 @keyframes slidevs {
   0% {
-    top: -100px;
+    top: -70px;
   }
 
   100% {
-    top: -10px;
+    top: 0px;
   }
 }
 
 .vsplayer, .vsenemy {
-  transition: all 0.4s;
+  transition: all 1s;
   width: 345px;
   height: 460px;
   position: absolute;
@@ -38,7 +38,7 @@
 }
 
 .vsplayer.slide {
-  transform: translateX(-1100px) rotateY(10deg);
+  transform: translateX(-1100px) rotateY(20deg);
 }
 
 .vsenemy {
@@ -47,7 +47,7 @@
 }
 
 .vsenemy.slide {
-  transform: translateX(1500px) rotateY(-10deg);
+  transform: translateX(1500px) rotateY(-20deg);
 }
 
 .vs .vsplayer > h1, .vs .vsenemy > h1 {

@@ -30,7 +30,7 @@ game.highlight = {
         }
       } else if (game.selectedCard.hasClass('skills') && !game.selectedCard.hasClass('done')) {
         if (game.selectedCard.closest('.hand').length &&
-            game.mode == 'online' &&
+            (game.mode != 'tutorial' || game.mode != 'library') &&
             game.isPlayerTurn()) {
           game.states.table.discard.attr('disabled', false);
         }

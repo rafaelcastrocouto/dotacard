@@ -489,6 +489,10 @@
   animation: playerbuyslide 2s;
 }
 
+.table .player .skills .card.slidedown {
+  transform: translate3d(-50%, 15%, 0) scale(0.4);
+}
+
 .table .player .skills .card.blink {
   animation: playerbuyslide 2s, cardblink 1s infinite;
 }

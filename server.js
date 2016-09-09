@@ -9,8 +9,7 @@ var http = require('http'),
   waitTimeout,
   chat = [],
   debug = false,
-  waitLimit = 10,
-  poll = {};
+  waitLimit = 10;
 
 var db = {
   data: {},
@@ -21,12 +20,19 @@ var db = {
 var mongo = {
   client: require('mongodb').MongoClient,
   url: 'mongodb://rafaelcastrocouto:'+process.env.SECRET+'@ds147905.mlab.com:47905/dotacard',
-  connect: function (cb) { mongo.client.connect(mongo.url, cb);},
-  get: function (name, cb) { mongo.connect(function(err, db) { if (!err) db.collection('collection').find().toArray(function readCollection (err, docs) { cb(docs[0][name] || ''); }); else console.log(err.message); }); },
-  set: function(name, val, cb) { var setData = {}; setData[name] = val; mongo.connect(function(err, db) { if (!err) db.collection('collection').updateOne({ "document": "dotacard" }, { $set: setData }, cb); else console.log(err.message); }); }
+  connect: function (cb) { mongo.client.connect(mongo.url, function (err, db) { if (!err) cb(db); else console.log(err.message); });},
+  get: function (name, cb) { mongo.connect(function(db) {
+      db.collection('collection').find().toArray(function readCollection (err, docs) { cb(docs[0][name] || ''); });
+    });
+  },
+  set: function(name, val, cb) { var data = {}; data[name] = val; mongo.connect(function(db) {
+      db.collection('collection').updateOne({ "document": "dotacard" }, { $set: data }, cb);
+    });
+  },
+  poll: {}
 };
 
-mongo.get('poll', function (data) { poll = data; });
+if (secret !== 'password') mongo.get('poll', function (data) { mongo.poll = data; });
 
 var send = function(response, data){
   response.statusCode = 200;
@@ -92,9 +98,11 @@ http.createServer(function(request, response) {
           send(response, JSON.stringify({messages: chat}));
           return;
         case 'poll':
-          if (typeof(poll[query.data]) == 'number') poll[query.data]++;
-          send(response, JSON.stringify(poll));
-          mongo.set('poll', poll);
+          if (secret !== 'password') {
+            if (typeof(mongo.poll[query.data]) == 'number') mongo.poll[query.data]++;
+            mongo.set('poll', mongo.poll);
+          }
+          send(response, JSON.stringify(mongo.poll));
           return;
         default: //console.log('set', query.data)
           db.set(query.set, query.data, function(data){

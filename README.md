@@ -21,7 +21,7 @@ Please report any [sugestions or issues][8] here at github.
 
 More information on how to [setup your own server][10]
 
-The game is avaiable free to play at the following URLs:
+The game is available free to play at the following URLs:
 
  - http://dotacard.ga
  - http://dotacard.herokuapp.com

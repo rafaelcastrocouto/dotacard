@@ -16,6 +16,9 @@ game.states.campain = {
     this.hm = $('<div>').addClass('stages hard mid').appendTo(this.map);
     this.hb = $('<div>').addClass('stages hard bot').appendTo(this.map);
     this.fi = $('<div>').addClass('stages final').appendTo(this.map);
+    this.ot = $('<div>').addClass('stages optional top').appendTo(this.map);
+    this.om = $('<div>').addClass('stages optional mid').appendTo(this.map);
+    this.ob = $('<div>').addClass('stages optional bot').appendTo(this.map);
     this.buttonbox = $('<div>').addClass('buttonbox');
     this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
     this.toChoose = $('<div>').addClass('campain-play button highlight').text(game.data.ui.battle).attr({title: game.data.ui.battle}).on('mouseup touchend', this.toChoose).appendTo(this.buttonbox);
@@ -50,6 +53,7 @@ game.states.campain = {
   },
   buildDesc: function (data) {
     this.desc.html('');
+    game.ai.mode = data.ai;
     $('<h2>').text(data.name).appendTo(this.desc);
     $('<div>').addClass('campain-img '+data.img).appendTo(this.desc);
     $('<p>').text(data.title).appendTo(this.desc);

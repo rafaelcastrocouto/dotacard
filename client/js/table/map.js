@@ -115,7 +115,8 @@ game.map = {
   },
   rangeArray: [ 0.5, 1, 1.25, 1.5, 2, 2.5, 3, 3.5, 4 ],
   atRange: function (r, cb, filter) { // at range border
-    var range = game.map.getRangeInt(r);
+    var range = r;
+    if ( typeof(r) == 'string' ) range = game.map.getRangeInt(r);
     var spot = $(this).closest('.spot');
     if (range >= 0 && range <= game.map.rangeArray.length) {
       var radius, x, y, r2, l,
@@ -347,8 +348,8 @@ game.map = {
     }
   },
   radialStroke: function (r, cl) { //console.log(r,cl)
-    var spot = this;
-    var range = game.map.getRangeInt(r);
+    var spot = this, range = r;
+    if ( typeof(r) == 'string' ) range = game.map.getRangeInt(r);
     var radius, x, y, r2, l,
       fil = function (x, y, border) {
         var spot = game.map.getSpot(x, y);

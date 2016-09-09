@@ -85,11 +85,11 @@
 
 @keyframes stagesblink {
   0%, 100% {
-    box-shadow: 0 0 0 3px rgba(0,0,0,0);
+    box-shadow: 0 0 0 2px rgba(0,0,0,0);
   }
 
   50% {
-    box-shadow: 0 0 0 3px white;
+    box-shadow: 0 0 0 4px white;
   }
 }
 
@@ -99,20 +99,21 @@
 }
 
 .stages.enabled:hover {
-  box-shadow: 0 0 0 4px white;
+  box-shadow: 0 0 0 2px white;
   animation: none;
 }
 
 .stages.start {
   bottom: 50px;
   left: 60px;
-  background: mediumseagreen;
+  background: #6fa5a7;
   width: 32px;
   height: 32px;
+  border: 3px solid white;
 }
 
 .stages.easy {
-  background: green;
+  background: mediumseagreen;
 }
 
 .stages.easy.top {
@@ -131,7 +132,7 @@
 }
 
 .stages.rune {
-  background: mediumpurple;
+  background: #ae70db;
   top: 330px;
   left: 355px;
 }
@@ -152,8 +153,8 @@
 
 .stages.normal.mid {
   background: yellow;
-  top: 250px;
-  left: 300px;
+  top: 255px;
+  left: 320px;
 }
 
 .stages.hard {
@@ -181,7 +182,24 @@
   left: 520px;
   width: 32px;
   height: 32px;
-  border-width: 2px;
+  border-width: 3px;
+}
+
+.stages.optional {
+  background: lightsalmon;
+}
+
+.stages.optional.top {
+  top: 245px;
+  left: 144px;
+}
+.stages.optional.mid {
+  top: 400px;
+  left: 254px;
+}
+.stages.optional.bot {
+  bottom: 80px;
+  left: 410px;
 }
 
 .campain-path {

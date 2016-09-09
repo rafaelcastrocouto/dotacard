@@ -114,7 +114,7 @@ game.states.choose = {
       if (deck && deck.length == 5) {
         game.states.choose.remember(deck);
         if (game[game.mode].chooseEnd) {
-          game.timeout(400, game[game.mode].chooseEnd);
+          game.timeout(100, game[game.mode].chooseEnd);
         }
       }
     }
@@ -135,7 +135,7 @@ game.states.choose = {
       $(this).attr('disabled', true);
       game.states.choose.randomFill();
       if (game[game.mode].chooseEnd) {
-        game.timeout(400, game[game.mode].chooseEnd);
+        game.timeout(100, game[game.mode].chooseEnd);
       }
     }
   },

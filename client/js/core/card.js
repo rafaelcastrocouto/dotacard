@@ -514,7 +514,7 @@ game.card = {
     var target = evt.target,
         source = evt.source;
     target.addClass('dead').removeClass('target done').setCurrentHp(0);
-    if (source.hasClass('hero') && target.hasClass('hero')) {
+    if (source.hasClass('heroes') && target.hasClass('heroes')) {
       game[source.side()].kills += 1;
       var kills = source.data('kills') + 1;
       source.data('kills', kills);

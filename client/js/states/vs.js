@@ -63,7 +63,7 @@ game.states.vs = {
     if (game.mode == 'library') {
       var hero;
       if (game.library.hero) {
-        hero = game.library.hero.data('hero');
+        hero = game.library.hero;
       } else {
         hero = localStorage.getItem('choose');
         game.library.hero = hero;
@@ -88,6 +88,7 @@ game.states.vs = {
     if (game.mode == 'single') {
       picks = game.enemy.picks;
       if (!picks || picks.length !== 5) picks = localStorage.getItem('enemydeck').split(',');
+      //picks = ['am', 'cm']
       return picks.shuffle();
     }
   },

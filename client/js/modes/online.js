@@ -314,7 +314,7 @@ game.online = {
       game.triesCounter.text('');
       game.setData(game.enemy.type, game.enemy.turn);
       game.setData('moves', data.moves);
-      game.enemy.move(game.online.endEnemyTurn);
+      game.enemy.startMoving(game.online.endEnemyTurn);
     }
   },
   endEnemyTurn: function () {

@@ -330,7 +330,7 @@ input:focus {
 
 .buttonbox .button {
   display: block;
-  margin-bottom: 12px;
+  margin-bottom: 10px;
 }
 
 .button.highlight {

@@ -12,6 +12,11 @@ game.events = {
     game.map.extendjQuery();
     $(window).on('resize', game.screen.resize);
     $(window).on('beforeunload ', game.events.leave);
+    if (game.debug) {
+      $(window).on('mousedown ', game.events.debugdown);
+      $(window).on('mousemove ', game.events.debugmove);
+      $(window).on('mouseup ', game.events.debugup);
+    }
     game.container.on('mousedown touchstart', game.events.hit);
     game.container.on('mousemove', game.events.move);
     game.container.on('touchmove', game.events.touchmove);
@@ -108,5 +113,26 @@ game.events = {
         s = 1;
     if (sc && sc.split) s = sc.split(',')[0];
     return Number(s);
+  },
+  debugdown: function (event) {
+    var target = $(event.target);
+    if (event.ctrlKey) {
+      game.events.debugDrag = target.parent().offset();
+      game.events.debugDrag.target = target;
+    }
+  },
+  debugmove: function (event) {
+    if (game.events.debugDrag) {
+      var target = game.events.debugDrag.target;
+      if (target.css('position') == 'absolute') {
+        target.css({
+          top: event.clientY - game.events.debugDrag.top,
+          left: event.clientX - game.events.debugDrag.left,
+        });
+      }
+    }
+  },
+  debugup: function (e) {
+    game.events.debugDrag = false;
   }
 };

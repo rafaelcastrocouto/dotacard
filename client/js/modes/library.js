@@ -48,8 +48,8 @@ game.library = {
       game.states.choose.pickedbox.hide().fadeIn('slow');
       $('.slot:empty').hide();
       if (!card.data('disable')) {
-        game.library.hero = card;
-        localStorage.setItem('choose', card);
+        game.library.hero = card.data('hero');
+        localStorage.setItem('choose', game.library.hero);
       }
       game.states.choose.librarytest.attr('disabled', !!card.data('disable'));
     }
@@ -68,8 +68,7 @@ game.library = {
     game.player.kills = 0;
     game.enemy.kills = 0;
     game.turn.build(6);
-    var heroName = game.data.heroes[game.library.hero].name;
-    game.message.text(game.data.ui.library +' '+ heroName);    
+    game.message.text(game.data.ui.library + ' '+ game.data.heroes[game.library.hero].name);    
     game.timeout(400, function () {
       game.skill.build('player', 'single');
       game.skill.build('enemy');

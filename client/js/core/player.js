@@ -49,9 +49,11 @@ game.player = {
     }
   },
   buyHand: function () {
-    for (var i = 0; i < game.player.cardsPerTurn; i += 1) {
-      if (game.player.skills.hand.children().length < game.player.maxCards) {
-        game.player.buyCard();
+    if (game.player.turn > 1) {
+      for (var i = 0; i < game.player.cardsPerTurn; i += 1) {
+        if (game.player.skills.hand.children().length < game.player.maxCards) {
+          game.player.buyCard();
+        }
       }
     }
   },
@@ -133,7 +135,10 @@ game.player = {
         skillid = skill.data('skill');
     game.currentMoves.push('D:' + skillid + ':' + hero);
     game.states.table.discard.attr('disabled', true);
-    skill.discard();
+    skill.addClass('slidedown');
+    game.timeout(300, function () {
+      skill.discard();
+    });
   },
   cardsInHand: function () {
     return game.player.skills.hand.children().length;
