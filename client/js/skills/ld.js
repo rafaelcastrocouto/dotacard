@@ -59,7 +59,7 @@ game.skills.ld = {
       killer.damage(ld, skill.data('death damage'), game.data.ui.pure);
       bear.data('return').discard();
       ld.data('bear', null);
-      bear.remove();
+      bear.detach();
     }
   },
   bearreturn: {

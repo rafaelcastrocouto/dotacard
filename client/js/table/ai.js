@@ -33,30 +33,33 @@ game.ai = {
     game.ai.moveRandomCard();
   },
   moveRandomCard: function () {
-    game.ai.resetData();
-    // add attack and move data
-    $('.map .enemy.card:not(.towers)').each(function (i, el) {
-      var card = $(el);
-      game.ai.buildData(card, 'enemy');
-    });
-    // add defensive data and strats
-    $('.map .player.card').each(function (i, el) {
-      var card = $(el);
-      game.ai.buildData(card, 'player');
-      //per hero defend
-      if (card.hasClass('heroes')) {
-        var hero = card.data('hero');
-        game.ai.heroes[hero].defend(card);
-      }
-    });
-    // add per hero data and strats
-    game.ai.heroPlay();
     // choose random card
     var availableCards = $('.map .enemy.card:not(.towers, .done)');
     var card = availableCards.randomCard();
-    var cardData = card.data('ai');
-    game.ai.chooseStrat(card, cardData);
-    game.ai.decideAction(card, cardData);
+    if (card.length) {
+      game.ai.resetData();
+      // add attack and move data
+      $('.map .enemy.card:not(.towers)').each(function (i, el) {
+        var card = $(el);
+        game.ai.buildData(card, 'enemy');
+      });
+      // add defensive data and strats
+      $('.map .player.card').each(function (i, el) {
+        var card = $(el);
+        game.ai.buildData(card, 'player');
+        //per hero defend
+        if (card.hasClass('heroes')) {
+          var hero = card.data('hero');
+          game.ai.heroes[hero].defend(card);
+        }
+      });
+      // add per hero data and strats
+      game.ai.heroPlay();
+
+      var cardData = card.data('ai');
+      game.ai.chooseStrat(card, cardData);
+      game.ai.decideAction(card, cardData);
+    }
     // loop nextMove
     game.timeout(100, function () {
       if (game.currentData.moves.length) {
@@ -256,6 +259,7 @@ game.ai = {
     });
   },
   chooseStrat: function (card, cardData) {
+    // console.log(card)
     // console.log(cardData.strats)
     var strats = [];
     $(game.ai.strats).each(function (i, strat) {

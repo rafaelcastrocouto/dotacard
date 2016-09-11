@@ -47,12 +47,8 @@ game.highlight = {
   },
   source: function () {
     var skill = this;
-    if (skill.data('source')) {
-      skill.data('source').addClass('source');
-    } else {
-      var hero = skill.data('hero');
-      if (hero) $('.map .card.player.heroes.' + hero).addClass('source');
-    }
+    var hero = skill.data('hero');
+    if (hero) $('.map .card.player.heroes.' + hero).addClass('source');
     return skill;
   },
   channelStop: function (event, skill, source) {

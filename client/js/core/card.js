@@ -409,7 +409,7 @@ game.card = {
           this.remove();
         }.bind(missFx));
       } else {
-        if (source.hasClass('tower')) name = 'tower';
+        if (source.hasClass('towers')) name = 'tower';
         else if (source.hasClass('bear')) name = 'bear';
         else name = source.data('hero');
         game.audio.play(name + '/attack');
@@ -547,13 +547,13 @@ game.card = {
       if (this.hasClass('player')) {
         this.appendTo(game.player.heroesDeck);
       } else if (this.hasClass('enemy')) { this.appendTo(game.enemy.heroesDeck); }
-    } else if (this.hasClass('tower')) {
+    } else if (this.hasClass('towers')) {
       if (this.hasClass('player')) {
         if (game[game.mode].lose) game[game.mode].lose();
       } else if (this.hasClass('enemy')) { 
         if (game[game.mode].win) game[game.mode].win(); 
       }
-    } else { this.remove(); }
+    } else { this.detach(); }
     return this;
   },
   reborn: function (spot, nopenalty) { //console.trace(this, spot)
@@ -580,9 +580,8 @@ game.card = {
     }
     if (spot && spot.length) {  
       var side = this.side();
-      var tower = game[side].tower;
       var unit = this.data('killer');
-      if (!nopenalty) unit.damage(game.deadDamage, tower, game.data.ui.pure);
+      if (!nopenalty) unit.damage(game.deadDamage, game[side].tower, game.data.ui.pure);
       this.data('reborn', null);
       this.setCurrentHp(hp);
       this.removeClass('dead');

@@ -99,7 +99,7 @@ game.states.campain = {
     }
   },
   clearPaths: function () {
-    $('.campain-path', game.states.campain.map).remove();
+    $('.campain-path', game.states.campain.map).hide();
   },
   toChoose: function () {
     if (game.states.campain.stage == 1) {

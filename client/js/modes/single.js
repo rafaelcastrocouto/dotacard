@@ -48,7 +48,8 @@ game.single = {
     }
   },
   startTurn: function (turn) {
-    game.turn.counter = game.timeToPlay;
+    if (turn == 'player-turn') game.turn.counter = game.timeToPlay;
+    else game.turn.counter = 15;
     game.timeout(1000, function () { 
       game.turn.count(turn, game.single.countEnd); 
     });
@@ -87,6 +88,7 @@ game.single = {
     }
   },
   endPlayerTurn: function () {
+    game.states.table.el.removeClass('turn');
     game.turn.end('enemy-turn', game.single.beginEnemy);
   },
   beginEnemy: function () {

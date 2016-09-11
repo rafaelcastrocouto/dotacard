@@ -10,7 +10,7 @@ game.skills.kotl = {
         source.on('channelend', this.channelend);
       } else {
         var ghost = source.clone().removeClass('selected player').addClass('illuminate-ghost ghost illuminating illumi-'+direction).insertAfter(source);
-        $('.current', ghost).remove();
+        $('.current', ghost).detach();
         ghost.data('release-counter', skill.data('channel'));
         ghost.data('skill', skill);
         ghost.data('source', source);
@@ -63,7 +63,7 @@ game.skills.kotl = {
       source.data('illuminate-ghost', null);
       source.off('turnend.kotl-illuminate');
       source.removeClass('illuminating illumi-left illumi-right illumi-top illumi-bottom');
-      if (source.hasClass('illuminate-ghost')) source.remove();
+      if (source.hasClass('illuminate-ghost')) source.detach();
       var side = kotl.side();
       $('.table .'+side+' .skills .kotl-illuminate').removeClass('done');
     }
