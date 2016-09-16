@@ -10,7 +10,7 @@ var game = {
   waitLimit: 10,
   connectionLimit: 60,
   dayLength: 12,
-  deadLength: 8,
+  deadLength: 5,
   deadDamage: 8,
   width: 9,
   height: 6,

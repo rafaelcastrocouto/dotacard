@@ -6,6 +6,7 @@ game.card = {
       place: game.card.place,
       select: game.card.select,
       unselect: game.card.unselect,
+      canMove: game.card.canMove,
       move: game.card.move,
       animateMove: game.card.animateMove,
       selfBuff: game.card.selfBuff,
@@ -16,6 +17,7 @@ game.card = {
       stopChanneling: game.card.stopChanneling,
       addStun: game.card.addStun,
       reduceStun: game.card.reduceStun,
+      canAttack: game.card.canAttack,
       attack: game.card.attack,
       damage: game.card.damage,
       heal: game.card.heal,
@@ -165,18 +167,22 @@ game.card = {
     game.states.table.selectedCard.removeClass('flip');
     game.timeout(200, game.card.clearSelection);
   },
+  canMove: function () {
+    return !this.hasClasses('done static dead stunned rooted entangled disabled sleeping cycloned taunted');
+  },
   move: function (destiny) {
     if (typeof destiny === 'string') { destiny = $('#' + destiny); }
     var card = this, t, d,
       from = card.getPosition(),
       to = destiny.getPosition();
-    if (destiny.hasClass('free') && from !== to) {
+    if (destiny.hasClass('free') && from !== to && card.canMove()) {
       card.removeClass('draggable').off('mousedown touchstart');
       game.highlight.clearMap();
       card.stopChanneling();
       card.animateMove(destiny);
       var evt = { type: 'move', card: card, target: to };
       card.trigger('move', evt).trigger('action', evt);
+      if (card.hasClass('selected')) card.unselect();
       game.timeout(300, function () {
 //         this.card.parent().find('.fx').each(function () {
 //           $(this).appendTo(this.destiny);
@@ -184,7 +190,6 @@ game.card = {
         this.destiny.removeClass('free');
         this.card.getSpot().addClass('free');
         this.card.css({ transform: '' }).prependTo(this.destiny).on('mousedown touchstart', game.card.select);
-        if (this.card.hasClass('selected')) this.card.unselect();
       }.bind({ card: card, destiny: destiny }));
     }
     return card;
@@ -358,12 +363,15 @@ game.card = {
       this.removeClass('shake');
     }.bind(this), 340);
   },
+  canAttack: function () {
+    return !this.hasClasses('done dead stunned rooted disarmed');
+  },
   attack: function (target) {
     if (typeof target === 'string') { target = $('#' + target + ' .card'); }
     var source = this, damage = source.data('current damage'), name,
       from = source.getPosition(),
       to = target.getPosition();
-    if (damage && from !== to && target.data('current hp')) {
+    if (damage && from !== to && target.data('current hp') && source.canAttack()) {
       source.stopChanneling();
       var evt = {
         type: 'attack',

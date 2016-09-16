@@ -42,7 +42,7 @@
   "axeskill": "<b>Arraste ou clique</b> nas <b>setas azuis</b> para usar suas habilidades. Habilidates passivas não encerram o turno",
   "axetoggle": "Habilidades <b>alternáveis</b> ficam na mão esquerda e também não encerram o turno",
   "axetoggleoff": "Habilidades <b>alternáveis</b> podem ser desligadas a qualquer momento",
-  "axeinstant": "Habilidades <b>instantâneas</b> skills will não encerram o turno. Habilidades que <b>não</b> precisam de <b>mana</b> ficam na <b>mão esquerda</b>",
+  "axeinstant": "Habilidades <b>instantâneas</b> também não encerram o turno. Habilidades que <b>não</b> precisam de <b>mana</b> ficam na <b>mão esquerda</b>",
   "axecast": "Habilidades <b>ativas</b> encerram o turno.  Habilidades que precisam de <b>mana</b> ficam na <b>mão direita</b>",
   "axeend": "Ah! Bom trabalho, agora vá encarar uma <b class='battle'>batalha</b>",
   "completedtutorial": "completou o tutorial",

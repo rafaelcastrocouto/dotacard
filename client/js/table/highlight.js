@@ -159,21 +159,19 @@ game.highlight = {
   },
   active: function (event, source, skill) {
     var targets = skill.data('targets');
-    if (!source.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted')) {
-      if (!(source.hasClass('rooted') && skill.hasClass('am-blink'))) {
-        if (skill.hasClasses('channel-on on')) game.highlight.channelStop(event, skill, source);
-        else {
-          if (targets.indexOf(game.data.ui.self) >= 0) game.highlight.self(source);
-          if (targets.indexOf(game.data.ui.ally) >= 0) game.highlight.ally(source, skill);
-          if (targets.indexOf(game.data.ui.enemy) >= 0) game.highlight.enemy(source, skill);
-          if (targets.indexOf(game.data.ui.sumonner) >= 0) game.highlight.summoner(source, skill);
-          if (targets.indexOf(game.data.ui.spot) >= 0) {
-            if (targets.indexOf(game.data.ui.free) >= 0) game.highlight.freeSpots(source, skill);
-            else {
-              var aoe = skill.data('aoe');
-              if (aoe === game.data.ui.radial) game.highlight.radial(source, skill);
-              if (aoe === game.data.ui.linear) game.highlight.linear(source, skill);
-            }
+    if (source.canCast(skill)) {
+      if (skill.hasClasses('channel-on on')) game.highlight.channelStop(event, skill, source);
+      else {
+        if (targets.indexOf(game.data.ui.self) >= 0) game.highlight.self(source);
+        if (targets.indexOf(game.data.ui.ally) >= 0) game.highlight.ally(source, skill);
+        if (targets.indexOf(game.data.ui.enemy) >= 0) game.highlight.enemy(source, skill);
+        if (targets.indexOf(game.data.ui.sumonner) >= 0) game.highlight.summoner(source, skill);
+        if (targets.indexOf(game.data.ui.spot) >= 0) {
+          if (targets.indexOf(game.data.ui.free) >= 0) game.highlight.freeSpots(source, skill);
+          else {
+            var aoe = skill.data('aoe');
+            if (aoe === game.data.ui.radial) game.highlight.radial(source, skill);
+            if (aoe === game.data.ui.linear) game.highlight.linear(source, skill);
           }
         }
       }
@@ -181,7 +179,7 @@ game.highlight = {
   },
   move: function () {
     var card = this, speed;
-    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done static dead stunned rooted entangled disabled sleeping cycloned taunted')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && card.canMove()) {
       speed = card.data('current speed');
       if (speed < 1) { return card; }
       if (speed > 3) { speed = 3; }
@@ -195,7 +193,7 @@ game.highlight = {
   },
   attack: function () {
     var card = this, pos, range;
-    if (card.hasClass('player') && card.hasClasses('units heroes') && !card.hasClasses('enemy done dead stunned rooted disarmed')) {
+    if (card.hasClass('player') && card.hasClasses('units heroes') && card.canAttack()) {
       range = card.data('range');
       card.inRange(range, function (neighbor) {
         var card = $('.card', neighbor);

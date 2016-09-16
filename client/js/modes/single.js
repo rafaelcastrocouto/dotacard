@@ -39,6 +39,7 @@ game.single = {
       game.turn.build(6);
       game.player.kills = 0;
       game.enemy.kills = 0;
+      game.ai.start();
       game.states.table.el.addClass('turn');
       setTimeout(function () {
         game.skill.build('player');
@@ -108,6 +109,7 @@ game.single = {
   },
   win: function () {
     game.turn.stopCount();
+    game.states.campain.stage++;
     game.winner = game.player.name;
     game.states.table.el.removeClass('turn');
     game.states.result.updateOnce = true;

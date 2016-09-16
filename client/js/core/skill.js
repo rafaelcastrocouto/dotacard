@@ -1,6 +1,7 @@
 game.skill = {
   extendjQuery: function () {
     $.fn.extend({
+      canCast: game.skill.canCast,
       cast: game.skill.cast,
       passive: game.skill.passive,
       toggle: game.skill.toggle,
@@ -44,6 +45,13 @@ game.skill = {
     $(game[side].picks).each(function (i, name) { 
       game[side].mana += game.data.heroes[name].mana;
     });
+  },
+  canCast: function (skill) {
+    var c = !this.hasClasses('dead done stunned silenced hexed disabled sleeping cycloned taunted');
+    if ( skill.hasClass('am-blink') && this.hasClass('rooted') ) {
+      c = false;
+    }
+    return c;
   },
   cast: function (skill, target) { //console.trace('cast')
     var source = this, targets, duration, channeler, channelDuration,
