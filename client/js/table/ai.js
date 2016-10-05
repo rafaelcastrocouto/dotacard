@@ -217,7 +217,7 @@ game.ai = {
         cardData = game.ai.spotData(cardData, tl, side);
       }
       if (br && br.hasClass('free') && (bot.hasClass('free') || right.hasClass('free'))) {
-        cardData = game.ai.spotData(cardData, br, side);;
+        cardData = game.ai.spotData(cardData, br, side);
       }
     }
     card.data('ai', cardData);
