@@ -1,11 +1,11 @@
 .resultsbox {
   width: 800px;
-  animation: slideresult 1s;
+  animation: slideresult 0.8s;
 }
 
 @keyframes slideresult {
   0% {
-    top: -1000px;
+    top: -800px;
   }
 
   100% {

@@ -35,15 +35,19 @@ game.states.campain = {
     }
   },
   stageOne: function () {
+    $('.blink').removeClass('blink');
+    game.states.campain.startStage.addClass('blink');
     game.states.campain.stage = 1;
     game.states.campain.buildDesc(game.data.campain.start);
   },
   stageTwo: function () {
+    $('.blink').removeClass('blink');
+    $(this).addClass('blink');
     game.states.campain.stage = 2;
     game.states.campain.buildDesc(game.data.campain.easy);
   },
   stageTwoShow: function () {
-    this.startStage.removeClass('blink').on('mouseup touchend', this.stageOne);
+    this.startStage.removeClass('blink').on('mouseup touchend', this.stageOne).addClass('done');
     $('.campain-path').css('opacity', 1);
     $('.stages.easy').addClass('enabled blink').on('mouseup touchend', this.stageTwo);
     this.createPath(this.et, this.ru, 'et-ru');
@@ -81,15 +85,15 @@ game.states.campain = {
     var s = source.position(), t = target.position();
     var sourcesize = source.width() / 2;
     s.left += (sourcesize - size);
-    s.top += (sourcesize - size);
+    s.top += (sourcesize - size) * 1.6;
     var targetsize = target.width() / 2;
     t.left += (targetsize - size);
-    t.top += (targetsize - size);
+    t.top += (targetsize - size) * 1.6;
     var mx = t.left - s.left, 
         my = t.top - s.top;
     var a = Math.atan2(my, mx);
     var d = Math.pow( Math.pow(mx,2) + Math.pow(my,2) , 1/2);
-    var toff = sourcesize + targetsize + (dash/2);
+    var toff = sourcesize + dash;
     d -= toff;
     var n = Math.floor(d/dash), x, y;
     for (var i = 0; i < n; i++) {

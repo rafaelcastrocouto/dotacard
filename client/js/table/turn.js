@@ -1,4 +1,4 @@
-game.turn = {
+﻿game.turn = {
   build: function (time) {
     if (!game.turn.builded) {
       game.turn.builded = true;

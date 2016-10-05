@@ -1,4 +1,4 @@
-game.tower = {
+﻿game.tower = {
   build: function (side, pos) {
     var tower = game.card.build({
       className: 'towers static ' + side,

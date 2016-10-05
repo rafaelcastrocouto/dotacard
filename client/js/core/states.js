@@ -1,4 +1,4 @@
-game.states = {
+﻿game.states = {
   el: $('.states').first(),
   valid: ['loading', 'log', 'menu', 'campain', 'options', 'choose', 'result', 'table', 'vs'],
   build: function (cb) { 

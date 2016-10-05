@@ -1,11 +1,9 @@
 game.ai = {
-  turnStart: function () {
-    //console.clear();
-    game.message.text(game.data.ui.enemymove);
+  start: function () {
     // remember ai is playing the enemy cards
     if (game.ai.mode == 'easy') {
-      game.ai.movesLoop = 5;
-      game.ai.noMovesLoop = 2;
+      game.ai.movesLoop = 5; // number of units per turn
+      game.ai.noMovesLoop = 2; // if no action retry N times
       game.ai.lowChance = 0.3; // eg: if (r > low) choose random target
       game.ai.highChance = 0.6; // eg: if (r > high) choose random move destiny
     }
@@ -21,6 +19,12 @@ game.ai = {
       game.ai.lowChance = 0.05;
       game.ai.highChance = 0.25;
     }
+  },
+  turnStart: function () {
+    //console.clear();
+    game.message.text(game.data.ui.enemymove);
+    $('.map .ai').removeClass('ai');
+    game.ai.currentmovesLoop = game.ai.movesLoop;
     // activate all passives, other sidehand skills strats per hero
     $('.enemydecks .sidehand .skills').each(function (i, el) {
       var card = $(el);
@@ -30,14 +34,16 @@ game.ai = {
     game.ai.combo();
     // move and end turn
     // choose strat and decide moves
-    game.ai.moveRandomCard();
+    game.timeout(400, game.ai.moveRandomCard);
   },
   moveRandomCard: function () {
+    game.ai.resetData();
     // choose random card
-    var availableCards = $('.map .enemy.card:not(.towers, .done)');
+    var availableCards = $('.map .enemy.card:not(.towers, .done, .ai)');
     var card = availableCards.randomCard();
     if (card.length) {
-      game.ai.resetData();
+      // console.log(card[0]);
+      card.addClass('ai');
       // add attack and move data
       $('.map .enemy.card:not(.towers)').each(function (i, el) {
         var card = $(el);
@@ -57,7 +63,10 @@ game.ai = {
       game.ai.heroPlay();
 
       var cardData = card.data('ai');
+      //console.log(cardData); 
+      //debugger
       game.ai.chooseStrat(card, cardData);
+      //todo: make a list of possible actions and after data
       game.ai.decideAction(card, cardData);
     }
     // loop nextMove
@@ -123,7 +132,7 @@ game.ai = {
       cardData.strats.selfheal += 20;
     }
     var range = card.data('range');
-    if (range) {
+    if (range && card.canAttack()) {
       card.opponentsInRange(range, function (opponentCard) {
         cardData['can-attack'] = true;
         cardData.strats.attack += 7;
@@ -159,13 +168,13 @@ game.ai = {
     var spot = card.getSpot();
     if (spot.hasClass(opponent+'area')) {
       cardData['at-tower-attack-range'] = true;
-      cardData.strats.retreat += 5;
+      cardData.strats.retreat += 2;
     }
     if (spot.hasClass('fountain'+side)) {
       cardData['at-fountain'] = true;
       cardData.strats.advance += 5;
     }
-    if (!card.hasClasses('static dead stunned rooted entangled disabled sleeping cycloned taunted') && side == 'enemy') {
+    if (card.canMove() && side == 'enemy') {
       // advance
       var x = spot.getX(), y = spot.getY();
       var bot = game.map.getSpot(x, y + 1);
@@ -173,20 +182,16 @@ game.ai = {
       var left = game.map.getSpot(x - 1, y);
       if (bot && bot.hasClass('free')) {
         cardData['can-advance'] = true;
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
         cardData.strats.offensive += 1;
-        cardData.destinys.push(bot);
+        cardData = game.ai.spotData(cardData, bot, side);
       }
       if (left && left.hasClass('free')) {
         cardData['can-advance'] = true;
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
         cardData.strats.offensive += 1;
-        cardData.destinys.push(left);
+        cardData = game.ai.spotData(cardData, left, side);
       }
       if (bl && bl.hasClass('free') && cardData['can-advance']) {
-        cardData.destinys.push(bl);
+        cardData = game.ai.spotData(cardData, bl, side);
       }
       // retreat
       var top = game.map.getSpot(x, y - 1);
@@ -194,37 +199,43 @@ game.ai = {
       var right = game.map.getSpot(x + 1, y);
       if (tr && tr.hasClass('free')) {
         cardData['can-retreat'] = true;
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
         cardData.strats.defensive += 1;
-        cardData.destinys.push(tr);
+        cardData = game.ai.spotData(cardData, tr, side);
       }
       if (top && top.hasClass('free')) {
         cardData['can-retreat'] = true;
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
         cardData.strats.defensive += 1;
-        cardData.destinys.push(top);
+        cardData = game.ai.spotData(cardData, top, side);
       }
       if (right && right.hasClass('free') && cardData['can-retreat']) {
-        cardData.destinys.push(right);
+        cardData = game.ai.spotData(cardData, right, side);
       }
       // top-left and bot-right
       var tl = game.map.getSpot(x - 1, y - 1);
       var br = game.map.getSpot(x + 1, y + 1);
       if (tl && tl.hasClass('free') && (top.hasClass('free') || left.hasClass('free'))) {
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
-        cardData.destinys.push(tl);
+        cardData = game.ai.spotData(cardData, tl, side);
       }
       if (br && br.hasClass('free') && (bot.hasClass('free') || right.hasClass('free'))) {
-        cardData['can-move'] = true;
-        cardData.strats.move += 1;
-        cardData.destinys.push(br);
+        cardData = game.ai.spotData(cardData, br, side);;
       }
     }
     card.data('ai', cardData);
     //console.log(cardData);
+  },
+  spotData: function (cardData, spot, side) {
+    cardData['can-move'] = true;
+    cardData.strats.move += 1;
+    var p = 3;
+    if (spot.hasClass(side+'area')) p += 1;
+    var opponent = game.opponent(side);
+    if (spot.hasClass(opponent+'area')) p -= 1;
+    // todo: check number of possible attaks at the spot
+    cardData.destinys.push({
+      target: spot,
+      priority: p,
+    });
+    return cardData;
   },
   heroPlay: function () {
     $('.map .enemy.card:not(.towers)').each(function (i, el) {
@@ -272,6 +283,7 @@ game.ai = {
     if (Math.random() > game.ai.lowChance) {
       cardData.strat = strats[0].strat;
     } else {
+      // random strat
       var validRandom = ['smart', 'stand', 'alert'];
       if (cardData['can-move']) {
         validRandom.push('move');
@@ -288,11 +300,11 @@ game.ai = {
         //validRandom.push('combo');
         validRandom.push('cast');
       }
-      cardData.strat = game.ai.strats.random();
+      cardData.strat = validRandom.random();
     }
   },
   strats: [
-  // combo
+  // todo: combo
     'siege',
     'attack',
     'cast',
@@ -367,7 +379,7 @@ game.ai = {
       }
     }
     if (strat == 'move') {
-      if (cardData.destiny && cardData.destiny.hasClass('free')) {
+      if (cardData['can-move']) {
         action =  'move';
       } else if (cardData['can-make-action']) {
         action = 'any';
@@ -408,9 +420,9 @@ game.ai = {
     }
     if (action == 'any') {
       var hero = card.data('hero');
-      if (hero && 
+      if (hero &&
           game.ai.heroes[hero] &&
-          game.ai.heroes[hero].action == 'attack' && 
+          game.ai.heroes[hero].action == 'attack' &&
           cardData['can-attack']) {
         action = 'attack';
       } else if (cardData['can-cast']) {
@@ -419,18 +431,18 @@ game.ai = {
         action = 'attack';
       }
     }
-    // console.log(card[0],strat, action);
+    // console.log(card[0], strat, action, 'a:', cardData['can-attack'], 'm:', cardData['can-move'] );
     if (action) {
       if (action == 'move' || action == 'advance' || action == 'retreat') {
         target = cardData.destiny;
         if (!target) {
-          target = game.ai.chooseDestiny(cardData.destinys);
+          target = game.ai.chooseDestiny(card, cardData.destinys);
         }
       }
       if (action == 'attack'){
         if (!target) target = game.ai.chooseTarget(cardData['attack-targets']);
         if (cardData['has-instant-attack-buff']) {
-          // todo: activate instant skills
+          // todo: activate instant skills (preAttack per hero?)
         }
       }
       if (action == 'cast') {
@@ -443,43 +455,58 @@ game.ai = {
             else target = castStrat.targets.random();
           }
           if (cardData['has-instant-cast-buff']) {
-            // todo: activate instant skills
+            // todo: activate instant skills (preCast per hero?)
           }
         }
       }
+      // console.log(action, target);
       if ((action == 'move' || action == 'advance' || action == 'retreat' || action == 'attack' || action == 'cast') && !target) {
-        cardData.strat = game.ai.strats.random();
-        game.ai.decideAction(card, cardData);
+        //console.log('no target', card[0], strat, action, cardData );
       } else if (action) game.ai.parseMove(card, cardData, action, target);
     }
   },
-  chooseDestiny: function (destinys) {
-    if (Math.random() > game.ai.highChance) return destinys[0];
-    else return destinys.random();
+  chooseDestiny: function (card, destinys) {
+    console.log(destinys);
+    if (destinys.length) {
+      // if selfheal always go to the fountain 
+      if (card.strat == 'selfheal') {
+        var fountain, side = card.data('side');
+        $(destinys).each(function (i, d) {
+          if (d.hasClass('fountain'+side)) fountain = d;
+        });
+        if (fountain) return fountain;
+      }
+      if (Math.random() > game.ai.highChance) {
+        destinys.sort(function (a, b) {
+          return b.priority - a.priority;
+        });
+        return destinys[0].target;
+      } else return destinys.random().target;
+    }
   },
   chooseTarget: function (targets) {
-    // priority 1: tower
-    var target;
-    $(targets).each(function (i, t) {
-      if (t.hasClass('towers')) target = t;
-    });
-    if (target) return target;
-    else if (Math.random() > game.ai.lowChance) {
-      // priority 2: lowest hp
-      targets.sort(function (a, b) {
-        return a.data('current hp') - b.data('current hp');
+    if (targets.length) {
+      // priority 1: tower
+      var towers;
+      $(targets).each(function (i, t) {
+        if (t.hasClass('towers')) towers = t;
       });
-      return targets[0];
-    } else {
-      return targets.random();
+      if (towers) return towers;
+      else if (Math.random() > game.ai.lowChance) {
+        // priority 2: lowest hp
+        targets.sort(function (a, b) {
+          return a.data('current hp') - b.data('current hp');
+        });
+        return targets[0];
+      } else return targets.random();
     }
   },
   chooseCast: function (castStrats) {
-    castStrats.sort(function (a, b) {
-      return b.priority - a.priority;
-    });
     if (castStrats.length) {
       if (Math.random() > game.ai.lowChance) {
+        castStrats.sort(function (a, b) {
+          return b.priority - a.priority;
+        });
         return castStrats[0];
       } else castStrats.random();
     }
@@ -504,15 +531,15 @@ game.ai = {
       move[3] = cardData['cast-skill']; //skillId
       move[4] = card.data('hero');
     }
-    console.log(move.join(':'));
+    console.log(move);
     game.currentData.moves.push(move.join(':'));
   },
   nextMove: function () {
-    if (game.ai.movesLoop > 0) {
+    if (game.ai.currentmovesLoop > 0) {
       if (game.currentData.moves.length) {
-        game.ai.movesLoop -= 1;
+        game.ai.currentmovesLoop -= 1;
       } else {
-        game.ai.movesLoop -= 0.5;
+        game.ai.currentmovesLoop -= (1/game.ai.noMovesLoop);
       }
       game.timeout(100, game.ai.moveRandomCard);
     } else {
@@ -526,13 +553,13 @@ game.ai = {
       n = 4;
     } else if (n > 0) {
       n -= 1;
-      card.data('ai discard', n);
     } else if (n <= 0) {
       var skillId = card.data('skill');
       var heroId = card.data('hero');
       game.currentData.moves.push('D:'+skillId+':'+heroId);
-      card.data('ai discard', undefined);
+      n = undefined;
     }
+    card.data('ai discard', n);
   },
   endTurn: function () { 
     //debugger
@@ -646,6 +673,7 @@ game.ai = {
         default: 'cast'
       },
       play: function (cm) {
+
         /*
         only use slow if N opponents or after N turns
         combo freeze

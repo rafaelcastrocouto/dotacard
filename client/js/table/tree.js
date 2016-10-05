@@ -1,4 +1,4 @@
-game.tree = {
+﻿game.tree = {
   build: function (spot, side) {
     var tree = game.card.build({
       className: 'trees static neutral ' + side,

@@ -1,4 +1,4 @@
-game.highlight = {
+﻿game.highlight = {
   extendjQuery: function () {
     $.fn.extend({
       highlightSource: game.highlight.source,

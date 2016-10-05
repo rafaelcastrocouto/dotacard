@@ -1,4 +1,4 @@
-// Require grunt and it's dependencies listed in package.json
+﻿// Require grunt and it's dependencies listed in package.json
 // run "npm install" in the game root folder
 // Use this file to bundle and minify the game js and css
 // run "grunt" in the game root folder

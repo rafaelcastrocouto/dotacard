@@ -437,15 +437,9 @@
     top: 50%;
   }
 
-  70% {
-    left: 40px;
-    top: 185%;
-    transform: translate(-50%, -50%) scale(0.5) rotateY(-180deg);
-  }
-
   100% {
-    left: -1000px;
-    top: 185%;
+    left: 40px;
+    top: -50%;
     transform: translate(-50%, -50%) scale(0.5) rotateY(-180deg);
   }
 }

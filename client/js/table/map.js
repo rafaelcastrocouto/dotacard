@@ -1,4 +1,4 @@
-game.map = {
+﻿game.map = {
   extendjQuery: function () {
     $.fn.extend({
       getX: game.map.getX,
