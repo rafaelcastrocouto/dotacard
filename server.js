@@ -44,11 +44,9 @@ var allowed = [
 ];
 
 var setHeaders = function (request, response) {
-  var h = 'http://';
-  if (request.headers['x-forwarded-proto'] === 'https') h = 'https://';
   var origin = request.headers.host;
   if (allowed.indexOf(origin) > -1) {
-    response.setHeader('Access-Control-Allow-Origin', h+origin);
+    response.setHeader('Access-Control-Allow-Origin', '*');
   }
 };
 
