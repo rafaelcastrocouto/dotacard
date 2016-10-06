@@ -65,11 +65,11 @@ http.createServer(function(request, response) {
   var urlObj = url.parse(request.url, true); // console.log('ulrObj',urlObj);
   var pathname = urlObj.pathname; // console.log('pathname: '+pathname);
   if (pathname[0] === '/') { pathname = pathname.slice(1); }
-  if (request.headers['x-forwarded-proto'] === 'https'){
-    response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'+(pathname||'') });
-    response.end();
-    return;
-  }
+//   if (request.headers['x-forwarded-proto'] === 'https') {
+//     response.writeHead(302, {'Location': 'http://dotacard.herokuapp.com/'+(pathname||'') });
+//     response.end();
+//     return;
+//   }
   if (pathname === 'db') {
     response.setHeader('Content-Type', 'application/json');
     var query = urlObj.query; // console.log('query: '+ (query.set || query.get));
