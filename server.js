@@ -9,7 +9,8 @@ var http = require('http'),
   waitTimeout,
   chat = [],
   debug = false,
-  waitLimit = 10;
+  waitLimit = 10,
+  origin;
 
 var db = {
   data: {},
@@ -34,28 +35,36 @@ var mongo = {
 
 if (secret !== 'password') mongo.get('poll', function (data) { mongo.poll = data; });
 
+var clientServer = serveStatic('client', {'index': ['index.html', 'index.htm']});
+var rootServer = serveStatic(__dirname);
+
+var allowed = [
+  'http://dotacard.herokuapp.com',
+  'https://dotacard.herokuapp.com',
+  'http://rafaelcastrocouto.github.io',
+  'https://rafaelcastrocouto.github.io'
+];
+
+var setHeaders = function (request, response) {
+  var origin = request.headers.host;
+  if (allowed.indexOf(origin) > -1) {
+    response.setHeader('Access-Control-Allow-Origin', origin);
+  }
+};
+
 var send = function(response, data){
   response.statusCode = 200;
   response.end( String(data) );
 };
-var setHeaders = function (response) {
-  response.setHeader('Access-Control-Allow-Origin', 'http://rafaelcastrocouto.github.io');
-};
-var clientServer = serveStatic('client', {
-  'index': ['index.html', 'index.htm'], 
-  'setHeaders': setHeaders
-});
-var rootServer = serveStatic(__dirname, {
-  'setHeaders': setHeaders
-});
+
 var clearWait = function () {
   clearTimeout(waitTimeout);
   waiting = {id: 'none'};
 };
 
 http.createServer(function(request, response) {
-  setHeaders(response);
-  var urlObj = url.parse(request.url, true);
+  setHeaders(request, response);
+  var urlObj = url.parse(request.url, true); // console.log('ulrObj',urlObj);
   var pathname = urlObj.pathname; // console.log('pathname: '+pathname);
   if (pathname[0] === '/') { pathname = pathname.slice(1); }
   if (request.headers['x-forwarded-proto'] === 'https'){
