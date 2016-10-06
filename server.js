@@ -39,16 +39,16 @@ var clientServer = serveStatic('client', {'index': ['index.html', 'index.htm']})
 var rootServer = serveStatic(__dirname);
 
 var allowed = [
-  'http://dotacard.herokuapp.com',
-  'https://dotacard.herokuapp.com',
-  'http://rafaelcastrocouto.github.io',
-  'https://rafaelcastrocouto.github.io'
+  'dotacard.herokuapp.com',
+  'rafaelcastrocouto.github.io'
 ];
 
 var setHeaders = function (request, response) {
+  var h = 'http://';
+  if (request.headers['x-forwarded-proto'] === 'https') h = 'https://';
   var origin = request.headers.host;
   if (allowed.indexOf(origin) > -1) {
-    response.setHeader('Access-Control-Allow-Origin', origin);
+    response.setHeader('Access-Control-Allow-Origin', h+origin);
   }
 };
 
