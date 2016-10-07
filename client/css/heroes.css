@@ -224,7 +224,7 @@
   background-image: url("../img/skills/pud/hook.jpg");
 }
 
-.pud-rot .img, .map .pud-rot .img, .buffs .buff.pud-rot.rot-source .img {
+.pud-rot .img, .map .pud-rot .img, .buffs .buff.pud-rot .img {
   background-image: url("../img/skills/pud/rot.jpg");
 }
 
