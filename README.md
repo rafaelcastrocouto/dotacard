@@ -1,4 +1,4 @@
-﻿[![DotaCard Banner](http://dotacard.herokuapp.com/client/img/banner.jpg)][1]
+[![DotaCard Banner](http://dotacard.herokuapp.com/client/img/campain/ico_rosh.png)][1]
 
 [![Discord Chat Channel](http://dotacard.herokuapp.com/client/img/discord.png)][2]
 

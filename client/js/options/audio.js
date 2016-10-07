@@ -145,7 +145,7 @@ game.audio = {
   },
   volumeMouseMove: function (event) {
     var x = event.clientX - game.options.volumecontrol.offset().left,
-        v = parseInt(x / 0.48, 10) / 100;
+        v = parseInt(x / 1.06, 10) / 100;
     //console.log(x, v)
     game.audio.setVolume(game.audio.volumetarget, v);
   },
