@@ -1,8 +1,8 @@
+#[dotacard.ga][3]
+
 [![DotaCard Banner](http://dotacard.herokuapp.com/client/img/campain/ico_rosh.png)][1]
 
 [![Discord Chat Channel](http://dotacard.herokuapp.com/client/img/discord.png)][2]
-
-#[dotacard.ga][3]
 
 A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
 
