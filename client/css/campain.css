@@ -88,7 +88,8 @@
 }
 
 .stages.blink {
-  animation: stagesblink 0.8s infinite;
+  animation: stagesblink 1s infinite;
+  background-color: rgba(255,255,225,0.3);
 }
 
 .stages.done {
@@ -99,7 +100,9 @@
   font-size: 80px;
   position: relative;
   top: 40px;
-  left: 30px
+  left: 30px;
+  opacity: 0.5;
+  font-family: monospace;
 }
 
 @keyframes stagesblink {
@@ -207,19 +210,21 @@
 
 .stages.optional {
   background-image: url(../img/campain/ico_opt.png);
+  width: 60px;
+  height: 60px;
 }
 
 .stages.optional.top {
-  top: 215px;
-  left: 124px;
+  top: 185px;
+  left: 104px;
 }
 .stages.optional.mid {
-  top: 360px;
-  left: 225px;
+  top: 380px;
+  left: 215px;
 }
 .stages.optional.bot {
-  bottom: 80px;
-  left: 380px;
+  bottom: 88px;
+  left: 390px;
 }
 
 .campain-path {

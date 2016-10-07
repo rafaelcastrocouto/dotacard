@@ -1,9 +1,30 @@
+.optionState .state {
+  opacity: 0 !important;
+}
+.optionState .bkgdeck {
+  display: block !important;
+}
+.sweet-alert.options {
+  font-weight: bold;
+  color: white;
+  background: rgba(0,0,0,0.6) !important;
+}
+
+.options h1 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.options h2 {
+  font-size: 18px;
+  color: white;
+}
+
 .audioconfig, .screenresolution {
   display: inline-block;
-  padding: 20px 0;
+  padding: 10px 0 0;
   vertical-align: top;
   width: 260px;
-  float: left;
 }
 
 .audioconfig h2, .screenresolution h2 {
@@ -11,24 +32,11 @@
   font-weight: bold;
 }
 
-.game-container.low {
-  transform: translate3d(-50%, -50%, 0) scale(0.75);
-}
-
-.game-container.high {
-  transform: translate3d(-50%, -50%, 0) scale(1.5);
-}
-
-.game-container.medium {
-  transform: translate3d(-50%, -50%, 0) scale(1.2);
-}
-
-.options .box {
-  width: 680px;
-}
-
 .options label {
   position: relative;
+}
+.audioconfig label {
+  height: 50px;
 }
 .options label > * {
   vertical-align: middle;
@@ -37,39 +45,46 @@
   cursor: pointer;
 }
 
+.game-container.high {
+  transform: translate3d(-50%, -50%, 0) scale(1.5) !important;
+}
+.game-container.medium {
+  transform: translate3d(-50%, -50%, 0) scale(1.2) !important;
+}
+.game-container.default {
+  transform: translate3d(-50%, -50%, 0) scale(1) !important;
+}
+.game-container.low {
+  transform: translate3d(-50%, -50%, 0) scale(0.75) !important;
+}
+
+
 .volume {
   cursor: pointer;
   position: relative;
   width: 0;
   height: 0;
   border: 0 solid transparent;
-  border-top: 20px solid transparent;
-  border-right: 50px solid rgba(255,255,255,0.2);
+  border-top: 40px solid transparent;
+  border-right: 100px solid rgba(255,255,255,0.2);
   display: inline-block;
   position: absolute;
   right: 80px;
-  bottom: 11px;
+  bottom: 30px;
   transform: translateZ(0);
 }
 
 .volumecontrol {
   position: absolute;
-  top: -20px;
+  top: -40px;
   left: 0;
   width: 0;
   height: 0;
   border: 0 solid transparent;
-  border-top: 20px solid transparent;
-  border-right: 50px solid rgba(255,255,255,0.8);
+  border-top: 40px solid transparent;
+  border-right: 100px solid rgba(255,255,255,0.7);
   transform-origin: 0 100%;
   transform: scale(0.25);
-}
-
-.options .back.button {
-  display: block;
-  width: 50px;
-  margin-right: 120px;
-  float: right;
 }
 
 .options .lang {
@@ -81,12 +96,15 @@
 .options .lang h2 {
   display: inline;
   margin-right: 20px;
+  color: white;
 }
 
 .options .lang select {
-  border: 0;
   font-size: 14px;
+  background: #fff;
   color: #222;
   border-radius: 3px;
-  padding: 2px 6px;
+  padding: 6px;
+  font-weight: normal;
+  font-family: "Helvetica Neue", Helvetica,Arial, sans-serif;
 }

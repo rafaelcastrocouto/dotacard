@@ -1,7 +1,7 @@
 .topbar {
   position: absolute;
-  top: 0;
-  left: 0;
+  top: 0px;
+  left: 0px;
   width: 100%;
   box-sizing: border-box;
   padding: 3px;
@@ -11,8 +11,8 @@
   line-height: 16px;
   overflow: hidden;
   z-index: 15;
-  /* transform: translateZ(0); */
-  background: rgba(0,0,0,0.5);
+  transform: translateZ(1px);
+  background: rgba(0,0,0,0.6);
 }
 
 .topbar * {

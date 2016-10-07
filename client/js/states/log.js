@@ -18,7 +18,7 @@ game.states.log = {
   },
   start: function () {
     game.states.log.out.hide();
-    game.states.options.opt.show();
+    game.options.opt.show();
     game.loader.removeClass('loading');
     game.triesCounter.text('');
     game.clear();
@@ -61,6 +61,7 @@ game.states.log = {
     swal({
       title: game.data.ui.warning,
       text: game.data.ui.alphaalert + game.version + '</small>',
+      animation: false,
       type: 'warning',
       buttonsStyling: false,
       allowOutsideClick: false,

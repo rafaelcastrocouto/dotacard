@@ -1,4 +1,4 @@
-﻿{
+{
   "yes": "Evet",
   "no": "Hayır",
   "choosename": "Bir ad seçin",
@@ -56,6 +56,7 @@
   "options": "Tercihler",
   "lang": "Dil",
   "screenres": "Ekran çözünürlüğü",
+  "auto": "Otomatik",
   "high": "Yüksek",
   "medium": "Orta",
   "default": "Standart",

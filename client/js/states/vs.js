@@ -11,7 +11,6 @@ game.states.vs = {
   },
   start: function (recover) {
     this.clear();
-    game.states.options.opt.addClass('disabled');
     game.message.text(game.data.ui.battle);
     if (recover && game.mode == 'online') {
       //todo: recover online games
@@ -88,7 +87,6 @@ game.states.vs = {
     if (game.mode == 'single') {
       picks = game.enemy.picks;
       if (!picks || picks.length !== 5) picks = localStorage.getItem('enemydeck').split(',');
-      //picks = ['am']
       return picks.shuffle();
     }
   },
@@ -100,6 +98,5 @@ game.states.vs = {
     $('.card', game.states.vs.el).remove();
   },
   end: function () {
-    game.states.options.opt.removeClass('disabled');
   }
 };

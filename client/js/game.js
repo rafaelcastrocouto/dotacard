@@ -1,4 +1,4 @@
-﻿var game = {
+var game = {
   staticHost: 'http://rafaelcastrocouto.github.io/dotacard/client/',
   dynamicHost: 'http://dotacard.herokuapp.com/',
   container: $('.game-container'),
@@ -40,6 +40,7 @@
       game.events.build();
       game.history.build();
       game.topbar = $('<div>').addClass('topbar');
+      game.sweet = $('.sweet-alert');
       game.topbar.append(game.loader, game.message, game.triesCounter);
       game.container.append(game.topbar);
       game.states.changeTo('loading');
@@ -126,7 +127,6 @@
     game.states.table.clear();
     game.states.result.clear();
     game.container.removeClass(game.validModes.join(' '));
-    game.states.options.opt.removeClass('disabled');
     game.mode = false;
     localStorage.removeItem('mode');
   },
@@ -134,6 +134,7 @@
     swal({
       title: game.data.ui.warning,
       text: txt,
+      animation: false,
       type: 'warning',
       buttonsStyling: false,
       confirmButtonText: game.data.ui.ok,
@@ -142,6 +143,7 @@
   confirm: function(cb, text) {
     swal({
       title: text || game.data.ui.sure,
+      animation: false,
       type: 'warning',
       showCancelButton: true,
       buttonsStyling: false,
@@ -153,6 +155,7 @@
     swal({
       title: game.data.ui.error,
       text: game.data.ui.reload,
+      animation: false,
       type: 'error',
       showCancelButton: true,
       buttonsStyling: false,

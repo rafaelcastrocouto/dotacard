@@ -109,17 +109,19 @@ game.audio = {
     var vol = parseFloat(v);
     if (vol <= 0) {
       vol = 0;
-      if (target === 'volume') game.states.options.muteinput.prop('checked', true);
+      if (target === 'volume') game.options.muteinput.prop('checked', true);
     } else {
       if (target === 'volume') {
         game.audio.unmutedvolume = vol;
-        game.states.options.muteinput.prop('checked', false);
+        game.options.muteinput.prop('checked', false);
       }
     }
     if (vol > 1) { vol = 1; }
-    game.audio[target + 'Node'].gain.value = vol;
-    localStorage.setItem(target, vol);
-    game.states.options[target + 'control'].css('transform', 'scale(' + vol + ')');
+    if (game.audio[target + 'Node']) {
+      game.audio[target + 'Node'].gain.value = vol;
+      game.options[target + 'control'].css('transform', 'scale(' + vol + ')');
+      localStorage.setItem(target, vol);
+    }
   },
   rememberVolume: function () {
     var volume = localStorage.getItem('volume') || game.audio.defaultVolume;
@@ -130,27 +132,26 @@ game.audio = {
     game.audio.setVolume('sounds', sounds);
   },
   volumeMouseDown: function (event) {
-    var target = $(event.target).data('volume');
-    if (!target) { target = $(event.target).parent().data('volume'); }
+    var target = $(event.target).closest('.volume').attr('id');
     game.audio.volumetarget = target;
     game.audio.volumeMouseMove(event);
-    game.states.options[target + 'input'].on('mousemove.volume', game.audio.volumeMouseMove);
+    game.options[target + 'input'].on('mousemove.volume', game.audio.volumeMouseMove);
   },
   volumeMouseUp: function () {
     if (game.audio.volumetarget) {
-      game.states.options[game.audio.volumetarget + 'input'].off('mousemove.volume');
+      game.options[game.audio.volumetarget + 'input'].off('mousemove.volume');
       game.audio.volumetarget = false;
     }
   },
   volumeMouseMove: function (event) {
-    var x = event.clientX - game.states.options.volumecontrol.offset().left,
+    var x = event.clientX - game.options.volumecontrol.offset().left,
         v = parseInt(x / 0.48, 10) / 100;
     //console.log(x, v)
     game.audio.setVolume(game.audio.volumetarget, v);
   },
   volumeControl: function (name) {
-    game.states.options[name+'control'] = $('<div>').addClass('volumecontrol');
-    game.states.options[name+'input'] = $('<div>').addClass('volume').data('volume', name).on('mousedown.volume', game.audio.volumeMouseDown).append(game.states.options[name+'control']);
-    $('<label>').appendTo(game.states.options.audio).append($('<span>').text(game.data.ui[name])).append(game.states.options[name+'input']);
+    game.options[name+'control'] = $('<div>').addClass('volumecontrol');
+    game.options[name+'input'] = $('<div>').addClass('volume').attr('id', name).on('mousedown.volume', game.audio.volumeMouseDown).append(game.options[name+'control']);
+    $('<label>').appendTo(game.options.audio).append($('<span>').text(game.data.ui[name])).append(game.options[name+'input']);
   }
 };

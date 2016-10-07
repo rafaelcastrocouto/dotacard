@@ -1,4 +1,4 @@
-﻿{
+{
   "yes": "Yes",
   "no": "No",
   "choosename": "Choose a name",
@@ -56,6 +56,7 @@
   "options": "Options",
   "lang": "Language",
   "screenres": "Screen resolution",
+  "auto": "Automatic",
   "high": "High",
   "medium": "Medium",
   "default": "Default",

@@ -124,6 +124,5 @@ game.states.campain = {
     this.startStage.addClass('enabled');
   },
   end: function () {
-    game.states.options.opt.removeClass('disabled');
   }
 };

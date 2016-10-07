@@ -18,11 +18,10 @@ game.history = {
     var recovering = logged && log && valid && recent;
     if (!recovering) game.history.jumpTo('log');
     else {
+      game.options.opt.show();
       game.states.log.out.show();
-      game.states.options.opt.show();
       game.player.name = log;
       if (state == 'loading') state = 'log';
-      if (state == 'options') state = game.history.backstate;
       if (state == 'table') state = 'vs';
       if (state !== 'log') {
         game.chat.build();

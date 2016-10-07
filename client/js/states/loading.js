@@ -31,6 +31,7 @@ game.states.loading = {
     game.states.loading.updating += 1;
   },
   finished: function () {
+    game.options.build();
     game.states.build(function () {
       game.container.addClass('finished');
       game.history.recover();
