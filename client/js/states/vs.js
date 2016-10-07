@@ -87,6 +87,7 @@ game.states.vs = {
     if (game.mode == 'single') {
       picks = game.enemy.picks;
       if (!picks || picks.length !== 5) picks = localStorage.getItem('enemydeck').split(',');
+      // picks = ['am']
       return picks.shuffle();
     }
   },

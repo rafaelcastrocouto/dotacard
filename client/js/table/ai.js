@@ -245,7 +245,7 @@ game.ai = {
       //per hero play
       if (card.hasClass('heroes')) {
         var hero = card.data('hero');
-        cardData.strats[game.ai.heroes[hero].move.default] += 5;
+        cardData.strats[game.ai.heroes[hero].move.default] += 8;
         game.ai.heroes[hero].play(card, cardData);
       }
     });
@@ -270,17 +270,17 @@ game.ai = {
     });
   },
   chooseStrat: function (card, cardData) {
-    // console.log(card)
-    // console.log(cardData.strats)
+    // console.log(card);
+    console.log(cardData.strats);
     var strats = [];
     $(game.ai.strats).each(function (i, strat) {
       strats.push({strat: strat, priority: cardData.strats[strat]});
     });
     // highest priority
-    strats.sort(function (a, b) {
-      return b.priority - a.priority;
-    });
     if (Math.random() > game.ai.lowChance) {
+      strats.sort(function (a, b) {
+        return b.priority - a.priority;
+      });
       cardData.strat = strats[0].strat;
     } else {
       // random strat
@@ -289,10 +289,9 @@ game.ai = {
         validRandom.push('move');
         validRandom.push('defensive');
         validRandom.push('retreat');
-        validRandom.push('selfheal');
       }
       if (cardData['can-attack']) {
-        validRandom.push('siege');
+        if (game.ai.mode == 'easy') validRandom.push('siege');
         validRandom.push('offensive');
         validRandom.push('attack');
       }
@@ -321,6 +320,9 @@ game.ai = {
     var strat = cardData.strat,
         action,
         target;
+
+    console.log('strat:', strat);
+    
     if (strat == 'siege') {
       if (cardData['can-attack-tower']) {
         action = 'attack';
@@ -429,14 +431,16 @@ game.ai = {
         action = 'cast';
       } else if (cardData['can-attack']) {
         action = 'attack';
+      } else if (cardData['can-move']) {
+        action = 'move';
       }
     }
-    // console.log(card[0], strat, action, 'a:', cardData['can-attack'], 'm:', cardData['can-move'] );
+    console.log('action:', action);
     if (action) {
       if (action == 'move' || action == 'advance' || action == 'retreat') {
         target = cardData.destiny;
         if (!target) {
-          target = game.ai.chooseDestiny(card, cardData.destinys);
+          target = game.ai.chooseDestiny(card, cardData);
         }
       }
       if (action == 'attack'){
@@ -459,23 +463,28 @@ game.ai = {
           }
         }
       }
-      // console.log(action, target);
+      
       if ((action == 'move' || action == 'advance' || action == 'retreat' || action == 'attack' || action == 'cast') && !target) {
-        //console.log('no target', card[0], strat, action, cardData );
-      } else if (action) game.ai.parseMove(card, cardData, action, target);
+      } else if (action) {
+        console.log('target', target[0]);
+        game.ai.parseMove(card, cardData, action, target);
+      }
     }
   },
-  chooseDestiny: function (card, destinys) {
-    console.log(destinys);
+  chooseDestiny: function (card, cardData) {
+    var destinys = cardData.destinys;
+    // console.log(destinys);
     if (destinys.length) {
       // if selfheal always go to the fountain 
-      if (card.strat == 'selfheal') {
+      if (cardData.strat == 'selfheal') {
         var fountain, side = card.data('side');
-        $(destinys).each(function (i, d) {
+        $(destinys).each(function (i, destEl) {
+          var d = $(destEl);
           if (d.hasClass('fountain'+side)) fountain = d;
         });
         if (fountain) return fountain;
       }
+      console.log(cardData.strat, destinys);
       if (Math.random() > game.ai.highChance) {
         destinys.sort(function (a, b) {
           return b.priority - a.priority;
