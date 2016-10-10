@@ -13,6 +13,7 @@ game.screen = {
     }
     scale = (scale * 0.96).toFixed(2);
     if (scale < 0.5) scale = 0.5;
+    game.screen.scale = scale;
     game.container.css('transform', 'translate3d(-50%, -50%, 0) scale('+scale+')');
     game.sweet.css('transform', 'translate3d(-50%, -50%, 0) scale('+scale+')');
   },

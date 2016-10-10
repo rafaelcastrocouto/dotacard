@@ -72,6 +72,7 @@ game.states.log = {
       game.states.log.title.appendTo(game.states.log.logo);
       if (!game.states.log.input.val()) game.states.log.input.focus();
     });
+    game.screen.resize();
   },
   login: function () {
     var valid = game.states.log.input[0].checkValidity(),

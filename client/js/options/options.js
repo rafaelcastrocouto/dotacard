@@ -46,6 +46,7 @@ game.options = {
       game.options.box.hide();
       game.container.removeClass('optionState');
     });
+    game.screen.resize();
     var content = $('.sweet-content').empty();
     game.options.box.show();
     content.append(game.options.box).show();

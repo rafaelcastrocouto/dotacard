@@ -22,7 +22,6 @@
 
 .audioconfig, .screenresolution {
   display: inline-block;
-  padding: 10px 0 0;
   vertical-align: top;
   width: 260px;
 }
@@ -35,14 +34,24 @@
 .options label {
   position: relative;
 }
+.screenresolution label {
+  margin: 5px 0;
+}
 .audioconfig label {
   height: 50px;
+}
+.audioconfig label:nth-child(2) {
+  height: 30px;
+}
+.audioconfig label:nth-child(3) {
+  margin-top: 20px;
 }
 .options label > * {
   vertical-align: middle;
 }
 .options input + span {
   cursor: pointer;
+  font-weight: normal;
 }
 
 .game-container.high {
