@@ -63,6 +63,7 @@ game.states.log = {
       text: game.data.ui.alphaalert + game.version + '</small>',
       animation: false,
       type: 'warning',
+      customClass: 'log',
       buttonsStyling: false,
       allowOutsideClick: false,
       allowEscapeKey: false,

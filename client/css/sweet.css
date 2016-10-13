@@ -1,3 +1,14 @@
+.sweet-alert.log {
+  min-height: 450px;
+}
+
+.sweet-alert.options {
+  font-weight: bold;
+  color: white;
+  background: rgba(0,0,0,0.6) !important;
+  min-height: 450px;
+}
+
 .sweet-overlay {
   background-color: rgba(0,0,0,0.6);
 }
@@ -30,7 +41,6 @@
   margin: 0 !important;
   transform: translate3d(-50%, -50%, 0);
   min-width: 660px;
-  min-height: 445px;
   overflow: hidden !important;
 }
 
@@ -78,6 +88,7 @@
 
 .sweet-alert button {
   font-weight: normal;
+  margin: 22px;
 }
 
 .sweet-alert.vote .button.voteBt:not([disabled]) {

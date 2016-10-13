@@ -1,0 +1,70 @@
+Keybase proof
+
+I hereby claim:
+
+I am rafaelcastrocouto on github.
+I am racascou (https://keybase.io/racascou) on keybase.
+I have a public key whose fingerprint is 39A9 CAD1 C084 C377 C128 FEA9 2553 A8AA BF6A ADCC
+To claim this, I am signing this object:
+
+{
+    "body": {
+        "key": {
+            "eldest_kid": "010162f09c4063a5c551b3f951756ebe69d2871161396a816a922c9ede9c08d680260a",
+            "fingerprint": "39a9cad1c084c377c128fea92553a8aabf6aadcc",
+            "host": "keybase.io",
+            "key_id": "2553a8aabf6aadcc",
+            "kid": "010162f09c4063a5c551b3f951756ebe69d2871161396a816a922c9ede9c08d680260a",
+            "uid": "29ed5687ef74d3eba722b93fcfa55c00",
+            "username": "racascou"
+        },
+        "service": {
+            "name": "github",
+            "username": "rafaelcastrocouto"
+        },
+        "type": "web_service_binding",
+        "version": 1
+    },
+    "ctime": 1476383498,
+    "expire_in": 157680000,
+    "prev": "6bc7b77f064fe9c55ad6a6113d258156d3b4e28274d30f351e197e0c5e66395f",
+    "seqno": 14,
+    "tag": "signature"
+}
+with the key 39A9 CAD1 C084 C377 C128 FEA9 2553 A8AA BF6A ADCC, yielding the signature:
+
+-----BEGIN PGP MESSAGE-----
+Version: Keybase OpenPGP v2.0.58
+Comment: https://keybase.io/crypto
+
+yMIeAnicrVJbSBVBGD7HLqJd0TCColyKIE61s3tmdveoYWi9RFgR9lB0mJmdPY7W
+7nHPnlMmipJERXSRCCoiKYooRKQiTB9KksQgCksILHpI9JTdwMAudJrt8hI9Ni/D
+/P/3ff/3/cy9WVMCucH0aLvKT13eHnxw93QysC0zmFsvEceskyL1Ug37ebFdJkt4
+0RpuShFJBjJAiiUbNCwjFUMKISCqZUCgQcQIQ4ap6BoACKgGwjpA2FAUajCTGVTW
+TaTLCpKxFJIsbseYG3e57QlZ1cAGxSYQmDBVNY0CRbeY4EKoYh1jYiGMTUoFscpJ
++AxhjuAEW8UdUROP6E97/8D/Z9/JX3NEByJdY5YWNlVGsKYoxFAtamEIqSz7wARz
+bbybCbSLKU5QJyk1hCRRTXHK/MX+7sa4V5UkfzMszHYJluc6gug5PtWri/u9PYxE
+f6tECbdNsUhBTjE3wR1bigCBpB73ZUBYQ6quhg09JLG9ce6yKPcRUBN5xAlJcZel
+hCQiVCOaZskobInAEGITYQSAaipQBxCZKgkzRVf8sLKlQsCAoTGZQoaQakBL8nPV
+2o4/UvjEMaGZ4DEbe0mXSQ29d3ZMDQRzA9OnZfk/LJCbM/fPv5vYl52pOFGgFYOt
+G0cnv8WPFF289/Tmy52DcmHP6Du7u3zh8qyv/TyTXnCrRcmbM8kGxvpfd+8ZJunb
+FZ0TjV+CmU3eSrJ0cODFqejzjpKKpsXpkZ7e5gtfboxU7ivbcqWo/NPxGfPetHPe
+Z3+PDTWX3ALmusqPrUcfDXj51QPFD4w2FZw9mAl+f/whIF8tTN3g+5csmH3m0qeS
+1XkRe+qx0pXzy7JKW2d2dVTXj2/uavz2cP2rwcnstjnp8zu673y+LufXbchbeHhR
+WYu3d6g6VZqsXXvy2Zr3a4bSLecsUhTruxapHbaWOW/H5lfsPtTW+rAvp2TFoyeV
+BV/vj/ce6PnQ2aT9AOP8ShI=
+=pj3p
+-----END PGP MESSAGE-----
+
+And finally, I am proving ownership of the github account by posting this as a gist.
+
+My publicly-auditable identity:
+
+https://keybase.io/racascou
+
+From the command line:
+
+Consider the keybase command line program.
+
+# look me up
+keybase id racascou
