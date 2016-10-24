@@ -109,7 +109,7 @@ game.single = {
   },
   win: function () {
     game.turn.stopCount();
-    game.states.campain.stage++;
+    game.states.campaign.stage++;
     game.winner = game.player.name;
     game.states.table.el.removeClass('turn');
     game.states.result.updateOnce = true;

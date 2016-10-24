@@ -173,7 +173,7 @@ game.states.choose = {
           'data': game.id
         }, game.states.choose.toMenu);
       } if (game.mode == 'single') {
-        game.states.changeTo('campain');
+        game.states.changeTo('campaign');
       } else game.states.choose.toMenu();
     }
   },

@@ -48,7 +48,7 @@ game.states.result = {
       game.states.table.clear();
       game.states.vs.clear();
       game.states.choose.clear();
-      game.states.changeTo('campain');
+      game.states.changeTo('campaign');
     }
     else {
       game.clear();

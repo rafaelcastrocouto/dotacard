@@ -1,15 +1,15 @@
-.campain-map {
+.campaign-map {
   position: relative;
   width: 600px;
   height: 550px;
-  background: url("../img/bkg/campain.jpg");
+  background: url("../img/bkg/campaign.jpg");
   background-size: cover;
   top: 310px;
   left: 370px;
   transform: translate(-50%, -50%);
 }
 
-.campain-box.box {
+.campaign-box.box {
   right: 20px;
   transform: none;
   padding: 8px 16px;
@@ -19,7 +19,7 @@
   height: 420px;
 }
 
-.campain-img {
+.campaign-img {
   height: 132px;
   background-size: cover;
   border-radius: 4px;
@@ -27,34 +27,34 @@
   background-position: 50% 50%;
 }
 
-.campain-img.tower {
+.campaign-img.tower {
   background-image: url("../img/towers/tower-player.jpg");
 }
 
-.campain-img.tree {
+.campaign-img.tree {
   background-image: url("../img/trees/tree_rad.jpg");
 }
 
-.state .campain-box p {
+.state .campaign-box p {
   margin: 10px 0;
   font-size: 14px;
 }
 
-.campain-box p.achieve {
+.campaign-box p.achieve {
   text-align: left;
   font-size: 13px;
   margin: 0;
   line-height: 24px;
 }
-.campain-box p.achieve:before {
+.campaign-box p.achieve:before {
   content: "•";
   margin: 0 10px;
 }
-.campain-heroes {
+.campaign-heroes {
   text-align: center;
   margin-top: 20px;
 }
-.campain-box .campain-heroes .heroes {
+.campaign-box .campaign-heroes .heroes {
   width: 45px;
   height: 45px;
   display: inline-block;
@@ -62,7 +62,7 @@
   margin: 0px 1px;
 }
 
-.campain-box .campain-heroes .heroes .img {
+.campaign-box .campaign-heroes .heroes .img {
   margin: 5%;
   width: 90%;
   height: 90%;
@@ -128,14 +128,14 @@
 .stages.start {
   bottom: 30px;
   left: 30px;
-  background-image: url(../img/campain/ico_rad.png);
+  background-image: url(../img/campaign/ico_rad.png);
   width: 110px;
   height: 110px;
   background-size: 90%;
 }
 
 .stages.easy {
-  background-image: url(../img/campain/ico_easy.png);
+  background-image: url(../img/campaign/ico_easy.png);
 }
 
 .stages.easy.top {
@@ -154,7 +154,7 @@
 }
 
 .stages.rune {
-  background-image: url(../img/campain/ico_rune.png);
+  background-image: url(../img/campaign/ico_rune.png);
   top: 310px;
   left: 360px;
   width: 60px;
@@ -162,13 +162,13 @@
 }
 
 .stages.roshan {
-  background-image: url(../img/campain/ico_rosh.png);
+  background-image: url(../img/campaign/ico_rosh.png);
   top: 280px;
   left: 430px;
 }
 
 .stages.shop {
-  background-image: url(../img/campain/ico_shop.png);
+  background-image: url(../img/campaign/ico_shop.png);
   top: 215px;
   left: 385px;
   width: 60px;
@@ -177,13 +177,13 @@
 }
 
 .stages.normal.mid {
-  background-image: url(../img/campain/ico_medium.png);
+  background-image: url(../img/campaign/ico_medium.png);
   top: 205px;
   left: 295px;
 }
 
 .stages.hard {
-  background-image: url(../img/campain/ico_hard.png);
+  background-image: url(../img/campaign/ico_hard.png);
 }
 
 .stages.hard.top {
@@ -202,14 +202,14 @@
 }
 
 .stages.final {
-  background-image: url(../img/campain/ico_dire.png);
+  background-image: url(../img/campaign/ico_dire.png);
   top: 20px;
   left: 510px;
   opacity: 1;
 }
 
 .stages.optional {
-  background-image: url(../img/campain/ico_opt.png);
+  background-image: url(../img/campaign/ico_opt.png);
   width: 60px;
   height: 60px;
 }
@@ -227,7 +227,7 @@
   left: 390px;
 }
 
-.campain-path {
+.campaign-path {
   background: white;
   width: 8px;
   height: 8px;
@@ -236,11 +236,11 @@
   opacity: 0.3;
 }
 
-.campain-path.enabled {
+.campaign-path.enabled {
   opacity: 1.
 }
 
-.campain .buttonbox {
+.campaign .buttonbox {
   position: absolute;
   right: 40px;
   top: 470px;

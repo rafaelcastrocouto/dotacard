@@ -1,9 +1,9 @@
-game.states.campain = {
+game.states.campaign = {
   build: function () {
     this.stage = localStorage.getItem('stage') || 1;
-    this.map = $('<div>').addClass('campain-map');
-    this.desc = $('<div>').addClass('campain-box box');
-    game.states.loading.json('campain', this.stageOne);
+    this.map = $('<div>').addClass('campaign-map');
+    this.desc = $('<div>').addClass('campaign-box box');
+    game.states.loading.json('campaign', this.stageOne);
     this.startStage = $('<div>').addClass('stages start enabled blink').appendTo(this.map);
     this.et = $('<div>').addClass('stages easy top').appendTo(this.map);
     this.em = $('<div>').addClass('stages easy mid').appendTo(this.map);
@@ -21,13 +21,13 @@ game.states.campain = {
     this.ob = $('<div>').addClass('stages optional bot').appendTo(this.map);
     this.buttonbox = $('<div>').addClass('buttonbox');
     this.back = $('<div>').addClass('back button').text(game.data.ui.back).attr({title: game.data.ui.backtomenu}).on('mouseup touchend', this.backClick).appendTo(this.buttonbox);
-    this.toChoose = $('<div>').addClass('campain-play button highlight').text(game.data.ui.battle).attr({title: game.data.ui.battle}).on('mouseup touchend', this.toChoose).appendTo(this.buttonbox);
+    this.toChoose = $('<div>').addClass('campaign-play button highlight').text(game.data.ui.battle).attr({title: game.data.ui.battle}).on('mouseup touchend', this.toChoose).appendTo(this.buttonbox);
     this.el.append(this.map).append(this.desc).append(this.buttonbox);
   },
   start: function (recover) {
     this.clear();
     this.createStartPaths();
-    game.message.text(game.data.ui.campain);
+    game.message.text(game.data.ui.campaign);
     if (recover && game.mode == 'online') {
       game.states.changeTo('log');
     } else {
@@ -36,35 +36,35 @@ game.states.campain = {
   },
   stageOne: function () {
     $('.blink').removeClass('blink');
-    game.states.campain.startStage.addClass('blink');
-    game.states.campain.stage = 1;
-    game.states.campain.buildDesc(game.data.campain.start);
+    game.states.campaign.startStage.addClass('blink');
+    game.states.campaign.stage = 1;
+    game.states.campaign.buildDesc(game.data.campaign.start);
   },
   stageTwo: function () {
     $('.blink').removeClass('blink');
     $(this).addClass('blink');
-    game.states.campain.stage = 2;
-    game.states.campain.buildDesc(game.data.campain.easy);
+    game.states.campaign.stage = 2;
+    game.states.campaign.buildDesc(game.data.campaign.easy);
   },
   stageTwoShow: function () {
     this.startStage.removeClass('blink').on('mouseup touchend', this.stageOne).addClass('done');
-    $('.campain-path').css('opacity', 1);
+    $('.campaign-path').css('opacity', 1);
     $('.stages.easy').addClass('enabled blink').on('mouseup touchend', this.stageTwo);
     this.createPath(this.et, this.ru, 'et-ru');
     this.createPath(this.em, this.ru, 'em-ru');
     this.createPath(this.eb, this.ru, 'eb-ru');
-    this.buildDesc(game.data.campain.easy);
+    this.buildDesc(game.data.campaign.easy);
   },
   buildDesc: function (data) {
     this.desc.html('');
     game.ai.mode = data.ai;
     $('<h2>').text(data.name).appendTo(this.desc);
-    $('<div>').addClass('campain-img '+data.img).appendTo(this.desc);
+    $('<div>').addClass('campaign-img '+data.img).appendTo(this.desc);
     $('<p>').text(data.title).appendTo(this.desc);
     $(data.desc).each(function (i, txt) {
-      $('<p>').addClass('achieve').text(txt).appendTo(game.states.campain.desc);
+      $('<p>').addClass('achieve').text(txt).appendTo(game.states.campaign.desc);
     });
-    var ch = $('<div>').addClass('campain-heroes').appendTo(this.desc);
+    var ch = $('<div>').addClass('campaign-heroes').appendTo(this.desc);
     game.enemy.picks = data.picks;
     localStorage.setItem('enemydeck', data.picks);
     for (var i = 0; i < game.enemy.picks.length; i++) {
@@ -99,18 +99,18 @@ game.states.campain = {
     for (var i = 0; i < n; i++) {
       x = s.left + (toff * Math.cos(a)) + (i * dash * Math.cos(a));
       y = s.top + (toff * Math.sin(a)) + (i * dash * Math.sin(a));
-      $('<div>').addClass('campain-path '+cl).css({left: x, top: y}).appendTo(game.states.campain.map);
+      $('<div>').addClass('campaign-path '+cl).css({left: x, top: y}).appendTo(game.states.campaign.map);
     }
   },
   clearPaths: function () {
-    $('.campain-path', game.states.campain.map).hide();
+    $('.campaign-path', game.states.campaign.map).hide();
   },
   toChoose: function () {
-    if (game.states.campain.stage == 1) {
+    if (game.states.campaign.stage == 1) {
       game.enemy.name = 'Stage 1';
       game.states.changeTo('choose');
     }
-    if (game.states.campain.stage == 2) {
+    if (game.states.campaign.stage == 2) {
       game.ai.mode = 'hard';
       game.alert('Coming soon!');
     }
@@ -120,7 +120,7 @@ game.states.campain = {
     game.states.changeTo('menu');
   },
   clear: function () {
-    $('.stage', game.states.campain.el).removeClass('enabled');
+    $('.stage', game.states.campaign.el).removeClass('enabled');
     this.startStage.addClass('enabled');
   },
   end: function () {

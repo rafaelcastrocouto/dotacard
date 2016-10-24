@@ -22,7 +22,7 @@ var game = {
   data: {},
   //json {heroes, skills, ui}
   mode: '',
-  //online, tutorial, campain
+  //online, tutorial, campaign
   currentData: {},
   // current game data
   currentState: 'noscript',

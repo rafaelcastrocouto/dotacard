@@ -6,9 +6,9 @@ game.states.menu = {
       game.setMode('tutorial');
       game.states.changeTo('choose');
     });
-    this.campain = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.choosecampain}).text(game.data.ui.campain).on('mouseup touchend', function () {
+    this.campaign = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.choosecampaign}).text(game.data.ui.campaign).on('mouseup touchend', function () {
       game.setMode('single');
-      game.states.changeTo('campain');
+      game.states.changeTo('campaign');
     });
     this.online = $('<div>').addClass('button').appendTo(this.menu).attr({title: game.data.ui.chooseonline}).text(game.data.ui.online).on('mouseup touchend', function () {
       game.setMode('online');
