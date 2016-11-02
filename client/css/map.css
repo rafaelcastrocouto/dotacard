@@ -1,9 +1,5 @@
 .map {
   z-index: 0;
-  background-repeat: no-repeat;
-  background-position: 40% 25%;
-  background-size: 140%;
-  background-image: url("../img/bkg/map.jpg");
   transform: translate(-50%,-53%) rotateX(43deg) scale3d(.28,.28,.28);
   transform-style: preserve-3d;
   padding: 43% 105% 2%;
@@ -23,7 +19,7 @@
 }
 
 .map .row {
-  width: 2544px;
+  width: 1910px;
   height: 312px;
 }
 
