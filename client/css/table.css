@@ -88,10 +88,15 @@
   perspective: 730px;
   overflow: hidden;
   transform: translateZ(0);
-  background-image: url("../img/bkg/map2.png");
+  background-image: url("../img/bkg/map.jpg");
   background-size: cover;
   background-repeat: no-repeat;
   background-position: 50%;
+}
+
+
+.table .camera.night {
+  background-image: url("../img/bkg/map-night.jpg");
 }
 
 .table .camera:after {

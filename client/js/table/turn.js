@@ -1,4 +1,4 @@
-﻿game.turn = {
+game.turn = {
   build: function (time) {
     if (!game.turn.builded) {
       game.turn.builded = true;
@@ -149,10 +149,10 @@
   dayNight: function () {
     var hours = game.time % (game.dayLength * 2);
     if (hours >= 6 && hours < 18) {
-      game.map.el.removeClass('night');
+      game.camera.removeClass('night');
       return game.data.ui.day;
     } else {
-      game.map.el.addClass('night');
+      game.camera.addClass('night');
       return game.data.ui.night; 
     }
   }

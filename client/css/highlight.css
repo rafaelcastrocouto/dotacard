@@ -1,10 +1,10 @@
-.map .spot.movearea {
+.states .map .spot.movearea {
   cursor: pointer;
-  background: rgba(100,255,100,0.3);
+  background: rgba(100,255,150,0.1);
 }
 
-.map .spot.movearea.drop, .map .spot.movearea:hover {
-  background: rgba(100,255,100,0.5);
+.map .spot.movearea.drop, .states .map .spot.movearea:hover {
+  background: rgba(100,255,100,0.2);
 }
 
 .slot.available:after, .slot.available:before {
@@ -37,7 +37,7 @@
   height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid springgreen;
-  border-bottom: 12px solid springgreen;
+  border-bottom: 12px solid #16c06a;
   background: transparent;
   left: 60px;
   top: 40px;
@@ -94,7 +94,7 @@
   height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid orangered;
-  border-bottom: 12px solid orangered;
+  border-bottom: 12px solid #d3420d;
   background: transparent;
   left: 60px;
   top: 50px;
@@ -178,7 +178,7 @@
   height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid dodgerblue;
-  border-bottom: 12px solid dodgerblue;
+  border-bottom: 12px solid #1871c8;
   background: transparent;
   left: 60px;
   top: 50px;
@@ -282,7 +282,7 @@
   height: 50px;
   border: 20px solid transparent;
   border-right: 12px solid dodgerblue;
-  border-bottom: 12px solid dodgerblue;
+  border-bottom: 12px solid #1871c8;
   background: transparent;
   left: 60px;
   top: 50px;

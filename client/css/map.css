@@ -9,10 +9,6 @@
   transition: all 2s;
 }
 
-.map.night {
-  background-image: url("../img/bkg/map-night.jpg");
-}
-
 .map.night .spot {
   filter: brightness(0.85);
   -webkit-filter: brightness(0.85);
@@ -40,11 +36,11 @@
 }
 
 .map .spot.playerarea {
-  background: rgba(200,255,100,0.2);
+  background: rgba(50,200,250,0.2);
 }
 
 .map .spot.playerarea:hover {
-  background: rgba(200,255,100,0.3);
+  background: rgba(50,200,250,0.3);
 }
 
 .map .spot.enemyarea {
