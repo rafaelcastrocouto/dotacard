@@ -1,6 +1,6 @@
 .map {
   z-index: 0;
-  transform: translate(-50%,-53%) rotateX(43deg) scale3d(.28,.28,.28);
+  transform: translate(-49.6%,-53%) rotateX(43deg) scale3d(.28,.28,.28);
   transform-style: preserve-3d;
   padding: 43% 105% 2%;
   position: absolute;
@@ -81,7 +81,7 @@
 
 .debug .map .spot .debug {
   opacity: 0.3;
-  display: block;
+  /* display: block; */
   font-size: 64px;
   transform: translate3d(10px, 30px, 10px);
   pointer-events: none;

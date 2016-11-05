@@ -618,7 +618,7 @@
 }
 
 /*DRAG*/
-.choose .card .kd, .card.dragTargetClone.choose .kd, .choose .card .damaged, .choose .card .heal {
+.bkgdeck .card .kd, .choose .card .kd, .card.dragTargetClone.choose .kd, .choose .card .damaged, .choose .card .heal {
   display: none;
 }
 

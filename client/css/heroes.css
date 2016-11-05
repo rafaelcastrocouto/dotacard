@@ -67,6 +67,10 @@
   background-image: url("../img/skills/kotl/keeper_of_the_light_illuminate.jpg");
 }
 
+.kotl-illuminate.spiritform .img {
+  background-image: url("../img/skills/kotl/keeper_of_the_light_spirit_form_illuminate.jpg");
+}
+
 .table .map .illuminating:after {
   content: "";
   display: block;
@@ -134,10 +138,6 @@
 
 .kotl-ult .img, .buffs .buff.kotl-ult .img, .map .kotl-ult .img {
   background-image: url("../img/skills/kotl/keeper_of_the_light_spirit_form.jpg");
-}
-
-.kotl-illuminate-ult .img {
-  background-image: url("../img/skills/kotl/keeper_of_the_light_spirit_form_illuminate.jpg");
 }
 
 .kotl-blind .img, .buffs .buff.kotl-blind .img {

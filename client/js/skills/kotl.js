@@ -105,6 +105,8 @@ game.skills.kotl = {
         source.addClass('kotl-ult');
         source.data('kotl-ult', skill);
         illuminate.data('type', game.data.ui.active);
+        illuminate.find('.type').text(game.data.ui.active);
+        illuminate.addClass('spiritform');
         recall.appendTo(game.player.skills.hand);
         blind.appendTo(game.player.skills.hand);
       } else {
@@ -126,6 +128,7 @@ game.skills.kotl = {
       if (event) source.removeBuff('kotl-ult');
       skill.removeClass('on');
       illuminate.data('type', game.data.ui.channel);
+      illuminate.removeClass('spiritform');
       var ghost = source.data('illuminate-ghost');
       if (ghost) {
         game.skills.kotl.illuminate.release(ghost.data('skill'), ghost);
@@ -135,6 +138,9 @@ game.skills.kotl = {
       source.data('kotl-ult', null);
       recall.discard();
       blind.discard();
+    },
+    channelend: function (event, eventdata) {
+      this.off(eventdata.source, true);
     }
   },
   blind: {

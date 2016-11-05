@@ -53,7 +53,7 @@ game.states.choose = {
   },
   select: function (recover) {
     var card = $(this);
-    if (card.hasClass && card.hasClass('heroes')) {
+    if (card.hasClass && card.hasClass('card')) {
       $('.choose .selected').removeClass('selected draggable');
       card.addClass('selected');
       if (game.mode !== 'library' && !card.hasClass('dead')) card.addClass('draggable');

@@ -86,6 +86,7 @@
   width: 760px;
   height: 450px;
   perspective: 730px;
+  perspective-origin: 57% 50%;
   overflow: hidden;
   transform: translateZ(0);
   background-image: url("../img/bkg/map.jpg");

@@ -1,4 +1,4 @@
-﻿game.highlight = {
+game.highlight = {
   extendjQuery: function () {
     $.fn.extend({
       highlightSource: game.highlight.source,
@@ -204,7 +204,7 @@
   },
   strokeAttack: function () {
     var card = this;
-    if (!card.hasClasses('done dead stunned disabled disarmed hexed')) {
+    if (!card.hasClasses('dead stunned disabled disarmed hexed')) {
       card.radialStroke(card.data('range'), card.side() + 'attack');
     }
     return card;

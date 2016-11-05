@@ -43,9 +43,9 @@ game.card = {
     $('<div>').appendTo(portrait).addClass('img');
     $('<div>').appendTo(portrait).addClass('overlay');
     if (data.attribute) {
-      $('<h1>').appendTo(fieldset).text(data.attribute);
+      $('<h1>').addClass('attr').appendTo(fieldset).text(data.attribute);
     } else if (data.type) {
-      $('<h1>').appendTo(fieldset).text(data.type);
+      $('<h1>').addClass('type').appendTo(fieldset).text(data.type);
     }
     current = $('<div>').addClass('current').appendTo(fieldset);
     if (data.hp) {
@@ -136,8 +136,9 @@ game.card = {
     var forceSelection = !event;
     if (card) {
       if (forceSelection) game.card.setSelection(card);
-      else if (!card.hasClasses('selected attacktarget casttarget dead')) 
+      else if (!card.hasClasses('selected attacktarget casttarget dead')) {
         game.card.setSelection(card, event);
+      }
     }
     return card;
   },

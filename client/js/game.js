@@ -171,5 +171,14 @@ var game = {
         location.reload(true);
       }
     });
+  },
+  print: function () {
+    game.states.choose.pickbox.css({left: 100, top: 130, transform: 'scale(2)', background: 'transparent'});
+    $(document.body).css({'background': 'transparent', 'box-shadow': 'none'});
+    game.topbar.css('background', 'transparent');
+    game.container.css('background', 'transparent');
+    game.states.choose.pickedbox.css({opacity: 0});
+    game.states.choose.buttonbox.css({right: 0});
+    $('.library.skills .card').appendTo(game.states.choose.pickDeck).on('mousedown.choose touchstart.choose', game.states.choose.select);
   }
 };
