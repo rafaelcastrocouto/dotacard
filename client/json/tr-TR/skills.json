@@ -10,7 +10,6 @@
       "cards": 1,
       "description": "Her saldırı hedefin mana eşit hasar bonusu vardır ve düşman o kahraman bir sağ beceri kartı atmak yapar",
       "buff": {
-        "damage bonus": "M",
         "description": "Hasar hedefin mana artarak düşman o kahraman bir sağ beceri kartı atmak yapar"
       }
     },
@@ -358,7 +357,7 @@
       "multiplier": 4,
       "damage type": "Büyü",
       "cards": 4,
-      "description": "Kalan mana çarpanı ile düşmanın manasını yakar ve düşman kart kaybesine yol açar"
+      "description": "Kalan mana 4X çarpanı ile düşmanın manasını yakar ve düşman kart kaybesine yol açar"
     },
     "spike": {
       "name": "Spiked Carapace",
@@ -449,7 +448,6 @@
       "cards": 1,
       "description": "Pudge Bonus, HP ve hasar Her öldürme üzerine verir ve büyü hasarı azaltır",
       "buff": {
-        "damage bonus": "K",
         "hp per kill": 2,
         "damage per kill": 1,
         "resistance bonus": 2,
@@ -527,7 +525,6 @@
       "cards": 1,
       "description": "Wraith King her saldırıda belli bir şansı olacak ve düşmana kritik hasar vericektir.",
       "buff": {
-        "damage bonus": "C",
         "chance": 15,
         "percentage": 300,
         "description": "Kritik Hasar Şansı"

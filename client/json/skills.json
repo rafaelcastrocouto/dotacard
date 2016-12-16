@@ -1,4 +1,4 @@
-﻿{
+{
   "am": {
     "burn": {
       "name": "Mana Break",
@@ -10,7 +10,6 @@
       "cards": 1,
       "description": "Every attack has damage bonus equal to target's mana and makes the enemy discard a right hand skill card of that hero",
       "buff": {
-        "damage bonus": "M",
         "description": "Damage increased by the target's mana and makes the enemy discard a right hand skill card of that hero"
       }
     },
@@ -359,7 +358,7 @@
       "multiplier": 4,
       "damage type": "Magical",
       "cards": 4,
-      "description": "Damages an enemy unit by a multiplier of it's mana and makes enemy player lose a card of that hero"
+      "description": "Damages an enemy unit by 4X it's mana and makes enemy player lose a card of that hero"
     },
     "spike": {
       "name": "Spiked Carapace",
@@ -449,7 +448,6 @@
       "cards": 1,
       "description": "Gives Pudge bonus HP and damage on every kill and reduces magic damage",
       "buff": {
-        "damage bonus": "K",
         "hp per kill": 2,
         "damage per kill": 1,
         "resistance bonus": 2,
@@ -527,7 +525,6 @@
       "cards": 1,
       "description": "Wraith King attacks will have a chance of inflicting critical damage bonus",
       "buff": {
-        "damage bonus": "C",
         "chance": 15,
         "percentage": 300,
         "description": "Chance of critical damage"

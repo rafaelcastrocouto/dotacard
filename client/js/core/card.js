@@ -85,6 +85,8 @@ game.card = {
     }
     if (data.type == game.data.ui.channel) $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.channel);
     if (data.buff) {
+      if (data.buff['damage per kill'])  $('<p>').appendTo(desc).text(game.data.ui.damage + ': ' + data.buff['damage per kill'] + ' per Kill');
+      if (data.buff['hp per kill'])      $('<p>').appendTo(desc).text(game.data.ui.hp + ': ' + data.buff['hp per kill'] + ' per Kill');
       if (data.buff.chance)              $('<p>').appendTo(desc).text(game.data.ui.chance + ': ' + data.buff.chance + '%');
       if (data.buff.percentage)          $('<p>').appendTo(desc).text(game.data.ui.percentage + ': ' + data.buff.percentage + '%');
       if (data.buff.duration)            $('<p>').appendTo(desc).text(game.data.ui.duration + ': ' + data.buff.duration + ' ' + game.data.ui.turns);       

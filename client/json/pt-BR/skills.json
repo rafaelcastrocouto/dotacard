@@ -10,7 +10,6 @@
       "cards": 1,
       "description": "Ataques recebem bonus de dano igual ao valor de mana do alvo e obriga o oponente descartar uma habilidade do alvo na mão direita",
       "buff": {
-        "damage bonus": "M",
         "description": "Ataque com bonus de dano igual ao valor de mana do alvo e obriga o oponente descartar uma habilidade do alvo na mão direita"
       }
     },
@@ -358,7 +357,7 @@
       "multiplier": 4,
       "damage type": "Mágico",
       "cards": 4,
-      "description": "Causa dano igual ao mana do alvo multiplicado e obriga o oponente a descartar uma habilidade do alvo"
+      "description": "Causa dano igual ao mana do alvo multiplicado por 4 e obriga o oponente a descartar uma habilidade do alvo"
     },
     "spike": {
       "name": "Spiked Carapace",
@@ -449,11 +448,10 @@
       "cards": 1,
       "description": "Reduz o dano mágico e aumenta o HP e o Dano a cada uindade que o Pudge mata",
       "buff": {
-        "damage bonus": "K",
         "hp per kill": 2,
         "damage per kill": 1,
         "resistance bonus": 2,
-        "description": "Dano mágico reduzido e HP e o Dano aumentados por morte"
+        "description": "Dano mágico reduzido e HP e o Dano aumentados por kill"
       }
     },
     "ult": {
@@ -527,7 +525,6 @@
       "cards": 1,
       "description": "Os ataques do Wraith King têm chance de causar dano crítico",
       "buff": {
-        "damage bonus": "C",
         "chance": 15,
         "percentage": 300,
         "description": "Chance de dano crítico"
