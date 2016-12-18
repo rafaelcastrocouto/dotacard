@@ -13,7 +13,7 @@ var game = {
   deadLength: 5,
   deadDamage: 8,
   width: 9,
-  height: 6,
+  height: 5,
   tries: 0,
   seed: 0,
   id: null,

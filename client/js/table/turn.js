@@ -18,9 +18,7 @@ game.turn = {
     if (game.currentState == 'table') {
       game.player.turn += 1;
       game.message.text(game.data.ui.yourturn);
-      game.loader.removeClass('loading');
       game.turn.el.text(game.data.ui.yourturn).addClass('show');
-      $('.map .card').removeClass('done');
       game.turn.start('player-turn', cb);
     }
   },
@@ -51,11 +49,15 @@ game.turn = {
     game.timeout(800, function () {
       game.turn.el.removeClass('show');
       if (turn == 'player-turn') {
-        game.states.table.el.addClass('turn');
-        game.states.table.skip.attr('disabled', false);
-        game.highlight.map();
+        game.timeout(400, function () {
+          game.loader.removeClass('loading');
+          $('.map .card').removeClass('done');
+          game.states.table.el.addClass('turn');
+          game.states.table.skip.attr('disabled', false);
+          game.highlight.map();
+        });
       }
-      if (cb) cb();
+      if (cb) cb(turn);
     });
   },
   count: function (turn, endCallback, countCallback) {
@@ -69,7 +71,7 @@ game.turn = {
         game.turn.counter -= 1;
         game.turn.timeout = game.timeout(1000, game.turn.count.bind(this, turn, endCallback, countCallback));
       }
-      if (game.turn.counter === 0 && endCallback) endCallback(turn);
+      if (game.turn.counter === 0 && endCallback) game.timeout(1000, function () { endCallback(turn); });
     }
   },
   stopCount: function () {
@@ -134,7 +136,7 @@ game.turn = {
     game.time += 0.5; // console.trace('t', game.time, game.turn.hours() );
     game.totalTurns = Math.floor(game.player.turn + game.enemy.turn);
     game.turn.msg.text(game.data.ui.turns + ': ' + game.player.turn + '/' + game.enemy.turn + ' (' + game.totalTurns + ')');
-    game.turn.time.text(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
+    game.turn.time.html(game.data.ui.time + ': ' + game.turn.hours() + ' ' + game.turn.dayNight());
   },
   hours: function () {
     var convertedMin, intMin, stringMin,
@@ -150,10 +152,10 @@ game.turn = {
     var hours = game.time % (game.dayLength * 2);
     if (hours >= 6 && hours < 18) {
       game.camera.removeClass('night');
-      return game.data.ui.day;
+      return '<span title="' + game.data.ui.day + '">☀</span>';
     } else {
       game.camera.addClass('night');
-      return game.data.ui.night; 
+      return '<span title="' + game.data.ui.night + '">🌙</span>';
     }
   }
 };

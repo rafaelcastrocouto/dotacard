@@ -11,7 +11,7 @@ game.player = {
           card.place(game.map.toPosition(4, 4));
           card.on('action', game.library.action).on('death', game.library.action);
         } else {
-          var x = 1, y = 4;
+          var x = 2, y = 4;
           $.each(deck.data('cards'), function (i, card) {
             var p = game.player.picks.indexOf(card.data('hero'));
             card.addClass('player').on('mousedown touchstart', game.card.select);

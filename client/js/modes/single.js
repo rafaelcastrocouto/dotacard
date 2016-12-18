@@ -30,7 +30,6 @@ game.single = {
       game.states.table.enableUnselect();
       game.message.text(game.data.ui.battle);
       game.loader.removeClass('loading');
-      game.audio.play('horn');
       game.player.placeHeroes();
       game.enemy.placeHeroes();
       game.states.table.surrender.show();
@@ -90,7 +89,7 @@ game.single = {
   },
   endPlayerTurn: function () {
     game.states.table.el.removeClass('turn');
-    game.turn.end('enemy-turn', game.single.beginEnemy);
+    game.turn.end('player-turn', game.single.beginEnemy);
   },
   beginEnemy: function () {
     game.turn.beginEnemy(function () {

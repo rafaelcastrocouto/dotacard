@@ -1,4 +1,4 @@
-﻿game.tower = {
+game.tower = {
   build: function (side, pos) {
     var tower = game.card.build({
       className: 'towers static ' + side,
@@ -20,10 +20,10 @@
     return tower;
   },
   place: function () {
-    var p = 'C6';
+    var p = 'B5';
     game.player.tower = game.tower.build('player', p);
     game.enemy.tower = game.tower.build('enemy', game.map.mirrorPosition(p));
-    p = 'A6';
+    p = 'A5';
     $('#' + p).addClass('fountain fountainplayer').attr({title: 'Player Fountain'});
     $('#' + game.map.mirrorPosition(p)).addClass('fountain fountainenemy').attr({title: 'Enemy Fountain'});
   },

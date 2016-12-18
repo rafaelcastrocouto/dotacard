@@ -1,4 +1,4 @@
-﻿game.tree = {
+game.tree = {
   build: function (spot, side) {
     var tree = game.card.build({
       className: 'trees static neutral ' + side,
@@ -11,7 +11,7 @@
     return tree;
   },
   place: function () {
-    var treeSpots = 'A2 A3 A4 B3';
+    var treeSpots = 'A1 A2 B2';
     $.each(treeSpots.split(' '), function () {
       game.tree.build(this, 'rad');
       game.tree.build(game.map.mirrorPosition(this), 'dire');

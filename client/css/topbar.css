@@ -91,6 +91,11 @@
   transform: translateX(-50%);
 }
 
+.topbar .time span {
+  position: initial;
+  color: rgb(255,211,55);
+}
+
 .topbar .turns {
   right: 210px;
 }

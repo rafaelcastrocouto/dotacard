@@ -22,7 +22,7 @@ game.ai = {
   },
   turnStart: function () {
     //console.clear();
-    game.message.text(game.data.ui.enemymove);
+    //game.message.text(game.data.ui.enemymove);
     $('.map .ai').removeClass('ai');
     game.ai.currentmovesLoop = game.ai.movesLoop;
     // activate all passives, other sidehand skills strats per hero
@@ -139,7 +139,7 @@ game.ai = {
         cardData['can-make-action'] = true;
         cardData['attack-targets'].push(opponentCard);
         var opponentData = opponentCard.data('ai');
-        if (card.data('side')=='enemy') console.log(card[0], opponentCard[0]);
+        if (card.data('side')=='enemy') //console.log(card[0], opponentCard[0]);
         opponentData['can-be-attacked'] = true;
         opponentData.strats.retreat += 6;
         if ( opponentCard.hasClass('towers') ) {
@@ -271,7 +271,7 @@ game.ai = {
   },
   chooseStrat: function (card, cardData) {
     // console.log(card);
-    console.log(cardData.strats);
+    //console.log(cardData.strats);
     var strats = [];
     $(game.ai.strats).each(function (i, strat) {
       strats.push({strat: strat, priority: cardData.strats[strat]});
@@ -321,7 +321,7 @@ game.ai = {
         action,
         target;
 
-    console.log('strat:', strat);
+    //console.log('strat:', strat);
     
     if (strat == 'siege') {
       if (cardData['can-attack-tower']) {
@@ -435,7 +435,7 @@ game.ai = {
         action = 'move';
       }
     }
-    console.log('action:', action);
+    //console.log('action:', action);
     if (action) {
       if (action == 'move' || action == 'advance' || action == 'retreat') {
         target = cardData.destiny;
@@ -466,7 +466,7 @@ game.ai = {
       
       if ((action == 'move' || action == 'advance' || action == 'retreat' || action == 'attack' || action == 'cast') && !target) {
       } else if (action) {
-        console.log('target', target[0]);
+        //console.log('target', target[0]);
         game.ai.parseMove(card, cardData, action, target);
       }
     }
@@ -484,7 +484,7 @@ game.ai = {
         });
         if (fountain) return fountain;
       }
-      console.log(cardData.strat, destinys);
+      //console.log(cardData.strat, destinys);
       if (Math.random() > game.ai.highChance) {
         destinys.sort(function (a, b) {
           return b.priority - a.priority;
@@ -540,7 +540,7 @@ game.ai = {
       move[3] = cardData['cast-skill']; //skillId
       move[4] = card.data('hero');
     }
-    console.log(move);
+    //console.log(move);
     game.currentData.moves.push(move.join(':'));
   },
   nextMove: function () {
