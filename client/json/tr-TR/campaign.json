@@ -1,25 +1,25 @@
 ﻿{
   "start": {
-    "name": "Stage 1",
+    "name": "Adım 1",
     "img": "tower",
-    "title": "Very Easy - Radiant Tower",
+    "title": "Çok basit - Radiant Kulesi",
     "ai": "easy",
     "desc": [
-      "Destroy enemy tower",
-      "Don't die (bonus)",
-      "Kill 3 heroes (bonus)"
+      "Düşman kulesini yok et",
+      "Ölmeyin (bonus)",
+      "3 kahramanı öldür (bonus)"
     ],
     "picks": [ "cm", "kotl", "pud", "ld", "am" ]
   },
   "easy": {
-    "name": "Stage 2",
+    "name": "Adım 2",
     "img": "tree",
-    "title": "Easy - Radiant Jungle",
+    "title": "Basit - Radiant Jungle",
     "ai": "easy",
     "desc": [
-      "Destroy enemy tower",
-      "Don't die (bonus)",
-      "Kill 5 heroes (bonus)"
+      "Düşman kulesini yok et",
+      "Ölmeyin (bonus)",
+      "5 kahramanı öldür (bonus)"
     ],
     "picks": [ "nyx", "wk", "ld", "am", "pud" ]
 
