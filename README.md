@@ -1,53 +1,7 @@
-[![DotaCard Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/banner.jpg)][1]
+This is the artwork repository of **Fight Over Dat Ancient**
 
-[![Discord Chat Channel](http://rafaelcastrocouto.github.io/dotacard/client/img/discord.png)][2]
+Play for free at https://foda-app.herokuapp.com/
 
-#[dotacard.ga][3]
+Check the game source code at https://github.com/rafaelcastrocouto/foda
 
-A **Defense Of The Ancients** card game with the heroes you love and all their skills and ultimates
-
-You are free to [fork][4] or [download][5] and help to build the game, you can even make a hero and [win real cash!][6]
-
-In our Wiki page you can ckeck out the [game rules][7] and much more.
-
-Please report any [sugestions or issues][8] here at github.
-
-[![Steam Greenlight Banner](http://rafaelcastrocouto.github.io/dotacard/client/img/greenlight-banner.png)][9]
-
-**Local server setup**
-
-    npm install
-    node server.js
-
-More information on how to [setup your own server][10]
-
-The game is avaiable free to play at the following URLs:
-
- - http://dotacard.ga
- - http://dotacard.herokuapp.com
- - http://rafaelcastrocouto.github.io/dotacard/client
-
-*Powered by*
-
-[![Powered by Github, Heroku, Grunt and Jquery](http://rafaelcastrocouto.github.io/dotacard/client/img/poweredby-banner.jpg)][1]
-
-
-[1]: http://dotacard.herokuapp.com
-
-[2]: https://discord.gg/FvTDss3
-
-[3]: http://dotacard.ga
-
-[4]: https://github.com/rafaelcastrocouto/dotacard/fork
-
-[5]: https://github.com/rafaelcastrocouto/dotacard/archive/gh-pages.zip
-
-[6]: https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#how-to-develop-a-new-hero
-
-[7]: https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#game-rules
-
-[8]: https://github.com/rafaelcastrocouto/dotacard/issues/new
-
-[9]: http://steamcommunity.com/sharedfiles/filedetails/?id=500624204
-
-[10]: https://github.com/rafaelcastrocouto/dotacard/wiki/Dotacard-Wiki#how-to-setup-a-local-server
+[![Fight Over Dat Ancient](http://rafaelcastrocouto.github.io/foda/client/img/banner.jpg)][1]
