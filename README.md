@@ -3,17 +3,17 @@
 [![Discord Chat Channel](https://foda-app.herokuapp.com/client/img/discord.png)][2]
   [![FODA](https://foda-app.herokuapp.com/client/img/campaign/ico_rosh.png)][1]  [![FODA](https://foda-app.herokuapp.com/client/img/ratingsymbol_t.png)][8]
 
-A **card game** with magical heroes, full of skills and powerful ultimates.
+A **card game** with magical heroes, each with unique skills and powerful abilities.
 
-Play for free [online in your browser][1] or check out our [Google play app][10]
+Play for free [online in your browser][1] or check us out on the [Google play app store][10]
 
-You can also [fork][3] or [download][4] and help to build the game, you can even make a hero and [win real cash!][5]
+Feel free to [fork][3] or [download][4] and help build the game! You can even make a new hero and [win real cash!][5]
 
-In our Wiki page you can ckeck out the [how to play with real cards][8] and much more.
+Visit our Wiki page where you can learn [how to play with real cards][8] and much more.
 
-Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a part of out dev team!
+Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a part of our dev team!
 
-Please report any [sugestions or issues][9] here at github.
+Please report any [sugestions, bugs or issues][9] here at github.
 
 [![Fight Over Dat Ancient](https://foda-app.herokuapp.com/client/img/banner.jpg)][1]
 
