@@ -9,11 +9,11 @@ Play for free [online in your browser][1] or check us out on the [Google play ap
 
 Feel free to [fork][3] or [download][4] and help build the game! You can even make a new hero and [win real cash!][5]
 
-Visit our Wiki page where you can learn [how to play with real cards][8] and much more.
+Visit our Wiki page where you can learn [how to play with real cards][6] and much more.
 
 Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a part of our dev team!
 
-Please report any [sugestions, bugs or issues][9] here at github.
+Please report any [sugestions, bugs or issues][7] here at github.
 
 [![Fight Over Dat Ancient](https://foda-app.herokuapp.com/client/img/banner.jpg)][1]
 
