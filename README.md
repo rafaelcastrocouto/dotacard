@@ -1,7 +1,7 @@
 # [Fight Over Dat Ancient][1]
 
 [![Discord Chat Channel](https://foda-app.herokuapp.com/client/img/discord.png)][2]
-  [![FODA](https://foda-app.herokuapp.com/client/img/campaign/ico_rosh.png)][1]  [![FODA](https://foda-app.herokuapp.com/client/img/ratingsymbol_t.png)][8]
+  [![FODA](https://foda-app.herokuapp.com/client/img/campaign/ico_rosh.png)][1]  [![FODA](https://foda-app.herokuapp.com/client/img/ratingsymbol_e10.png)][8]
 
 A **card game** with magical heroes, each with unique skills and powerful abilities.
 
