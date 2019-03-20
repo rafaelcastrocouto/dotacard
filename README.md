@@ -40,7 +40,7 @@ Special thanks to:
 
 [3]: https://github.com/rafaelcastrocouto/foda/fork
 
-[4]: https://github.com/rafaelcastrocouto/foda/archive/gh-pages.zip
+[4]: https://github.com/rafaelcastrocouto/foda/archive/master.zip
 
 [5]: https://github.com/rafaelcastrocouto/dotacard/wiki/How-to-develop-a-new-hero
 
