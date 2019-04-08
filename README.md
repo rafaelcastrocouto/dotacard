@@ -21,7 +21,7 @@ Visit our Wiki page where you can learn [how to play with real cards][6] and muc
 
 Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a part of our dev team!
 
-Please report any [sugestions, bugs or issues][7] here at github.
+Please report any [suggestions, bugs or issues][7] here at github.
 
 [![Fight Over Dat Ancient](https://foda-app.herokuapp.com/client/img/banner.jpg)][1]
 
