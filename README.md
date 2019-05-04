@@ -3,6 +3,8 @@
 [![Discord Chat Channel](https://foda-app.herokuapp.com/client/img/discord.png)][2]
   [![FODA](https://foda-app.herokuapp.com/client/img/campaign/ico_rosh.png)][1]  [![FODA](https://foda-app.herokuapp.com/client/img/ratingsymbol_e10.png)][8]
 
+## Artwork
+
 A **card game** with magical heroes, each with unique skills and powerful abilities.
 
 Play for free [online in your browser][1] or check us out on the [Google play app store][10]
