@@ -1,7 +1,7 @@
 # [Fight Over Dat Ancient][1]
 
-[![Discord Chat Channel](https://foda-app.herokuapp.com/client/img/discord.png)][2]
-  [![FODA](https://foda-app.herokuapp.com/client/img/campaign/ico_rosh.png)][1]  [![FODA](https://foda-app.herokuapp.com/client/img/ratingsymbol_e10.png)][8]
+[![Discord Chat Channel](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/discord.png)][2]
+  [![FODA](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/campaign/ico_rosh.png)][1]  [![FODA](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/ratingsymbol_e10.png)][8]
 
 ## Artwork
 
@@ -25,7 +25,7 @@ Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a
 
 Please report any [suggestions, bugs or issues][7] here at github.
 
-[![Fight Over Dat Ancient](https://foda-app.herokuapp.com/client/img/banner.jpg)][1]
+[![Fight Over Dat Ancient](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/banner.jpg)][1]
 
 **Local server setup**
 
@@ -42,7 +42,7 @@ Special thanks to:
 
 *Powered by*
 
-[![Powered by Github, Heroku, Grunt and Jquery](https://foda-app.herokuapp.com/client/img/poweredby-banner.jpg)][1]
+[![Powered by Github, Heroku, Grunt and Jquery](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/poweredby-banner.jpg)][1]
 
 [1]: https://foda-app.herokuapp.com/
 
