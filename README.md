@@ -19,20 +19,13 @@ Join our community and discuss the game rules at our [Discord Server][2].
 
 Feel free to [fork][3] or [download][4] and help build the game! You can even make a new hero and [win real cash!][5]
 
-Visit our Wiki page where you can learn [how to play with real cards][6] and much more.
+Visit our [Wiki page][7] where you can learn how to hack this project, how to play with real cards and much more.
 
 Check the [game source code](https://github.com/rafaelcastrocouto/foda) and be a part of our dev team!
 
 Please report any [suggestions, bugs or issues][7] here at github.
 
 [![Fight Over Dat Ancient](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/banner.jpg)][1]
-
-**Local server setup**
-
-    npm install
-    node server.js
-
-More information on how to [setup your own server][9]
 
 Special thanks to:
 
