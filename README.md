@@ -11,7 +11,8 @@ Play for free [online in your browser][1] on our [heroku](https://heroku.com) se
 
 Join our community and discuss the game rules at our [Discord Server][2]. 
 
-Feel free to [fork][3] or [download][4] and help build the game! You can even make a new hero and [win real cash!][5]
+Feel free to [fork][3] or [download][4] and help build the game!
+You can even [make a new hero][6]
 
 Visit our [Wiki page][7] where you can learn how to hack this project, how to play with real cards and much more.
 
