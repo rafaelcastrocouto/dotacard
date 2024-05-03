@@ -33,7 +33,7 @@ Special thanks to:
 
 [![Powered by Github, Heroku, Grunt and Jquery](https://raw.githubusercontent.com/rafaelcastrocouto/dotacard/artwork/img/poweredby-banner.jpg)][1]
 
-[1]: https://foda-app.herokuapp.com/
+[1]: https://imaginary-ribbon-mustard.glitch.me/debug.html
 
 [2]: https://discord.gg/a4TwjAR
 
